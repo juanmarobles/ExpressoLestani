@@ -22,6 +22,7 @@ public class ClienteJpaController implements Serializable {
     
     //CONTROLADOR
     public ClienteJpaController(){
+    
     emf = Persistence.createEntityManagerFactory("expressoJPAPU");
     }
     
