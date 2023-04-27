@@ -1,7 +1,10 @@
-
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package com.mycompany.lestanitest.persistencia;
 
-import com.mycompany.lestanitest.logica.Cliente;
+import com.mycompany.lestanitest.logica.Vehiculo;
 import com.mycompany.lestanitest.persistencia.exceptions.NonexistentEntityException;
 import java.io.Serializable;
 import java.util.List;
@@ -13,30 +16,31 @@ import javax.persistence.Persistence;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+/**
+ *
+ * @author Juanma
+ */
+public class VehiculoJpaController implements Serializable {
 
-public class ClienteJpaController implements Serializable {
-
-    public ClienteJpaController(EntityManagerFactory emf) {
+    public VehiculoJpaController(EntityManagerFactory emf) {
         this.emf = emf;
     }
     
-    //CONTROLADOR
-    public ClienteJpaController(){
+    public VehiculoJpaController(){
     emf = Persistence.createEntityManagerFactory("expressoJPAPU");
     }
-    
     private EntityManagerFactory emf = null;
 
     public EntityManager getEntityManager() {
         return emf.createEntityManager();
     }
 
-    public void create(Cliente cliente) {
+    public void create(Vehiculo vehiculo) {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            em.persist(cliente);
+            em.persist(vehiculo);
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -45,19 +49,19 @@ public class ClienteJpaController implements Serializable {
         }
     }
 
-    public void edit(Cliente cliente) throws NonexistentEntityException, Exception {
+    public void edit(Vehiculo vehiculo) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            cliente = em.merge(cliente);
+            vehiculo = em.merge(vehiculo);
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                int id = cliente.getId();
-                if (findCliente(id) == null) {
-                    throw new NonexistentEntityException("The cliente with id " + id + " no longer exists.");
+                int id = vehiculo.getId_Vehiculo();
+                if (findVehiculo(id) == null) {
+                    throw new NonexistentEntityException("The vehiculo with id " + id + " no longer exists.");
                 }
             }
             throw ex;
@@ -73,14 +77,14 @@ public class ClienteJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Cliente cliente;
+            Vehiculo vehiculo;
             try {
-                cliente = em.getReference(Cliente.class, id);
-                cliente.getId();
+                vehiculo = em.getReference(Vehiculo.class, id);
+                vehiculo.getId_Vehiculo();
             } catch (EntityNotFoundException enfe) {
-                throw new NonexistentEntityException("The cliente with id " + id + " no longer exists.", enfe);
+                throw new NonexistentEntityException("The vehiculo with id " + id + " no longer exists.", enfe);
             }
-            em.remove(cliente);
+            em.remove(vehiculo);
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -89,19 +93,19 @@ public class ClienteJpaController implements Serializable {
         }
     }
 
-    public List<Cliente> findClienteEntities() {
-        return findClienteEntities(true, -1, -1);
+    public List<Vehiculo> findVehiculoEntities() {
+        return findVehiculoEntities(true, -1, -1);
     }
 
-    public List<Cliente> findClienteEntities(int maxResults, int firstResult) {
-        return findClienteEntities(false, maxResults, firstResult);
+    public List<Vehiculo> findVehiculoEntities(int maxResults, int firstResult) {
+        return findVehiculoEntities(false, maxResults, firstResult);
     }
 
-    private List<Cliente> findClienteEntities(boolean all, int maxResults, int firstResult) {
+    private List<Vehiculo> findVehiculoEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            cq.select(cq.from(Cliente.class));
+            cq.select(cq.from(Vehiculo.class));
             Query q = em.createQuery(cq);
             if (!all) {
                 q.setMaxResults(maxResults);
@@ -113,20 +117,20 @@ public class ClienteJpaController implements Serializable {
         }
     }
 
-    public Cliente findCliente(int id) {
+    public Vehiculo findVehiculo(int id) {
         EntityManager em = getEntityManager();
         try {
-            return em.find(Cliente.class, id);
+            return em.find(Vehiculo.class, id);
         } finally {
             em.close();
         }
     }
 
-    public int getClienteCount() {
+    public int getVehiculoCount() {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            Root<Cliente> rt = cq.from(Cliente.class);
+            Root<Vehiculo> rt = cq.from(Vehiculo.class);
             cq.select(em.getCriteriaBuilder().count(rt));
             Query q = em.createQuery(cq);
             return ((Long) q.getSingleResult()).intValue();

@@ -11,25 +11,33 @@ import javax.persistence.Id;
 @Entity
 public class Representantes implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name="ID_REPRESENTANTE",nullable=false,unique=true)
     private int id;
     @Column(name="NOMBRE", length=50)
     private String nombre;
     @Column(name="LOCALIDAD", length=50)
-    private int id_Localidad;
+    private String localidad;
+    @Column(name="DIRECCION", length=50)
+    private String direccion;
     @Column(name="TELEFONO", length=50)
     private String telefono;
 
     public Representantes() {
     }
 
-    public Representantes(int id, String nombre, int id_Localidad, String telefono) {
+    public Representantes(int id, String nombre, String localidad, String direccion, String telefono) {
         this.id = id;
         this.nombre = nombre;
-        this.id_Localidad = id_Localidad;
+        this.localidad = localidad;
+        this.direccion = direccion;
         this.telefono = telefono;
     }
+
+    public Representantes(String nombre) {
+        this.nombre = nombre;
+    }
+    
 
     public int getId() {
         return id;
@@ -47,12 +55,20 @@ public class Representantes implements Serializable {
         this.nombre = nombre;
     }
 
-    public int getId_Localidad() {
-        return id_Localidad;
+    public String getLocalidad() {
+        return localidad;
     }
 
-    public void setId_Localidad(int id_Localidad) {
-        this.id_Localidad = id_Localidad;
+    public void setLocalidad(String localidad) {
+        this.localidad = localidad;
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
     }
 
     public String getTelefono() {
@@ -62,5 +78,13 @@ public class Representantes implements Serializable {
     public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
+
+    @Override
+    public String toString() {
+        return nombre ;
+    }
+
+  
     
 }
+

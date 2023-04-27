@@ -1,66 +1,76 @@
 package com.mycompany.lestanitest.logica;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Transient;
 
 @Entity
 public class Movimientos implements Serializable {
-  
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name="ID_MOVIMIENTOS",nullable=false,unique=true)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "ID_MOVIMIENTO", nullable = false, unique = true)
     private int id_movimientos;
-    
-    
-    @Temporal(TemporalType.DATE)
+
+    @Column(name = "FECHA", nullable = true)
     private Date fecha;
-    
-   
-    @Column(name="DESTINO", length=50)
+
+    @Column(name = "DESTINO", length = 50)
     private String destino;
-    @Column(name="REMITO", length=50)
+    @Column(name = "REMITO", length = 50)
     private int remito;
-    @Column(name="BULTOS", length=50)
+    @Column(name = "BULTOS", length = 50)
     private int bultos;
-    @Transient
-    @Column(name="MONTO", length=50)
-    private Double monto;
-    @Column(name="PAGADO", nullable = false)
-    private Boolean pagado = false;
-    @Column(name="FLETE", length=50)
-    @Transient
-    private Double flete;
-    @Column(name="FLETE_PAGADO", nullable = false)
-       private Boolean flete_pagado = false;
-    @Column(name="RENDIDO", nullable = false)
-    private Boolean rendido=false;
-    
-    @OneToOne
-    private Representantes representante;
-    @OneToOne
-    private Cliente cliente;
+    @Column(name = "MONTO", length = 50)
+    private String monto;
+    @Column(name = "MONTO_PAGADO_RENDIDO", length = 50)
+    private String tipoMonto;
+    @Column(name = "FLETE", length = 50)
+    private String flete;
+    @Column(name = "FLETE_PAGADO_RENDIDO", length = 50)
+    private String tipoFlete;
+    @Column(name = "REPRESENTANTE", nullable = false)
+    private String representante;
+    @Column(name = "CLIENTE", nullable = false)
+    private String cliente;
+    @Column(name = "SERVICIO", nullable = false)
+    private String servicio;
+    @Column(name = "FLETE_DESTINO_ORIGEN", nullable = false)
+    private String fleteDestinoOrigen;
+
     public Movimientos() {
     }
 
-    public Movimientos(int id_movimientos, Date fecha, Cliente cliente, String destino, int remito, int bultos, Double monto, Double flete, Representantes representante) {
+    public Movimientos(int id_movimientos, Date fecha, String destino, int remito, int bultos, String monto, String tipoMonto, String flete, String tipoFlete, String representante, String cliente, String servicio, String fleteDestinoOrigen) {
         this.id_movimientos = id_movimientos;
         this.fecha = fecha;
-        this.cliente = cliente;
         this.destino = destino;
         this.remito = remito;
         this.bultos = bultos;
         this.monto = monto;
+        this.tipoMonto = tipoMonto;
         this.flete = flete;
+        this.tipoFlete = tipoFlete;
         this.representante = representante;
+        this.cliente = cliente;
+        this.servicio = servicio;
+        this.fleteDestinoOrigen = fleteDestinoOrigen;
+    }
+
+    public Movimientos(String cliente) {
+        this.cliente = cliente;
     }
 
     public int getId_movimientos() {
@@ -77,14 +87,12 @@ public class Movimientos implements Serializable {
 
     public void setFecha(Date fecha) {
         this.fecha = fecha;
+
     }
 
-    public Cliente getCliente() {
-        return cliente;
-    }
-
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
+    public String getFechaFormateada() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        return sdf.format(fecha);
     }
 
     public String getDestino() {
@@ -111,59 +119,88 @@ public class Movimientos implements Serializable {
         this.bultos = bultos;
     }
 
-    public Double getMonto() {
-        return monto;
+    public String getMonto() {
+        
+        BigDecimal montoBigDecimal = new BigDecimal(monto);
+        DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
+        simbolos.setDecimalSeparator(',');
+        simbolos.setGroupingSeparator('.');
+        DecimalFormat formato = new DecimalFormat("#,##0.00", simbolos);
+        String montoFormateado = formato.format(montoBigDecimal);
+        monto = montoFormateado;
+        return "$" + monto;
     }
 
-    public void setMonto(Double monto) {
+    public void setMonto(String monto) {
         this.monto = monto;
     }
 
-    public Boolean getPagado() {
-        return pagado;
+    public String getTipoMonto() {
+        return tipoMonto;
     }
 
-    public void setPagado(Boolean pagado) {
-        this.pagado = pagado;
+    public void setTipoMonto(String tipoMonto) {
+        this.tipoMonto = tipoMonto;
     }
 
-    public Double getFlete() {
-        return flete;
+    public String getFlete() {
+        BigDecimal fleteBigDecimal = new BigDecimal(flete);
+        DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
+        simbolos.setDecimalSeparator(',');
+        simbolos.setGroupingSeparator('.');
+        DecimalFormat formato = new DecimalFormat("#,##0.00", simbolos);
+        String fleteFormateado = formato.format(fleteBigDecimal);
+        flete = fleteFormateado;
+        return "$" + flete;
     }
 
-    public void setFlete(Double flete) {
+    public void setFlete(String flete) {
         this.flete = flete;
     }
 
-    public Boolean getFlete_pagado() {
-        return flete_pagado;
-    }
-
-    public void setFlete_pagado(Boolean flete_pagado) {
-        this.flete_pagado = flete_pagado;
-    }
-
-    public Boolean getRendido() {
-        return rendido;
-    }
-
-    public void setRendido(Boolean rendido) {
-        this.rendido = rendido;
-    }
-
-    public Representantes getRepresentante() {
+    public String getRepresentante() {
         return representante;
     }
 
-    public void setRepresentante(Representantes representante) {
+    public void setRepresentante(String representante) {
         this.representante = representante;
+    }
+
+    public String getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(String cliente) {
+        this.cliente = cliente;
+    }
+
+    public String getServicio() {
+        return servicio;
+    }
+
+    public void setServicio(String servicio) {
+        this.servicio = servicio;
+    }
+
+    public String getFleteDestinoOrigen() {
+        return fleteDestinoOrigen;
+    }
+
+    public void setFleteDestinoOrigen(String fleteDestinoOrigen) {
+        this.fleteDestinoOrigen = fleteDestinoOrigen;
+    }
+
+    public String getTipoFlete() {
+        return tipoFlete;
+    }
+
+    public void setTipoFlete(String tipoFlete) {
+        this.tipoFlete = tipoFlete;
     }
 
     @Override
     public String toString() {
-        return "Movimientos{" + "id_movimientos=" + id_movimientos + ", fecha=" + fecha + ", destino=" + destino + ", remito=" + remito + ", bultos=" + bultos + ", monto=" + monto + ", pagado=" + pagado + ", flete=" + flete + ", flete_pagado=" + flete_pagado + ", rendido=" + rendido + ", representante=" + representante + ", cliente=" + cliente + '}';
+        return cliente;
     }
 
-   
-    
 }

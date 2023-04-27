@@ -1,7 +1,10 @@
-
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package com.mycompany.lestanitest.persistencia;
 
-import com.mycompany.lestanitest.logica.Cliente;
+import com.mycompany.lestanitest.logica.Destinos;
 import com.mycompany.lestanitest.persistencia.exceptions.NonexistentEntityException;
 import java.io.Serializable;
 import java.util.List;
@@ -13,30 +16,31 @@ import javax.persistence.Persistence;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+/**
+ *
+ * @author Juanma
+ */
+public class DestinosJpaController implements Serializable {
 
-public class ClienteJpaController implements Serializable {
-
-    public ClienteJpaController(EntityManagerFactory emf) {
+    public DestinosJpaController(EntityManagerFactory emf) {
         this.emf = emf;
     }
     
-    //CONTROLADOR
-    public ClienteJpaController(){
+    public DestinosJpaController(){
     emf = Persistence.createEntityManagerFactory("expressoJPAPU");
     }
-    
     private EntityManagerFactory emf = null;
 
     public EntityManager getEntityManager() {
         return emf.createEntityManager();
     }
 
-    public void create(Cliente cliente) {
+    public void create(Destinos destinos) {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            em.persist(cliente);
+            em.persist(destinos);
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -45,19 +49,19 @@ public class ClienteJpaController implements Serializable {
         }
     }
 
-    public void edit(Cliente cliente) throws NonexistentEntityException, Exception {
+    public void edit(Destinos destinos) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            cliente = em.merge(cliente);
+            destinos = em.merge(destinos);
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                int id = cliente.getId();
-                if (findCliente(id) == null) {
-                    throw new NonexistentEntityException("The cliente with id " + id + " no longer exists.");
+                int id = destinos.getId();
+                if (findDestinos(id) == null) {
+                    throw new NonexistentEntityException("The destinos with id " + id + " no longer exists.");
                 }
             }
             throw ex;
@@ -73,14 +77,14 @@ public class ClienteJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Cliente cliente;
+            Destinos destinos;
             try {
-                cliente = em.getReference(Cliente.class, id);
-                cliente.getId();
+                destinos = em.getReference(Destinos.class, id);
+                destinos.getId();
             } catch (EntityNotFoundException enfe) {
-                throw new NonexistentEntityException("The cliente with id " + id + " no longer exists.", enfe);
+                throw new NonexistentEntityException("The destinos with id " + id + " no longer exists.", enfe);
             }
-            em.remove(cliente);
+            em.remove(destinos);
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -89,19 +93,19 @@ public class ClienteJpaController implements Serializable {
         }
     }
 
-    public List<Cliente> findClienteEntities() {
-        return findClienteEntities(true, -1, -1);
+    public List<Destinos> findDestinosEntities() {
+        return findDestinosEntities(true, -1, -1);
     }
 
-    public List<Cliente> findClienteEntities(int maxResults, int firstResult) {
-        return findClienteEntities(false, maxResults, firstResult);
+    public List<Destinos> findDestinosEntities(int maxResults, int firstResult) {
+        return findDestinosEntities(false, maxResults, firstResult);
     }
 
-    private List<Cliente> findClienteEntities(boolean all, int maxResults, int firstResult) {
+    private List<Destinos> findDestinosEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            cq.select(cq.from(Cliente.class));
+            cq.select(cq.from(Destinos.class));
             Query q = em.createQuery(cq);
             if (!all) {
                 q.setMaxResults(maxResults);
@@ -113,20 +117,20 @@ public class ClienteJpaController implements Serializable {
         }
     }
 
-    public Cliente findCliente(int id) {
+    public Destinos findDestinos(int id) {
         EntityManager em = getEntityManager();
         try {
-            return em.find(Cliente.class, id);
+            return em.find(Destinos.class, id);
         } finally {
             em.close();
         }
     }
 
-    public int getClienteCount() {
+    public int getDestinosCount() {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            Root<Cliente> rt = cq.from(Cliente.class);
+            Root<Destinos> rt = cq.from(Destinos.class);
             cq.select(em.getCriteriaBuilder().count(rt));
             Query q = em.createQuery(cq);
             return ((Long) q.getSingleResult()).intValue();

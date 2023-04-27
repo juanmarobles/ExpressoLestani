@@ -3,7 +3,6 @@ package com.mycompany.lestanitest.logica;
 
 
 import java.io.Serializable;
-import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,7 +13,7 @@ import javax.persistence.Id;
 public class Cliente implements Serializable {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name="ID_CLIENTE",nullable=false,unique=true)
     private int id;
     
@@ -35,7 +34,7 @@ public class Cliente implements Serializable {
     
     @Column(name="LOCALIDAD", length=50)
     private String localidad;
-
+    
     public Cliente() {
     }
 
@@ -49,8 +48,10 @@ public class Cliente implements Serializable {
         this.localidad = localidad;
     }
 
-
-
+    public Cliente(String nombre) {
+        this.nombre = nombre;
+    }
+    
     public int getId() {
         return id;
     }
@@ -109,7 +110,7 @@ public class Cliente implements Serializable {
 
     @Override
     public String toString() {
-        return "Cliente{" + "id=" + id + ", nombre=" + nombre + ", direccion=" + direccion + ", telefono=" + telefono + ", email=" + email + ", cuit=" + cuit + ", localidad=" + localidad + '}';
+        return  nombre;
     }
     
 }
