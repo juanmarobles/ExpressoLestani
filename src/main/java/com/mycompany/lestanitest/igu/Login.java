@@ -142,7 +142,7 @@ public class Login extends javax.swing.JFrame {
          String password = txtPassword.getText();
          String mensaje = control.validarUsuario(usuario,password);
          Principal pr = new Principal();
-         pr.setVisible(true);
+         pr.setVisible(false);
          pr.setLocationRelativeTo(null);
          
 
