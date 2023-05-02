@@ -766,7 +766,7 @@ public class Principal extends javax.swing.JFrame {
 
         };
         //nombres de columnas
-        String titulos[] = {"MOVIMIENTO", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "TIPO_MONTO", "FLETE", "TIPO_FLETE", "A_CARGO_DE", "REPRESENTANTE"};
+        String titulos[] = {"MOVIMIENTO", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "PAGADO_RENDIDO", "FLETE", "PAGADO_RENDIDO", "A_CARGO_DE", "REPRESENTANTE"};
         tabla.setColumnIdentifiers(titulos);
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tabla);
         tablaMovimientos.setRowSorter(sorter);
@@ -877,6 +877,8 @@ public class Principal extends javax.swing.JFrame {
             tMonto = "Pagado";
         } else if (cbMontoRendido.isSelected()) {
             tMonto = "Rendido";
+        } else {
+            tMonto = "No";
         }
         //verif de flete pagado/rendido
         if (cbfletePagado.isSelected() && cbfleteRendido.isSelected()) {
@@ -885,6 +887,8 @@ public class Principal extends javax.swing.JFrame {
             fPr = "Rendido";
         } else if (cbfletePagado.isSelected()) {
             fPr = "Pagado";
+        }else {
+            fPr = "No";
         }
 
         control.cargarMovimiento(cliente, destino, servicio, representante, bulto, monto, flete, remito, fPr, fecha, tFlete, tMonto);

@@ -234,6 +234,16 @@ public class Controladora {
         m.setFleteDestinoOrigen(tFlete);
         ctrl.guardarMovimiento(m);
     }
+     public void actualizarMonto(Movimientos m,String tMonto) {
+        m.setTipoMonto(tMonto);
+        ctrl.modificarMovimiento(m);
+    }
+     public void actualizarFlete(Movimientos m,String tFlete) {
+        m.setTipoFlete(tFlete);
+        ctrl.modificarMovimiento(m);
+    }
+    
+    
 
     /**
      * ----------------------------------------------BORRAR-----------------------------------------------------------------

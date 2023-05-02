@@ -13,13 +13,16 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -387,6 +390,11 @@ public class Consultas extends javax.swing.JFrame {
         });
 
         btnMPMontos.setText("Montos");
+        btnMPMontos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMPMontosActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
@@ -561,7 +569,7 @@ public class Consultas extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnMPFletesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMPFletesActionPerformed
-        // TODO add your handling code here:
+        cambiarTipoFlete();
     }//GEN-LAST:event_btnMPFletesActionPerformed
 
     private void btnMostrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarActionPerformed
@@ -596,23 +604,82 @@ public class Consultas extends javax.swing.JFrame {
     }//GEN-LAST:event_cbNoPagadosActionPerformed
 
     private void cbmTodosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbmTodosActionPerformed
-        updateMonto();
+        mostrarTablaMovimientos();
     }//GEN-LAST:event_cbmTodosActionPerformed
-
+   
     private void cbFletePagadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbFletePagadoActionPerformed
         updateFlete();
     }//GEN-LAST:event_cbFletePagadoActionPerformed
 
     private void txtClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtClienteActionPerformed
-        String cliente = txtCliente.getText();
+        txtCliente.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String clienteSeleccionado = txtCliente.getText();
+                double montoTotal = 0.0;
+                double fleteTotal = 0.0;
+                int bultoTotal = 0;
+                DecimalFormat formatoMoneda = new DecimalFormat("$#,##0.00");
 
-        /*double monto = control.obtenerMontoCliente(cliente);
-        if (monto > 0) {
-            txtTotalMonto.setText(String.valueOf(monto));
-        } else {
-            JOptionPane.showMessageDialog(this, "El cliente ingresado no tiene un monto asociado.");
-        }*/
+                //TOTAL MONTO
+                for (int i = 0; i < tablaConsultas.getRowCount(); i++) {
+                    String cliente = (String) tablaConsultas.getValueAt(i, 2);
+                    if (cliente.equals(clienteSeleccionado)) {
+                        try {
+                            String montoString = (String) tablaConsultas.getValueAt(i, 6);
+                            double monto = formatoMoneda.parse(montoString).doubleValue();
+                            montoTotal += monto;
+                        } catch (ParseException ex) {
+                            Logger.getLogger(Consultas.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+
+                    }
+                }
+
+                //FLETE TOTAL
+                for (int i = 0; i < tablaConsultas.getRowCount(); i++) {
+                    String cliente = (String) tablaConsultas.getValueAt(i, 2);
+                    if (cliente.equals(clienteSeleccionado)) {
+                        try {
+                            String montoString = (String) tablaConsultas.getValueAt(i, 8);
+                            double monto = formatoMoneda.parse(montoString).doubleValue();
+                            fleteTotal += monto;
+                        } catch (ParseException ex) {
+                            Logger.getLogger(Consultas.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+
+                    }
+                }
+
+                //TOTAL BULTOS
+                for (int i = 0; i < tablaConsultas.getRowCount(); i++) {
+                    String cliente = (String) tablaConsultas.getValueAt(i, 2);
+                    if (cliente.equals(clienteSeleccionado)) {
+                        int bultos = (int) tablaConsultas.getValueAt(i, 5);
+                        bultoTotal += bultos;
+                    }
+                }
+
+                txtTotalMonto.setEditable(true);
+                txtTotalMonto.setText(Double.toString(montoTotal));
+                txtTotalMonto.setEditable(false);
+
+                txtTotalFlete.setEditable(true);
+                txtTotalFlete.setText(Double.toString(fleteTotal));
+                txtTotalFlete.setEditable(false);
+
+                txtCantBultos.setEditable(true);
+                txtCantBultos.setText(Integer.toString(bultoTotal));
+                txtCantBultos.setEditable(false);
+            }
+
+        });
+
     }//GEN-LAST:event_txtClienteActionPerformed
+
+    private void btnMPMontosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMPMontosActionPerformed
+        cambiarTipoMonto();
+    }//GEN-LAST:event_btnMPMontosActionPerformed
+
     private void updateMonto() {
         DefaultTableModel tableModel = (DefaultTableModel) tablaConsultas.getModel();
         tableModel.setRowCount(0); // Limpiar la tabla
@@ -621,35 +688,20 @@ public class Consultas extends javax.swing.JFrame {
         // Recorrer la lista y agregar filas a la tabla
 
         /**
-         * CHECK BOX PAGADOS
+         * CHECK BOX MONTO PAGADOS
          */
+        tableModel.setRowCount(0);
         for (Movimientos mov : listaMovimientos) {
-            if (!cbPagados.isSelected() || mov.getTipoMonto().equals("Pagado") || mov.getTipoMonto().equals("Rendido") || mov.getTipoMonto().equals("Pagado/Rendido")) {
+            if (!cbPagados.isSelected() && !Arrays.asList("Pagado", "Rendido", "Pagado/Rendido").contains(mov.getTipoMonto())) {
                 Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante()};
-
                 tableModel.addRow(row);
             }
-        }
-        /**
-         * CHECK BOX NO-PAGADOS
-         */
-        for (Movimientos mov : listaMovimientos) {
-
-            if (!cbNoPagados.isSelected() || mov.getTipoMonto().isEmpty()) {
-
+            if (!cbNoPagados.isSelected() && !Arrays.asList("No").contains(mov.getTipoMonto())) {
                 Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante()};
-
                 tableModel.addRow(row);
-
             }
-        }
-        /**
-         * CHECK BOX TODOS PAGADOS
-         */
-        for (Movimientos mov : listaMovimientos) {
-            if (!cbmTodos.isSelected() || mov.getTipoMonto().equals("")) {
+            if (cbmTodos.isSelected()) {
                 Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante()};
-
                 tableModel.addRow(row);
             }
         }
@@ -667,19 +719,12 @@ public class Consultas extends javax.swing.JFrame {
          * CHECK BOX PAGADOS
          */
         for (Movimientos mov : listaMovimientos) {
-            if (!cbFletePagado.isSelected() || mov.getTipoMonto().equals("Pagado") || mov.getTipoMonto().equals("Rendido") || mov.getTipoMonto().equals("Pagado/Rendido")) {
+            if (!cbFletePagado.isSelected() || mov.getTipoFlete().equals("Pagado") || mov.getTipoFlete().equals("Rendido") || mov.getTipoFlete().equals("Pagado/Rendido")) {
                 Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante()};
-
                 tableModel.addRow(row);
             }
-        }
-        /**
-         * CHECK BOX NO PAGADOS
-         */
-        for (Movimientos mov : listaMovimientos) {
-            if (!cbFleteNoPagado.isSelected() || mov.getTipoMonto().isEmpty()) {
+            if (!cbFleteNoPagado.isSelected() || mov.getTipoFlete().equals("No")) {
                 Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante()};
-
                 tableModel.addRow(row);
             }
         }
@@ -885,4 +930,39 @@ public class Consultas extends javax.swing.JFrame {
         return date;
     }
 
+    private void cambiarTipoMonto() {
+        int filaSeleccionada = tablaConsultas.getSelectedRow();
+        if (filaSeleccionada >= 0) {
+            DefaultTableModel modeloTabla = (DefaultTableModel) tablaConsultas.getModel();
+            int idMovimientos = (int) modeloTabla.getValueAt(filaSeleccionada, 0);
+            Movimientos movimiento = control.traerMovimiento(idMovimientos);
+            if (movimiento != null) {
+                String tipoMonto = (String) modeloTabla.getValueAt(filaSeleccionada, 7);
+                if (!tipoMonto.equals("Pagado")) {
+                    movimiento.setTipoMonto("Pagado");
+                    control.actualizarMonto(movimiento, "Pagado");
+                    modeloTabla.setValueAt("Pagado", filaSeleccionada, 7);
+                    modeloTabla.fireTableDataChanged();
+                }
+            }
+        }
+    }
+
+    private void cambiarTipoFlete() {
+        int filaSeleccionada = tablaConsultas.getSelectedRow();
+        if (filaSeleccionada >= 0) {
+            DefaultTableModel modeloTabla = (DefaultTableModel) tablaConsultas.getModel();
+            int idMovimientos = (int) modeloTabla.getValueAt(filaSeleccionada, 0);
+            Movimientos movimiento = control.traerMovimiento(idMovimientos);
+            if (movimiento != null) {
+                String tipoFlete = (String) modeloTabla.getValueAt(filaSeleccionada, 9);
+                if (!tipoFlete.equals("Pagado")) {
+                    movimiento.setTipoMonto("Pagado");
+                    control.actualizarFlete(movimiento, "Pagado");
+                    modeloTabla.setValueAt("Pagado", filaSeleccionada, 9);
+                    modeloTabla.fireTableDataChanged();
+                }
+            }
+        }
+    }
 }
