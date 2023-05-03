@@ -21,6 +21,10 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -202,9 +206,19 @@ public class Consultas extends javax.swing.JFrame {
 
         Grupo2.add(cbFleteNoPagado);
         cbFleteNoPagado.setText("No Pagados");
+        cbFleteNoPagado.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbFleteNoPagadoActionPerformed(evt);
+            }
+        });
 
         Grupo2.add(cbfTodos);
         cbfTodos.setText("Todos");
+        cbfTodos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbfTodosActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -429,6 +443,11 @@ public class Consultas extends javax.swing.JFrame {
         jLabel15.setText("Marcar como Redidos");
 
         btnMRFletes.setText("Fletes");
+        btnMRFletes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMRFletesActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
@@ -573,9 +592,65 @@ public class Consultas extends javax.swing.JFrame {
     }//GEN-LAST:event_btnMPFletesActionPerformed
 
     private void btnMostrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarActionPerformed
-
+        ejemplo();
 
     }//GEN-LAST:event_btnMostrarActionPerformed
+    private void filtrarPorFecha() {
+        String fechaDesdeString = txtFechaDesde.getText();
+        String fechaHastaString = txtFechaHasta.getText();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+        try {
+            Date fechaDesde = sdf.parse(fechaDesdeString);
+            Date fechaHasta = sdf.parse(fechaHastaString);
+
+            DefaultTableModel modeloActual = (DefaultTableModel) tablaConsultas.getModel();
+            TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(modeloActual);
+            tablaConsultas.setRowSorter(sorter);
+            List<RowFilter<Object, Object>> filters = new ArrayList<>();
+            filters.add(RowFilter.dateFilter(RowFilter.ComparisonType.AFTER, fechaDesde));
+            filters.add(RowFilter.dateFilter(RowFilter.ComparisonType.BEFORE, fechaHasta));
+            sorter.setRowFilter(RowFilter.andFilter(filters));
+        } catch (ParseException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void ejemplo() {
+        String fechaDesdeString = txtFechaDesde.getText();
+        String fechaHastaString = txtFechaHasta.getText();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+        try {
+            Date fechaDesde = sdf.parse(fechaDesdeString);
+            Date fechaHasta = sdf.parse(fechaHastaString);
+
+            DefaultTableModel modeloOriginal = (DefaultTableModel) tablaConsultas.getModel();
+            DefaultTableModel modeloFiltrado = new DefaultTableModel();
+
+            // Agregar las mismas columnas que el modelo original
+            for (int i = 0; i < modeloOriginal.getColumnCount(); i++) {
+                modeloFiltrado.addColumn(modeloOriginal.getColumnName(i));
+            }
+
+            // Agregar las filas que cumplan con las fechas
+            for (int i = 0; i < modeloOriginal.getRowCount(); i++) {
+                Date fechaFila = sdf.parse((String) modeloOriginal.getValueAt(i, 1));
+                if (fechaFila.after(fechaDesde) && fechaFila.before(fechaHasta)) {
+                    modeloFiltrado.addRow(modeloOriginal.getDataVector().elementAt(i));
+                }
+            }
+
+            // Establecer el nuevo modelo en la tabla
+            tablaConsultas.setModel(modeloFiltrado);
+
+        } catch (ParseException ex) {
+            ex.printStackTrace();
+        }
+    }
+
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         mostrarTablaMovimientos();
@@ -606,7 +681,7 @@ public class Consultas extends javax.swing.JFrame {
     private void cbmTodosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbmTodosActionPerformed
         mostrarTablaMovimientos();
     }//GEN-LAST:event_cbmTodosActionPerformed
-   
+
     private void cbFletePagadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbFletePagadoActionPerformed
         updateFlete();
     }//GEN-LAST:event_cbFletePagadoActionPerformed
@@ -680,6 +755,18 @@ public class Consultas extends javax.swing.JFrame {
         cambiarTipoMonto();
     }//GEN-LAST:event_btnMPMontosActionPerformed
 
+    private void cbfTodosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbfTodosActionPerformed
+        mostrarTablaMovimientos();
+    }//GEN-LAST:event_cbfTodosActionPerformed
+
+    private void cbFleteNoPagadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbFleteNoPagadoActionPerformed
+        updateFlete();
+    }//GEN-LAST:event_cbFleteNoPagadoActionPerformed
+
+    private void btnMRFletesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMRFletesActionPerformed
+        cambiarTipoFleteRendido();
+    }//GEN-LAST:event_btnMRFletesActionPerformed
+
     private void updateMonto() {
         DefaultTableModel tableModel = (DefaultTableModel) tablaConsultas.getModel();
         tableModel.setRowCount(0); // Limpiar la tabla
@@ -719,68 +806,20 @@ public class Consultas extends javax.swing.JFrame {
          * CHECK BOX PAGADOS
          */
         for (Movimientos mov : listaMovimientos) {
-            if (!cbFletePagado.isSelected() || mov.getTipoFlete().equals("Pagado") || mov.getTipoFlete().equals("Rendido") || mov.getTipoFlete().equals("Pagado/Rendido")) {
+            if (!cbFletePagado.isSelected() && !Arrays.asList("Pagado", "Rendido", "Pagado/Rendido").contains(mov.getTipoFlete())) {
                 Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante()};
                 tableModel.addRow(row);
             }
-            if (!cbFleteNoPagado.isSelected() || mov.getTipoFlete().equals("No")) {
+            if (!cbFleteNoPagado.isSelected() && !Arrays.asList("No").contains(mov.getTipoFlete())) {
+                Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante()};
+                tableModel.addRow(row);
+            }
+            if (cbfTodos.isSelected()) {
                 Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante()};
                 tableModel.addRow(row);
             }
         }
 
-    }
-
-    private Object[][] getData() {
-        Connection con = Conexion.getConexion();
-
-        Statement stmt = null;
-        ResultSet rs = null;
-        try {
-
-            // Ejecutar una consulta SQL para obtener los datos
-            stmt = con.createStatement();
-            String sql = "SELECT * FROM movimientos";
-            rs = stmt.executeQuery(sql);
-
-            // Convertir los datos obtenidos en un arreglo de objetos
-            List<Object[]> dataList = new ArrayList<>();
-            while (rs.next()) {
-                Object[] row = new Object[12];
-                row[0] = rs.getInt("MOVIMIENTO");
-                row[1] = rs.getString("FECHA");
-                row[2] = rs.getString("CLIENTE");
-                row[3] = rs.getString("DESTINO");
-                row[4] = rs.getString("REMITO");
-                row[5] = rs.getInt("BULTOS");
-                row[6] = rs.getInt("MONTO");
-                row[7] = rs.getString("TIPO_MONTO");
-                row[8] = rs.getString("FLETE");
-                row[9] = rs.getString("TIPO_FLETE");
-                row[10] = rs.getString("A_CARGO_DE");
-                row[11] = rs.getString("REPRESENTANTE");
-                dataList.add(row);
-            }
-            return dataList.toArray(new Object[0][0]);
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (stmt != null) {
-                    stmt.close();
-                }
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
     }
 
     /**
@@ -908,28 +947,6 @@ public class Consultas extends javax.swing.JFrame {
         return formatoFecha.format(fecha);
     }
 
-    public Date getDateDesde() {
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        Date date = null;
-        try {
-            date = dateFormat.parse(txtFechaDesde.getText());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return date;
-    }
-
-    public Date getDateHasta() {
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        Date date = null;
-        try {
-            date = dateFormat.parse(txtFechaHasta.getText());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return date;
-    }
-
     private void cambiarTipoMonto() {
         int filaSeleccionada = tablaConsultas.getSelectedRow();
         if (filaSeleccionada >= 0) {
@@ -965,4 +982,23 @@ public class Consultas extends javax.swing.JFrame {
             }
         }
     }
+
+    private void cambiarTipoFleteRendido() {
+        int filaSeleccionada = tablaConsultas.getSelectedRow();
+        if (filaSeleccionada >= 0) {
+            DefaultTableModel modeloTabla = (DefaultTableModel) tablaConsultas.getModel();
+            int idMovimientos = (int) modeloTabla.getValueAt(filaSeleccionada, 0);
+            Movimientos movimiento = control.traerMovimiento(idMovimientos);
+            if (movimiento != null) {
+                String tipoFlete = (String) modeloTabla.getValueAt(filaSeleccionada, 9);
+                if (!tipoFlete.equals("Rendido")) {
+                    movimiento.setTipoMonto("Rendido");
+                    control.actualizarFlete(movimiento, "Rendido");
+                    modeloTabla.setValueAt("Rendido", filaSeleccionada, 9);
+                    modeloTabla.fireTableDataChanged();
+                }
+            }
+        }
+    }
+
 }

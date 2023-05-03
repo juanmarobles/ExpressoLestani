@@ -340,6 +340,9 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="No Pagados"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cbFleteNoPagadoActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JRadioButton" name="cbfTodos">
               <Properties>
@@ -348,6 +351,9 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Todos"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cbfTodosActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
@@ -697,6 +703,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Fletes"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnMRFletesActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
