@@ -42,7 +42,7 @@ public class Principal extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         this.setResizable(false);
         setTitle("Expreso Lestani S.R.L - [Panel Principal]");
-        llenarClientes();
+       
         cargarSugerencias();
         testSugerencias();
         llenarRepresentantes();
@@ -51,16 +51,7 @@ public class Principal extends javax.swing.JFrame {
         txtFecha.setText(fechaActual());
     }
 
-    //LLENAR COMBOBOX
-    private void llenarClientes() {
-        ModeloCliente modClientes = new ModeloCliente();
-        ArrayList<Cliente> listaClientes = modClientes.getClientes();
-        cmbCliente.removeAllItems();
-
-        for (int i = 0; i < listaClientes.size(); i++) {
-            cmbCliente.addItem(new Cliente(listaClientes.get(i).getNombre()));
-        }
-    }
+  
 
     private void llenarDestinos() {
         ModeloDestinos modDestinos = new ModeloDestinos();
@@ -93,7 +84,7 @@ public class Principal extends javax.swing.JFrame {
     }
 
     private void cargarSugerencias() {
-        AutoCompleteDecorator.decorate(cmbCliente);
+        
         AutoCompleteDecorator.decorate(cmbDestino);
 
     }
@@ -128,7 +119,6 @@ public class Principal extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         jCheckBox9 = new javax.swing.JCheckBox();
         jLabel10 = new javax.swing.JLabel();
-        cmbCliente = new javax.swing.JComboBox<>();
         cbRemito = new javax.swing.JCheckBox();
         txtMonto = new javax.swing.JTextField();
         btnAgregar = new javax.swing.JButton();
@@ -238,12 +228,6 @@ public class Principal extends javax.swing.JFrame {
 
         jLabel10.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         jLabel10.setText("Destino");
-
-        cmbCliente.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbClienteActionPerformed(evt);
-            }
-        });
 
         cbRemito.setText("Generar Remito");
         cbRemito.addActionListener(new java.awt.event.ActionListener() {
@@ -402,14 +386,10 @@ public class Principal extends javax.swing.JFrame {
                                     .addComponent(jLabel9))
                                 .addGap(25, 25, 25)
                                 .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(cmbCliente, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
-                                        .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(cmbDestino, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGap(0, 9, Short.MAX_VALUE)))))
-                        .addGap(49, 49, 49)
-                        .addComponent(tCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(cmbDestino, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(tCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(0, 9, Short.MAX_VALUE)))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         panelCargaMovimientosLayout.setVerticalGroup(
@@ -418,7 +398,6 @@ public class Principal extends javax.swing.JFrame {
                 .addGap(14, 14, 14)
                 .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(cmbCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(tCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -663,7 +642,7 @@ public class Principal extends javax.swing.JFrame {
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(panelCargaMovimientos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 234, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 250, Short.MAX_VALUE)
                         .addComponent(PanelBusquedas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(197, 197, 197)
                         .addComponent(PanelMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -678,7 +657,7 @@ public class Principal extends javax.swing.JFrame {
                         .addGap(55, 55, 55)
                         .addComponent(PanelMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(PanelBusquedas, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 54, Short.MAX_VALUE)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 448, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -909,10 +888,6 @@ public class Principal extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_cbRemitoActionPerformed
 
-    private void cmbClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbClienteActionPerformed
-
-    }//GEN-LAST:event_cmbClienteActionPerformed
-
     private void cmbRepresentanteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbRepresentanteActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_cmbRepresentanteActionPerformed
@@ -1023,8 +998,6 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JCheckBox cbfletePagado;
     private javax.swing.JCheckBox cbfleteRendido;
     private javax.swing.JCheckBox cbmontoPagado;
-    private javax.swing.JComboBox<Cliente
-    > cmbCliente;
     private javax.swing.JComboBox<Destinos> cmbDestino;
     private javax.swing.JComboBox<Representantes> cmbRepresentante;
     private javax.swing.JComboBox<Servicios> cmbServicio;
