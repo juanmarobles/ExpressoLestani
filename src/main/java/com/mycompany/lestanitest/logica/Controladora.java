@@ -264,27 +264,8 @@ public class Controladora {
         return ctrl.traerMovimientos();
     }
     
-    public List<Movimientos> traerMovimientos(Date fechaDesde, Date fechaHasta) {
-    List<Movimientos> lista = new ArrayList<>();
-    try {
-        Connection con = Conexion.getConexion();
-        String sql = "SELECT * FROM movimientos WHERE fecha BETWEEN ? AND ?";
-        PreparedStatement ps = con.prepareStatement(sql);
-        ps.setDate(1, new java.sql.Date(fechaDesde.getTime()));
-        ps.setDate(2, new java.sql.Date(fechaHasta.getTime()));
-        ResultSet rs = ps.executeQuery();
-        while (rs.next()) {
-            // crear objeto Movimientos a partir de los datos del ResultSet
-            Movimientos mov = new Movimientos();
-            // ... setear los atributos de mov
-            lista.add(mov);
-        }
-        con.close();
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-    return lista;
-}
+    
+    
 
     public void cargarDestino(String destino) {
         Destinos d = new Destinos();

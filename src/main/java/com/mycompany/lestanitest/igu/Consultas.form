@@ -161,8 +161,8 @@
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jScrollPane1" min="-2" pref="336" max="-2" attributes="0"/>
-                  <EmptySpace pref="182" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" pref="512" max="32767" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>

@@ -89,11 +89,13 @@ public class Movimientos implements Serializable {
         this.fecha = fecha;
 
     }
-
+    
+    
+    private static final String FORMATO_FECHA_TABLA = "dd/MM/yyyy";
     public String getFechaFormateada() {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        return sdf.format(fecha);
-    }
+    SimpleDateFormat formato = new SimpleDateFormat(FORMATO_FECHA_TABLA);
+    return formato.format(fecha);
+}
 
     public String getDestino() {
         return destino;

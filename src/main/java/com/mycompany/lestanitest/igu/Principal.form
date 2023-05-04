@@ -222,11 +222,8 @@
                                       </Group>
                                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" attributes="0">
-                                          <Component id="cmbServicio" max="32767" attributes="0"/>
-                                          <Group type="102" attributes="0">
-                                              <Component id="txtBulto" min="-2" pref="80" max="-2" attributes="0"/>
-                                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                                          </Group>
+                                          <Component id="txtBulto" min="-2" pref="80" max="-2" attributes="0"/>
+                                          <Component id="txtServicio" max="32767" attributes="0"/>
                                       </Group>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
@@ -236,15 +233,14 @@
                                           <Component id="jLabel9" alignment="0" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                       <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
-                                      <Group type="103" groupAlignment="0" attributes="0">
-                                          <Component id="cmbDestino" min="-2" pref="147" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                           <Component id="txtFecha" alignment="0" min="-2" pref="100" max="-2" attributes="0"/>
-                                          <Component id="tCliente" min="-2" pref="117" max="-2" attributes="0"/>
+                                          <Component id="tCliente" pref="117" max="32767" attributes="0"/>
+                                          <Component id="txtDestino" alignment="0" max="32767" attributes="0"/>
                                       </Group>
-                                      <EmptySpace min="0" pref="9" max="32767" attributes="0"/>
                                   </Group>
                               </Group>
-                              <EmptySpace max="32767" attributes="0"/>
+                              <EmptySpace pref="344" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
@@ -266,12 +262,12 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jLabel10" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="cmbDestino" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="txtDestino" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="bulto" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="cmbServicio" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="txtServicio" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
@@ -346,19 +342,6 @@
             </Component>
             <Component class="javax.swing.JTextField" name="txtFlete">
             </Component>
-            <Component class="javax.swing.JComboBox" name="cmbDestino">
-              <Properties>
-                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="0"/>
-                </Property>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cmbDestinoActionPerformed"/>
-              </Events>
-              <AuxValues>
-                <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;Destinos&gt;"/>
-              </AuxValues>
-            </Component>
             <Component class="javax.swing.JLabel" name="jLabel6">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
@@ -382,19 +365,6 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Bulto"/>
               </Properties>
-            </Component>
-            <Component class="javax.swing.JComboBox" name="cmbServicio">
-              <Properties>
-                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="0"/>
-                </Property>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cmbServicioActionPerformed"/>
-              </Events>
-              <AuxValues>
-                <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;Servicios&gt;"/>
-              </AuxValues>
             </Component>
             <Component class="javax.swing.JTextField" name="txtBulto">
               <Events>
@@ -575,6 +545,16 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="tCliente">
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tClienteActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JTextField" name="txtDestino">
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtDestinoActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JTextField" name="txtServicio">
             </Component>
           </SubComponents>
         </Container>

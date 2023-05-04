@@ -10,6 +10,8 @@ import com.mycompany.lestanitest.logica.ModeloServicio;
 import com.mycompany.lestanitest.logica.Movimientos;
 import com.mycompany.lestanitest.logica.Representantes;
 import com.mycompany.lestanitest.logica.Servicios;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.text.DateFormat;
@@ -28,6 +30,8 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import javax.swing.RowSorter;
 import javax.swing.SortOrder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import org.jdesktop.swingx.autocomplete.ObjectToStringConverter;
 
@@ -42,36 +46,66 @@ public class Principal extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         this.setResizable(false);
         setTitle("Expreso Lestani S.R.L - [Panel Principal]");
-       
-        cargarSugerencias();
-        testSugerencias();
+        //cargarSugerencias();
+        cargarClientes();
+        cargarDestinos();
         llenarRepresentantes();
-        llenarServicios();
-        llenarDestinos();
+        cargarServicios();
+
         txtFecha.setText(fechaActual());
+
     }
 
-  
-
-    private void llenarDestinos() {
-        ModeloDestinos modDestinos = new ModeloDestinos();
-        ArrayList<Destinos> listaDestinos = modDestinos.getDestinos();
-        cmbDestino.removeAllItems();
-
-        for (int i = 0; i < listaDestinos.size(); i++) {
-            cmbDestino.addItem(new Destinos(listaDestinos.get(i).getLocaliad()));
-        }
-    }
-
-    private void llenarServicios() {
+    private void cargarServicios() {
         ModeloServicio modServicio = new ModeloServicio();
         ArrayList<Servicios> listaServicios = modServicio.getServicios();
-        cmbServicio.removeAllItems();
+        AutoCompleteDecorator.decorate(txtServicio, listaServicios, false);
+        
+         // Agregar un listener al textfield del servicio
+        txtServicio.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                actualizarFlete();
+            }
 
-        for (int i = 0; i < listaServicios.size(); i++) {
-            cmbServicio.addItem(new Servicios(listaServicios.get(i).getServicio()));
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                actualizarFlete();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                actualizarFlete();
+            }
+
+            private void actualizarFlete() {
+                 
+                //carga de los datos desde la bd
+                List<Servicios> listaServicios = control.traerServicios();
+                // Buscar el servicio correspondiente en la lista
+                String nombreServicio = txtServicio.getText().trim().toLowerCase();
+                for (Servicios s : listaServicios) {
+                    if (s.getServicio().toLowerCase().equals(nombreServicio)) {
+                        // Mostrar la localidad en el textfield correspondiente
+                        txtFlete.setText(Double.toString(s.getPrecio()));
+                        return;
+                    }
+                }
+            }
+        });
+
+    }
+    
+    /*
+    private void cargarDestinos() {
+        ModeloDestinos modDestino = new ModeloDestinos();
+        ArrayList<Destinos> listaDestinos = modDestino.getDestinos();
+        AutoCompleteDecorator.decorate(txtDestino, listaDestinos, false);
+        for (Destinos destino : listaDestinos) {
+            System.out.println(destino.getLocaliad());
         }
     }
+    */
 
     private void llenarRepresentantes() {
         ModeloRepresentante modRepresentante = new ModeloRepresentante();
@@ -83,17 +117,52 @@ public class Principal extends javax.swing.JFrame {
         }
     }
 
-    private void cargarSugerencias() {
-        
-        AutoCompleteDecorator.decorate(cmbDestino);
-
-    }
-
-    //LLENAR TEXTFIELD
-    private void testSugerencias() {
+    //LLENAR TEXTFIELD CLIENTES
+    private void cargarClientes() {
         ModeloCliente modClientes = new ModeloCliente();
         ArrayList<Cliente> listaClientes = modClientes.getClientes();
         AutoCompleteDecorator.decorate(tCliente, listaClientes, false);
+
+
+        // Agregar un listener al textfield del cliente
+        tCliente.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                actualizarLocalidad();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                actualizarLocalidad();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                actualizarLocalidad();
+            }
+
+            private void actualizarLocalidad() {
+                 
+                //carga de los datos desde la bd
+                List<Cliente> listaC = control.traerClientes();
+                // Buscar el cliente correspondiente en la lista
+                String nombreCliente = tCliente.getText().trim().toLowerCase();
+                for (Cliente cliente : listaC) {
+                    if (cliente.getNombre().toLowerCase().equals(nombreCliente)) {
+                        // Mostrar la localidad en el textfield correspondiente
+                        txtDestino.setText(cliente.getLocalidad());
+                        return;
+                    }
+                }
+            }
+        });
+    }
+
+    private void cargarDestinos() {
+        ModeloDestinos modDestino = new ModeloDestinos();
+        ArrayList<Destinos> listaDestinos = modDestino.getDestinos();
+        AutoCompleteDecorator.decorate(txtDestino, listaDestinos, false);
+        
     }
 
     @SuppressWarnings("unchecked")
@@ -107,11 +176,9 @@ public class Principal extends javax.swing.JFrame {
         panelCargaMovimientos = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         txtFlete = new javax.swing.JTextField();
-        cmbDestino = new javax.swing.JComboBox<>();
         jLabel6 = new javax.swing.JLabel();
         bulto = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        cmbServicio = new javax.swing.JComboBox<>();
         txtBulto = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
         cmbRepresentante = new javax.swing.JComboBox<>();
@@ -137,6 +204,8 @@ public class Principal extends javax.swing.JFrame {
         cbfOrigen = new javax.swing.JCheckBox();
         cbfDestino = new javax.swing.JCheckBox();
         tCliente = new javax.swing.JTextField();
+        txtDestino = new javax.swing.JTextField();
+        txtServicio = new javax.swing.JTextField();
         PanelMenu = new javax.swing.JPanel();
         btnClientes = new javax.swing.JButton();
         btnServicios = new javax.swing.JButton();
@@ -182,12 +251,6 @@ public class Principal extends javax.swing.JFrame {
         jLabel5.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         jLabel5.setText("Monto");
 
-        cmbDestino.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbDestinoActionPerformed(evt);
-            }
-        });
-
         jLabel6.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         jLabel6.setText("Flete");
 
@@ -196,12 +259,6 @@ public class Principal extends javax.swing.JFrame {
 
         jLabel7.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         jLabel7.setText("Bulto");
-
-        cmbServicio.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbServicioActionPerformed(evt);
-            }
-        });
 
         txtBulto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -307,6 +364,18 @@ public class Principal extends javax.swing.JFrame {
 
         cbfDestino.setText("Destino");
 
+        tCliente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tClienteActionPerformed(evt);
+            }
+        });
+
+        txtDestino.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtDestinoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panelCargaMovimientosLayout = new javax.swing.GroupLayout(panelCargaMovimientos);
         panelCargaMovimientos.setLayout(panelCargaMovimientosLayout);
         panelCargaMovimientosLayout.setHorizontalGroup(
@@ -375,22 +444,19 @@ public class Principal extends javax.swing.JFrame {
                                     .addComponent(bulto))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(cmbServicio, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
-                                        .addComponent(txtBulto, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(0, 0, Short.MAX_VALUE))))
+                                    .addComponent(txtBulto, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtServicio)))
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panelCargaMovimientosLayout.createSequentialGroup()
                                 .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel10)
                                     .addComponent(jLabel9))
                                 .addGap(25, 25, 25)
-                                .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(cmbDestino, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(tCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(0, 9, Short.MAX_VALUE)))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                                    .addComponent(tCliente, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE)
+                                    .addComponent(txtDestino))))
+                        .addContainerGap(344, Short.MAX_VALUE))))
         );
         panelCargaMovimientosLayout.setVerticalGroup(
             panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -406,11 +472,11 @@ public class Principal extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
-                    .addComponent(cmbDestino, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtDestino, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(bulto)
-                    .addComponent(cmbServicio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtServicio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtBulto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -827,8 +893,8 @@ public class Principal extends javax.swing.JFrame {
         Date fecha = getDate();
         //String cliente = (String) cmbCliente.getSelectedItem().toString();
         String cliente = tCliente.getText();
-        String destino = (String) cmbDestino.getSelectedItem().toString();
-        String servicio = (String) cmbServicio.getSelectedItem().toString();
+        String destino = (String) txtDestino.getText();
+        String servicio = (String) txtServicio.getText();
         String representante = (String) cmbRepresentante.getSelectedItem().toString();
         int bulto = Integer.parseInt(txtBulto.getText());
         String monto = txtMonto.getText();
@@ -844,7 +910,7 @@ public class Principal extends javax.swing.JFrame {
 
         //remito
         if (cbRemito.isSelected()) {
-            remito = (int) (Math.random() * 10000);
+            remito = (int) (Math.random() * 99999);
         } else {
             remito = Integer.parseInt(txtRemito.getText());
         }
@@ -866,18 +932,40 @@ public class Principal extends javax.swing.JFrame {
             fPr = "Rendido";
         } else if (cbfletePagado.isSelected()) {
             fPr = "Pagado";
-        }else {
+        } else {
             fPr = "No";
         }
 
         control.cargarMovimiento(cliente, destino, servicio, representante, bulto, monto, flete, remito, fPr, fecha, tFlete, tMonto);
         mostrarMensaje("Movimiento agregado correctamente", "Info", "Agregado con exito!");
 
-        Principal verAnterior = new Principal();
-        verAnterior.setVisible(true);
-        verAnterior.setLocationRelativeTo(null);
+        // Actualizar la tabla
+        DefaultTableModel modeloTabla = (DefaultTableModel) tablaMovimientos.getModel();
+        modeloTabla.setRowCount(0);
+        List<Movimientos> movimientos = control.traerMovimientos();
+        for (Movimientos mov : movimientos) {
+            Object[] objeto = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante()};
 
-        dispose();
+            modeloTabla.addRow(objeto);
+        }
+        //vaciar los elementos de la interfaz gráfica
+        tCliente.setText("");
+        txtDestino.setText("");
+        txtServicio.setText("");
+        cmbRepresentante.setSelectedIndex(0);
+        txtBulto.setText("");
+        txtMonto.setText("");
+        txtFlete.setText("");
+        cbfOrigen.setSelected(false);
+        cbfDestino.setSelected(false);
+        cbRemito.setSelected(false);
+        cbmontoPagado.setSelected(false);
+        cbMontoRendido.setSelected(false);
+        cbfletePagado.setSelected(false);
+        cbfleteRendido.setSelected(false);
+        txtRemito.setEnabled(true);
+
+
     }//GEN-LAST:event_btnAgregarActionPerformed
 
     private void txtMontoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMontoActionPerformed
@@ -895,10 +983,6 @@ public class Principal extends javax.swing.JFrame {
     private void txtBultoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBultoActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtBultoActionPerformed
-
-    private void cmbServicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbServicioActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cmbServicioActionPerformed
 
     private void btnEliminarMovimientoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarMovimientoActionPerformed
         // Control de q la tabla no este vacia
@@ -940,9 +1024,13 @@ public class Principal extends javax.swing.JFrame {
 
     }//GEN-LAST:event_txtFechaActionPerformed
 
-    private void cmbDestinoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbDestinoActionPerformed
+    private void tClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tClienteActionPerformed
+
+    }//GEN-LAST:event_tClienteActionPerformed
+
+    private void txtDestinoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDestinoActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_cmbDestinoActionPerformed
+    }//GEN-LAST:event_txtDestinoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -998,9 +1086,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JCheckBox cbfletePagado;
     private javax.swing.JCheckBox cbfleteRendido;
     private javax.swing.JCheckBox cbmontoPagado;
-    private javax.swing.JComboBox<Destinos> cmbDestino;
     private javax.swing.JComboBox<Representantes> cmbRepresentante;
-    private javax.swing.JComboBox<Servicios> cmbServicio;
     private javax.swing.JCheckBox jCheckBox9;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -1023,12 +1109,14 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JTextField tCliente;
     private javax.swing.JTable tablaMovimientos;
     private javax.swing.JTextField txtBulto;
+    private javax.swing.JTextField txtDestino;
     private javax.swing.JFormattedTextField txtFecha;
     private javax.swing.JTextField txtFiltroCliente;
     private javax.swing.JTextField txtFiltroRemito;
     private javax.swing.JTextField txtFlete;
     private javax.swing.JTextField txtMonto;
     private javax.swing.JTextField txtRemito;
+    private javax.swing.JTextField txtServicio;
     // End of variables declaration//GEN-END:variables
 
     public static String fechaActual() {

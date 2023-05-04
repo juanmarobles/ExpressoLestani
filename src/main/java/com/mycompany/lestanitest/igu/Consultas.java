@@ -4,7 +4,6 @@
  */
 package com.mycompany.lestanitest.igu;
 
-import com.mycompany.lestanitest.logica.Conexion;
 import com.mycompany.lestanitest.logica.Controladora;
 import com.mycompany.lestanitest.logica.ModeloMovimientos;
 import com.mycompany.lestanitest.logica.Movimientos;
@@ -12,27 +11,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JOptionPane;
-import javax.swing.JTable;
 import javax.swing.RowFilter;
 import javax.swing.RowSorter;
 import javax.swing.SortOrder;
@@ -564,8 +551,8 @@ public class Consultas extends javax.swing.JFrame {
                         .addGap(24, 24, 24)
                         .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 336, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(182, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 512, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -592,63 +579,64 @@ public class Consultas extends javax.swing.JFrame {
     }//GEN-LAST:event_btnMPFletesActionPerformed
 
     private void btnMostrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarActionPerformed
-        ejemplo();
-
+        String fechaDesde = txtFechaDesde.getText();
+        String fechaHasta = txtFechaHasta.getText();
+        List<Movimientos> listaFiltrada = filtrarPorFechas(control.traerMovimientos(), fechaDesde, fechaHasta);
+        mostrarTablaMovimientos(listaFiltrada);
     }//GEN-LAST:event_btnMostrarActionPerformed
-    private void filtrarPorFecha() {
-        String fechaDesdeString = txtFechaDesde.getText();
-        String fechaHastaString = txtFechaHasta.getText();
+    private void mostrarTablaMovimientos(List<Movimientos> listaMovimientos) {
+        //filas y columnas no editables
+        DefaultTableModel tabla = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-
-        try {
-            Date fechaDesde = sdf.parse(fechaDesdeString);
-            Date fechaHasta = sdf.parse(fechaHastaString);
-
-            DefaultTableModel modeloActual = (DefaultTableModel) tablaConsultas.getModel();
-            TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(modeloActual);
-            tablaConsultas.setRowSorter(sorter);
-            List<RowFilter<Object, Object>> filters = new ArrayList<>();
-            filters.add(RowFilter.dateFilter(RowFilter.ComparisonType.AFTER, fechaDesde));
-            filters.add(RowFilter.dateFilter(RowFilter.ComparisonType.BEFORE, fechaHasta));
-            sorter.setRowFilter(RowFilter.andFilter(filters));
-        } catch (ParseException ex) {
-            ex.printStackTrace();
+        };
+        //nombres de columnas
+        String titulos[] = {"MOVIMIENTO", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "TIPO_MONTO", "FLETE", "TIPO_FLETE", "A_CARGO_DE", "REPRESENTANTE"};
+        tabla.setColumnIdentifiers(titulos);
+        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tabla);
+        tablaConsultas.setRowSorter(sorter);
+        sorter.setSortKeys(java.util.Arrays.asList(new RowSorter.SortKey(1, SortOrder.DESCENDING)));
+        //carga de los datos desde la lista filtrada
+        for (Movimientos mov : listaMovimientos) {
+            Object[] objeto = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante()};
+            tabla.addRow(objeto);
         }
+        tablaConsultas.setModel(tabla);
+        tablaConsultas.getModel();
     }
 
-    private void ejemplo() {
-        String fechaDesdeString = txtFechaDesde.getText();
-        String fechaHastaString = txtFechaHasta.getText();
-
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-
+    public List<Movimientos> filtrarPorFechas(List<Movimientos> objetos, String fechaDesde, String fechaHasta) {
+        List<Movimientos> resultados = new ArrayList<>();
+        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
         try {
-            Date fechaDesde = sdf.parse(fechaDesdeString);
-            Date fechaHasta = sdf.parse(fechaHastaString);
+            formato.parse(fechaDesde);
+        } catch (ParseException ex) {
+            Logger.getLogger(Consultas.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            formato.parse(fechaHasta);
+        } catch (ParseException ex) {
+            Logger.getLogger(Consultas.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
-            DefaultTableModel modeloOriginal = (DefaultTableModel) tablaConsultas.getModel();
-            DefaultTableModel modeloFiltrado = new DefaultTableModel();
+        for (Movimientos objeto : objetos) {
+            Date fecha = objeto.getFecha();
 
-            // Agregar las mismas columnas que el modelo original
-            for (int i = 0; i < modeloOriginal.getColumnCount(); i++) {
-                modeloFiltrado.addColumn(modeloOriginal.getColumnName(i));
-            }
-
-            // Agregar las filas que cumplan con las fechas
-            for (int i = 0; i < modeloOriginal.getRowCount(); i++) {
-                Date fechaFila = sdf.parse((String) modeloOriginal.getValueAt(i, 1));
-                if (fechaFila.after(fechaDesde) && fechaFila.before(fechaHasta)) {
-                    modeloFiltrado.addRow(modeloOriginal.getDataVector().elementAt(i));
+            if (fecha != null) {
+                try {
+                    if (!fecha.before(formato.parse(fechaDesde)) && !fecha.after(formato.parse(fechaHasta))) {
+                        resultados.add(objeto);
+                    }
+                } catch (ParseException ex) {
+                    Logger.getLogger(Consultas.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-
-            // Establecer el nuevo modelo en la tabla
-            tablaConsultas.setModel(modeloFiltrado);
-
-        } catch (ParseException ex) {
-            ex.printStackTrace();
         }
+
+        return resultados;
     }
 
 
@@ -827,6 +815,7 @@ public class Consultas extends javax.swing.JFrame {
      */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
+
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
@@ -948,57 +937,67 @@ public class Consultas extends javax.swing.JFrame {
     }
 
     private void cambiarTipoMonto() {
-        int filaSeleccionada = tablaConsultas.getSelectedRow();
-        if (filaSeleccionada >= 0) {
+        int[] filasSeleccionadas = tablaConsultas.getSelectedRows();
+        if (filasSeleccionadas.length > 0) {
             DefaultTableModel modeloTabla = (DefaultTableModel) tablaConsultas.getModel();
-            int idMovimientos = (int) modeloTabla.getValueAt(filaSeleccionada, 0);
-            Movimientos movimiento = control.traerMovimiento(idMovimientos);
-            if (movimiento != null) {
-                String tipoMonto = (String) modeloTabla.getValueAt(filaSeleccionada, 7);
-                if (!tipoMonto.equals("Pagado")) {
-                    movimiento.setTipoMonto("Pagado");
-                    control.actualizarMonto(movimiento, "Pagado");
-                    modeloTabla.setValueAt("Pagado", filaSeleccionada, 7);
-                    modeloTabla.fireTableDataChanged();
+            for (int i = 0; i < filasSeleccionadas.length; i++) {
+                int filaSeleccionada = filasSeleccionadas[i];
+                int idMovimientos = (int) modeloTabla.getValueAt(filaSeleccionada, 0);
+                Movimientos movimiento = control.traerMovimiento(idMovimientos);
+                if (movimiento != null) {
+                    String tipoFlete = (String) modeloTabla.getValueAt(filaSeleccionada, 7);
+                    if (!tipoFlete.equals("Pagado")) {
+                        movimiento.setTipoMonto("Pagado");
+                        control.actualizarFlete(movimiento, "Pagado");
+                        modeloTabla.setValueAt("Pagado", filaSeleccionada, 7);
+                    }
                 }
             }
+            modeloTabla.fireTableDataChanged();
         }
     }
 
     private void cambiarTipoFlete() {
-        int filaSeleccionada = tablaConsultas.getSelectedRow();
-        if (filaSeleccionada >= 0) {
+        int[] filasSeleccionadas = tablaConsultas.getSelectedRows();
+        if (filasSeleccionadas.length > 0) {
             DefaultTableModel modeloTabla = (DefaultTableModel) tablaConsultas.getModel();
-            int idMovimientos = (int) modeloTabla.getValueAt(filaSeleccionada, 0);
-            Movimientos movimiento = control.traerMovimiento(idMovimientos);
-            if (movimiento != null) {
-                String tipoFlete = (String) modeloTabla.getValueAt(filaSeleccionada, 9);
-                if (!tipoFlete.equals("Pagado")) {
-                    movimiento.setTipoMonto("Pagado");
-                    control.actualizarFlete(movimiento, "Pagado");
-                    modeloTabla.setValueAt("Pagado", filaSeleccionada, 9);
-                    modeloTabla.fireTableDataChanged();
+            for (int i = 0; i < filasSeleccionadas.length; i++) {
+                int filaSeleccionada = filasSeleccionadas[i];
+                int idMovimientos = (int) modeloTabla.getValueAt(filaSeleccionada, 0);
+                Movimientos movimiento = control.traerMovimiento(idMovimientos);
+                if (movimiento != null) {
+                    String tipoFlete = (String) modeloTabla.getValueAt(filaSeleccionada, 9);
+                    if (!tipoFlete.equals("Pagado")) {
+                        movimiento.setTipoMonto("Pagado");
+                        control.actualizarFlete(movimiento, "Pagado");
+                        modeloTabla.setValueAt("Pagado", filaSeleccionada, 9);
+                    }
                 }
             }
+            modeloTabla.fireTableDataChanged();
         }
     }
 
     private void cambiarTipoFleteRendido() {
-        int filaSeleccionada = tablaConsultas.getSelectedRow();
-        if (filaSeleccionada >= 0) {
+        int[] filasSeleccionadas = tablaConsultas.getSelectedRows();
+        if (filasSeleccionadas.length > 0) {
             DefaultTableModel modeloTabla = (DefaultTableModel) tablaConsultas.getModel();
-            int idMovimientos = (int) modeloTabla.getValueAt(filaSeleccionada, 0);
-            Movimientos movimiento = control.traerMovimiento(idMovimientos);
-            if (movimiento != null) {
-                String tipoFlete = (String) modeloTabla.getValueAt(filaSeleccionada, 9);
-                if (!tipoFlete.equals("Rendido")) {
-                    movimiento.setTipoMonto("Rendido");
-                    control.actualizarFlete(movimiento, "Rendido");
-                    modeloTabla.setValueAt("Rendido", filaSeleccionada, 9);
-                    modeloTabla.fireTableDataChanged();
+            for (int i = 0; i < filasSeleccionadas.length; i++) {
+                int filaSeleccionada = filasSeleccionadas[i];
+                int idMovimientos = (int) modeloTabla.getValueAt(filaSeleccionada, 0);
+                Movimientos movimiento = control.traerMovimiento(idMovimientos);
+                if (movimiento != null) {
+                    String tipoFlete = (String) modeloTabla.getValueAt(filaSeleccionada, 9);
+                    if (!tipoFlete.equals("Rendido")) {
+                        movimiento.setTipoMonto("Rendido");
+                        control.actualizarFlete(movimiento, "Rendido");
+                        modeloTabla.setValueAt("Rendido", filaSeleccionada, 9);
+                    }
                 }
             }
+            modeloTabla.fireTableDataChanged();
         }
+
     }
 
 }
