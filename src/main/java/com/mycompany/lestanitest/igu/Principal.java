@@ -43,6 +43,7 @@ public class Principal extends javax.swing.JFrame {
 
     public Principal() {
         initComponents();
+        setSize(1920, 1080);
         this.setLocationRelativeTo(null);
         this.setResizable(false);
         setTitle("Expreso Lestani S.R.L - [Panel Principal]");
@@ -60,8 +61,8 @@ public class Principal extends javax.swing.JFrame {
         ModeloServicio modServicio = new ModeloServicio();
         ArrayList<Servicios> listaServicios = modServicio.getServicios();
         AutoCompleteDecorator.decorate(txtServicio, listaServicios, false);
-        
-         // Agregar un listener al textfield del servicio
+
+        // Agregar un listener al textfield del servicio
         txtServicio.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
@@ -79,7 +80,7 @@ public class Principal extends javax.swing.JFrame {
             }
 
             private void actualizarFlete() {
-                 
+
                 //carga de los datos desde la bd
                 List<Servicios> listaServicios = control.traerServicios();
                 // Buscar el servicio correspondiente en la lista
@@ -95,7 +96,7 @@ public class Principal extends javax.swing.JFrame {
         });
 
     }
-    
+
     /*
     private void cargarDestinos() {
         ModeloDestinos modDestino = new ModeloDestinos();
@@ -105,16 +106,12 @@ public class Principal extends javax.swing.JFrame {
             System.out.println(destino.getLocaliad());
         }
     }
-    */
-
+     */
     private void llenarRepresentantes() {
         ModeloRepresentante modRepresentante = new ModeloRepresentante();
         ArrayList<Representantes> listaRepresentantes = modRepresentante.getRepresentantes();
-        cmbRepresentante.removeAllItems();
-
-        for (int i = 0; i < listaRepresentantes.size(); i++) {
-            cmbRepresentante.addItem(new Representantes(listaRepresentantes.get(i).getNombre()));
-        }
+        AutoCompleteDecorator.decorate(txtRepresentante, listaRepresentantes, false);
+        
     }
 
     //LLENAR TEXTFIELD CLIENTES
@@ -122,7 +119,6 @@ public class Principal extends javax.swing.JFrame {
         ModeloCliente modClientes = new ModeloCliente();
         ArrayList<Cliente> listaClientes = modClientes.getClientes();
         AutoCompleteDecorator.decorate(tCliente, listaClientes, false);
-
 
         // Agregar un listener al textfield del cliente
         tCliente.getDocument().addDocumentListener(new DocumentListener() {
@@ -142,7 +138,7 @@ public class Principal extends javax.swing.JFrame {
             }
 
             private void actualizarLocalidad() {
-                 
+
                 //carga de los datos desde la bd
                 List<Cliente> listaC = control.traerClientes();
                 // Buscar el cliente correspondiente en la lista
@@ -162,7 +158,7 @@ public class Principal extends javax.swing.JFrame {
         ModeloDestinos modDestino = new ModeloDestinos();
         ArrayList<Destinos> listaDestinos = modDestino.getDestinos();
         AutoCompleteDecorator.decorate(txtDestino, listaDestinos, false);
-        
+
     }
 
     @SuppressWarnings("unchecked")
@@ -181,7 +177,6 @@ public class Principal extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         txtBulto = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
-        cmbRepresentante = new javax.swing.JComboBox<>();
         jLabel4 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         jCheckBox9 = new javax.swing.JCheckBox();
@@ -206,6 +201,7 @@ public class Principal extends javax.swing.JFrame {
         tCliente = new javax.swing.JTextField();
         txtDestino = new javax.swing.JTextField();
         txtServicio = new javax.swing.JTextField();
+        txtRepresentante = new javax.swing.JTextField();
         PanelMenu = new javax.swing.JPanel();
         btnClientes = new javax.swing.JButton();
         btnServicios = new javax.swing.JButton();
@@ -268,12 +264,6 @@ public class Principal extends javax.swing.JFrame {
 
         jLabel8.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         jLabel8.setText("Representante");
-
-        cmbRepresentante.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbRepresentanteActionPerformed(evt);
-            }
-        });
 
         jLabel4.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         jLabel4.setText("Cliente");
@@ -421,9 +411,9 @@ public class Principal extends javax.swing.JFrame {
                             .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
                                 .addComponent(jLabel8)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jCheckBox9)
-                                    .addComponent(cmbRepresentante, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jCheckBox9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(txtRepresentante)))
                             .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
                                 .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
@@ -484,7 +474,7 @@ public class Principal extends javax.swing.JFrame {
                 .addGap(23, 23, 23)
                 .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
-                    .addComponent(cmbRepresentante, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtRepresentante, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jCheckBox9)
                 .addGap(20, 20, 20)
@@ -757,7 +747,7 @@ public class Principal extends javax.swing.JFrame {
     private void btnConsultasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultasActionPerformed
         Consultas cons = new Consultas();
         cons.setVisible(true);
-        dispose();
+        //dispose();
     }//GEN-LAST:event_btnConsultasActionPerformed
 
     private void btnHRActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHRActionPerformed
@@ -895,7 +885,7 @@ public class Principal extends javax.swing.JFrame {
         String cliente = tCliente.getText();
         String destino = (String) txtDestino.getText();
         String servicio = (String) txtServicio.getText();
-        String representante = (String) cmbRepresentante.getSelectedItem().toString();
+        String representante = txtRepresentante.getText();
         int bulto = Integer.parseInt(txtBulto.getText());
         String monto = txtMonto.getText();
         String flete = txtFlete.getText();
@@ -952,7 +942,7 @@ public class Principal extends javax.swing.JFrame {
         tCliente.setText("");
         txtDestino.setText("");
         txtServicio.setText("");
-        cmbRepresentante.setSelectedIndex(0);
+        txtRepresentante.setText("");
         txtBulto.setText("");
         txtMonto.setText("");
         txtFlete.setText("");
@@ -975,10 +965,6 @@ public class Principal extends javax.swing.JFrame {
     private void cbRemitoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbRemitoActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_cbRemitoActionPerformed
-
-    private void cmbRepresentanteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbRepresentanteActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cmbRepresentanteActionPerformed
 
     private void txtBultoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBultoActionPerformed
         // TODO add your handling code here:
@@ -1086,7 +1072,6 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JCheckBox cbfletePagado;
     private javax.swing.JCheckBox cbfleteRendido;
     private javax.swing.JCheckBox cbmontoPagado;
-    private javax.swing.JComboBox<Representantes> cmbRepresentante;
     private javax.swing.JCheckBox jCheckBox9;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -1116,6 +1101,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JTextField txtFlete;
     private javax.swing.JTextField txtMonto;
     private javax.swing.JTextField txtRemito;
+    private javax.swing.JTextField txtRepresentante;
     private javax.swing.JTextField txtServicio;
     // End of variables declaration//GEN-END:variables
 

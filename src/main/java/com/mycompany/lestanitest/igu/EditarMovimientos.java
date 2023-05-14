@@ -4,8 +4,6 @@
  */
 package com.mycompany.lestanitest.igu;
 
-
-
 import com.mycompany.lestanitest.logica.Cliente;
 import com.mycompany.lestanitest.logica.Controladora;
 import com.mycompany.lestanitest.logica.Destinos;
@@ -25,29 +23,31 @@ import javax.swing.JOptionPane;
  * @author Marco
  */
 public class EditarMovimientos extends javax.swing.JFrame {
+
     Controladora control = null;
     Movimientos mov = new Movimientos();
-SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/YYYY");
+    SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/YYYY");
 
- 
-        public EditarMovimientos(int idMovimiento) {
+    public EditarMovimientos(int idMovimiento) {
         control = new Controladora();
         initComponents();
-        
+
         cargarDatosMovimiento(idMovimiento);
     }
-public void mostrarMensaje (String mensaje, String tipo, String titulo){
-JOptionPane optionPane = new JOptionPane(mensaje);
-if(tipo.equals("Info")){
-optionPane.setMessageType(JOptionPane.INFORMATION_MESSAGE);
 
-}else if(tipo.equals("Error")){
-optionPane.setMessageType(JOptionPane.ERROR_MESSAGE);
-}
-JDialog dialog = optionPane.createDialog(titulo);
-dialog.setAlwaysOnTop(true);
-dialog.setVisible(true);
-}
+    public void mostrarMensaje(String mensaje, String tipo, String titulo) {
+        JOptionPane optionPane = new JOptionPane(mensaje);
+        if (tipo.equals("Info")) {
+            optionPane.setMessageType(JOptionPane.INFORMATION_MESSAGE);
+
+        } else if (tipo.equals("Error")) {
+            optionPane.setMessageType(JOptionPane.ERROR_MESSAGE);
+        }
+        JDialog dialog = optionPane.createDialog(titulo);
+        dialog.setAlwaysOnTop(true);
+        dialog.setVisible(true);
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -372,70 +372,77 @@ dialog.setVisible(true);
     }//GEN-LAST:event_txtRemitoActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-        Principal  verAnterior = new Principal();
+        Principal verAnterior = new Principal();
         verAnterior.setVisible(true);
-        verAnterior.setLocationRelativeTo(null);   
+        verAnterior.setLocationRelativeTo(null);
         dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        String fPagado="";
-        String fRendido="";
+        String fPagado = "";
+        String fRendido = "";
         //String fOrigen="";
-       // String fDestino="";
-        String tFlete="";
-        String tMonto="";
+        // String fDestino="";
+        String tFlete = "";
+        String tMonto = "";
         String fPr = "";
         int remito = 0;
         Date fecha = getDate();
-        String cliente =  txtCliente.getText();
+        String cliente = txtCliente.getText();
         String destino = txtDestino.getText();
         String servicio = txtServicios.getText();
         String representante = txtRepresentante.getText();
-        int bulto = Integer.parseInt(txtBulto.getText());
+        int bulto=0;
+        try {
+            bulto = Integer.parseInt(txtBulto.getText());
+        } catch (NumberFormatException e) {
+            mostrarMensaje("Elija un bulto correctamente"+e, "Error", "Error");
+        }
         String monto = txtMonto.getText();
         String flete = txtFlete.getText();
-         //verif flete origen/destino
-       if(cbfOrigen.isSelected() && cbfDestino.isSelected()){
-           tFlete="Origen/Destino";
-       }else if(cbfDestino.isSelected()){
-           tFlete="Destino";
-       } else if(cbfOrigen.isSelected()){
-           tFlete="Origen";
-       }
-       
-       //remito
-        if(cbRemito.isSelected()){
-            remito = (int) (Math.random()*10000);
-        } else remito = Integer.parseInt(txtRemito.getText());
-        
+        //verif flete origen/destino
+        if (cbfOrigen.isSelected() && cbfDestino.isSelected()) {
+            tFlete = "Origen/Destino";
+        } else if (cbfDestino.isSelected()) {
+            tFlete = "Destino";
+        } else if (cbfOrigen.isSelected()) {
+            tFlete = "Origen";
+        }
+
+        //remito
+        if (cbRemito.isSelected()) {
+            remito = (int) (Math.random() * 10000);
+        } else {
+            remito = Integer.parseInt(txtRemito.getText());
+        }
+
         //verif de monto pagado/rendido
-        if(cbmontoPagado.isSelected() && cbMontoRendido.isSelected()){
+        if (cbmontoPagado.isSelected() && cbMontoRendido.isSelected()) {
             tMonto = "Pagado/Rendido";
-        } else if(cbmontoPagado.isSelected()){
+        } else if (cbmontoPagado.isSelected()) {
             tMonto = "Pagado";
-        } else if(cbMontoRendido.isSelected()){
+        } else if (cbMontoRendido.isSelected()) {
             tMonto = "Rendido";
-        }        
+        }
         //verif de flete pagado/rendido
-          if(cbfletePagado.isSelected() && cbfleteRendido.isSelected()){
+        if (cbfletePagado.isSelected() && cbfleteRendido.isSelected()) {
             fPr = "Pagado/Rendido";
-        } else if(cbfleteRendido.isSelected()){
+        } else if (cbfleteRendido.isSelected()) {
             fPr = "Rendido";
-        } else if(cbfletePagado.isSelected()){
+        } else if (cbfletePagado.isSelected()) {
             fPr = "Pagado";
         }
-          
-        control.editarMovimiento(mov,cliente,destino,servicio,representante,bulto,monto,flete,remito,fPr,fecha,tFlete,tMonto);
-          
-        mostrarMensaje("Movimiento modificado correctamente", "Info","Edicion exitosa!");
-        
+
+        control.editarMovimiento(mov, cliente, destino, servicio, representante, bulto, monto, flete, remito, fPr, fecha, tFlete, tMonto);
+
+        mostrarMensaje("Movimiento modificado correctamente", "Info", "Edicion exitosa!");
+
         Principal verAnterior = new Principal();
         verAnterior.setVisible(true);
         verAnterior.setLocationRelativeTo(null);
-        
+
         this.dispose();
-          
+
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void txtFechaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFechaActionPerformed
@@ -445,7 +452,6 @@ dialog.setVisible(true);
     /**
      * @param args the command line arguments
      */
-  
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancelar;
@@ -482,34 +488,36 @@ dialog.setVisible(true);
     private javax.swing.JTextField txtServicios;
     // End of variables declaration//GEN-END:variables
 
- private void cargarDatosMovimiento(int idMovimiento) {
+    private void cargarDatosMovimiento(int idMovimiento) {
         //busco id en la bd
         mov = control.traerMovimiento(idMovimiento);
         //seteo los valores de ese id
-            //txtCuit.setText(cliente.getCuit());
+        //txtCuit.setText(cliente.getCuit());
         txtCliente.setText(mov.getCliente());
         txtFecha.setText(formatoFecha.format(mov.getFecha()));
         txtDestino.setText(mov.getDestino());
         txtServicios.setText(mov.getServicio());
-        txtBulto.setText(String.valueOf(mov.getBultos()));
+        txtBulto.setText(Integer.toString(mov.getBultos()));
         txtRepresentante.setText(mov.getRepresentante());
-        txtMonto.setText(String.valueOf(mov.getMonto()));
-        txtFlete.setText(String.valueOf(mov.getFlete()));
-        txtRemito.setText(String.valueOf(mov.getRemito()));
+        //txtMonto.setText(mov.getMonto());
+        //txtFlete.setText(mov.getFlete());
+        txtRemito.setText(Integer.toString(mov.getRemito()));
     }
-  public static String fechaActual(){
-       Date fecha = new Date();
-       SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/YYYY");
-       return formatoFecha.format(fecha);
-   }
+
+    public static String fechaActual() {
+        Date fecha = new Date();
+        SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/YYYY");
+        return formatoFecha.format(fecha);
+    }
+
     public Date getDate() {
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date date = null;
         try {
-          date = dateFormat.parse(txtFecha.getText());
+            date = dateFormat.parse(txtFecha.getText());
         } catch (ParseException e) {
-          e.printStackTrace();
+            e.printStackTrace();
         }
         return date;
-      }
+    }
 }

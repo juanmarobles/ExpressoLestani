@@ -12,12 +12,14 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.RowFilter;
@@ -37,6 +39,7 @@ public class Consultas extends javax.swing.JFrame {
 
     public Consultas() {
         initComponents();
+        setSize(1920, 1080);
         cargarSugerencias();
         txtFechaHasta.setText(fechaActual());
         this.setLocationRelativeTo(null);
@@ -258,6 +261,11 @@ public class Consultas extends javax.swing.JFrame {
         jLabel11.setText("Total Monto   $:");
 
         txtTotalFlete.setText("0");
+        txtTotalFlete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtTotalFleteActionPerformed(evt);
+            }
+        });
 
         jLabel12.setText("Total Flete     $:");
 
@@ -678,38 +686,40 @@ public class Consultas extends javax.swing.JFrame {
         txtCliente.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String clienteSeleccionado = txtCliente.getText();
-                double montoTotal = 0.0;
-                double fleteTotal = 0.0;
+                Double montoTotal = 0.0;
+                Double fleteTotal = 0.0;
                 int bultoTotal = 0;
-                DecimalFormat formatoMoneda = new DecimalFormat("$#,##0.00");
-
-                //TOTAL MONTO
+                DecimalFormat formatoMoneda = (DecimalFormat) DecimalFormat.getCurrencyInstance(Locale.CANADA);
+                formatoMoneda.setGroupingUsed(false);
+                NumberFormat fmtMoneda = NumberFormat.getCurrencyInstance();
+                // TOTAL MONTO
                 for (int i = 0; i < tablaConsultas.getRowCount(); i++) {
                     String cliente = (String) tablaConsultas.getValueAt(i, 2);
                     if (cliente.equals(clienteSeleccionado)) {
                         try {
                             String montoString = (String) tablaConsultas.getValueAt(i, 6);
-                            double monto = formatoMoneda.parse(montoString).doubleValue();
-                            montoTotal += monto;
+                            Number monto = formatoMoneda.parse(montoString);
+                            double montoDouble = monto.doubleValue();
+                            montoTotal += montoDouble;
                         } catch (ParseException ex) {
                             Logger.getLogger(Consultas.class.getName()).log(Level.SEVERE, null, ex);
                         }
-
                     }
                 }
 
-                //FLETE TOTAL
+                // ...
+                // FLETE TOTAL
                 for (int i = 0; i < tablaConsultas.getRowCount(); i++) {
                     String cliente = (String) tablaConsultas.getValueAt(i, 2);
                     if (cliente.equals(clienteSeleccionado)) {
                         try {
                             String montoString = (String) tablaConsultas.getValueAt(i, 8);
-                            double monto = formatoMoneda.parse(montoString).doubleValue();
-                            fleteTotal += monto;
+                            Number monto = formatoMoneda.parse(montoString);
+                            double montoDouble = monto.doubleValue();
+                            fleteTotal += montoDouble;
                         } catch (ParseException ex) {
                             Logger.getLogger(Consultas.class.getName()).log(Level.SEVERE, null, ex);
                         }
-
                     }
                 }
 
@@ -722,15 +732,12 @@ public class Consultas extends javax.swing.JFrame {
                     }
                 }
 
-                txtTotalMonto.setEditable(true);
-                txtTotalMonto.setText(Double.toString(montoTotal));
+                txtTotalMonto.setText(String.valueOf(montoTotal));
                 txtTotalMonto.setEditable(false);
 
-                txtTotalFlete.setEditable(true);
-                txtTotalFlete.setText(Double.toString(fleteTotal));
+                txtTotalFlete.setText(String.valueOf(fleteTotal));
                 txtTotalFlete.setEditable(false);
 
-                txtCantBultos.setEditable(true);
                 txtCantBultos.setText(Integer.toString(bultoTotal));
                 txtCantBultos.setEditable(false);
             }
@@ -754,6 +761,10 @@ public class Consultas extends javax.swing.JFrame {
     private void btnMRFletesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMRFletesActionPerformed
         cambiarTipoFleteRendido();
     }//GEN-LAST:event_btnMRFletesActionPerformed
+
+    private void txtTotalFleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTotalFleteActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtTotalFleteActionPerformed
 
     private void updateMonto() {
         DefaultTableModel tableModel = (DefaultTableModel) tablaConsultas.getModel();
