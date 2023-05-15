@@ -40,6 +40,7 @@ public class Consultas extends javax.swing.JFrame {
     public Consultas() {
         initComponents();
         setSize(1920, 1080);
+        setExtendedState(MAXIMIZED_BOTH);
         cargarSugerencias();
         txtFechaHasta.setText(fechaActual());
         this.setLocationRelativeTo(null);
