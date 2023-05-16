@@ -40,6 +40,7 @@ public class Consultas extends javax.swing.JFrame {
     public Consultas() {
         initComponents();
         setSize(1920, 1080);
+        setExtendedState(MAXIMIZED_BOTH);
         cargarSugerencias();
         txtFechaHasta.setText(fechaActual());
         this.setLocationRelativeTo(null);
@@ -94,7 +95,7 @@ public class Consultas extends javax.swing.JFrame {
         jLabel8 = new javax.swing.JLabel();
         txtFechaDesde = new javax.swing.JFormattedTextField();
         txtFechaHasta = new javax.swing.JFormattedTextField();
-        cbCuentaCorriente = new javax.swing.JCheckBox();
+        CuentaCorriente = new javax.swing.JCheckBox();
         btnImprimir = new javax.swing.JButton();
         jPanel7 = new javax.swing.JPanel();
         jLabel14 = new javax.swing.JLabel();
@@ -104,6 +105,7 @@ public class Consultas extends javax.swing.JFrame {
         jLabel15 = new javax.swing.JLabel();
         btnMRFletes = new javax.swing.JButton();
         txtCliente = new javax.swing.JTextField();
+        btnVolver = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Expreso Lestani S.R.L - Consultas");
@@ -113,8 +115,16 @@ public class Consultas extends javax.swing.JFrame {
             }
         });
 
+        jPanel1.setBackground(new java.awt.Color(66, 66, 66));
+        jPanel1.setForeground(new java.awt.Color(66, 66, 66));
+
+        jLabel1.setBackground(new java.awt.Color(66, 66, 66));
+        jLabel1.setForeground(new java.awt.Color(236, 240, 241));
         jLabel1.setText("Cliente");
 
+        btnMostrar.setBackground(new java.awt.Color(51, 51, 51));
+        btnMostrar.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        btnMostrar.setForeground(new java.awt.Color(236, 240, 241));
         btnMostrar.setText("Mostrar");
         btnMostrar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnMostrar.addActionListener(new java.awt.event.ActionListener() {
@@ -123,11 +133,16 @@ public class Consultas extends javax.swing.JFrame {
             }
         });
 
+        jPanel2.setBackground(new java.awt.Color(66, 66, 66));
         jPanel2.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
 
+        jLabel3.setBackground(new java.awt.Color(66, 66, 66));
+        jLabel3.setForeground(new java.awt.Color(236, 240, 241));
         jLabel3.setText("Monto");
 
+        cbPagados.setBackground(new java.awt.Color(66, 66, 66));
         Grupo1.add(cbPagados);
+        cbPagados.setForeground(new java.awt.Color(236, 240, 241));
         cbPagados.setText("Pagados");
         cbPagados.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -135,7 +150,9 @@ public class Consultas extends javax.swing.JFrame {
             }
         });
 
+        cbNoPagados.setBackground(new java.awt.Color(66, 66, 66));
         Grupo1.add(cbNoPagados);
+        cbNoPagados.setForeground(new java.awt.Color(236, 240, 241));
         cbNoPagados.setText("No Pagados");
         cbNoPagados.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -143,7 +160,9 @@ public class Consultas extends javax.swing.JFrame {
             }
         });
 
+        cbmTodos.setBackground(new java.awt.Color(66, 66, 66));
         Grupo1.add(cbmTodos);
+        cbmTodos.setForeground(new java.awt.Color(236, 240, 241));
         cbmTodos.setText("Todos");
         cbmTodos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -173,20 +192,25 @@ public class Consultas extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel3)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cbPagados)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(cbNoPagados)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(cbmTodos)
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        jPanel3.setBackground(new java.awt.Color(66, 66, 66));
         jPanel3.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
 
+        jLabel4.setBackground(new java.awt.Color(66, 66, 66));
+        jLabel4.setForeground(new java.awt.Color(236, 240, 241));
         jLabel4.setText("Flete");
 
+        cbFletePagado.setBackground(new java.awt.Color(66, 66, 66));
         Grupo2.add(cbFletePagado);
+        cbFletePagado.setForeground(new java.awt.Color(236, 240, 241));
         cbFletePagado.setText("Pagados");
         cbFletePagado.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -194,7 +218,9 @@ public class Consultas extends javax.swing.JFrame {
             }
         });
 
+        cbFleteNoPagado.setBackground(new java.awt.Color(66, 66, 66));
         Grupo2.add(cbFleteNoPagado);
+        cbFleteNoPagado.setForeground(new java.awt.Color(236, 240, 241));
         cbFleteNoPagado.setText("No Pagados");
         cbFleteNoPagado.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -202,7 +228,9 @@ public class Consultas extends javax.swing.JFrame {
             }
         });
 
+        cbfTodos.setBackground(new java.awt.Color(66, 66, 66));
         Grupo2.add(cbfTodos);
+        cbfTodos.setForeground(new java.awt.Color(236, 240, 241));
         cbfTodos.setText("Todos");
         cbfTodos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -231,7 +259,7 @@ public class Consultas extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel4)
-                .addGap(24, 24, 24)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cbFletePagado)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cbFleteNoPagado)
@@ -240,6 +268,8 @@ public class Consultas extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        tablaConsultas.setBackground(new java.awt.Color(66, 66, 66));
+        tablaConsultas.setForeground(new java.awt.Color(236, 240, 241));
         tablaConsultas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {},
@@ -254,10 +284,13 @@ public class Consultas extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(tablaConsultas);
 
+        jPanel4.setBackground(new java.awt.Color(66, 66, 66));
         jPanel4.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
+        jPanel4.setForeground(new java.awt.Color(236, 240, 241));
 
         txtTotalMonto.setText("0");
 
+        jLabel11.setForeground(new java.awt.Color(236, 240, 241));
         jLabel11.setText("Total Monto   $:");
 
         txtTotalFlete.setText("0");
@@ -267,6 +300,7 @@ public class Consultas extends javax.swing.JFrame {
             }
         });
 
+        jLabel12.setForeground(new java.awt.Color(236, 240, 241));
         jLabel12.setText("Total Flete     $:");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -301,6 +335,9 @@ public class Consultas extends javax.swing.JFrame {
                 .addContainerGap(19, Short.MAX_VALUE))
         );
 
+        jPanel5.setBackground(new java.awt.Color(66, 66, 66));
+
+        jLabel13.setForeground(new java.awt.Color(236, 240, 241));
         jLabel13.setText("Cant. Bultos");
 
         txtCantBultos.setText("0");
@@ -326,12 +363,16 @@ public class Consultas extends javax.swing.JFrame {
                 .addContainerGap(19, Short.MAX_VALUE))
         );
 
+        jPanel6.setBackground(new java.awt.Color(66, 66, 66));
         jPanel6.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
 
+        jLabel2.setForeground(new java.awt.Color(236, 240, 241));
         jLabel2.setText("Fecha:");
 
+        jLabel9.setForeground(new java.awt.Color(236, 240, 241));
         jLabel9.setText("Desde");
 
+        jLabel8.setForeground(new java.awt.Color(236, 240, 241));
         jLabel8.setText("Hasta");
 
         try {
@@ -383,19 +424,25 @@ public class Consultas extends javax.swing.JFrame {
                 .addGap(19, 19, 19))
         );
 
-        cbCuentaCorriente.setText("Cuenta Corriente");
-        cbCuentaCorriente.addActionListener(new java.awt.event.ActionListener() {
+        CuentaCorriente.setBackground(new java.awt.Color(66, 66, 66));
+        CuentaCorriente.setForeground(new java.awt.Color(236, 240, 241));
+        CuentaCorriente.setText("Cuenta Corriente");
+        CuentaCorriente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbCuentaCorrienteActionPerformed(evt);
+                CuentaCorrienteActionPerformed(evt);
             }
         });
 
         btnImprimir.setText("IMPRIMIR");
 
+        jPanel7.setBackground(new java.awt.Color(66, 66, 66));
         jPanel7.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
 
+        jLabel14.setForeground(new java.awt.Color(236, 240, 241));
         jLabel14.setText("Marcar como Pagados");
 
+        btnMPFletes.setBackground(new java.awt.Color(51, 51, 51));
+        btnMPFletes.setForeground(new java.awt.Color(236, 240, 241));
         btnMPFletes.setText("Fletes");
         btnMPFletes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -403,6 +450,8 @@ public class Consultas extends javax.swing.JFrame {
             }
         });
 
+        btnMPMontos.setBackground(new java.awt.Color(51, 51, 51));
+        btnMPMontos.setForeground(new java.awt.Color(236, 240, 241));
         btnMPMontos.setText("Montos");
         btnMPMontos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -438,10 +487,14 @@ public class Consultas extends javax.swing.JFrame {
                 .addGap(16, 16, 16))
         );
 
+        jPanel8.setBackground(new java.awt.Color(66, 66, 66));
         jPanel8.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
 
+        jLabel15.setForeground(new java.awt.Color(236, 240, 241));
         jLabel15.setText("Marcar como Redidos");
 
+        btnMRFletes.setBackground(new java.awt.Color(51, 51, 51));
+        btnMRFletes.setForeground(new java.awt.Color(236, 240, 241));
         btnMRFletes.setText("Fletes");
         btnMRFletes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -495,7 +548,7 @@ public class Consultas extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(35, 35, 35)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(cbCuentaCorriente, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(CuentaCorriente, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(txtCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -511,16 +564,16 @@ public class Consultas extends javax.swing.JFrame {
                                 .addGap(18, 207, Short.MAX_VALUE)))
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(29, 29, 29)
+                                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 263, Short.MAX_VALUE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(29, 29, 29)
-                                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 169, Short.MAX_VALUE)
-                                .addComponent(btnImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addGap(27, 27, 27)
+                                .addComponent(btnImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 118, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(18, 18, 18)
                         .addComponent(jScrollPane1)))
@@ -531,42 +584,49 @@ public class Consultas extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(21, 21, 21)
-                                .addComponent(btnImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(34, 34, 34))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(34, 34, 34))))
+                                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                        .addComponent(btnImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(15, 15, 15))))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(36, 36, 36)
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(cbCuentaCorriente)
+                        .addComponent(CuentaCorriente)
                         .addGap(24, 24, 24)
                         .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 512, Short.MAX_VALUE)
                 .addContainerGap())
         );
+
+        btnVolver.setBackground(new java.awt.Color(51, 51, 51));
+        btnVolver.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        btnVolver.setForeground(new java.awt.Color(236, 240, 241));
+        btnVolver.setText("Volver");
+        btnVolver.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVolverActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -576,12 +636,18 @@ public class Consultas extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addGap(98, 98, 98)
+                .addComponent(btnVolver, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 158, Short.MAX_VALUE))
+                .addGap(35, 35, 35)
+                .addComponent(btnVolver, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 88, Short.MAX_VALUE))
         );
 
         pack();
@@ -771,9 +837,9 @@ public class Consultas extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtTotalFleteActionPerformed
 
-    private void cbCuentaCorrienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbCuentaCorrienteActionPerformed
+    private void CuentaCorrienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CuentaCorrienteActionPerformed
         updateCc();
-    }//GEN-LAST:event_cbCuentaCorrienteActionPerformed
+    }//GEN-LAST:event_CuentaCorrienteActionPerformed
    
     
     private void updateCc() {
@@ -787,16 +853,21 @@ public class Consultas extends javax.swing.JFrame {
          * CHECKBOX CUENTA CORRIENTE
          */
         for (Movimientos mov : listaMovimientos) {
-            if (cbCuentaCorriente.isSelected() && Arrays.asList("Si").contains(mov.getCuentaCorriente())) {
+            if (CuentaCorriente.isSelected() && Arrays.asList("Si").contains(mov.getCuentaCorriente())) {
                 Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente()};
                 tableModel.addRow(row);
             }
-            if (!cbCuentaCorriente.isSelected()) {
+            if (!CuentaCorriente.isSelected()) {
                 Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente()};
                 tableModel.addRow(row);
             }
         }
     }
+    private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
+       Principal pn = new Principal();
+       pn.setVisible(true);
+       dispose();
+    }//GEN-LAST:event_btnVolverActionPerformed
 
     private void updateMonto() {
         DefaultTableModel tableModel = (DefaultTableModel) tablaConsultas.getModel();
@@ -898,6 +969,7 @@ public class Consultas extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox CuentaCorriente;
     private javax.swing.ButtonGroup Grupo1;
     private javax.swing.ButtonGroup Grupo2;
     private javax.swing.JButton btnImprimir;
@@ -905,7 +977,7 @@ public class Consultas extends javax.swing.JFrame {
     private javax.swing.JButton btnMPMontos;
     private javax.swing.JButton btnMRFletes;
     private javax.swing.JButton btnMostrar;
-    private javax.swing.JCheckBox cbCuentaCorriente;
+    private javax.swing.JButton btnVolver;
     private javax.swing.JRadioButton cbFleteNoPagado;
     private javax.swing.JRadioButton cbFletePagado;
     private javax.swing.JRadioButton cbNoPagados;
