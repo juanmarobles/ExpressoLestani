@@ -66,7 +66,7 @@
                               <Group type="102" attributes="0">
                                   <EmptySpace min="35" pref="35" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="CuentaCorriente" alignment="0" min="-2" pref="127" max="-2" attributes="0"/>
+                                      <Component id="cbCuentaCorriente" alignment="0" min="-2" pref="127" max="-2" attributes="0"/>
                                       <Component id="jLabel1" min="-2" pref="55" max="-2" attributes="0"/>
                                       <Component id="txtCliente" min="-2" pref="213" max="-2" attributes="0"/>
                                   </Group>
@@ -155,7 +155,7 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="txtCliente" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
-                          <Component id="CuentaCorriente" min="-2" max="-2" attributes="0"/>
+                          <Component id="cbCuentaCorriente" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
                           <Component id="jPanel6" min="-2" max="-2" attributes="0"/>
                       </Group>
@@ -584,10 +584,13 @@
             </Component>
           </SubComponents>
         </Container>
-        <Component class="javax.swing.JCheckBox" name="CuentaCorriente">
+        <Component class="javax.swing.JCheckBox" name="cbCuentaCorriente">
           <Properties>
             <Property name="text" type="java.lang.String" value="Cuenta Corriente"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cbCuentaCorrienteActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnImprimir">
           <Properties>

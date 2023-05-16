@@ -193,7 +193,7 @@
                                       <Component id="jLabel8" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                          <Component id="jCheckBox9" max="32767" attributes="0"/>
+                                          <Component id="cbCuentaCorriente" max="32767" attributes="0"/>
                                           <Component id="txtRepresentante" max="32767" attributes="0"/>
                                       </Group>
                                   </Group>
@@ -280,7 +280,7 @@
                           <Component id="txtRepresentante" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jCheckBox9" min="-2" max="-2" attributes="0"/>
+                      <Component id="cbCuentaCorriente" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jLabel17" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -395,7 +395,7 @@
                 <Property name="text" type="java.lang.String" value="Fecha"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JCheckBox" name="jCheckBox9">
+            <Component class="javax.swing.JCheckBox" name="cbCuentaCorriente">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Cuenta Corriente"/>
               </Properties>

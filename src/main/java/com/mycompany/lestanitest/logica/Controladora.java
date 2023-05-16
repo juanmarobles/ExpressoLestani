@@ -223,7 +223,7 @@ public class Controladora {
     /**
      * ----------------------------------------------GUARDAR-----------------------------------------------------------------
      */
-    public void cargarMovimiento(String cliente, String destino, String servicio, String representante, int bulto, String monto, String flete, int remito, String fPr, Date fecha, String tFlete, String tMonto) {
+    public void cargarMovimiento(String cliente, String destino, String servicio, String representante, int bulto, String monto, String flete, int remito, String fPr, Date fecha, String tFlete, String tMonto, String cC) {
         Movimientos m = new Movimientos();
         m.setCliente(cliente);
         m.setDestino(destino);
@@ -237,6 +237,7 @@ public class Controladora {
         m.setTipoFlete(fPr);
         m.setTipoMonto(tMonto);
         m.setFleteDestinoOrigen(tFlete);
+        m.setCuentaCorriente(cC);
         ctrl.guardarMovimiento(m);
     }
      public void actualizarMonto(Movimientos m,String tMonto) {

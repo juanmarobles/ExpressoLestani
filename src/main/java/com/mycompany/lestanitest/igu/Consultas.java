@@ -94,7 +94,7 @@ public class Consultas extends javax.swing.JFrame {
         jLabel8 = new javax.swing.JLabel();
         txtFechaDesde = new javax.swing.JFormattedTextField();
         txtFechaHasta = new javax.swing.JFormattedTextField();
-        CuentaCorriente = new javax.swing.JCheckBox();
+        cbCuentaCorriente = new javax.swing.JCheckBox();
         btnImprimir = new javax.swing.JButton();
         jPanel7 = new javax.swing.JPanel();
         jLabel14 = new javax.swing.JLabel();
@@ -383,7 +383,12 @@ public class Consultas extends javax.swing.JFrame {
                 .addGap(19, 19, 19))
         );
 
-        CuentaCorriente.setText("Cuenta Corriente");
+        cbCuentaCorriente.setText("Cuenta Corriente");
+        cbCuentaCorriente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbCuentaCorrienteActionPerformed(evt);
+            }
+        });
 
         btnImprimir.setText("IMPRIMIR");
 
@@ -490,7 +495,7 @@ public class Consultas extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(35, 35, 35)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(CuentaCorriente, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(cbCuentaCorriente, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(txtCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -555,7 +560,7 @@ public class Consultas extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(CuentaCorriente)
+                        .addComponent(cbCuentaCorriente)
                         .addGap(24, 24, 24)
                         .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -602,14 +607,14 @@ public class Consultas extends javax.swing.JFrame {
 
         };
         //nombres de columnas
-        String titulos[] = {"MOVIMIENTO", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "TIPO_MONTO", "FLETE", "TIPO_FLETE", "A_CARGO_DE", "REPRESENTANTE"};
+        String titulos[] = {"MOVIMIENTO", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "TIPO_MONTO", "FLETE", "TIPO_FLETE", "A_CARGO_DE", "REPRESENTANTE", "CC"};
         tabla.setColumnIdentifiers(titulos);
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tabla);
         tablaConsultas.setRowSorter(sorter);
         sorter.setSortKeys(java.util.Arrays.asList(new RowSorter.SortKey(1, SortOrder.DESCENDING)));
         //carga de los datos desde la lista filtrada
         for (Movimientos mov : listaMovimientos) {
-            Object[] objeto = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante()};
+            Object[] objeto = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente()};
             tabla.addRow(objeto);
         }
         tablaConsultas.setModel(tabla);
@@ -766,6 +771,33 @@ public class Consultas extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtTotalFleteActionPerformed
 
+    private void cbCuentaCorrienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbCuentaCorrienteActionPerformed
+        updateCc();
+    }//GEN-LAST:event_cbCuentaCorrienteActionPerformed
+   
+    
+    private void updateCc() {
+        DefaultTableModel tableModel = (DefaultTableModel) tablaConsultas.getModel();
+        tableModel.setRowCount(0); // Limpiar la tabla
+
+        List<Movimientos> listaMovimientos = control.traerMovimientos();
+        // Recorrer la lista y agregar filas a la tabla
+
+        /**
+         * CHECKBOX CUENTA CORRIENTE
+         */
+        for (Movimientos mov : listaMovimientos) {
+            if (cbCuentaCorriente.isSelected() && Arrays.asList("Si").contains(mov.getCuentaCorriente())) {
+                Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente()};
+                tableModel.addRow(row);
+            }
+            if (!cbCuentaCorriente.isSelected()) {
+                Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente()};
+                tableModel.addRow(row);
+            }
+        }
+    }
+
     private void updateMonto() {
         DefaultTableModel tableModel = (DefaultTableModel) tablaConsultas.getModel();
         tableModel.setRowCount(0); // Limpiar la tabla
@@ -866,7 +898,6 @@ public class Consultas extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JCheckBox CuentaCorriente;
     private javax.swing.ButtonGroup Grupo1;
     private javax.swing.ButtonGroup Grupo2;
     private javax.swing.JButton btnImprimir;
@@ -874,6 +905,7 @@ public class Consultas extends javax.swing.JFrame {
     private javax.swing.JButton btnMPMontos;
     private javax.swing.JButton btnMRFletes;
     private javax.swing.JButton btnMostrar;
+    private javax.swing.JCheckBox cbCuentaCorriente;
     private javax.swing.JRadioButton cbFleteNoPagado;
     private javax.swing.JRadioButton cbFletePagado;
     private javax.swing.JRadioButton cbNoPagados;
@@ -919,7 +951,7 @@ public class Consultas extends javax.swing.JFrame {
 
         };
         //nombres de columnas
-        String titulos[] = {"MOVIMIENTO", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "TIPO_MONTO", "FLETE", "TIPO_FLETE", "A_CARGO_DE", "REPRESENTANTE"};
+        String titulos[] = {"MOVIMIENTO", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "TIPO_MONTO", "FLETE", "TIPO_FLETE", "A_CARGO_DE", "REPRESENTANTE","CC"};
         tabla.setColumnIdentifiers(titulos);
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tabla);
         tablaConsultas.setRowSorter(sorter);
@@ -930,7 +962,7 @@ public class Consultas extends javax.swing.JFrame {
         //recorrer lista y mostrar elementos en la tabla
         if (listaMovimientos != null) {
             for (Movimientos mov : listaMovimientos) {
-                Object[] objeto = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante()};
+                Object[] objeto = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante(),mov.getCuentaCorriente()};
 
                 tabla.addRow(objeto);
 

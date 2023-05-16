@@ -179,7 +179,7 @@ public class Principal extends javax.swing.JFrame {
         jLabel8 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
-        jCheckBox9 = new javax.swing.JCheckBox();
+        cbCuentaCorriente = new javax.swing.JCheckBox();
         jLabel10 = new javax.swing.JLabel();
         cbRemito = new javax.swing.JCheckBox();
         txtMonto = new javax.swing.JTextField();
@@ -271,7 +271,7 @@ public class Principal extends javax.swing.JFrame {
         jLabel9.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         jLabel9.setText("Fecha");
 
-        jCheckBox9.setText("Cuenta Corriente");
+        cbCuentaCorriente.setText("Cuenta Corriente");
 
         jLabel10.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         jLabel10.setText("Destino");
@@ -412,7 +412,7 @@ public class Principal extends javax.swing.JFrame {
                                 .addComponent(jLabel8)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jCheckBox9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(cbCuentaCorriente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(txtRepresentante)))
                             .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
                                 .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -476,7 +476,7 @@ public class Principal extends javax.swing.JFrame {
                     .addComponent(jLabel8)
                     .addComponent(txtRepresentante, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jCheckBox9)
+                .addComponent(cbCuentaCorriente)
                 .addGap(20, 20, 20)
                 .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel17)
@@ -879,6 +879,7 @@ public class Principal extends javax.swing.JFrame {
         String tFlete = "";
         String tMonto = "";
         String fPr = "";
+        String cC = "";
         int remito = 0;
         Date fecha = getDate();
         //String cliente = (String) cmbCliente.getSelectedItem().toString();
@@ -896,6 +897,11 @@ public class Principal extends javax.swing.JFrame {
             tFlete = "Destino";
         } else if (cbfOrigen.isSelected()) {
             tFlete = "Origen";
+        }
+        
+        //verif Cuenta Corriente
+        if(cbCuentaCorriente.isSelected()){
+            cC = "Si";
         }
 
         //remito
@@ -926,7 +932,7 @@ public class Principal extends javax.swing.JFrame {
             fPr = "No";
         }
 
-        control.cargarMovimiento(cliente, destino, servicio, representante, bulto, monto, flete, remito, fPr, fecha, tFlete, tMonto);
+        control.cargarMovimiento(cliente,destino, servicio, representante, bulto, monto, flete, remito, fPr, fecha, tFlete, tMonto,cC);
         mostrarMensaje("Movimiento agregado correctamente", "Info", "Agregado con exito!");
 
         // Actualizar la tabla
@@ -946,6 +952,7 @@ public class Principal extends javax.swing.JFrame {
         txtBulto.setText("");
         txtMonto.setText("");
         txtFlete.setText("");
+        cbCuentaCorriente.setText("");
         cbfOrigen.setSelected(false);
         cbfDestino.setSelected(false);
         cbRemito.setSelected(false);
@@ -953,6 +960,7 @@ public class Principal extends javax.swing.JFrame {
         cbMontoRendido.setSelected(false);
         cbfletePagado.setSelected(false);
         cbfleteRendido.setSelected(false);
+        cbCuentaCorriente.setSelected(false);
         txtRemito.setEnabled(true);
 
 
@@ -1065,6 +1073,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JButton btnServicios;
     private javax.swing.JButton btnVehiculos;
     private javax.swing.JLabel bulto;
+    private javax.swing.JCheckBox cbCuentaCorriente;
     private javax.swing.JCheckBox cbMontoRendido;
     private javax.swing.JCheckBox cbRemito;
     private javax.swing.JCheckBox cbfDestino;
@@ -1072,7 +1081,6 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JCheckBox cbfletePagado;
     private javax.swing.JCheckBox cbfleteRendido;
     private javax.swing.JCheckBox cbmontoPagado;
-    private javax.swing.JCheckBox jCheckBox9;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;

@@ -49,11 +49,13 @@ public class Movimientos implements Serializable {
     private String servicio;
     @Column(name = "FLETE_DESTINO_ORIGEN", nullable = false)
     private String fleteDestinoOrigen;
+    @Column(name = "CC", nullable = false)
+    private String cuentaCorriente;
 
     public Movimientos() {
     }
 
-    public Movimientos(int id_movimientos, Date fecha, String destino, int remito, int bultos, String monto, String tipoMonto, String flete, String tipoFlete, String representante, String cliente, String servicio, String fleteDestinoOrigen) {
+    public Movimientos(int id_movimientos, Date fecha, String destino, int remito, int bultos, String monto, String tipoMonto, String flete, String tipoFlete, String representante, String cliente, String servicio, String fleteDestinoOrigen, String cuentaCorriente) {
         this.id_movimientos = id_movimientos;
         this.fecha = fecha;
         this.destino = destino;
@@ -67,7 +69,18 @@ public class Movimientos implements Serializable {
         this.cliente = cliente;
         this.servicio = servicio;
         this.fleteDestinoOrigen = fleteDestinoOrigen;
+        this.cuentaCorriente = cuentaCorriente;
     }
+
+    public String getCuentaCorriente() {
+        return cuentaCorriente;
+    }
+
+    public void setCuentaCorriente(String cuentaCorriente) {
+        this.cuentaCorriente = cuentaCorriente;
+    }
+
+   
 
     public Movimientos(String cliente) {
         this.cliente = cliente;
@@ -204,5 +217,7 @@ public class Movimientos implements Serializable {
     public String toString() {
         return cliente;
     }
+
+    
 
 }
