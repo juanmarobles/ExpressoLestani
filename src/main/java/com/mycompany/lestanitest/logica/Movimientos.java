@@ -83,8 +83,6 @@ public class Movimientos implements Serializable {
         this.observaciones = observaciones;
     }
 
-    
-
     public String getCuentaCorriente() {
         return cuentaCorriente;
     }
@@ -92,7 +90,7 @@ public class Movimientos implements Serializable {
     public void setCuentaCorriente(String cuentaCorriente) {
         this.cuentaCorriente = cuentaCorriente;
     }
-    
+
     public Movimientos(String cliente) {
         this.cliente = cliente;
     }
@@ -146,15 +144,14 @@ public class Movimientos implements Serializable {
     }
 
     public String getMonto() {
-
         BigDecimal montoBigDecimal = new BigDecimal(monto);
         DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
-        simbolos.setDecimalSeparator(',');
         simbolos.setGroupingSeparator('.');
-        DecimalFormat formato = new DecimalFormat("#,##0.00", simbolos);
-        String montoFormateado = formato.format(montoBigDecimal);
-        monto = montoFormateado;
-        return "$" + monto;
+        simbolos.setDecimalSeparator(',');
+        DecimalFormat formatoPersonalizado = new DecimalFormat("###,###.##", simbolos);
+        formatoPersonalizado.setParseBigDecimal(true);
+        String montoFormateado = formatoPersonalizado.format(montoBigDecimal);
+        return "$" + montoFormateado;
     }
 
     public void setMonto(String monto) {

@@ -4,13 +4,36 @@
  */
 package com.mycompany.lestanitest.igu;
 
+import com.itextpdf.text.BadElementException;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Chunk;
 import com.mycompany.lestanitest.logica.Controladora;
 import com.mycompany.lestanitest.logica.ModeloMovimientos;
 import com.mycompany.lestanitest.logica.Movimientos;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.ColumnText;
+import com.itextpdf.text.pdf.PdfAnnotation;
+import com.itextpdf.text.pdf.PdfContentByte;
+import com.itextpdf.text.pdf.PdfFormField;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -22,11 +45,19 @@ import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.RowFilter;
 import javax.swing.RowSorter;
 import javax.swing.SortOrder;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.UndoableEditListener;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableRowSorter;
+
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 public class Consultas extends javax.swing.JFrame {
@@ -36,11 +67,13 @@ public class Consultas extends javax.swing.JFrame {
     TableRowSorter trs;
     DefaultTableModel tabla = new DefaultTableModel();
     private SimpleDateFormat sdf;
+    private String montoTotalImpreso;
+    private String fleteTotalImpreso;
 
     public Consultas() {
         initComponents();
-        setSize(1920, 1080);
-        setExtendedState(MAXIMIZED_BOTH);
+        //setSize(1920, 1080);
+        //setExtendedState(MAXIMIZED_BOTH);
         cargarSugerencias();
         txtFechaHasta.setText(fechaActual());
         this.setLocationRelativeTo(null);
@@ -434,6 +467,7 @@ public class Consultas extends javax.swing.JFrame {
             }
         });
 
+        btnImprimir.setText("IMPRIMIR");
         btnImprimir.setBackground(new java.awt.Color(51, 51, 51));
         btnImprimir.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         btnImprimir.setForeground(new java.awt.Color(236, 240, 241));
@@ -696,14 +730,14 @@ public class Consultas extends javax.swing.JFrame {
 
         };
         //nombres de columnas
-        String titulos[] = {"MOVIMIENTO", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "TIPO_MONTO", "FLETE", "TIPO_FLETE", "A_CARGO_DE", "REPRESENTANTE", "CC","OBS"};
+        String titulos[] = {"MOVIMIENTO", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "PAGADO", "FLETE", "PAGADO", "A_CARGO_DE", "REPRESENTANTE", "CC", "OBS"};
         tabla.setColumnIdentifiers(titulos);
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tabla);
         tablaConsultas.setRowSorter(sorter);
         sorter.setSortKeys(java.util.Arrays.asList(new RowSorter.SortKey(1, SortOrder.DESCENDING)));
         //carga de los datos desde la lista filtrada
         for (Movimientos mov : listaMovimientos) {
-            Object[] objeto = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(),mov.getObservaciones()};
+            Object[] objeto = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
             tabla.addRow(objeto);
         }
         tablaConsultas.setModel(tabla);
@@ -756,6 +790,7 @@ public class Consultas extends javax.swing.JFrame {
         });
         trs = new TableRowSorter(tablaConsultas.getModel());
         tablaConsultas.setRowSorter(trs);
+
     }//GEN-LAST:event_txtClienteKeyTyped
     /**
      * CHECK BOX PAGADOS
@@ -831,6 +866,10 @@ public class Consultas extends javax.swing.JFrame {
                 String fleteTotalFormateado = decimalFormat.format(fleteTotal);
                 String montoTotalFormateado = decimalFormat.format(montoTotal);
 
+                //para pdf
+                montoTotalImpreso = montoTotalFormateado;
+                fleteTotalImpreso = fleteTotalFormateado;
+
                 txtTotalMonto.setText(String.valueOf(montoTotalFormateado));
                 txtTotalMonto.setEditable(false);
 
@@ -876,8 +915,27 @@ public class Consultas extends javax.swing.JFrame {
     }//GEN-LAST:event_CuentaCorrienteActionPerformed
 
     private void btnImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirActionPerformed
-        // TODO add your handling code here:
+        generarPDF();
     }//GEN-LAST:event_btnImprimirActionPerformed
+    private List<List<String>> obtenerDatosTabla() {
+        List<List<String>> datosTabla = new ArrayList<>();
+
+        // Recorrer las filas y columnas de tu tabla para obtener los datos
+        DefaultTableModel modelo = (DefaultTableModel) tablaConsultas.getModel();
+        int filas = modelo.getRowCount();
+        int columnas = modelo.getColumnCount();
+
+        for (int i = 0; i < filas; i++) {
+            List<String> fila = new ArrayList<>();
+            for (int j = 0; j < columnas; j++) {
+                fila.add(modelo.getValueAt(i, j).toString());
+            }
+            datosTabla.add(fila);
+        }
+
+        return datosTabla;
+    }
+
     private void updateCc() {
         DefaultTableModel tableModel = (DefaultTableModel) tablaConsultas.getModel();
         tableModel.setRowCount(0); // Limpiar la tabla
@@ -890,11 +948,11 @@ public class Consultas extends javax.swing.JFrame {
          */
         for (Movimientos mov : listaMovimientos) {
             if (CuentaCorriente.isSelected() && Arrays.asList("Si").contains(mov.getCuentaCorriente())) {
-                Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(),mov.getObservaciones()};
+                Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
                 tableModel.addRow(row);
             }
             if (!CuentaCorriente.isSelected()) {
-                Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(),mov.getObservaciones()};
+                Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
                 tableModel.addRow(row);
             }
         }
@@ -913,15 +971,15 @@ public class Consultas extends javax.swing.JFrame {
         tableModel.setRowCount(0);
         for (Movimientos mov : listaMovimientos) {
             if (!cbPagados.isSelected() && !Arrays.asList("Pagado", "Rendido", "Pagado/Rendido").contains(mov.getTipoMonto())) {
-                Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(),mov.getObservaciones()};
+                Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
                 tableModel.addRow(row);
             }
             if (!cbNoPagados.isSelected() && !Arrays.asList("No").contains(mov.getTipoMonto())) {
-                Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(),mov.getObservaciones()};
+                Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
                 tableModel.addRow(row);
             }
             if (cbmTodos.isSelected()) {
-                Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(),mov.getObservaciones()};
+                Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
                 tableModel.addRow(row);
             }
         }
@@ -940,15 +998,15 @@ public class Consultas extends javax.swing.JFrame {
          */
         for (Movimientos mov : listaMovimientos) {
             if (!cbFletePagado.isSelected() && !Arrays.asList("Pagado", "Rendido", "Pagado/Rendido").contains(mov.getTipoFlete())) {
-                Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(),mov.getObservaciones()};
+                Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
                 tableModel.addRow(row);
             }
             if (!cbFleteNoPagado.isSelected() && !Arrays.asList("No").contains(mov.getTipoFlete())) {
-                Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(),mov.getObservaciones()};
+                Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
                 tableModel.addRow(row);
             }
             if (cbfTodos.isSelected()) {
-                Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(),mov.getObservaciones()};
+                Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
                 tableModel.addRow(row);
             }
         }
@@ -1045,38 +1103,6 @@ public class Consultas extends javax.swing.JFrame {
     private javax.swing.JTextField txtTotalMonto;
     // End of variables declaration//GEN-END:variables
 
-    private void mostrarTablaMovimientos() {
-        //filas y columnas no editables
-        DefaultTableModel tabla = new DefaultTableModel() {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-
-        };
-        //nombres de columnas
-        String titulos[] = {"MOVIMIENTO", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "TIPO_MONTO", "FLETE", "TIPO_FLETE", "A_CARGO_DE", "REPRESENTANTE", "CC","OBS"};
-        tabla.setColumnIdentifiers(titulos);
-        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tabla);
-        tablaConsultas.setRowSorter(sorter);
-        sorter.setSortKeys(java.util.Arrays.asList(new RowSorter.SortKey(1, SortOrder.DESCENDING)));
-        //carga de los datos desde la bd
-        List<Movimientos> listaMovimientos = control.traerMovimientos();
-
-        //recorrer lista y mostrar elementos en la tabla
-        if (listaMovimientos != null) {
-            for (Movimientos mov : listaMovimientos) {
-                Object[] objeto = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(),mov.getObservaciones()};
-
-                tabla.addRow(objeto);
-
-            }
-        }
-        tablaConsultas.setModel(tabla);
-        tablaConsultas.getModel();
-
-    }
-
     public static String fechaActual() {
         Date fecha = new Date();
         SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/YYYY");
@@ -1093,10 +1119,10 @@ public class Consultas extends javax.swing.JFrame {
                 Movimientos movimiento = control.traerMovimiento(idMovimientos);
                 if (movimiento != null) {
                     String tipoFlete = (String) modeloTabla.getValueAt(filaSeleccionada, 7);
-                    if (!tipoFlete.equals("Pagado")) {
-                        movimiento.setTipoMonto("Pagado");
-                        control.actualizarFlete(movimiento, "Pagado");
-                        modeloTabla.setValueAt("Pagado", filaSeleccionada, 7);
+                    if (!tipoFlete.equals("Si")) {
+                        movimiento.setTipoMonto("Si");
+                        control.actualizarFlete(movimiento, "Si");
+                        modeloTabla.setValueAt("Si", filaSeleccionada, 7);
                     }
                 }
             }
@@ -1114,10 +1140,10 @@ public class Consultas extends javax.swing.JFrame {
                 Movimientos movimiento = control.traerMovimiento(idMovimientos);
                 if (movimiento != null) {
                     String tipoFlete = (String) modeloTabla.getValueAt(filaSeleccionada, 9);
-                    if (!tipoFlete.equals("Pagado")) {
-                        movimiento.setTipoMonto("Pagado");
-                        control.actualizarFlete(movimiento, "Pagado");
-                        modeloTabla.setValueAt("Pagado", filaSeleccionada, 9);
+                    if (!tipoFlete.equals("Si")) {
+                        movimiento.setTipoMonto("Si");
+                        control.actualizarFlete(movimiento, "Si");
+                        modeloTabla.setValueAt("Si", filaSeleccionada, 9);
                     }
                 }
             }
@@ -1146,5 +1172,150 @@ public class Consultas extends javax.swing.JFrame {
         }
 
     }
+
+    //TABLA CONSULTAS
+    private JTable mostrarTablaMovimientos() {
+        //filas y columnas no editables
+        DefaultTableModel tabla = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+
+        };
+        //nombres de columnas
+        String titulos[] = {"MOVIMIENTO", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "PAGADO", "FLETE", "PAGADO", "A_CARGO_DE", "REPRESENTANTE", "CC", "OBS"};
+        tabla.setColumnIdentifiers(titulos);
+        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tabla);
+        tablaConsultas.setRowSorter(sorter);
+        sorter.setSortKeys(java.util.Arrays.asList(new RowSorter.SortKey(1, SortOrder.DESCENDING)));
+        //carga de los datos desde la bd
+        List<Movimientos> listaMovimientos = control.traerMovimientos();
+
+        //recorrer lista y mostrar elementos en la tabla
+        if (listaMovimientos != null) {
+            for (Movimientos mov : listaMovimientos) {
+                Object[] objeto = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
+
+                tabla.addRow(objeto);
+
+            }
+        }
+        tablaConsultas.setModel(tabla);
+        tablaConsultas.getModel();
+        JTable tab = new JTable(tabla);
+        return tab;
+    }
+
+    //IMPRIMIR CONSULTAS
+    private void generarPDF() {
+        Document document = new Document();
+        try {
+            //DIRECTORIO
+            String outputPath = System.getProperty("user.home") + File.separator + "Consultas.pdf";
+            File outputFile = new File(outputPath);
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile));
+            document.open();
+
+            //FUENTES
+            Font font = FontFactory.getFont(FontFactory.COURIER_BOLD, 8, Font.NORMAL);
+            Font fontTotales = FontFactory.getFont(FontFactory.COURIER, 10, Font.BOLD, BaseColor.BLACK);
+            Font fontFecha = FontFactory.getFont(FontFactory.COURIER, 10, Font.BOLD, BaseColor.BLACK);
+            Font fontFilas = FontFactory.getFont(FontFactory.COURIER, 8);
+
+            // LOGO
+            Image logo = Image.getInstance("file:///D:/PROYECTOS%20JAVA/ExpressoLestani-master/src/main/java/com/imagenes/logo.jpg");
+            logo.scaleToFit(450, 800);
+            logo.setAlignment(Element.ALIGN_CENTER);
+            document.add(logo);
+            // TITULO
+            Paragraph titulo = new Paragraph("DETALLE DE MOVIMIENTOS", FontFactory.getFont(FontFactory.COURIER_BOLD, 16, Font.BOLD, BaseColor.BLACK));
+            titulo.setAlignment(Element.ALIGN_CENTER);
+            titulo.setSpacingAfter(10f); // Espacio después del título (en puntos)
+
+            // FECHAS
+            String fechaDesde = txtFechaDesde.getText();
+            String fechaHasta = txtFechaHasta.getText();
+
+            // Agregar fechas desde y hasta al título
+            Chunk chunkFechas = new Chunk("Desde " + fechaDesde + " \nHasta " + fechaHasta, fontFecha);
+            Paragraph fechas = new Paragraph(chunkFechas);
+            fechas.setAlignment(Element.ALIGN_CENTER);
+            fechas.setSpacingAfter(5f); // Espacio después de las fechas (en puntos)
+
+            document.add(titulo);
+            document.add(fechas);
+
+            PdfPTable table = new PdfPTable(tablaConsultas.getColumnCount() - 4); // Excluir las 4 columnas A_CARGO_DE, CC, OBS y movimiento
+            table.setSpacingBefore(10f); // Espacio antes de la tabla (en puntos)
+            table.setSpacingAfter(10f);
+
+            // Ajustar espacio horizontal
+            float[] columnWidths = {0.9f, 1f, 1f, 0.6f, 0.6f, 1f, 0.6f, 1f, 0.6f, 1.3f}; // Anchos de las columnas (proporciones)
+            table.setWidths(columnWidths);
+
+            table.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
+
+            table.setWidths(columnWidths);
+
+            // Agregar las celdas a la tabla
+            for (int i = 0; i < tablaConsultas.getColumnCount(); i++) {
+                String col = tablaConsultas.getColumnName(i);
+                if (!col.equals("A_CARGO_DE") && !col.equals("CC") && !col.equals("OBS") && !col.equals("MOVIMIENTO")) {
+                    PdfPCell cell = new PdfPCell(new Phrase(col, font));
+                    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
+                    table.addCell(cell);
+                }
+            }
+
+            for (int row = 0; row < tablaConsultas.getRowCount(); row++) {
+                for (int col = 0; col < tablaConsultas.getColumnCount(); col++) {
+                    String colName = tablaConsultas.getColumnName(col);
+                    if (!colName.equals("A_CARGO_DE") && !colName.equals("CC") && !colName.equals("OBS") && !colName.equals("MOVIMIENTO")) {
+                        Object value = tablaConsultas.getValueAt(row, col);
+                        if (value != null) {
+                            PdfPCell cell = new PdfPCell(new Phrase(value.toString(), fontFilas));
+                            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                            cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
+                            table.addCell(cell);
+                        }
+                    }
+                }
+            }
+
+            document.add(table);
+            // Crear una tabla para los montos totales
+            PdfPTable totalsTable = new PdfPTable(2);
+            totalsTable.setWidthPercentage(100);
+
+            // Monto total
+            // Establecer la fuente deseada
+            Phrase montoTotalPhrase = new Phrase("Monto total: $" + txtTotalMonto.getText(), fontTotales);
+            PdfPCell montoTotalCell = new PdfPCell(montoTotalPhrase);
+            montoTotalCell.setBorder(Rectangle.NO_BORDER);
+            montoTotalCell.setHorizontalAlignment(Element.ALIGN_CENTER); // Alinear la celda al centro
+            totalsTable.addCell(montoTotalCell);
+
+            // Flete total
+            Phrase fleteTotalPhrase = new Phrase("Flete total: $" + txtTotalFlete.getText(), fontTotales);
+            PdfPCell fleteTotalCell = new PdfPCell(fleteTotalPhrase);
+            fleteTotalCell.setBorder(Rectangle.NO_BORDER);
+            fleteTotalCell.setHorizontalAlignment(Element.ALIGN_CENTER); // Alinear la celda al centro
+            totalsTable.addCell(fleteTotalCell);
+
+            totalsTable.setSpacingBefore(10f);
+            document.add(totalsTable);
+            document.close();
+
+            JOptionPane.showMessageDialog(null, "El archivo se generó correctamente.", "Información", JOptionPane.INFORMATION_MESSAGE);
+        } catch (DocumentException | FileNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "Error al generar el archivo PDF.", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException ex) {
+            Logger.getLogger(Consultas.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    
 
 }

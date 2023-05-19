@@ -1050,21 +1050,21 @@ public class Principal extends javax.swing.JFrame {
 
         //verif de monto pagado/rendido
         if (cbmontoPagado.isSelected() && cbMontoRendido.isSelected()) {
-            tMonto = "Pagado/Rendido";
+            tMonto = "Si";
         } else if (cbmontoPagado.isSelected()) {
-            tMonto = "Pagado";
+            tMonto = "Si";
         } else if (cbMontoRendido.isSelected()) {
-            tMonto = "Rendido";
+            tMonto = "Si";
         } else {
             tMonto = "No";
         }
         //verif de flete pagado/rendido
         if (cbfletePagado.isSelected() && cbfleteRendido.isSelected()) {
-            fPr = "Pagado/Rendido";
+            fPr = "Si";
         } else if (cbfleteRendido.isSelected()) {
-            fPr = "Rendido";
+            fPr = "Si";
         } else if (cbfletePagado.isSelected()) {
-            fPr = "Pagado";
+            fPr = "Si";
         } else {
             fPr = "No";
         }
