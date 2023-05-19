@@ -347,7 +347,7 @@ public class Principal extends javax.swing.JFrame {
         btnEliminarMovimiento.setBackground(new java.awt.Color(51, 51, 51));
         btnEliminarMovimiento.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
         btnEliminarMovimiento.setForeground(new java.awt.Color(236, 240, 241));
-        btnEliminarMovimiento.setIcon(new javax.swing.ImageIcon("D:\\PROYECTOS JAVA\\ExpressoLestani-master\\src\\main\\java\\com\\icon\\icon\\borrar.png")); // NOI18N
+        btnEliminarMovimiento.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/icon/icon/borrar.png"))); // NOI18N
         btnEliminarMovimiento.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnEliminarMovimientoActionPerformed(evt);
@@ -357,7 +357,7 @@ public class Principal extends javax.swing.JFrame {
         btnEditarMovimiento.setBackground(new java.awt.Color(51, 51, 51));
         btnEditarMovimiento.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
         btnEditarMovimiento.setForeground(new java.awt.Color(236, 240, 241));
-        btnEditarMovimiento.setIcon(new javax.swing.ImageIcon("D:\\PROYECTOS JAVA\\ExpressoLestani-master\\src\\main\\java\\com\\icon\\icon\\boligrafo.png")); // NOI18N
+        btnEditarMovimiento.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/icon/icon/boligrafo.png"))); // NOI18N
         btnEditarMovimiento.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnEditarMovimientoActionPerformed(evt);
@@ -821,7 +821,7 @@ public class Principal extends javax.swing.JFrame {
                 .addContainerGap(32, Short.MAX_VALUE))
         );
 
-        jLabel1.setIcon(new javax.swing.ImageIcon("D:\\PROYECTOS JAVA\\ExpressoLestani-master\\src\\main\\java\\com\\imagenes\\logo.jpg")); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/imagenes/logo.jpg"))); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
