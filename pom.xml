@@ -51,6 +51,11 @@
             <version>1.6.4</version>
             <type>jar</type>
         </dependency>
+        <dependency>
+            <groupId>itext</groupId>
+            <artifactId>itext.pdf</artifactId>
+            <version>5.5.12</version>
+        </dependency>
     </dependencies>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
