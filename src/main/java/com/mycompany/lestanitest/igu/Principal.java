@@ -311,7 +311,7 @@ public class Principal extends javax.swing.JFrame {
         btnAgregar.setBackground(new java.awt.Color(51, 51, 51));
         btnAgregar.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
         btnAgregar.setForeground(new java.awt.Color(236, 240, 241));
-        btnAgregar.setIcon(new javax.swing.ImageIcon("C:\\Users\\Marco\\OneDrive\\Escritorio\\ExpressoLestani-master\\src\\icon\\add.png")); // NOI18N
+        btnAgregar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/icon/icon/add.png"))); // NOI18N
         btnAgregar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAgregarActionPerformed(evt);
@@ -347,7 +347,7 @@ public class Principal extends javax.swing.JFrame {
         btnEliminarMovimiento.setBackground(new java.awt.Color(51, 51, 51));
         btnEliminarMovimiento.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
         btnEliminarMovimiento.setForeground(new java.awt.Color(236, 240, 241));
-        btnEliminarMovimiento.setIcon(new javax.swing.ImageIcon("C:\\Users\\Marco\\OneDrive\\Escritorio\\ExpressoLestani-master\\src\\icon\\borrar.png")); // NOI18N
+        btnEliminarMovimiento.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/icon/icon/borrar.png"))); // NOI18N
         btnEliminarMovimiento.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnEliminarMovimientoActionPerformed(evt);
@@ -357,7 +357,7 @@ public class Principal extends javax.swing.JFrame {
         btnEditarMovimiento.setBackground(new java.awt.Color(51, 51, 51));
         btnEditarMovimiento.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
         btnEditarMovimiento.setForeground(new java.awt.Color(236, 240, 241));
-        btnEditarMovimiento.setIcon(new javax.swing.ImageIcon("C:\\Users\\Marco\\OneDrive\\Escritorio\\ExpressoLestani-master\\src\\icon\\boligrafo.png")); // NOI18N
+        btnEditarMovimiento.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/icon/icon/boligrafo.png"))); // NOI18N
         btnEditarMovimiento.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnEditarMovimientoActionPerformed(evt);
@@ -580,7 +580,7 @@ public class Principal extends javax.swing.JFrame {
                             .addComponent(cbmontoPagado)
                             .addComponent(cbMontoRendido)))
                     .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
-                        .addGap(27, 27, 27)
+                        .addGap(24, 24, 24)
                         .addComponent(btnAgregar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnEditarMovimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -776,10 +776,6 @@ public class Principal extends javax.swing.JFrame {
         jLabel11.setForeground(new java.awt.Color(236, 240, 241));
         jLabel11.setText("Busqueda por REMITO");
 
-        jLabel4.setIcon(new javax.swing.ImageIcon("C:\\Users\\Marco\\OneDrive\\Escritorio\\ExpressoLestani-master\\src\\icon\\busqueda-de-lupa.png")); // NOI18N
-
-        jLabel19.setIcon(new javax.swing.ImageIcon("C:\\Users\\Marco\\OneDrive\\Escritorio\\ExpressoLestani-master\\src\\icon\\busqueda-de-lupa.png")); // NOI18N
-
         javax.swing.GroupLayout PanelBusquedasLayout = new javax.swing.GroupLayout(PanelBusquedas);
         PanelBusquedas.setLayout(PanelBusquedasLayout);
         PanelBusquedasLayout.setHorizontalGroup(
@@ -856,11 +852,11 @@ public class Principal extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(68, 68, 68)
+                                .addGap(65, 65, 65)
                                 .addComponent(PanelBusquedas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(panelCargaMovimientos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 442, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 445, Short.MAX_VALUE)
                 .addGap(63, 63, 63))
         );
 
