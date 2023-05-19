@@ -104,7 +104,7 @@
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jScrollPane2" pref="445" max="32767" attributes="0"/>
+                  <Component id="jScrollPane2" pref="444" max="32767" attributes="0"/>
                   <EmptySpace min="-2" pref="63" max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -512,7 +512,7 @@
                   <Color blue="f1" green="f0" red="ec" type="rgb"/>
                 </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/com/icon/icon/add.png"/>
+                  <Image iconType="3" name="/add.png"/>
                 </Property>
               </Properties>
               <Events>
@@ -591,7 +591,7 @@
                   <Color blue="f1" green="f0" red="ec" type="rgb"/>
                 </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/com/icon/icon/borrar.png"/>
+                  <Image iconType="2" name="D:\PROYECTOS JAVA\ExpressoLestani-master\src\main\java\com\icon\icon\borrar.png"/>
                 </Property>
               </Properties>
               <Events>
@@ -610,7 +610,7 @@
                   <Color blue="f1" green="f0" red="ec" type="rgb"/>
                 </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/com/icon/icon/boligrafo.png"/>
+                  <Image iconType="2" name="D:\PROYECTOS JAVA\ExpressoLestani-master\src\main\java\com\icon\icon\boligrafo.png"/>
                 </Property>
               </Properties>
               <Events>
@@ -1090,15 +1090,25 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel4">
+              <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="2" name="D:\PROYECTOS JAVA\ExpressoLestani-master\src\main\java\com\icon\icon\busqueda-de-lupa.png"/>
+                </Property>
+              </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel19">
+              <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="2" name="D:\PROYECTOS JAVA\ExpressoLestani-master\src\main\java\com\icon\icon\busqueda-de-lupa.png"/>
+                </Property>
+              </Properties>
             </Component>
           </SubComponents>
         </Container>
         <Component class="javax.swing.JLabel" name="jLabel1">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="2" name="C:\Users\Marco\OneDrive\Escritorio\logoLestani.png"/>
+              <Image iconType="2" name="D:\PROYECTOS JAVA\ExpressoLestani-master\src\main\java\com\imagenes\logo.jpg"/>
             </Property>
           </Properties>
         </Component>

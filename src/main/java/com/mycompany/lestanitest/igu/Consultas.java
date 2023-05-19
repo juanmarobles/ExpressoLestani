@@ -467,11 +467,10 @@ public class Consultas extends javax.swing.JFrame {
             }
         });
 
-        btnImprimir.setText("IMPRIMIR");
         btnImprimir.setBackground(new java.awt.Color(51, 51, 51));
         btnImprimir.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         btnImprimir.setForeground(new java.awt.Color(236, 240, 241));
-        btnImprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/icon/icon/pdf.png"))); // NOI18N
+        btnImprimir.setIcon(new javax.swing.ImageIcon("D:\\PROYECTOS JAVA\\ExpressoLestani-master\\src\\main\\java\\com\\icon\\icon\\pdf.png")); // NOI18N
         btnImprimir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnImprimirActionPerformed(evt);
