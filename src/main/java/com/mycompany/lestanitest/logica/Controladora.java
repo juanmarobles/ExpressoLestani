@@ -15,7 +15,8 @@ public class Controladora {
     ControladoraPersistencia ctrl = new ControladoraPersistencia();
 
     /**
-     * --------------------------------------Verificacion Usuario-------------------------------------------------
+     * --------------------------------------Verificacion
+     * Usuario-------------------------------------------------
      */
     public String validarUsuario(String usuario, String password) {
         String mensaje = "";
@@ -36,9 +37,9 @@ public class Controladora {
     }
 
     /**
-     * --------------------------------------CRUD CONTROLADORA CLASE CLIENTE-------------------------------------------------
+     * --------------------------------------CRUD CONTROLADORA CLASE
+     * CLIENTE-------------------------------------------------
      */
-
     /**
      * ----------------------------------------------GUARDAR-----------------------------------------------------------------
      */
@@ -87,7 +88,8 @@ public class Controladora {
     }
 
     /**
-     * --------------------------------------CRUD CONTROLADORA CLASE VEHICULO-------------------------------------------------
+     * --------------------------------------CRUD CONTROLADORA CLASE
+     * VEHICULO-------------------------------------------------
      */
     /**
      * ----------------------------------------------GUARDAR-----------------------------------------------------------------
@@ -130,7 +132,8 @@ public class Controladora {
     }
 
     /**
-     * --------------------------------------CRUD CONTROLADORA DE CLASE REPRESENTANTE-------------------------------------------------
+     * --------------------------------------CRUD CONTROLADORA DE CLASE
+     * REPRESENTANTE-------------------------------------------------
      */
     /**
      * ----------------------------------------------GUARDAR-----------------------------------------------------------------
@@ -175,7 +178,8 @@ public class Controladora {
     }
 
     /**
-     * --------------------------------------CRUD CONTROLADORA DE CLASE SERVICIO-------------------------------------------------
+     * --------------------------------------CRUD CONTROLADORA DE CLASE
+     * SERVICIO-------------------------------------------------
      */
     /**
      * ----------------------------------------------GUARDAR-----------------------------------------------------------------
@@ -218,12 +222,13 @@ public class Controladora {
     }
 
     /**
-     * --------------------------------------CRUD CONTROLADORA CLASE MOVIMIENTOS-------------------------------------------------
+     * --------------------------------------CRUD CONTROLADORA CLASE
+     * MOVIMIENTOS-------------------------------------------------
      */
     /**
      * ----------------------------------------------GUARDAR-----------------------------------------------------------------
      */
-    public void cargarMovimiento(String cliente, String destino, String servicio, String representante, int bulto, String monto, String flete,String tFlete, int remito, String fPr, Date fecha, String tMonto, String cC, String obs) {
+    public void cargarMovimiento(String cliente, String destino, String servicio, String representante, int bulto, String monto, String flete, String tFlete, int remito, String fPr, Date fecha, String tMonto, String cC, String obs) {
         Movimientos m = new Movimientos();
         m.setCliente(cliente);
         m.setDestino(destino);
@@ -240,23 +245,23 @@ public class Controladora {
         m.setCuentaCorriente(cC);
         m.setObservaciones(obs);
         ctrl.guardarMovimiento(m);
-        
-        
+
     }
+
     public void cargarMovimiento(String tFlete) {
         Movimientos m = new Movimientos();
         m.setFleteDestinoOrigen(tFlete);
     }
-     public void actualizarMonto(Movimientos m,String tMonto) {
+
+    public void actualizarMonto(Movimientos m, String tMonto) {
         m.setTipoMonto(tMonto);
         ctrl.modificarMovimiento(m);
     }
-     public void actualizarFlete(Movimientos m,String tFlete) {
+
+    public void actualizarFlete(Movimientos m, String tFlete) {
         m.setTipoFlete(tFlete);
         ctrl.modificarMovimiento(m);
     }
-    
-    
 
     /**
      * ----------------------------------------------BORRAR-----------------------------------------------------------------
@@ -271,14 +276,16 @@ public class Controladora {
     public List<Movimientos> traerMovimientos() {
         return ctrl.traerMovimientos();
     }
-    
-    
-    
 
     public void cargarDestino(String destino) {
         Destinos d = new Destinos();
         d.setLocaliad(destino);
         ctrl.guardarDestino(d);
+    }
+
+    //RECIBOS
+    public List<Movimientos> traerMovimientos(String cliente, String fechaDesde, String fechaHasta) {
+        return ctrl.traerMovimientos();
     }
 
     /**
@@ -304,12 +311,10 @@ public class Controladora {
         ctrl.modificarMovimiento(mov);
     }
 
-    
-
     /**
-     * ----------------------------------------------CLASE CONSULTAS METODOS!!-----------------------------------------------------------------
+     * ----------------------------------------------CLASE CONSULTAS
+     * METODOS!!-----------------------------------------------------------------
      */
-    
 }
 /**
  * ----------------------------------------------EDITAR-----------------------------------------------------------------
@@ -323,5 +328,3 @@ public class Controladora {
  * patente) { vehiculo.setVehiculo(v); vehiculo.setPatente(patente);
  * vehiculo.setChofer(chofer); ctrl.modificarVehiculo(vehiculo); }
  */
-
-
