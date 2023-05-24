@@ -904,8 +904,8 @@ public class Consultas extends javax.swing.JFrame {
     }//GEN-LAST:event_txtTotalFleteActionPerformed
 
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
-        Principal pn = new Principal();
-        pn.setVisible(true);
+        Principal p = new Principal();
+        p.setVisible(true);
         dispose();
     }//GEN-LAST:event_btnVolverActionPerformed
 
@@ -1314,7 +1314,5 @@ public class Consultas extends javax.swing.JFrame {
             Logger.getLogger(Consultas.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
-    
 
 }
