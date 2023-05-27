@@ -1178,7 +1178,7 @@ public class Recibos extends javax.swing.JFrame {
                 table.setSpacingAfter(10f);
 
                 // Ajustar espacio horizontal
-                float[] columnWidths = {0.8f, 1f, 0.7f, 0.6f, 1f,1f,1f, 1f}; // Anchos de las columnas (proporciones)
+                float[] columnWidths = {0.8f, 1f, 0.7f, 0.7f, 1f,1f,1f, 1f}; // Anchos de las columnas (proporciones)
                 table.setWidths(columnWidths);
                 table.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
 
