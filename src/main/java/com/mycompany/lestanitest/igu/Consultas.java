@@ -1217,10 +1217,10 @@ public class Consultas extends javax.swing.JFrame {
             document.open();
 
             //FUENTES
-            Font font = FontFactory.getFont(FontFactory.COURIER_BOLD, 8, Font.NORMAL);
-            Font fontTotales = FontFactory.getFont(FontFactory.COURIER, 10, Font.BOLD, BaseColor.BLACK);
-            Font fontFecha = FontFactory.getFont(FontFactory.COURIER, 10, Font.BOLD, BaseColor.BLACK);
-            Font fontFilas = FontFactory.getFont(FontFactory.COURIER, 8);
+            Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 8, Font.BOLD);
+            Font fontTotales = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
+            Font fontFecha = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
+            Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 8);
 
             // LOGO
             Image logo = Image.getInstance("src/main/java/com/imagenes/logo.jpg");
@@ -1228,7 +1228,7 @@ public class Consultas extends javax.swing.JFrame {
             logo.setAlignment(Element.ALIGN_CENTER);
             document.add(logo);
             // TITULO
-            Paragraph titulo = new Paragraph("DETALLE DE MOVIMIENTOS", FontFactory.getFont(FontFactory.COURIER_BOLD, 16, Font.BOLD, BaseColor.BLACK));
+            Paragraph titulo = new Paragraph("DETALLE DE MOVIMIENTOS", FontFactory.getFont(FontFactory.TIMES_ROMAN, 16, Font.BOLD, BaseColor.BLACK));
             titulo.setAlignment(Element.ALIGN_CENTER);
             titulo.setSpacingAfter(10f); // Espacio después del título (en puntos)
 
@@ -1250,7 +1250,7 @@ public class Consultas extends javax.swing.JFrame {
             table.setSpacingAfter(10f);
 
             // Ajustar espacio horizontal
-            float[] columnWidths = {0.9f, 1f, 1f, 0.6f, 0.6f, 1f, 0.6f, 1f, 0.6f, 1.3f}; // Anchos de las columnas (proporciones)
+            float[] columnWidths = {0.9f, 1f, 1f, 0.7f, 0.7f, 1f, 0.7f, 1f, 0.7f, 1.3f}; // Anchos de las columnas (proporciones)
             table.setWidths(columnWidths);
 
             table.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
