@@ -167,14 +167,20 @@ public class Movimientos implements Serializable {
     }
 
     public String getFlete() {
-        BigDecimal fleteBigDecimal = new BigDecimal(flete);
-        DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
-        simbolos.setDecimalSeparator(',');
-        simbolos.setGroupingSeparator('.');
-        DecimalFormat formato = new DecimalFormat("#,##0.00", simbolos);
-        String fleteFormateado = formato.format(fleteBigDecimal);
-        flete = fleteFormateado;
-        return "$" + flete;
+        String fleteFormateado = "";
+
+        try {
+            BigDecimal fleteBigDecimal = new BigDecimal(flete.replace(',', '.'));
+            DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
+            simbolos.setDecimalSeparator(',');
+            simbolos.setGroupingSeparator('.');
+            DecimalFormat formato = new DecimalFormat("#,##0.00", simbolos);
+            fleteFormateado = formato.format(fleteBigDecimal);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+
+        return "$" + fleteFormateado;
     }
 
     public void setFlete(String flete) {
