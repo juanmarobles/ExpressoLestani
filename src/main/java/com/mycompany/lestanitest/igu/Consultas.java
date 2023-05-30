@@ -50,6 +50,7 @@ import javax.swing.JTable;
 import javax.swing.RowFilter;
 import javax.swing.RowSorter;
 import javax.swing.SortOrder;
+import javax.swing.SwingConstants;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.UndoableEditListener;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -308,6 +309,7 @@ public class Consultas extends javax.swing.JFrame {
         );
 
         tablaConsultas.setBackground(new java.awt.Color(66, 66, 66));
+        tablaConsultas.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         tablaConsultas.setForeground(new java.awt.Color(236, 240, 241));
         tablaConsultas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -734,7 +736,26 @@ public class Consultas extends javax.swing.JFrame {
             tabla.addRow(objeto);
         }
         tablaConsultas.setModel(tabla);
-        tablaConsultas.getModel();
+        // Establecer el ancho específico de las columnas
+        int[] anchos = {60, 60, 100, 100, 40, 40, 100, 40, 100, 40, 70, 100, 5, 200}; // Anchos deseados para cada columna en píxeles
+
+        if (anchos.length == tabla.getColumnCount()) {
+            TableColumnModel columnModel = tablaConsultas.getColumnModel();
+            for (int i = 0; i < anchos.length; i++) {
+                TableColumn columna = columnModel.getColumn(i);
+                columna.setPreferredWidth(anchos[i]);
+
+                // Renderizador personalizado para centrar el contenido de las celdas
+                DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
+                renderer.setHorizontalAlignment(SwingConstants.CENTER);
+                tablaConsultas.setDefaultRenderer(Object.class, renderer);
+
+                // Renderizador personalizado para centrar el título de las columnas
+                DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) tablaConsultas.getTableHeader().getDefaultRenderer();
+                headerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+            }
+        }
+
     }
 
     public List<Movimientos> filtrarPorFechas(List<Movimientos> objetos, String fechaDesde, String fechaHasta) {
@@ -957,7 +978,7 @@ public class Consultas extends javax.swing.JFrame {
          */
         tableModel.setRowCount(0);
         for (Movimientos mov : listaMovimientos) {
-            if (!cbPagados.isSelected() && !Arrays.asList("Pagado", "Rendido", "Pagado/Rendido").contains(mov.getTipoMonto())) {
+            if (!cbPagados.isSelected() && !Arrays.asList("Si", "Rendido", "Pagado/Rendido").contains(mov.getTipoMonto())) {
                 Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
                 tableModel.addRow(row);
             }
@@ -984,7 +1005,7 @@ public class Consultas extends javax.swing.JFrame {
          * CHECK BOX PAGADOS
          */
         for (Movimientos mov : listaMovimientos) {
-            if (!cbFletePagado.isSelected() && !Arrays.asList("Pagado", "Rendido", "Pagado/Rendido").contains(mov.getTipoFlete())) {
+            if (!cbFletePagado.isSelected() && !Arrays.asList("Si", "Rendido", "Pagado/Rendido").contains(mov.getTipoFlete())) {
                 Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
                 tableModel.addRow(row);
             }
@@ -992,6 +1013,7 @@ public class Consultas extends javax.swing.JFrame {
                 Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
                 tableModel.addRow(row);
             }
+
             if (cbfTodos.isSelected()) {
                 Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
                 tableModel.addRow(row);
@@ -1188,9 +1210,27 @@ public class Consultas extends javax.swing.JFrame {
             }
         }
         tablaConsultas.setModel(tabla);
-        tablaConsultas.getModel();
-        JTable tab = new JTable(tabla);
-        return tab;
+        // Establecer el ancho específico de las columnas
+        int[] anchos = {60, 60, 100, 100, 40, 40, 100, 40, 100, 40, 70, 100, 5, 200}; // Anchos deseados para cada columna en píxeles
+
+        if (anchos.length == tabla.getColumnCount()) {
+            TableColumnModel columnModel = tablaConsultas.getColumnModel();
+            for (int i = 0; i < anchos.length; i++) {
+                TableColumn columna = columnModel.getColumn(i);
+                columna.setPreferredWidth(anchos[i]);
+
+                // Renderizador personalizado para centrar el contenido de las celdas
+                DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
+                renderer.setHorizontalAlignment(SwingConstants.CENTER);
+                tablaConsultas.setDefaultRenderer(Object.class, renderer);
+
+                // Renderizador personalizado para centrar el título de las columnas
+                DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) tablaConsultas.getTableHeader().getDefaultRenderer();
+                headerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+            }
+        }
+
+        return tablaConsultas;
     }
 
     //IMPRIMIR CONSULTAS

@@ -1,5 +1,6 @@
 package com.mycompany.lestanitest.logica;
 
+import com.mycompany.lestanitest.igu.VentanaPrincipal;
 import com.mycompany.lestanitest.persistencia.ControladoraPersistencia;
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -17,21 +18,29 @@ public class Controladora {
     /**
      * --------------------------------------Verificacion
      * Usuario-------------------------------------------------
+     *
      */
     public String validarUsuario(String usuario, String password) {
         String mensaje = "";
         List<Usuario> listaUsuarios = ctrl.traerUsuarios();
-        for (Usuario usu : listaUsuarios) {
-            if (usu.getUsuario().equals(usuario)) {
-                if (usu.getContraseña().equals(password)) {
-                    mensaje = "Bienvenido";
-                } else {
-                    mensaje = "Contraseña incorrecta";
-                }
-            } else {
-                mensaje = "Usuario incorrecto";
-            }
+        boolean usuarioValido = false;
 
+        for (Usuario usu : listaUsuarios) {
+            if (usu.getUsuario().equals(usuario) && usu.getContraseña().equals(password)) {
+                usuarioValido = true;
+                break;
+            }
+        }
+
+        if (usuarioValido) {
+            mensaje = "Bienvenido";
+            VentanaPrincipal pr = new VentanaPrincipal();
+            pr.setVisible(true);
+            pr.setLocationRelativeTo(null);
+        } else if (!usuarioValido && !listaUsuarios.isEmpty()) {
+            mensaje = "Usuario o contraseña incorrectos";
+        } else {
+            mensaje = "No hay usuarios registrados";
         }
         return mensaje;
     }
