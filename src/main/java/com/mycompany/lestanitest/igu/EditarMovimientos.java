@@ -69,7 +69,6 @@ public class EditarMovimientos extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         jCheckBox9 = new javax.swing.JCheckBox();
         jLabel10 = new javax.swing.JLabel();
-        cbRemito = new javax.swing.JCheckBox();
         txtMonto = new javax.swing.JTextField();
         txtRemito = new javax.swing.JTextField();
         jLabel12 = new javax.swing.JLabel();
@@ -93,16 +92,22 @@ public class EditarMovimientos extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Expreso Lestani S.R.L - Editar Movimientos");
 
+        panelCargaMovimientos.setBackground(new java.awt.Color(66, 66, 66));
+
         jLabel5.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setText("Monto");
 
         jLabel6.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jLabel6.setForeground(new java.awt.Color(255, 255, 255));
         jLabel6.setText("Flete");
 
         bulto.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        bulto.setForeground(new java.awt.Color(255, 255, 255));
         bulto.setText("Servicios");
 
         jLabel7.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jLabel7.setForeground(new java.awt.Color(255, 255, 255));
         jLabel7.setText("Bulto");
 
         txtBulto.addActionListener(new java.awt.event.ActionListener() {
@@ -112,25 +117,23 @@ public class EditarMovimientos extends javax.swing.JFrame {
         });
 
         jLabel8.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jLabel8.setForeground(new java.awt.Color(255, 255, 255));
         jLabel8.setText("Representante");
 
         jLabel4.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
         jLabel4.setText("Cliente");
 
         jLabel9.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jLabel9.setForeground(new java.awt.Color(255, 255, 255));
         jLabel9.setText("Fecha");
 
+        jCheckBox9.setForeground(new java.awt.Color(255, 255, 255));
         jCheckBox9.setText("Cuenta Corriente");
 
         jLabel10.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jLabel10.setForeground(new java.awt.Color(255, 255, 255));
         jLabel10.setText("Destino");
-
-        cbRemito.setText("Generar Remito");
-        cbRemito.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbRemitoActionPerformed(evt);
-            }
-        });
 
         txtMonto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -145,20 +148,27 @@ public class EditarMovimientos extends javax.swing.JFrame {
         });
 
         jLabel12.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
-        jLabel12.setText("Remito");
+        jLabel12.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel12.setText("Remito N°");
 
+        cbmontoPagado.setForeground(new java.awt.Color(255, 255, 255));
         cbmontoPagado.setText("Pagado");
 
+        cbMontoRendido.setForeground(new java.awt.Color(255, 255, 255));
         cbMontoRendido.setText("Rendido");
 
+        cbfletePagado.setForeground(new java.awt.Color(255, 255, 255));
         cbfletePagado.setText("Pagado");
 
+        cbfleteRendido.setForeground(new java.awt.Color(255, 255, 255));
         cbfleteRendido.setText("Rendido");
 
-        jLabel15.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        jLabel15.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        jLabel15.setForeground(new java.awt.Color(255, 255, 255));
         jLabel15.setText("$");
 
-        jLabel16.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        jLabel16.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        jLabel16.setForeground(new java.awt.Color(255, 255, 255));
         jLabel16.setText("$");
 
         btnGuardar.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
@@ -178,6 +188,7 @@ public class EditarMovimientos extends javax.swing.JFrame {
         });
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Flete a Cargo");
 
         try {
@@ -191,8 +202,10 @@ public class EditarMovimientos extends javax.swing.JFrame {
             }
         });
 
+        cbfDestino.setForeground(new java.awt.Color(255, 255, 255));
         cbfDestino.setText("Destino");
 
+        cbfOrigen.setForeground(new java.awt.Color(255, 255, 255));
         cbfOrigen.setText("Origen");
 
         javax.swing.GroupLayout panelCargaMovimientosLayout = new javax.swing.GroupLayout(panelCargaMovimientos);
@@ -205,15 +218,17 @@ public class EditarMovimientos extends javax.swing.JFrame {
                     .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
                         .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
-                                .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jLabel12)
-                                        .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING))
-                                    .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING))
-                                .addGap(18, 18, 18)
-                                .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel16, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(2, 2, 2)
+                                .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
+                                        .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(jLabel6)
+                                            .addComponent(jLabel5))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jLabel16, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(jLabel12))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(txtMonto, javax.swing.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE)
@@ -234,9 +249,6 @@ public class EditarMovimientos extends javax.swing.JFrame {
                                         .addComponent(cbfletePagado)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addComponent(cbfleteRendido))))
-                            .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
-                                .addGap(27, 27, 27)
-                                .addComponent(cbRemito))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelCargaMovimientosLayout.createSequentialGroup()
                                 .addGap(19, 19, 19)
                                 .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))))
@@ -326,8 +338,7 @@ public class EditarMovimientos extends javax.swing.JFrame {
                 .addGap(29, 29, 29)
                 .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtRemito, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cbRemito))
+                    .addComponent(txtRemito, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 35, Short.MAX_VALUE)
                 .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnGuardar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -358,10 +369,6 @@ public class EditarMovimientos extends javax.swing.JFrame {
     private void txtBultoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBultoActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtBultoActionPerformed
-
-    private void cbRemitoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbRemitoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cbRemitoActionPerformed
 
     private void txtMontoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMontoActionPerformed
         // TODO add your handling code here:
@@ -409,12 +416,8 @@ public class EditarMovimientos extends javax.swing.JFrame {
             tFlete = "Origen";
         }
 
-        //remito
-        if (cbRemito.isSelected()) {
-            remito = (int) (Math.random() * 10000);
-        } else {
-            remito = Integer.parseInt(txtRemito.getText());
-        }
+       
+       
 
         //verif de monto pagado/rendido
         if (cbmontoPagado.isSelected() && cbMontoRendido.isSelected()) {
@@ -458,7 +461,6 @@ public class EditarMovimientos extends javax.swing.JFrame {
     private javax.swing.JButton btnGuardar;
     private javax.swing.JLabel bulto;
     private javax.swing.JCheckBox cbMontoRendido;
-    private javax.swing.JCheckBox cbRemito;
     private javax.swing.JCheckBox cbfDestino;
     private javax.swing.JCheckBox cbfOrigen;
     private javax.swing.JCheckBox cbfletePagado;
