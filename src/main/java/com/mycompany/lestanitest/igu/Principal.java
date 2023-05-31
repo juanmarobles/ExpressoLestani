@@ -10,6 +10,7 @@ import com.mycompany.lestanitest.logica.ModeloServicio;
 import com.mycompany.lestanitest.logica.Movimientos;
 import com.mycompany.lestanitest.logica.Representantes;
 import com.mycompany.lestanitest.logica.Servicios;
+import com.mycompany.lestanitest.logica.TextPrompt;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.table.TableColumn;
@@ -54,9 +55,10 @@ public class Principal extends javax.swing.JFrame {
         cargarDestinos();
         llenarRepresentantes();
         cargarServicios();
-
+        txtServicio.setText("Normal");
         txtFecha.setText(fechaActual());
-
+        TextPrompt filtroCl = new TextPrompt("Busqueda por cliente", txtFiltroCliente);
+        TextPrompt filtroRe = new TextPrompt("Busqueda por remito", txtFiltroRemito);
     }
 
     private void cargarServicios() {
@@ -230,7 +232,7 @@ public class Principal extends javax.swing.JFrame {
         jPanel1.setPreferredSize(new java.awt.Dimension(1920, 1080));
 
         tablaMovimientos.setBackground(new java.awt.Color(66, 66, 66));
-        tablaMovimientos.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        tablaMovimientos.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         tablaMovimientos.setForeground(new java.awt.Color(236, 240, 241));
         tablaMovimientos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -690,7 +692,6 @@ public class Principal extends javax.swing.JFrame {
 
         PanelBusquedas.setBackground(new java.awt.Color(66, 66, 66));
 
-        txtFiltroCliente.setText("Busqueda por CLIENTE");
         txtFiltroCliente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtFiltroClienteActionPerformed(evt);
@@ -702,7 +703,6 @@ public class Principal extends javax.swing.JFrame {
             }
         });
 
-        txtFiltroRemito.setText("Busqueda por REMITO");
         txtFiltroRemito.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtFiltroRemitoActionPerformed(evt);
@@ -952,6 +952,8 @@ public class Principal extends javax.swing.JFrame {
         //verif Cuenta Corriente
         if (cbCuentaCorriente.isSelected()) {
             cC = "Si";
+        } else {
+            cC = "No";
         }
         //remito
         if (cbRemito.isSelected()) {

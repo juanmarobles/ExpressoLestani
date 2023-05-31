@@ -69,6 +69,7 @@ import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.Copies;
 import javax.print.attribute.standard.MediaPrintableArea;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
@@ -296,7 +297,7 @@ public class Recibos extends javax.swing.JFrame {
         btnAgregar = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         tablaMovimientos = new javax.swing.JTable();
-        jButton3 = new javax.swing.JButton();
+        btnQuitar = new javax.swing.JButton();
         btnGenerarPdf = new javax.swing.JButton();
         btnImprimir = new javax.swing.JButton();
 
@@ -406,14 +407,14 @@ public class Recibos extends javax.swing.JFrame {
         ));
         jScrollPane2.setViewportView(tablaMovimientos);
 
-        jButton3.setBackground(new java.awt.Color(51, 51, 51));
-        jButton3.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
-        jButton3.setForeground(new java.awt.Color(236, 240, 241));
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/X_24px.png"))); // NOI18N
-        jButton3.setText("Quitar");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        btnQuitar.setBackground(new java.awt.Color(51, 51, 51));
+        btnQuitar.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        btnQuitar.setForeground(new java.awt.Color(236, 240, 241));
+        btnQuitar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/X_24px.png"))); // NOI18N
+        btnQuitar.setText("Quitar");
+        btnQuitar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                btnQuitarActionPerformed(evt);
             }
         });
 
@@ -496,7 +497,7 @@ public class Recibos extends javax.swing.JFrame {
                 .addGap(28, 28, 28)
                 .addComponent(btnGenerarPdf, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(28, 28, 28)
-                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnQuitar, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -539,7 +540,7 @@ public class Recibos extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnGenerarPdf, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnQuitar, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(17, 17, 17))
         );
 
@@ -889,9 +890,10 @@ public class Recibos extends javax.swing.JFrame {
 
     }//GEN-LAST:event_btnGenerarPdfActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-
-    }//GEN-LAST:event_jButton3ActionPerformed
+    private void btnQuitarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQuitarActionPerformed
+        txtTotalMonto.setText("");
+        txtTotalFlete.setText("");
+    }//GEN-LAST:event_btnQuitarActionPerformed
     private void generarPdf() {
         Document document = new Document();
         // Incrementar el contador de recibo
@@ -899,187 +901,207 @@ public class Recibos extends javax.swing.JFrame {
         // Generar el número de recibo en formato de 5 dígitos
         String numeroReciboString = String.format("%05d", numeroRecibo);
         try {
-            //DIRECTORIO
-            String outputPath = System.getProperty("user.home") + File.separator + "Recibo.pdf";
-            File outputFile = new File(outputPath);
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile));
-            document.open();
+            // Crear un diálogo de selección de archivo
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setDialogTitle("Guardar PDF");
+            fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            // Mostrar el diálogo de selección de archivo
+            int userSelection = fileChooser.showSaveDialog(null);
 
-            //FUENTES
-            Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.NORMAL);
-            Font fontColumnas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD);
-            Font fontTotales = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
-            Font fontFecha = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
-            Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 9, Font.NORMAL, BaseColor.BLACK);
+            if (userSelection == JFileChooser.APPROVE_OPTION) {
+                // Obtener el archivo seleccionado por el usuario
+                File selectedFile = fileChooser.getSelectedFile();
+                String outputPath = selectedFile.getAbsolutePath();
 
-            //FECHAS
-            Chunk chunkFechas = new Chunk("Fecha: " + fechaActual(), fontFecha);
-            Paragraph fecha = new Paragraph(chunkFechas);
-            fecha.setAlignment(Element.ALIGN_RIGHT);
-            fecha.setSpacingAfter(5f); // Espacio después de las fechas (en puntos)
-            //RECIBO NRO
-            Paragraph nroRecibo = new Paragraph("RECIBO Nro: " + String.format("%05d", numeroRecibo), FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.NORMAL));
-            guardarNumeroRecibo();
-            nroRecibo.setAlignment(Element.ALIGN_RIGHT);
-            nroRecibo.setSpacingAfter(10f); // Espacio después del título (en puntos)
-            // TITULO RECIBO
-            Paragraph titulo = new Paragraph("RECIBO", FontFactory.getFont(FontFactory.TIMES_ROMAN, 14, Font.BOLD));
-            titulo.setAlignment(Element.ALIGN_CENTER);
-            titulo.setSpacingAfter(10f); // Espacio después del título (en puntos)
-
-            // LOGO
-            Image logo = Image.getInstance("src/main/java/com/imagenes/ivacuit.jpg");
-            logo.scaleToFit(530, 800);
-            logo.setAlignment(Element.ALIGN_LEFT);
-            // FIRMASELLO
-            Image firmasello = Image.getInstance("src/main/java/com/imagenes/firmasello.jpg");
-            firmasello.scaleToFit(150, 150);
-            firmasello.setAlignment(Element.ALIGN_RIGHT);
-
-            // DOC NO VALIDO COMO FACTURA
-            Paragraph subtitulo = new Paragraph("DOCUMENTO NO VALIDO COMO FACTURA", FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.NORMAL));
-            subtitulo.setAlignment(Element.ALIGN_CENTER);
-            subtitulo.setSpacingAfter(10f); // Espacio después del título (en puntos)
-
-            document.add(titulo);
-            document.add(fecha);
-            document.add(nroRecibo);
-            document.add(logo);
-            document.add(subtitulo);
-
-            // Crear una tabla para los senores y domicilio         
-            PdfPTable senoresdomicilio = new PdfPTable(2);
-            senoresdomicilio.setWidthPercentage(100);
-
-            // Ajustar los anchos de las columnas
-            float[] colSenDom = {0.2f, 1f}; // Ancho relativo de las columnas (proporciones)
-            senoresdomicilio.setWidths(colSenDom);
-
-            // Columna "Señores"
-            Phrase senoresLabel = new Phrase("SEÑORES", font);
-            PdfPCell senoresLabelCell = new PdfPCell(new Paragraph(senoresLabel));
-            senoresLabelCell.setBorder(Rectangle.BOX);
-            senoresLabelCell.setHorizontalAlignment(Element.ALIGN_LEFT);
-            senoresLabelCell.setPaddingBottom(5f); // Espacio después de la celda
-            senoresdomicilio.addCell(senoresLabelCell);
-
-            // Contenido de la columna "Señores"
-            Phrase senoresValue = new Phrase(txtCliente.getText(), font);
-            PdfPCell senoresValueCell = new PdfPCell(new Paragraph(senoresValue));
-            senoresValueCell.setBorder(Rectangle.BOX);
-            senoresValueCell.setPadding(5f);
-            senoresValueCell.setPaddingBottom(5f); // Espacio después de la celda
-            senoresdomicilio.addCell(senoresValueCell);
-
-            // Columna "Domicilio"
-            Phrase domicilioLabel = new Phrase("DOMICILIO", font);
-            PdfPCell domicilioLabelCell = new PdfPCell(new Paragraph(domicilioLabel));
-            domicilioLabelCell.setBorder(Rectangle.BOX);
-            domicilioLabelCell.setHorizontalAlignment(Element.ALIGN_LEFT);
-            domicilioLabelCell.setPaddingBottom(5f); // Espacio después de la celda
-            senoresdomicilio.addCell(domicilioLabelCell);
-
-            // Contenido de la columna "Domicilio"
-            Phrase domicilioValue = new Phrase(txtDomicilio.getText(), font);
-            PdfPCell domicilioValueCell = new PdfPCell(new Paragraph(domicilioValue));
-            domicilioValueCell.setBorder(Rectangle.BOX);
-            domicilioValueCell.setPadding(5f);
-            domicilioValueCell.setPaddingBottom(5f); // Espacio después de la celda
-            senoresdomicilio.addCell(domicilioValueCell);
-
-            senoresdomicilio.setSpacingBefore(0.1f);
-            document.add(senoresdomicilio);
-
-            // Crear una tabla para recibi y concepto        
-            PdfPTable recibiconcepto = new PdfPTable(2);
-            recibiconcepto.setWidthPercentage(100);
-            // RECIBI LA SUMA D PESOS...
-            Phrase texto = new Phrase("\nRECIBÍ DE EXPRESO LESTANI LA SUMA DE PESOS: " + txtRecibi.getText(), font);
-            Paragraph textoRecibi = new Paragraph(texto);
-            textoRecibi.setAlignment(Element.ALIGN_LEFT);
-            document.add(textoRecibi);
-
-            // CONCEPTO DE
-            Phrase textodos = new Phrase("\nEN CONCEPTO DE: " + txtConcepto.getText(), font);
-            Paragraph textoConcepto = new Paragraph(textodos);
-            textoConcepto.setAlignment(Element.ALIGN_LEFT);
-            document.add(textoConcepto);
-
-            recibiconcepto.setSpacingBefore(8f);
-
-            document.add(recibiconcepto);
-
-            //TABLA
-            // Obtener las filas seleccionadas de la tabla
-            int[] filasSeleccionadas = tablaMovimientos.getSelectedRows();
-
-            if (filasSeleccionadas.length > 0) { // Verificar que se hayan seleccionado filas
-                // Calcular el número de columnas en la tabla
-                int numColumnasTabla = 6;
-
-                // Crear la tabla con el número correcto de columnas
-                PdfPTable table = new PdfPTable(numColumnasTabla);
-                table.setSpacingBefore(10f); // Espacio antes de la tabla (en puntos)
-                table.setSpacingAfter(10f);
-
-                // Ajustar espacio horizontal
-                float[] columnWidths = {0.8f, 1f, 0.6f, 0.6f, 1f, 0.6f}; // Anchos de las columnas (proporciones)
-                table.setWidths(columnWidths);
-                table.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
-
-                // Agregar las celdas de encabezado a la tabla, excluyendo las columnas suprimidas
-                for (int i = 0; i < tablaMovimientos.getColumnCount(); i++) {
-                    String col = tablaMovimientos.getColumnName(i);
-                    if (!col.equals("REPRESENTANTE") && !col.equals("CLIENTE") && !col.equals("PAGADO") && !col.equals("CC") && !col.equals("FLETE") && !col.equals("A_CARGO_DE")) {
-                        PdfPCell cell = new PdfPCell(new Phrase(col, fontColumnas));
-                        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                        cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
-                        table.addCell(cell);
-                    }
+                // Agregar la extensión ".pdf" al nombre del archivo si no está presente
+                if (!outputPath.toLowerCase().endsWith(".pdf")) {
+                    outputPath += ".pdf";
                 }
 
-                // Obtener los datos de las filas seleccionadas y agregar las celdas de datos a la tabla
-                for (int fila : filasSeleccionadas) {
-                    // Agregar las celdas de datos excluyendo las columnas suprimidas
-                    for (int col = 0; col < tablaMovimientos.getColumnCount(); col++) {
-                        String colName = tablaMovimientos.getColumnName(col);
-                        if (!colName.equals("REPRESENTANTE") && !colName.equals("CLIENTE") && !colName.equals("PAGADO") && !colName.equals("CC") && !colName.equals("FLETE") && !colName.equals("A_CARGO_DE")) {
-                            Object value = tablaMovimientos.getValueAt(fila, col);
-                            if (value != null) {
-                                PdfPCell cell = new PdfPCell(new Phrase(value.toString(), fontFilas));
-                                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                                cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
-                                table.addCell(cell);
-                            }
+                // Crear el archivo de salida
+                File outputFile = new File(outputPath);
+                PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile));
+
+                document.open();
+
+                //FUENTES
+                Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.NORMAL);
+                Font fontColumnas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD);
+                Font fontTotales = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
+                Font fontFecha = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
+                Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 9, Font.NORMAL, BaseColor.BLACK);
+
+                //FECHAS
+                Chunk chunkFechas = new Chunk("Fecha: " + fechaActual(), fontFecha);
+                Paragraph fecha = new Paragraph(chunkFechas);
+                fecha.setAlignment(Element.ALIGN_RIGHT);
+                fecha.setSpacingAfter(5f); // Espacio después de las fechas (en puntos)
+                //RECIBO NRO
+                Paragraph nroRecibo = new Paragraph("RECIBO Nro: " + String.format("%05d", numeroRecibo), FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.NORMAL));
+                guardarNumeroRecibo();
+                nroRecibo.setAlignment(Element.ALIGN_RIGHT);
+                nroRecibo.setSpacingAfter(10f); // Espacio después del título (en puntos)
+                // TITULO RECIBO
+                Paragraph titulo = new Paragraph("RECIBO", FontFactory.getFont(FontFactory.TIMES_ROMAN, 14, Font.BOLD));
+                titulo.setAlignment(Element.ALIGN_CENTER);
+                titulo.setSpacingAfter(10f); // Espacio después del título (en puntos)
+
+                // LOGO
+                Image logo = Image.getInstance("src/main/java/com/imagenes/ivacuit.jpg");
+                logo.scaleToFit(530, 800);
+                logo.setAlignment(Element.ALIGN_LEFT);
+                // FIRMASELLO
+                Image firmasello = Image.getInstance("src/main/java/com/imagenes/firmasello.jpg");
+                firmasello.scaleToFit(150, 150);
+                firmasello.setAlignment(Element.ALIGN_RIGHT);
+
+                // DOC NO VALIDO COMO FACTURA
+                Paragraph subtitulo = new Paragraph("DOCUMENTO NO VALIDO COMO FACTURA", FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.NORMAL));
+                subtitulo.setAlignment(Element.ALIGN_CENTER);
+                subtitulo.setSpacingAfter(10f); // Espacio después del título (en puntos)
+
+                document.add(titulo);
+                document.add(fecha);
+                document.add(nroRecibo);
+                document.add(logo);
+                document.add(subtitulo);
+
+                // Crear una tabla para los senores y domicilio         
+                PdfPTable senoresdomicilio = new PdfPTable(2);
+                senoresdomicilio.setWidthPercentage(100);
+
+                // Ajustar los anchos de las columnas
+                float[] colSenDom = {0.2f, 1f}; // Ancho relativo de las columnas (proporciones)
+                senoresdomicilio.setWidths(colSenDom);
+
+                // Columna "Señores"
+                Phrase senoresLabel = new Phrase("SEÑORES", font);
+                PdfPCell senoresLabelCell = new PdfPCell(new Paragraph(senoresLabel));
+                senoresLabelCell.setBorder(Rectangle.BOX);
+                senoresLabelCell.setHorizontalAlignment(Element.ALIGN_LEFT);
+                senoresLabelCell.setPaddingBottom(5f); // Espacio después de la celda
+                senoresdomicilio.addCell(senoresLabelCell);
+
+                // Contenido de la columna "Señores"
+                Phrase senoresValue = new Phrase(txtCliente.getText(), font);
+                PdfPCell senoresValueCell = new PdfPCell(new Paragraph(senoresValue));
+                senoresValueCell.setBorder(Rectangle.BOX);
+                senoresValueCell.setPadding(5f);
+                senoresValueCell.setPaddingBottom(5f); // Espacio después de la celda
+                senoresdomicilio.addCell(senoresValueCell);
+
+                // Columna "Domicilio"
+                Phrase domicilioLabel = new Phrase("DOMICILIO", font);
+                PdfPCell domicilioLabelCell = new PdfPCell(new Paragraph(domicilioLabel));
+                domicilioLabelCell.setBorder(Rectangle.BOX);
+                domicilioLabelCell.setHorizontalAlignment(Element.ALIGN_LEFT);
+                domicilioLabelCell.setPaddingBottom(5f); // Espacio después de la celda
+                senoresdomicilio.addCell(domicilioLabelCell);
+
+                // Contenido de la columna "Domicilio"
+                Phrase domicilioValue = new Phrase(txtDomicilio.getText(), font);
+                PdfPCell domicilioValueCell = new PdfPCell(new Paragraph(domicilioValue));
+                domicilioValueCell.setBorder(Rectangle.BOX);
+                domicilioValueCell.setPadding(5f);
+                domicilioValueCell.setPaddingBottom(5f); // Espacio después de la celda
+                senoresdomicilio.addCell(domicilioValueCell);
+
+                senoresdomicilio.setSpacingBefore(0.1f);
+                document.add(senoresdomicilio);
+
+                // Crear una tabla para recibi y concepto        
+                PdfPTable recibiconcepto = new PdfPTable(2);
+                recibiconcepto.setWidthPercentage(100);
+                // RECIBI LA SUMA D PESOS...
+                Phrase texto = new Phrase("\nRECIBÍ DE EXPRESO LESTANI LA SUMA DE PESOS: " + txtRecibi.getText(), font);
+                Paragraph textoRecibi = new Paragraph(texto);
+                textoRecibi.setAlignment(Element.ALIGN_LEFT);
+                document.add(textoRecibi);
+
+                // CONCEPTO DE
+                Phrase textodos = new Phrase("\nEN CONCEPTO DE: " + txtConcepto.getText(), font);
+                Paragraph textoConcepto = new Paragraph(textodos);
+                textoConcepto.setAlignment(Element.ALIGN_LEFT);
+                document.add(textoConcepto);
+
+                recibiconcepto.setSpacingBefore(8f);
+
+                document.add(recibiconcepto);
+
+                //TABLA
+                // Obtener las filas seleccionadas de la tabla
+                int[] filasSeleccionadas = tablaMovimientos.getSelectedRows();
+
+                if (filasSeleccionadas.length > 0) { // Verificar que se hayan seleccionado filas
+                    // Calcular el número de columnas en la tabla
+                    int numColumnasTabla = 6;
+
+                    // Crear la tabla con el número correcto de columnas
+                    PdfPTable table = new PdfPTable(numColumnasTabla);
+                    table.setSpacingBefore(10f); // Espacio antes de la tabla (en puntos)
+                    table.setSpacingAfter(10f);
+
+                    // Ajustar espacio horizontal
+                    float[] columnWidths = {0.8f, 1f, 0.6f, 0.6f, 1f, 0.6f}; // Anchos de las columnas (proporciones)
+                    table.setWidths(columnWidths);
+                    table.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
+
+                    // Agregar las celdas de encabezado a la tabla, excluyendo las columnas suprimidas
+                    for (int i = 0; i < tablaMovimientos.getColumnCount(); i++) {
+                        String col = tablaMovimientos.getColumnName(i);
+                        if (!col.equals("REPRESENTANTE") && !col.equals("CLIENTE") && !col.equals("PAGADO") && !col.equals("CC") && !col.equals("FLETE") && !col.equals("A_CARGO_DE")) {
+                            PdfPCell cell = new PdfPCell(new Phrase(col, fontColumnas));
+                            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                            cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
+                            table.addCell(cell);
                         }
                     }
 
+                    // Obtener los datos de las filas seleccionadas y agregar las celdas de datos a la tabla
+                    for (int fila : filasSeleccionadas) {
+                        // Agregar las celdas de datos excluyendo las columnas suprimidas
+                        for (int col = 0; col < tablaMovimientos.getColumnCount(); col++) {
+                            String colName = tablaMovimientos.getColumnName(col);
+                            if (!colName.equals("REPRESENTANTE") && !colName.equals("CLIENTE") && !colName.equals("PAGADO") && !colName.equals("CC") && !colName.equals("FLETE") && !colName.equals("A_CARGO_DE")) {
+                                Object value = tablaMovimientos.getValueAt(fila, col);
+                                if (value != null) {
+                                    PdfPCell cell = new PdfPCell(new Phrase(value.toString(), fontFilas));
+                                    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                                    cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
+                                    table.addCell(cell);
+                                }
+                            }
+                        }
+
+                    }
+
+                    document.add(table);
+                } else {
+                    // Si no se ha seleccionado ninguna fila, mostrar un mensaje de error o realizar alguna acción adecuada.
                 }
 
-                document.add(table);
-            } else {
-                // Si no se ha seleccionado ninguna fila, mostrar un mensaje de error o realizar alguna acción adecuada.
+                // Crear una tabla para los montos totales
+                PdfPTable totalsTable = new PdfPTable(1);
+                totalsTable.setWidthPercentage(100);
+
+                // Monto total
+                // Establecer la fuente deseada
+                Phrase montoTotalPhrase = new Phrase("TOTAL MONTO: $" + txtTotalMonto.getText(), fontTotales);
+                PdfPCell montoTotalCell = new PdfPCell(montoTotalPhrase);
+                montoTotalCell.setBorder(Rectangle.NO_BORDER);
+                montoTotalCell.setHorizontalAlignment(Element.ALIGN_LEFT); // Alinear la celda a la izq
+                totalsTable.addCell(montoTotalCell);
+
+                totalsTable.setSpacingBefore(10f);
+                document.add(totalsTable);
+                document.add(firmasello);
+
+                document.close();
+                txtReciboNro.setText(String.valueOf(numeroRecibo));
+                writer.close();
+
+                JOptionPane.showMessageDialog(null, "El archivo se generó correctamente.", "Información", JOptionPane.INFORMATION_MESSAGE);
             }
-
-            // Crear una tabla para los montos totales
-            PdfPTable totalsTable = new PdfPTable(1);
-            totalsTable.setWidthPercentage(100);
-
-            // Monto total
-            // Establecer la fuente deseada
-            Phrase montoTotalPhrase = new Phrase("TOTAL MONTO: $" + txtTotalMonto.getText(), fontTotales);
-            PdfPCell montoTotalCell = new PdfPCell(montoTotalPhrase);
-            montoTotalCell.setBorder(Rectangle.NO_BORDER);
-            montoTotalCell.setHorizontalAlignment(Element.ALIGN_LEFT); // Alinear la celda a la izq
-            totalsTable.addCell(montoTotalCell);
-
-            totalsTable.setSpacingBefore(10f);
-            document.add(totalsTable);
-            document.add(firmasello);
-
-            document.close();
-            txtReciboNro.setText(String.valueOf(numeroRecibo));
-            JOptionPane.showMessageDialog(null, "El archivo se generó correctamente.", "Información", JOptionPane.INFORMATION_MESSAGE);
         } catch (DocumentException | FileNotFoundException e) {
             JOptionPane.showMessageDialog(null, "Error al generar el archivo PDF.", "Error", JOptionPane.ERROR_MESSAGE);
         } catch (IOException ex) {
@@ -1096,194 +1118,214 @@ public class Recibos extends javax.swing.JFrame {
 
         try {
 
-            //DIRECTORIO
-            String outputPath = System.getProperty("user.home") + File.separator + "Recibo.pdf";
-            File outputFile = new File(outputPath);
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile));
-            document.open();
+            // Crear un diálogo de selección de archivo
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setDialogTitle("Guardar PDF");
+            fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            // Mostrar el diálogo de selección de archivo
+            int userSelection = fileChooser.showSaveDialog(null);
 
-            //FUENTES
-            Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.NORMAL);
-            Font fontColumnas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD);
-            Font fontTotales = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
-            Font fontFecha = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
-            Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 9, Font.NORMAL, BaseColor.BLACK);
+            if (userSelection == JFileChooser.APPROVE_OPTION) {
+                // Obtener el archivo seleccionado por el usuario
+                File selectedFile = fileChooser.getSelectedFile();
+                String outputPath = selectedFile.getAbsolutePath();
 
-            //FECHAS
-            Chunk chunkFechas = new Chunk("Fecha: " + fechaActual(), fontFecha);
-            Paragraph fecha = new Paragraph(chunkFechas);
-            fecha.setAlignment(Element.ALIGN_RIGHT);
-            fecha.setSpacingAfter(5f); // Espacio después de las fechas (en puntos)
-            //RECIBO NRO
-            Paragraph nroRecibo = new Paragraph("RECIBO Nro: " + String.format("%05d", numeroRecibo), FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.NORMAL));
-            guardarNumeroRecibo();
-            nroRecibo.setAlignment(Element.ALIGN_RIGHT);
-            nroRecibo.setSpacingAfter(10f); // Espacio después del título (en puntos)
-            // TITULO RECIBO
-            Paragraph titulo = new Paragraph("RECIBO", FontFactory.getFont(FontFactory.TIMES_ROMAN, 14, Font.BOLD));
-            titulo.setAlignment(Element.ALIGN_CENTER);
-            titulo.setSpacingAfter(10f); // Espacio después del título (en puntos)
-
-            // LOGO
-            Image logo = Image.getInstance("src/main/java/com/imagenes/ivacuit.jpg");
-            logo.scaleToFit(530, 800);
-            logo.setAlignment(Element.ALIGN_LEFT);
-            // FIRMASELLO
-            Image firmasello = Image.getInstance("src/main/java/com/imagenes/firmasello.jpg");
-            firmasello.scaleToFit(150, 150);
-            firmasello.setAlignment(Element.ALIGN_RIGHT);
-
-            // DOC NO VALIDO COMO FACTURA
-            Paragraph subtitulo = new Paragraph("DOCUMENTO NO VALIDO COMO FACTURA", FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.NORMAL));
-            subtitulo.setAlignment(Element.ALIGN_CENTER);
-            subtitulo.setSpacingAfter(10f); // Espacio después del título (en puntos)
-
-            document.add(titulo);
-            document.add(fecha);
-            document.add(nroRecibo);
-            document.add(logo);
-            document.add(subtitulo);
-
-            // Crear una tabla para los senores y domicilio         
-            PdfPTable senoresdomicilio = new PdfPTable(2);
-            senoresdomicilio.setWidthPercentage(100);
-
-            // Ajustar los anchos de las columnas
-            float[] colSenDom = {0.2f, 1f}; // Ancho relativo de las columnas (proporciones)
-            senoresdomicilio.setWidths(colSenDom);
-
-            // Columna "Señores"
-            Phrase senoresLabel = new Phrase("SEÑORES", font);
-            PdfPCell senoresLabelCell = new PdfPCell(new Paragraph(senoresLabel));
-            senoresLabelCell.setBorder(Rectangle.BOX);
-            senoresLabelCell.setHorizontalAlignment(Element.ALIGN_LEFT);
-            senoresLabelCell.setPaddingBottom(5f); // Espacio después de la celda
-            senoresdomicilio.addCell(senoresLabelCell);
-
-            // Contenido de la columna "Señores"
-            Phrase senoresValue = new Phrase(txtCliente.getText(), font);
-            PdfPCell senoresValueCell = new PdfPCell(new Paragraph(senoresValue));
-            senoresValueCell.setBorder(Rectangle.BOX);
-            senoresValueCell.setPadding(5f);
-            senoresValueCell.setPaddingBottom(5f); // Espacio después de la celda
-            senoresdomicilio.addCell(senoresValueCell);
-
-            // Columna "Domicilio"
-            Phrase domicilioLabel = new Phrase("DOMICILIO", font);
-            PdfPCell domicilioLabelCell = new PdfPCell(new Paragraph(domicilioLabel));
-            domicilioLabelCell.setBorder(Rectangle.BOX);
-            domicilioLabelCell.setHorizontalAlignment(Element.ALIGN_LEFT);
-            domicilioLabelCell.setPaddingBottom(5f); // Espacio después de la celda
-            senoresdomicilio.addCell(domicilioLabelCell);
-
-            // Contenido de la columna "Domicilio"
-            Phrase domicilioValue = new Phrase(txtDomicilio.getText(), font);
-            PdfPCell domicilioValueCell = new PdfPCell(new Paragraph(domicilioValue));
-            domicilioValueCell.setBorder(Rectangle.BOX);
-            domicilioValueCell.setPadding(5f);
-            domicilioValueCell.setPaddingBottom(5f); // Espacio después de la celda
-            senoresdomicilio.addCell(domicilioValueCell);
-
-            senoresdomicilio.setSpacingBefore(0.1f);
-            document.add(senoresdomicilio);
-
-            // Crear una tabla para recibi y concepto        
-            PdfPTable recibiconcepto = new PdfPTable(2);
-            recibiconcepto.setWidthPercentage(100);
-            // RECIBI LA SUMA D PESOS...
-            Phrase texto = new Phrase("\nRECIBÍ DE EXPRESO LESTANI LA SUMA DE PESOS: " + txtRecibi.getText(), font);
-            Paragraph textoRecibi = new Paragraph(texto);
-            textoRecibi.setAlignment(Element.ALIGN_LEFT);
-            document.add(textoRecibi);
-
-            // CONCEPTO DE
-            Phrase textodos = new Phrase("\nEN CONCEPTO DE: " + txtConcepto.getText(), font);
-            Paragraph textoConcepto = new Paragraph(textodos);
-            textoConcepto.setAlignment(Element.ALIGN_LEFT);
-            document.add(textoConcepto);
-
-            recibiconcepto.setSpacingBefore(8f);
-
-            document.add(recibiconcepto);
-
-            //TABLA
-            // Obtener las filas seleccionadas de la tabla
-            int[] filasSeleccionadas = tablaMovimientos.getSelectedRows();
-
-            if (filasSeleccionadas.length > 0) { // Verificar que se hayan seleccionado filas
-                // Calcular el número de columnas en la tabla
-                int numColumnasTabla = 8;
-
-                // Crear la tabla con el número correcto de columnas
-                PdfPTable table = new PdfPTable(numColumnasTabla);
-                table.setSpacingBefore(10f); // Espacio antes de la tabla (en puntos)
-                table.setSpacingAfter(10f);
-
-                // Ajustar espacio horizontal
-                float[] columnWidths = {0.8f, 1f, 0.7f, 0.7f, 1f, 1f, 1f, 1f}; // Anchos de las columnas (proporciones)
-                table.setWidths(columnWidths);
-                table.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
-
-                // Agregar las celdas de encabezado a la tabla, excluyendo las columnas suprimidas
-                for (int i = 0; i < tablaMovimientos.getColumnCount(); i++) {
-                    String col = tablaMovimientos.getColumnName(i);
-                    if (!col.equals("PAGADO") && !col.equals("REPRESENTANTE") && !col.equals("CLIENTE") && !col.equals("CC")) {
-                        PdfPCell cell = new PdfPCell(new Phrase(col, fontColumnas));
-                        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                        cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
-                        table.addCell(cell);
-                    }
+                // Agregar la extensión ".pdf" al nombre del archivo si no está presente
+                if (!outputPath.toLowerCase().endsWith(".pdf")) {
+                    outputPath += ".pdf";
                 }
 
-                // Obtener los datos de las filas seleccionadas y agregar las celdas de datos a la tabla
-                for (int fila : filasSeleccionadas) {
-                    // Agregar las celdas de datos excluyendo las columnas suprimidas
-                    for (int col = 0; col < tablaMovimientos.getColumnCount(); col++) {
-                        String colName = tablaMovimientos.getColumnName(col);
-                        if (!colName.equals("REPRESENTANTE") && !colName.equals("CLIENTE") && !colName.equals("PAGADO") && !colName.equals("CC")) {
-                            Object value = tablaMovimientos.getValueAt(fila, col);
-                            if (value != null) {
-                                PdfPCell cell = new PdfPCell(new Phrase(value.toString(), fontFilas));
-                                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                                cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
-                                table.addCell(cell);
-                            }
+                // Crear el archivo de salida
+                File outputFile = new File(outputPath);
+                PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile));
+                document.open();
+
+                //FUENTES
+                Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.NORMAL);
+                Font fontColumnas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD);
+                Font fontTotales = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
+                Font fontFecha = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
+                Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 9, Font.NORMAL, BaseColor.BLACK);
+
+                //FECHAS
+                Chunk chunkFechas = new Chunk("Fecha: " + fechaActual(), fontFecha);
+                Paragraph fecha = new Paragraph(chunkFechas);
+                fecha.setAlignment(Element.ALIGN_RIGHT);
+                fecha.setSpacingAfter(5f); // Espacio después de las fechas (en puntos)
+                //RECIBO NRO
+                Paragraph nroRecibo = new Paragraph("RECIBO Nro: " + String.format("%05d", numeroRecibo), FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.NORMAL));
+                guardarNumeroRecibo();
+                nroRecibo.setAlignment(Element.ALIGN_RIGHT);
+                nroRecibo.setSpacingAfter(10f); // Espacio después del título (en puntos)
+                // TITULO RECIBO
+                Paragraph titulo = new Paragraph("RECIBO", FontFactory.getFont(FontFactory.TIMES_ROMAN, 14, Font.BOLD));
+                titulo.setAlignment(Element.ALIGN_CENTER);
+                titulo.setSpacingAfter(10f); // Espacio después del título (en puntos)
+
+                // LOGO
+                Image logo = Image.getInstance("src/main/java/com/imagenes/ivacuit.jpg");
+                logo.scaleToFit(530, 800);
+                logo.setAlignment(Element.ALIGN_LEFT);
+                // FIRMASELLO
+                Image firmasello = Image.getInstance("src/main/java/com/imagenes/firmasello.jpg");
+                firmasello.scaleToFit(150, 150);
+                firmasello.setAlignment(Element.ALIGN_RIGHT);
+
+                // DOC NO VALIDO COMO FACTURA
+                Paragraph subtitulo = new Paragraph("DOCUMENTO NO VALIDO COMO FACTURA", FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.NORMAL));
+                subtitulo.setAlignment(Element.ALIGN_CENTER);
+                subtitulo.setSpacingAfter(10f); // Espacio después del título (en puntos)
+
+                document.add(titulo);
+                document.add(fecha);
+                document.add(nroRecibo);
+                document.add(logo);
+                document.add(subtitulo);
+
+                // Crear una tabla para los senores y domicilio         
+                PdfPTable senoresdomicilio = new PdfPTable(2);
+                senoresdomicilio.setWidthPercentage(100);
+
+                // Ajustar los anchos de las columnas
+                float[] colSenDom = {0.2f, 1f}; // Ancho relativo de las columnas (proporciones)
+                senoresdomicilio.setWidths(colSenDom);
+
+                // Columna "Señores"
+                Phrase senoresLabel = new Phrase("SEÑORES", font);
+                PdfPCell senoresLabelCell = new PdfPCell(new Paragraph(senoresLabel));
+                senoresLabelCell.setBorder(Rectangle.BOX);
+                senoresLabelCell.setHorizontalAlignment(Element.ALIGN_LEFT);
+                senoresLabelCell.setPaddingBottom(5f); // Espacio después de la celda
+                senoresdomicilio.addCell(senoresLabelCell);
+
+                // Contenido de la columna "Señores"
+                Phrase senoresValue = new Phrase(txtCliente.getText(), font);
+                PdfPCell senoresValueCell = new PdfPCell(new Paragraph(senoresValue));
+                senoresValueCell.setBorder(Rectangle.BOX);
+                senoresValueCell.setPadding(5f);
+                senoresValueCell.setPaddingBottom(5f); // Espacio después de la celda
+                senoresdomicilio.addCell(senoresValueCell);
+
+                // Columna "Domicilio"
+                Phrase domicilioLabel = new Phrase("DOMICILIO", font);
+                PdfPCell domicilioLabelCell = new PdfPCell(new Paragraph(domicilioLabel));
+                domicilioLabelCell.setBorder(Rectangle.BOX);
+                domicilioLabelCell.setHorizontalAlignment(Element.ALIGN_LEFT);
+                domicilioLabelCell.setPaddingBottom(5f); // Espacio después de la celda
+                senoresdomicilio.addCell(domicilioLabelCell);
+
+                // Contenido de la columna "Domicilio"
+                Phrase domicilioValue = new Phrase(txtDomicilio.getText(), font);
+                PdfPCell domicilioValueCell = new PdfPCell(new Paragraph(domicilioValue));
+                domicilioValueCell.setBorder(Rectangle.BOX);
+                domicilioValueCell.setPadding(5f);
+                domicilioValueCell.setPaddingBottom(5f); // Espacio después de la celda
+                senoresdomicilio.addCell(domicilioValueCell);
+
+                senoresdomicilio.setSpacingBefore(0.1f);
+                document.add(senoresdomicilio);
+
+                // Crear una tabla para recibi y concepto        
+                PdfPTable recibiconcepto = new PdfPTable(2);
+                recibiconcepto.setWidthPercentage(100);
+                // RECIBI LA SUMA D PESOS...
+                Phrase texto = new Phrase("\nRECIBÍ DE EXPRESO LESTANI LA SUMA DE PESOS: " + txtRecibi.getText(), font);
+                Paragraph textoRecibi = new Paragraph(texto);
+                textoRecibi.setAlignment(Element.ALIGN_LEFT);
+                document.add(textoRecibi);
+
+                // CONCEPTO DE
+                Phrase textodos = new Phrase("\nEN CONCEPTO DE: " + txtConcepto.getText(), font);
+                Paragraph textoConcepto = new Paragraph(textodos);
+                textoConcepto.setAlignment(Element.ALIGN_LEFT);
+                document.add(textoConcepto);
+
+                recibiconcepto.setSpacingBefore(8f);
+
+                document.add(recibiconcepto);
+
+                //TABLA
+                // Obtener las filas seleccionadas de la tabla
+                int[] filasSeleccionadas = tablaMovimientos.getSelectedRows();
+
+                if (filasSeleccionadas.length > 0) { // Verificar que se hayan seleccionado filas
+                    // Calcular el número de columnas en la tabla
+                    int numColumnasTabla = 8;
+
+                    // Crear la tabla con el número correcto de columnas
+                    PdfPTable table = new PdfPTable(numColumnasTabla);
+                    table.setSpacingBefore(10f); // Espacio antes de la tabla (en puntos)
+                    table.setSpacingAfter(10f);
+
+                    // Ajustar espacio horizontal
+                    float[] columnWidths = {0.8f, 1f, 0.7f, 0.7f, 1f, 1f, 1f, 1f}; // Anchos de las columnas (proporciones)
+                    table.setWidths(columnWidths);
+                    table.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
+
+                    // Agregar las celdas de encabezado a la tabla, excluyendo las columnas suprimidas
+                    for (int i = 0; i < tablaMovimientos.getColumnCount(); i++) {
+                        String col = tablaMovimientos.getColumnName(i);
+                        if (!col.equals("PAGADO") && !col.equals("REPRESENTANTE") && !col.equals("CLIENTE") && !col.equals("CC")) {
+                            PdfPCell cell = new PdfPCell(new Phrase(col, fontColumnas));
+                            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                            cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
+                            table.addCell(cell);
                         }
                     }
 
+                    // Obtener los datos de las filas seleccionadas y agregar las celdas de datos a la tabla
+                    for (int fila : filasSeleccionadas) {
+                        // Agregar las celdas de datos excluyendo las columnas suprimidas
+                        for (int col = 0; col < tablaMovimientos.getColumnCount(); col++) {
+                            String colName = tablaMovimientos.getColumnName(col);
+                            if (!colName.equals("REPRESENTANTE") && !colName.equals("CLIENTE") && !colName.equals("PAGADO") && !colName.equals("CC")) {
+                                Object value = tablaMovimientos.getValueAt(fila, col);
+                                if (value != null) {
+                                    PdfPCell cell = new PdfPCell(new Phrase(value.toString(), fontFilas));
+                                    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                                    cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
+                                    table.addCell(cell);
+                                }
+                            }
+                        }
+
+                    }
+
+                    document.add(table);
+                } else {
+                    // Si no se ha seleccionado ninguna fila, mostrar un mensaje de error o realizar alguna acción adecuada.
                 }
 
-                document.add(table);
-            } else {
-                // Si no se ha seleccionado ninguna fila, mostrar un mensaje de error o realizar alguna acción adecuada.
+                // Crear una tabla para los montos totales
+                PdfPTable totalsTable = new PdfPTable(2);
+                totalsTable.setWidthPercentage(100);
+
+                // Monto total
+                // Establecer la fuente deseada
+                Phrase montoTotalPhrase = new Phrase("TOTAL MONTO: $" + txtTotalMonto.getText(), fontTotales);
+                PdfPCell montoTotalCell = new PdfPCell(montoTotalPhrase);
+                montoTotalCell.setBorder(Rectangle.NO_BORDER);
+                montoTotalCell.setHorizontalAlignment(Element.ALIGN_LEFT); // Alinear la celda al centro
+                totalsTable.addCell(montoTotalCell);
+
+                // Flete total
+                Phrase fleteTotalPhrase = new Phrase("TOTAL FLETE: $" + txtTotalFlete.getText(), fontTotales);
+                PdfPCell fleteTotalCell = new PdfPCell(fleteTotalPhrase);
+                fleteTotalCell.setBorder(Rectangle.NO_BORDER);
+                fleteTotalCell.setHorizontalAlignment(Element.ALIGN_RIGHT); // Alinear la celda al centro
+                totalsTable.addCell(fleteTotalCell);
+
+                totalsTable.setSpacingBefore(10f);
+                document.add(totalsTable);
+                document.add(firmasello);
+
+                document.close();
+                txtReciboNro.setText(String.valueOf(numeroRecibo));
+
+                writer.close();
+
+                JOptionPane.showMessageDialog(null, "El archivo se generó correctamente.", "Información", JOptionPane.INFORMATION_MESSAGE);
             }
-
-            // Crear una tabla para los montos totales
-            PdfPTable totalsTable = new PdfPTable(2);
-            totalsTable.setWidthPercentage(100);
-
-            // Monto total
-            // Establecer la fuente deseada
-            Phrase montoTotalPhrase = new Phrase("TOTAL MONTO: $" + txtTotalMonto.getText(), fontTotales);
-            PdfPCell montoTotalCell = new PdfPCell(montoTotalPhrase);
-            montoTotalCell.setBorder(Rectangle.NO_BORDER);
-            montoTotalCell.setHorizontalAlignment(Element.ALIGN_LEFT); // Alinear la celda al centro
-            totalsTable.addCell(montoTotalCell);
-
-            // Flete total
-            Phrase fleteTotalPhrase = new Phrase("TOTAL FLETE: $" + txtTotalFlete.getText(), fontTotales);
-            PdfPCell fleteTotalCell = new PdfPCell(fleteTotalPhrase);
-            fleteTotalCell.setBorder(Rectangle.NO_BORDER);
-            fleteTotalCell.setHorizontalAlignment(Element.ALIGN_RIGHT); // Alinear la celda al centro
-            totalsTable.addCell(fleteTotalCell);
-
-            totalsTable.setSpacingBefore(10f);
-            document.add(totalsTable);
-            document.add(firmasello);
-
-            document.close();
-            txtReciboNro.setText(String.valueOf(numeroRecibo));
-            JOptionPane.showMessageDialog(null, "El archivo se generó correctamente.", "Información", JOptionPane.INFORMATION_MESSAGE);
         } catch (DocumentException | FileNotFoundException e) {
             JOptionPane.showMessageDialog(null, "Error al generar el archivo PDF.", "Error", JOptionPane.ERROR_MESSAGE);
         } catch (IOException ex) {
@@ -1378,10 +1420,10 @@ public class Recibos extends javax.swing.JFrame {
     private javax.swing.JButton btnAgregar;
     private javax.swing.JButton btnGenerarPdf;
     private javax.swing.JButton btnImprimir;
+    private javax.swing.JButton btnQuitar;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JRadioButton cbReciboCon;
     private javax.swing.JRadioButton cbReciboSin;
-    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

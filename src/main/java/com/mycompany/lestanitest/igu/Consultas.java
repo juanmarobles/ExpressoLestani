@@ -45,6 +45,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.RowFilter;
@@ -140,6 +141,7 @@ public class Consultas extends javax.swing.JFrame {
         btnMRFletes = new javax.swing.JButton();
         txtCliente = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
+        btnLimpiar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Expreso Lestani S.R.L - Consultas");
@@ -596,6 +598,19 @@ public class Consultas extends javax.swing.JFrame {
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/imprimir_24px.png"))); // NOI18N
         jButton1.setText("Imprimir");
 
+        btnLimpiar.setBackground(new java.awt.Color(51, 51, 51));
+        btnLimpiar.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        btnLimpiar.setForeground(new java.awt.Color(236, 240, 241));
+        btnLimpiar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/Mostrar_24px.png"))); // NOI18N
+        btnLimpiar.setText("Limpiar");
+        btnLimpiar.setBorder(null);
+        btnLimpiar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnLimpiar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLimpiarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -621,7 +636,8 @@ public class Consultas extends javax.swing.JFrame {
                                 .addGap(80, 80, 80)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(btnMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(32, 32, 32)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -672,6 +688,8 @@ public class Consultas extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btnMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(28, 28, 28))
                             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -680,7 +698,7 @@ public class Consultas extends javax.swing.JFrame {
                                     .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(0, 0, Short.MAX_VALUE)))))
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 604, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -925,6 +943,16 @@ public class Consultas extends javax.swing.JFrame {
     private void btnImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirActionPerformed
         generarPDF();
     }//GEN-LAST:event_btnImprimirActionPerformed
+
+    private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
+        txtFechaDesde.setText("");
+        txtFechaHasta.setText("");
+        txtCliente.setText("");
+        txtTotalMonto.setText("");
+        txtTotalFlete.setText("");
+        txtCantBultos.setText("");
+        mostrarTablaMovimientos();
+    }//GEN-LAST:event_btnLimpiarActionPerformed
     private List<List<String>> obtenerDatosTabla() {
         List<List<String>> datosTabla = new ArrayList<>();
 
@@ -1071,6 +1099,7 @@ public class Consultas extends javax.swing.JFrame {
     private javax.swing.ButtonGroup Grupo1;
     private javax.swing.ButtonGroup Grupo2;
     private javax.swing.JButton btnImprimir;
+    private javax.swing.JButton btnLimpiar;
     private javax.swing.JButton btnMPFletes;
     private javax.swing.JButton btnMPMontos;
     private javax.swing.JButton btnMRFletes;
@@ -1237,109 +1266,126 @@ public class Consultas extends javax.swing.JFrame {
     private void generarPDF() {
         Document document = new Document();
         try {
-            //DIRECTORIO
-            String outputPath = System.getProperty("user.home") + File.separator + "Consultas.pdf";
-            File outputFile = new File(outputPath);
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile));
-            document.open();
+            // Crear un diálogo de selección de archivo
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setDialogTitle("Guardar PDF");
+            fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            // Mostrar el diálogo de selección de archivo
+            int userSelection = fileChooser.showSaveDialog(null);
 
-            //FUENTES
-            Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 8, Font.BOLD);
-            Font fontTotales = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
-            Font fontFecha = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
-            Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 8);
+            if (userSelection == JFileChooser.APPROVE_OPTION) {
+                // Obtener el archivo seleccionado por el usuario
+                File selectedFile = fileChooser.getSelectedFile();
+                String outputPath = selectedFile.getAbsolutePath();
 
-            // LOGO
-            Image logo = Image.getInstance("src/main/java/com/imagenes/logo.jpg");
-            logo.scaleToFit(450, 800);
-            logo.setAlignment(Element.ALIGN_CENTER);
-            document.add(logo);
-            // TITULO
-            Paragraph titulo = new Paragraph("DETALLE DE MOVIMIENTOS", FontFactory.getFont(FontFactory.TIMES_ROMAN, 16, Font.BOLD, BaseColor.BLACK));
-            titulo.setAlignment(Element.ALIGN_CENTER);
-            titulo.setSpacingAfter(10f); // Espacio después del título (en puntos)
-
-            // FECHAS
-            String fechaDesde = txtFechaDesde.getText();
-            String fechaHasta = txtFechaHasta.getText();
-
-            // Agregar fechas desde y hasta al título
-            Chunk chunkFechas = new Chunk("Desde " + fechaDesde + " \nHasta " + fechaHasta, fontFecha);
-            Paragraph fechas = new Paragraph(chunkFechas);
-            fechas.setAlignment(Element.ALIGN_CENTER);
-            fechas.setSpacingAfter(5f); // Espacio después de las fechas (en puntos)
-
-            document.add(titulo);
-            document.add(fechas);
-
-            PdfPTable table = new PdfPTable(tablaConsultas.getColumnCount() - 4); // Excluir las 4 columnas A_CARGO_DE, CC, OBS y movimiento
-            table.setSpacingBefore(10f); // Espacio antes de la tabla (en puntos)
-            table.setSpacingAfter(10f);
-
-            // Ajustar espacio horizontal
-            float[] columnWidths = {0.9f, 1f, 1f, 0.7f, 0.7f, 1f, 0.7f, 1f, 0.7f, 1.3f}; // Anchos de las columnas (proporciones)
-            table.setWidths(columnWidths);
-
-            table.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
-
-            table.setWidths(columnWidths);
-
-            // Agregar las celdas a la tabla
-            for (int i = 0; i < tablaConsultas.getColumnCount(); i++) {
-                String col = tablaConsultas.getColumnName(i);
-                if (!col.equals("A_CARGO_DE") && !col.equals("CC") && !col.equals("OBS") && !col.equals("MOVIMIENTO")) {
-                    PdfPCell cell = new PdfPCell(new Phrase(col, font));
-                    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                    cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
-                    table.addCell(cell);
+                // Agregar la extensión ".pdf" al nombre del archivo si no está presente
+                if (!outputPath.toLowerCase().endsWith(".pdf")) {
+                    outputPath += ".pdf";
                 }
-            }
 
-            for (int row = 0; row < tablaConsultas.getRowCount(); row++) {
-                for (int col = 0; col < tablaConsultas.getColumnCount(); col++) {
-                    String colName = tablaConsultas.getColumnName(col);
-                    if (!colName.equals("A_CARGO_DE") && !colName.equals("CC") && !colName.equals("OBS") && !colName.equals("MOVIMIENTO")) {
-                        Object value = tablaConsultas.getValueAt(row, col);
-                        if (value != null) {
-                            PdfPCell cell = new PdfPCell(new Phrase(value.toString(), fontFilas));
-                            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                            cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
-                            table.addCell(cell);
+                // Crear el archivo de salida
+                File outputFile = new File(outputPath);
+                PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile));
+                document.open();
+
+                //FUENTES
+                Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 8, Font.BOLD);
+                Font fontTotales = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
+                Font fontFecha = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
+                Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 8);
+
+                // LOGO
+                Image logo = Image.getInstance("src/main/java/com/imagenes/logo.jpg");
+                logo.scaleToFit(450, 800);
+                logo.setAlignment(Element.ALIGN_CENTER);
+                document.add(logo);
+                // TITULO
+                Paragraph titulo = new Paragraph("DETALLE DE MOVIMIENTOS", FontFactory.getFont(FontFactory.TIMES_ROMAN, 16, Font.BOLD, BaseColor.BLACK));
+                titulo.setAlignment(Element.ALIGN_CENTER);
+                titulo.setSpacingAfter(10f); // Espacio después del título (en puntos)
+
+                // FECHAS
+                String fechaDesde = txtFechaDesde.getText();
+                String fechaHasta = txtFechaHasta.getText();
+
+                // Agregar fechas desde y hasta al título
+                Chunk chunkFechas = new Chunk("Desde " + fechaDesde + " \nHasta " + fechaHasta, fontFecha);
+                Paragraph fechas = new Paragraph(chunkFechas);
+                fechas.setAlignment(Element.ALIGN_CENTER);
+                fechas.setSpacingAfter(5f); // Espacio después de las fechas (en puntos)
+
+                document.add(titulo);
+                document.add(fechas);
+
+                PdfPTable table = new PdfPTable(tablaConsultas.getColumnCount() - 4); // Excluir las 4 columnas A_CARGO_DE, CC, OBS y movimiento
+                table.setSpacingBefore(10f); // Espacio antes de la tabla (en puntos)
+                table.setSpacingAfter(10f);
+
+                // Ajustar espacio horizontal
+                float[] columnWidths = {0.9f, 1f, 1f, 0.7f, 0.7f, 1f, 0.7f, 1f, 0.7f, 1.3f}; // Anchos de las columnas (proporciones)
+                table.setWidths(columnWidths);
+
+                table.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
+
+                table.setWidths(columnWidths);
+
+                // Agregar las celdas a la tabla
+                for (int i = 0; i < tablaConsultas.getColumnCount(); i++) {
+                    String col = tablaConsultas.getColumnName(i);
+                    if (!col.equals("A_CARGO_DE") && !col.equals("CC") && !col.equals("OBS") && !col.equals("MOVIMIENTO")) {
+                        PdfPCell cell = new PdfPCell(new Phrase(col, font));
+                        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                        cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
+                        table.addCell(cell);
+                    }
+                }
+
+                for (int row = 0; row < tablaConsultas.getRowCount(); row++) {
+                    for (int col = 0; col < tablaConsultas.getColumnCount(); col++) {
+                        String colName = tablaConsultas.getColumnName(col);
+                        if (!colName.equals("A_CARGO_DE") && !colName.equals("CC") && !colName.equals("OBS") && !colName.equals("MOVIMIENTO")) {
+                            Object value = tablaConsultas.getValueAt(row, col);
+                            if (value != null) {
+                                PdfPCell cell = new PdfPCell(new Phrase(value.toString(), fontFilas));
+                                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                                cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
+                                table.addCell(cell);
+                            }
                         }
                     }
                 }
+
+                document.add(table);
+                // Crear una tabla para los montos totales
+                PdfPTable totalsTable = new PdfPTable(2);
+                totalsTable.setWidthPercentage(100);
+
+                // Monto total
+                // Establecer la fuente deseada
+                Phrase montoTotalPhrase = new Phrase("Monto total: $" + txtTotalMonto.getText(), fontTotales);
+                PdfPCell montoTotalCell = new PdfPCell(montoTotalPhrase);
+                montoTotalCell.setBorder(Rectangle.NO_BORDER);
+                montoTotalCell.setHorizontalAlignment(Element.ALIGN_CENTER); // Alinear la celda al centro
+                totalsTable.addCell(montoTotalCell);
+
+                // Flete total
+                Phrase fleteTotalPhrase = new Phrase("Flete total: $" + txtTotalFlete.getText(), fontTotales);
+                PdfPCell fleteTotalCell = new PdfPCell(fleteTotalPhrase);
+                fleteTotalCell.setBorder(Rectangle.NO_BORDER);
+                fleteTotalCell.setHorizontalAlignment(Element.ALIGN_CENTER); // Alinear la celda al centro
+                totalsTable.addCell(fleteTotalCell);
+
+                totalsTable.setSpacingBefore(10f);
+                document.add(totalsTable);
+                writer.close();
+
+                JOptionPane.showMessageDialog(null, "El archivo se generó correctamente.", "Información", JOptionPane.INFORMATION_MESSAGE);
             }
-
-            document.add(table);
-            // Crear una tabla para los montos totales
-            PdfPTable totalsTable = new PdfPTable(2);
-            totalsTable.setWidthPercentage(100);
-
-            // Monto total
-            // Establecer la fuente deseada
-            Phrase montoTotalPhrase = new Phrase("Monto total: $" + txtTotalMonto.getText(), fontTotales);
-            PdfPCell montoTotalCell = new PdfPCell(montoTotalPhrase);
-            montoTotalCell.setBorder(Rectangle.NO_BORDER);
-            montoTotalCell.setHorizontalAlignment(Element.ALIGN_CENTER); // Alinear la celda al centro
-            totalsTable.addCell(montoTotalCell);
-
-            // Flete total
-            Phrase fleteTotalPhrase = new Phrase("Flete total: $" + txtTotalFlete.getText(), fontTotales);
-            PdfPCell fleteTotalCell = new PdfPCell(fleteTotalPhrase);
-            fleteTotalCell.setBorder(Rectangle.NO_BORDER);
-            fleteTotalCell.setHorizontalAlignment(Element.ALIGN_CENTER); // Alinear la celda al centro
-            totalsTable.addCell(fleteTotalCell);
-
-            totalsTable.setSpacingBefore(10f);
-            document.add(totalsTable);
-            document.close();
-
-            JOptionPane.showMessageDialog(null, "El archivo se generó correctamente.", "Información", JOptionPane.INFORMATION_MESSAGE);
         } catch (DocumentException | FileNotFoundException e) {
             JOptionPane.showMessageDialog(null, "Error al generar el archivo PDF.", "Error", JOptionPane.ERROR_MESSAGE);
         } catch (IOException ex) {
             Logger.getLogger(Consultas.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
 
+    }
 }
