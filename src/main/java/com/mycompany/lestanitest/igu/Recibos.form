@@ -143,7 +143,7 @@
                   <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
                   <Component id="btnGenerarPdf" min="-2" pref="152" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
-                  <Component id="jButton3" min="-2" pref="106" max="-2" attributes="0"/>
+                  <Component id="btnQuitar" min="-2" pref="106" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
@@ -195,7 +195,7 @@
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="btnImprimir" alignment="3" min="-2" pref="36" max="-2" attributes="0"/>
                       <Component id="btnGenerarPdf" alignment="3" min="-2" pref="36" max="-2" attributes="0"/>
-                      <Component id="jButton3" alignment="3" min="-2" pref="36" max="-2" attributes="0"/>
+                      <Component id="btnQuitar" alignment="3" min="-2" pref="36" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
               </Group>
@@ -359,7 +359,7 @@
             </Component>
           </SubComponents>
         </Container>
-        <Component class="javax.swing.JButton" name="jButton3">
+        <Component class="javax.swing.JButton" name="btnQuitar">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="33" green="33" red="33" type="rgb"/>
@@ -376,7 +376,7 @@
             <Property name="text" type="java.lang.String" value="Quitar"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton3ActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnQuitarActionPerformed"/>
           </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnGenerarPdf">

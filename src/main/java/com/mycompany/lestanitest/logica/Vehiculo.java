@@ -66,9 +66,8 @@ public class Vehiculo implements Serializable {
 
     @Override
     public String toString() {
-        return "Vehiculos{" + "id_Vehiculo=" + id_Vehiculo + ", vehiculo=" + vehiculo + ", patente=" + patente + ", chofer=" + chofer + '}';
+        return vehiculo;
     }
-    
-    
+   
     
 }
