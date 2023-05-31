@@ -71,7 +71,10 @@ import javax.print.attribute.standard.Copies;
 import javax.print.attribute.standard.MediaPrintableArea;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 
 /**
  *
@@ -156,6 +159,24 @@ public class Recibos extends javax.swing.JFrame {
         }
 
         tablaMovimientos.setModel(tabla);
+        int[] anchos = {60, 60, 100, 100, 40, 40, 100, 40, 100, 40, 70, 100, 5, 200}; // Anchos deseados para cada columna en píxeles
+
+        if (anchos.length == tabla.getColumnCount()) {
+            TableColumnModel columnModel = tablaMovimientos.getColumnModel();
+            for (int i = 0; i < anchos.length; i++) {
+                TableColumn columna = columnModel.getColumn(i);
+                columna.setPreferredWidth(anchos[i]);
+
+                // Renderizador personalizado para centrar el contenido de las celdas
+                DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
+                renderer.setHorizontalAlignment(SwingConstants.CENTER);
+                tablaMovimientos.setDefaultRenderer(Object.class, renderer);
+
+                // Renderizador personalizado para centrar el título de las columnas
+                DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) tablaMovimientos.getTableHeader().getDefaultRenderer();
+                headerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+            }
+        }
     }
 
     private void mostrarTablaMovimientos(List<Movimientos> listaMovimientos) {
@@ -183,6 +204,24 @@ public class Recibos extends javax.swing.JFrame {
         }
 
         tablaMovimientos.setModel(tabla);
+        int[] anchos = {60, 60, 100, 100, 40, 40, 100, 40, 100, 40, 70, 100, 5, 200}; // Anchos deseados para cada columna en píxeles
+
+        if (anchos.length == tabla.getColumnCount()) {
+            TableColumnModel columnModel = tablaMovimientos.getColumnModel();
+            for (int i = 0; i < anchos.length; i++) {
+                TableColumn columna = columnModel.getColumn(i);
+                columna.setPreferredWidth(anchos[i]);
+
+                // Renderizador personalizado para centrar el contenido de las celdas
+                DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
+                renderer.setHorizontalAlignment(SwingConstants.CENTER);
+                tablaMovimientos.setDefaultRenderer(Object.class, renderer);
+
+                // Renderizador personalizado para centrar el título de las columnas
+                DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) tablaMovimientos.getTableHeader().getDefaultRenderer();
+                headerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+            }
+        }
     }
 
     //LLENAR TEXTFIELD CLIENTES
@@ -353,6 +392,7 @@ public class Recibos extends javax.swing.JFrame {
             }
         });
 
+        tablaMovimientos.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         tablaMovimientos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {},
@@ -1033,7 +1073,6 @@ public class Recibos extends javax.swing.JFrame {
             montoTotalCell.setHorizontalAlignment(Element.ALIGN_LEFT); // Alinear la celda a la izq
             totalsTable.addCell(montoTotalCell);
 
-
             totalsTable.setSpacingBefore(10f);
             document.add(totalsTable);
             document.add(firmasello);
@@ -1166,8 +1205,8 @@ public class Recibos extends javax.swing.JFrame {
             recibiconcepto.setSpacingBefore(8f);
 
             document.add(recibiconcepto);
-            
-           //TABLA
+
+            //TABLA
             // Obtener las filas seleccionadas de la tabla
             int[] filasSeleccionadas = tablaMovimientos.getSelectedRows();
 
@@ -1181,7 +1220,7 @@ public class Recibos extends javax.swing.JFrame {
                 table.setSpacingAfter(10f);
 
                 // Ajustar espacio horizontal
-                float[] columnWidths = {0.8f, 1f, 0.7f, 0.7f, 1f,1f,1f, 1f}; // Anchos de las columnas (proporciones)
+                float[] columnWidths = {0.8f, 1f, 0.7f, 0.7f, 1f, 1f, 1f, 1f}; // Anchos de las columnas (proporciones)
                 table.setWidths(columnWidths);
                 table.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
 
@@ -1392,6 +1431,24 @@ public class Recibos extends javax.swing.JFrame {
             }
         }
         tablaMovimientos.setModel(tabla);
+        // Establecer el ancho específico de las columnas
+        int[] anchos = {60, 60, 100, 100, 40, 40, 100, 40, 100, 40, 70, 100, 5, 200}; // Anchos deseados para cada columna en píxeles
+        if (anchos.length == tabla.getColumnCount()) {
+            TableColumnModel columnModel = tablaMovimientos.getColumnModel();
+            for (int i = 0; i < anchos.length; i++) {
+                TableColumn columna = columnModel.getColumn(i);
+                columna.setPreferredWidth(anchos[i]);
+
+                // Renderizador personalizado para centrar el contenido de las celdas
+                DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
+                renderer.setHorizontalAlignment(SwingConstants.CENTER);
+                tablaMovimientos.setDefaultRenderer(Object.class, renderer);
+
+                // Renderizador personalizado para centrar el título de las columnas
+                DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) tablaMovimientos.getTableHeader().getDefaultRenderer();
+                headerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+            }
+        }
         tablaMovimientos.getModel();
         JTable tab = new JTable(tabla);
         return tab;

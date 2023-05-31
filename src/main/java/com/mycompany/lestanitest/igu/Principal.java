@@ -12,6 +12,7 @@ import com.mycompany.lestanitest.logica.Representantes;
 import com.mycompany.lestanitest.logica.Servicios;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.table.TableColumn;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.text.DateFormat;
@@ -30,8 +31,11 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import javax.swing.RowSorter;
 import javax.swing.SortOrder;
+import javax.swing.SwingConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumnModel;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import org.jdesktop.swingx.autocomplete.ObjectToStringConverter;
 
@@ -43,9 +47,6 @@ public class Principal extends javax.swing.JFrame {
 
     public Principal() {
         initComponents();
-        
-        
-       
 
         setTitle("Expreso Lestani S.R.L - [Panel Principal]");
 
@@ -229,7 +230,7 @@ public class Principal extends javax.swing.JFrame {
         jPanel1.setPreferredSize(new java.awt.Dimension(1920, 1080));
 
         tablaMovimientos.setBackground(new java.awt.Color(66, 66, 66));
-        tablaMovimientos.setFont(new java.awt.Font("DialogInput", 0, 14)); // NOI18N
+        tablaMovimientos.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         tablaMovimientos.setForeground(new java.awt.Color(236, 240, 241));
         tablaMovimientos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -832,7 +833,7 @@ public class Principal extends javax.swing.JFrame {
 
         };
         //nombres de columnas
-        String titulos[] = {"MOVIMIENTO", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "PAGADO_RENDIDO", "FLETE", "PAGADO_RENDIDO", "A_CARGO_DE", "REPRESENTANTE", "CC", "OBS"};
+        String titulos[] = {"MOVIMIENTO", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "PAGADO", "FLETE", "PAGADO", "A_CARGO_DE", "REPRESENTANTE", "CC", "OBS"};
         tabla.setColumnIdentifiers(titulos);
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tabla);
         tablaMovimientos.setRowSorter(sorter);
@@ -850,8 +851,23 @@ public class Principal extends javax.swing.JFrame {
             }
         }
         tablaMovimientos.setModel(tabla);
-        tablaMovimientos.getModel();
+        // Establecer el ancho específico de las columnas
+        int[] anchos = {60, 50, 100, 100, 40, 30, 100, 30, 100, 30, 60, 100, 5, 200}; // Anchos deseados para cada columna en píxeles
 
+        if (anchos.length == tabla.getColumnCount()) {
+            TableColumnModel columnModel = tablaMovimientos.getColumnModel();
+            for (int i = 0; i < anchos.length; i++) {
+                TableColumn columna = columnModel.getColumn(i);
+                columna.setPreferredWidth(anchos[i]);
+                // Renderizador personalizado para centrar el contenido de las celdas
+                DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
+                renderer.setHorizontalAlignment(SwingConstants.CENTER);
+                columna.setCellRenderer(renderer);
+                // Renderizador personalizado para centrar el título de las columnas
+                DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) tablaMovimientos.getTableHeader().getDefaultRenderer();
+                headerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+            }
+        }
     }
 
 
@@ -926,13 +942,12 @@ public class Principal extends javax.swing.JFrame {
         if (cbfDestino.isSelected()) {
             tFlete = "Destino";
             cbfOrigen.setSelected(false);
-            
+
         }
         if (cbfOrigen.isSelected()) {
             tFlete = "Origen";
             cbfDestino.setSelected(false);
         }
-        
 
         //verif Cuenta Corriente
         if (cbCuentaCorriente.isSelected()) {
@@ -1009,7 +1024,7 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_cbRemitoActionPerformed
 
     private void txtBultoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBultoActionPerformed
-       
+
     }//GEN-LAST:event_txtBultoActionPerformed
 
     private void btnEliminarMovimientoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarMovimientoActionPerformed
@@ -1061,17 +1076,17 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_txtDestinoActionPerformed
 
     private void cbfDestinoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbfDestinoActionPerformed
-         String tFlete="";
+        String tFlete = "";
         if (cbfDestino.isSelected()) {
             cbfOrigen.setSelected(false);
             tFlete = "Destino";
         }
-        
-       
+
+
     }//GEN-LAST:event_cbfDestinoActionPerformed
 
     private void cbfOrigenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbfOrigenActionPerformed
-        String tFlete="";
+        String tFlete = "";
         if (cbfOrigen.isSelected()) {
             cbfDestino.setSelected(false);
             tFlete = "Origen";
@@ -1082,13 +1097,13 @@ public class Principal extends javax.swing.JFrame {
         Principal pn = new Principal();
         pn.setVisible(true);
         dispose();
-        
+
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void btnAgregarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarClienteActionPerformed
         NuevoCliente nc = new NuevoCliente();
         nc.setVisible(true);
- 
+
     }//GEN-LAST:event_btnAgregarClienteActionPerformed
 
     private void cbCuentaCorrienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbCuentaCorrienteActionPerformed
