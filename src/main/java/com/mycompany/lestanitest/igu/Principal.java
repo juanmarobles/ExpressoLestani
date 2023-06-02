@@ -831,7 +831,7 @@ public class Principal extends javax.swing.JFrame {
 
         };
         //nombres de columnas
-        String titulos[] = {"MOVIMIENTO", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "PAGADO", "FLETE", "PAGADO", "A_CARGO_DE", "REPRESENTANTE", "CC", "OBS"};
+        String titulos[] = {"MOVIMIENTO", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "PAGADO", "RENDIDO", "FLETE", "PAGADO", "RENDIDO", "A_CARGO_DE", "REPRESENTANTE", "CC", "OBS"};
         tabla.setColumnIdentifiers(titulos);
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tabla);
         tablaMovimientos.setRowSorter(sorter);
@@ -842,7 +842,7 @@ public class Principal extends javax.swing.JFrame {
         //recorrer lista y mostrar elementos en la tabla
         if (listaMovimientos != null) {
             for (Movimientos mov : listaMovimientos) {
-                Object[] objeto = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
+                Object[] objeto = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
 
                 tabla.addRow(objeto);
 
@@ -850,7 +850,7 @@ public class Principal extends javax.swing.JFrame {
         }
         tablaMovimientos.setModel(tabla);
         // Establecer el ancho específico de las columnas
-        int[] anchos = {60, 50, 100, 100, 40, 30, 100, 30, 100, 30, 60, 100, 5, 200}; // Anchos deseados para cada columna en píxeles
+        int[] anchos = {60, 50, 100, 100, 40, 30, 100, 30, 30, 100, 30, 30, 60, 100, 5, 200}; // Anchos deseados para cada columna en píxeles
 
         if (anchos.length == tabla.getColumnCount()) {
             TableColumnModel columnModel = tablaMovimientos.getColumnModel();
@@ -922,8 +922,10 @@ public class Principal extends javax.swing.JFrame {
         //String fOrigen="";
         // String fDestino="";
         String tFlete = "";
-        String tMonto = "";
-        String fPr = "";
+        String tMontoP = "";
+        String tMontoR = "";
+        String tFleteP = "";
+        String tFleteR = "";
         String cC = "";
         int remito = 0;
         Date fecha = getDate();
@@ -953,30 +955,40 @@ public class Principal extends javax.swing.JFrame {
         } else {
             cC = "No";
         }
-       
+        
+        //remito
+        remito = Integer.parseInt(txtRemito.getText());
 
         //verif de monto pagado/rendido
         if (cbmontoPagado.isSelected() && cbMontoRendido.isSelected()) {
-            tMonto = "Si";
+            tMontoP = "Si";
+            tMontoR = "Si";
         } else if (cbmontoPagado.isSelected()) {
-            tMonto = "Si";
+            tMontoP = "Si";
+            tMontoR = "No";
         } else if (cbMontoRendido.isSelected()) {
-            tMonto = "Si";
+            tMontoR = "Si";
+            tMontoP = "No";
         } else {
-            tMonto = "No";
+            tMontoR = "No";
+            tMontoP = "No";
         }
         //verif de flete pagado/rendido
         if (cbfletePagado.isSelected() && cbfleteRendido.isSelected()) {
-            fPr = "Si";
+            tFleteP = "Si";
+            tFleteR = "Si";
         } else if (cbfleteRendido.isSelected()) {
-            fPr = "Si";
+            tFleteR = "Si";
+            tFleteP = "No";
         } else if (cbfletePagado.isSelected()) {
-            fPr = "Si";
+            tFleteR = "No";
+            tFleteP = "Si";
         } else {
-            fPr = "No";
+            tFleteR = "No";
+            tFleteP = "No";
         }
 
-        control.cargarMovimiento(cliente, destino, servicio, representante, bulto, monto, flete, tFlete, remito, fPr, fecha, tMonto, cC, obs);
+        control.cargarMovimiento(cliente, destino, servicio, representante, bulto, monto, flete, tFlete, remito, tMontoP, tMontoR, tFleteP, tFleteR, fecha, cC, obs);
         mostrarMensaje("Movimiento agregado correctamente", "Info", "Agregado con exito!");
 
         // Actualizar la tabla
@@ -984,7 +996,7 @@ public class Principal extends javax.swing.JFrame {
         modeloTabla.setRowCount(0);
         List<Movimientos> movimientos = control.traerMovimientos();
         for (Movimientos mov : movimientos) {
-            Object[] objeto = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
+                Object[] objeto = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
 
             modeloTabla.addRow(objeto);
         }
@@ -999,7 +1011,7 @@ public class Principal extends javax.swing.JFrame {
         txtObservaciones.setText("");
         cbfOrigen.setSelected(false);
         cbfDestino.setSelected(false);
-        
+
         cbmontoPagado.setSelected(false);
         cbMontoRendido.setSelected(false);
         cbfletePagado.setSelected(false);
@@ -1128,9 +1140,9 @@ public class Principal extends javax.swing.JFrame {
         }
 
         java.awt.EventQueue.invokeLater(new Runnable() {
-            
+
             public void run() {
-                
+
                 new Principal().setVisible(true);
             }
         });

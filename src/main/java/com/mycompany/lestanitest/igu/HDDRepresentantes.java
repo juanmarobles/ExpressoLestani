@@ -275,6 +275,11 @@ public class HDDRepresentantes extends javax.swing.JFrame {
         jLabel6.setText("Hoja de Ruta Por Representantes");
 
         jButton1.setText("Imprimir");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setText("Generar PDF");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -485,19 +490,19 @@ public class HDDRepresentantes extends javax.swing.JFrame {
 
         };
         //nombres de columnas
-        String titulos[] = {"MOVIMIENTO", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "PAGADO", "FLETE", "PAGADO", "A_CARGO_DE", "REPRESENTANTE", "CC", "OBS"};
+        String titulos[] = {"MOVIMIENTO", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "PAGADO", "RENDIDO", "FLETE", "PAGADO", "RENDIDO", "A_CARGO_DE", "REPRESENTANTE", "CC", "OBS"};
         tabla.setColumnIdentifiers(titulos);
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tabla);
         tablaMovimientos.setRowSorter(sorter);
         sorter.setSortKeys(java.util.Arrays.asList(new RowSorter.SortKey(1, SortOrder.DESCENDING)));
         //carga de los datos desde la lista filtrada
         for (Movimientos mov : listaMovimientos) {
-            Object[] objeto = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
+            Object[] objeto = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
             tabla.addRow(objeto);
         }
         tablaMovimientos.setModel(tabla);
         // Establecer el ancho específico de las columnas
-        int[] anchos = {60, 60, 100, 100, 40, 40, 100, 40, 100, 40, 70, 100, 5, 200}; // Anchos deseados para cada columna en píxeles
+        int[] anchos = {60, 50, 100, 100, 40, 30, 100, 30, 30, 100, 30, 30, 60, 100, 5, 200}; // Anchos deseados para cada columna en píxeles
 
         if (anchos.length == tabla.getColumnCount()) {
             TableColumnModel columnModel = tablaMovimientos.getColumnModel();
@@ -537,7 +542,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
         for (Movimientos mov : listaMovimientos) {
             if ((!cbCC.isSelected() || mov.getCuentaCorriente().equals("Si"))
                     && filtrarPorFecha(Arrays.asList(mov), fechaSeleccionada).size() > 0) {
-                Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
+                Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
                 tableModel.addRow(row);
             }
         }
@@ -557,7 +562,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
         for (Movimientos mov : listaMovimientos) {
             if ((!cbContado.isSelected() || mov.getCuentaCorriente().equals("No"))
                     && filtrarPorFecha(Arrays.asList(mov), fechaSeleccionada).size() > 0) {
-                Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
+                Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
                 tableModel.addRow(row);
             }
 
@@ -597,6 +602,10 @@ public class HDDRepresentantes extends javax.swing.JFrame {
         generarPDF();
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     private void mostrarTablaMovimientos() {
         //filas y columnas no editables
         DefaultTableModel tabla = new DefaultTableModel() {
@@ -607,7 +616,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
 
         };
         //nombres de columnas
-        String titulos[] = {"MOVIMIENTO", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "PAGADO", "FLETE", "PAGADO", "A_CARGO_DE", "REPRESENTANTE", "CC", "OBS"};
+        String titulos[] = {"MOVIMIENTO", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "PAGADO", "RENDIDO", "FLETE", "PAGADO", "RENDIDO", "A_CARGO_DE", "REPRESENTANTE", "CC", "OBS"};
         tabla.setColumnIdentifiers(titulos);
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tabla);
         tablaMovimientos.setRowSorter(sorter);
@@ -618,7 +627,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
         //recorrer lista y mostrar elementos en la tabla
         if (listaMovimientos != null) {
             for (Movimientos mov : listaMovimientos) {
-                Object[] objeto = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
+                Object[] objeto = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
 
                 tabla.addRow(objeto);
 
@@ -626,7 +635,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
         }
         tablaMovimientos.setModel(tabla);
         // Establecer el ancho específico de las columnas
-        int[] anchos = {60, 50, 100, 100, 40, 30, 100, 30, 100, 30, 60, 100, 5, 200}; // Anchos deseados para cada columna en píxeles
+        int[] anchos = {60, 50, 100, 100, 40, 30, 100, 30, 30, 100, 30, 30, 60, 100, 5, 200}; // Anchos deseados para cada columna en píxeles
 
         if (anchos.length == tabla.getColumnCount()) {
             TableColumnModel columnModel = tablaMovimientos.getColumnModel();
@@ -803,23 +812,21 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                 document.add(rep);
 
                 //CREACION DE TABLA
-                PdfPTable table = new PdfPTable(tablaMovimientos.getColumnCount() - 4 + 1); // Excluir columnas MOVIMIENTO,FECHA,REPRESENTANTE,Y OBS
+                PdfPTable table = new PdfPTable(tablaMovimientos.getColumnCount() - 6 + 1); // Excluir columnas MOVIMIENTO,FECHA,REPRESENTANTE,Y OBS
                 table.setSpacingBefore(10f); // Espacio antes de la tabla (en puntos)
                 table.setSpacingAfter(10f);
 
                 // Ajustar espacio horizontal
                 // Ajustar espacio horizontal
-                float[] columnWidths = {0.9f, 1f, 0.7f, 0.7f, 1f, 0.7f, 1f, 0.7f, 0.8f, 0.4f, 1f}; // Anchos de las columnas (proporciones)
+                float[] columnWidths = {0.8f, 0.8f, 0.7f, 0.7f, 1f, 0.7f, 1f, 0.7f, 0.8f, 0.4f, 1f}; // Añadir un ancho para la nueva columna "observaciones"
                 table.setWidths(columnWidths);
 
                 table.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
 
-                table.setWidths(columnWidths);
-
                 // Agregar las celdas a la tabla
                 for (int i = 0; i < tablaMovimientos.getColumnCount(); i++) {
                     String col = tablaMovimientos.getColumnName(i);
-                    if (!col.equals("MOVIMIENTO") && !col.equals("FECHA") && !col.equals("REPRESENTANTE") && !col.equals("OBS")) {
+                    if (!col.equals("MOVIMIENTO") && !col.equals("FECHA") && !col.equals("REPRESENTANTE") && !col.equals("OBS") && !col.equals("RENDIDO")) {
                         if (col.equals("CC")) { // Verificar si la columna es "CC"
                             col = "F.P"; // Cambiar el nombre de la columna a "F.P"
                         }
@@ -837,11 +844,10 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                 obsHeaderCell.setHorizontalAlignment(Element.ALIGN_CENTER);
                 obsHeaderCell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
                 table.addCell(obsHeaderCell);
-
                 for (int row = 0; row < tablaMovimientos.getRowCount(); row++) {
                     for (int col = 0; col < tablaMovimientos.getColumnCount(); col++) {
                         String colName = tablaMovimientos.getColumnName(col);
-                        if (!colName.equals("MOVIMIENTO") && !colName.equals("FECHA") && !colName.equals("REPRESENTANTE") && !colName.equals("OBS")) {
+                        if (!colName.equals("MOVIMIENTO") && !colName.equals("FECHA") && !colName.equals("REPRESENTANTE") && !colName.equals("OBS") && !colName.equals("RENDIDO")) {
                             Object value = tablaMovimientos.getValueAt(row, col);
                             if (value != null) {
                                 if (colName.equals("CC")) {
@@ -874,6 +880,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                     obsCell.setHorizontalAlignment(Element.ALIGN_CENTER);
                     obsCell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
                     table.addCell(obsCell);
+
                 }
 
                 document.add(table);

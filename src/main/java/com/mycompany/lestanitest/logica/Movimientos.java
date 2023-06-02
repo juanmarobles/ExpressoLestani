@@ -35,12 +35,16 @@ public class Movimientos implements Serializable {
     private int bultos;
     @Column(name = "MONTO", length = 50)
     private String monto;
-    @Column(name = "MONTO_PAGADO_RENDIDO", length = 50)
-    private String tipoMonto;
+    @Column(name = "MONTO_PAGADO", length = 10)
+    private String tipoMontoP;
+    @Column(name = "MONTO_RENDIDO", length = 10)
+    private String tipoMontoR;
     @Column(name = "FLETE", length = 50)
     private String flete;
-    @Column(name = "FLETE_PAGADO_RENDIDO", length = 50)
-    private String tipoFlete;
+    @Column(name = "FLETE_PAGADO", length = 10)
+    private String tipoFleteP;
+    @Column(name = "FLETE_RENDIDO", length = 10)
+    private String tipoFleteR;
     @Column(name = "REPRESENTANTE", nullable = false)
     private String representante;
     @Column(name = "CLIENTE", nullable = false)
@@ -57,16 +61,18 @@ public class Movimientos implements Serializable {
     public Movimientos() {
     }
 
-    public Movimientos(int id_movimientos, Date fecha, String destino, int remito, int bultos, String monto, String tipoMonto, String flete, String tipoFlete, String representante, String cliente, String servicio, String fleteDestinoOrigen, String cuentaCorriente, String observaciones) {
+    public Movimientos(int id_movimientos, Date fecha, String destino, int remito, int bultos, String monto, String tipoMontoP, String tipoMontoR, String flete, String tipoFleteP, String tipoFleteR, String representante, String cliente, String servicio, String fleteDestinoOrigen, String cuentaCorriente, String observaciones) {
         this.id_movimientos = id_movimientos;
         this.fecha = fecha;
         this.destino = destino;
         this.remito = remito;
         this.bultos = bultos;
         this.monto = monto;
-        this.tipoMonto = tipoMonto;
+        this.tipoMontoP = tipoMontoP;
+        this.tipoMontoR = tipoMontoR;
         this.flete = flete;
-        this.tipoFlete = tipoFlete;
+        this.tipoFleteP = tipoFleteP;
+        this.tipoFleteR = tipoFleteR;
         this.representante = representante;
         this.cliente = cliente;
         this.servicio = servicio;
@@ -74,6 +80,40 @@ public class Movimientos implements Serializable {
         this.cuentaCorriente = cuentaCorriente;
         this.observaciones = observaciones;
     }
+
+    public String getTipoMontoP() {
+        return tipoMontoP;
+    }
+
+    public void setTipoMontoP(String tipoMontoP) {
+        this.tipoMontoP = tipoMontoP;
+    }
+
+    public String getTipoMontoR() {
+        return tipoMontoR;
+    }
+
+    public void setTipoMontoR(String tipoMontoR) {
+        this.tipoMontoR = tipoMontoR;
+    }
+
+    public String getTipoFleteP() {
+        return tipoFleteP;
+    }
+
+    public void setTipoFleteP(String tipoFleteP) {
+        this.tipoFleteP = tipoFleteP;
+    }
+
+    public String getTipoFleteR() {
+        return tipoFleteR;
+    }
+
+    public void setTipoFleteR(String tipoFleteR) {
+        this.tipoFleteR = tipoFleteR;
+    }
+
+    
 
     public String getObservaciones() {
         return observaciones;
@@ -158,14 +198,7 @@ public class Movimientos implements Serializable {
         this.monto = monto;
     }
 
-    public String getTipoMonto() {
-        return tipoMonto;
-    }
-
-    public void setTipoMonto(String tipoMonto) {
-        this.tipoMonto = tipoMonto;
-    }
-
+   
     public String getFlete() {
         String fleteFormateado = "";
 
@@ -219,13 +252,7 @@ public class Movimientos implements Serializable {
         this.fleteDestinoOrigen = fleteDestinoOrigen;
     }
 
-    public String getTipoFlete() {
-        return tipoFlete;
-    }
-
-    public void setTipoFlete(String tipoFlete) {
-        this.tipoFlete = tipoFlete;
-    }
+  
 
     @Override
     public String toString() {

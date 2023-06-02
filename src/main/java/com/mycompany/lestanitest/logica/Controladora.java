@@ -237,7 +237,7 @@ public class Controladora {
     /**
      * ----------------------------------------------GUARDAR-----------------------------------------------------------------
      */
-    public void cargarMovimiento(String cliente, String destino, String servicio, String representante, int bulto, String monto, String flete, String tFlete, int remito, String fPr, Date fecha, String tMonto, String cC, String obs) {
+    public void cargarMovimiento(String cliente, String destino, String servicio, String representante, int bulto, String monto, String flete, String tFlete, int remito, String tMontoP, String tMontoR, String tFleteP, String tFleteR, Date fecha, String cC, String obs) {
         Movimientos m = new Movimientos();
         m.setCliente(cliente);
         m.setDestino(destino);
@@ -249,8 +249,10 @@ public class Controladora {
         m.setFleteDestinoOrigen(tFlete);
         m.setRemito(remito);
         m.setFecha(fecha);
-        m.setTipoFlete(fPr);
-        m.setTipoMonto(tMonto);
+        m.setTipoMontoP(tMontoP);
+        m.setTipoMontoR(tMontoR);
+        m.setTipoFleteP(tFleteP);
+        m.setTipoFleteR(tFleteR);
         m.setCuentaCorriente(cC);
         m.setObservaciones(obs);
         ctrl.guardarMovimiento(m);
@@ -263,12 +265,12 @@ public class Controladora {
     }
 
     public void actualizarMonto(Movimientos m, String tMonto) {
-        m.setTipoMonto(tMonto);
+        m.setTipoMontoP(tMonto);
         ctrl.modificarMovimiento(m);
     }
 
     public void actualizarFlete(Movimientos m, String tFlete) {
-        m.setTipoFlete(tFlete);
+        m.setTipoFleteP(tFlete);
         ctrl.modificarMovimiento(m);
     }
 
@@ -304,7 +306,7 @@ public class Controladora {
         return ctrl.traerMovimiento(idMovimiento);
     }
 
-    public void editarMovimiento(Movimientos mov, String cliente, String destino, String servicio, String representante, int bulto, String monto, String flete, int remito, String fPr, Date fecha, String tFlete, String tMonto) {
+    public void editarMovimiento(Movimientos mov, String cliente, String destino, String servicio, String representante, int bulto, String monto, String flete, String tFlete, int remito, String tMontoP, String tMontoR, String tFleteP, String tFleteR, Date fecha, String cC, String obs) {
         mov.setCliente(cliente);
         mov.setDestino(destino);
         mov.setServicio(servicio);
@@ -314,9 +316,12 @@ public class Controladora {
         mov.setFlete(flete);
         mov.setRemito(remito);
         mov.setFecha(fecha);
-        mov.setTipoFlete(fPr);
-        mov.setTipoMonto(tMonto);
-        mov.setFleteDestinoOrigen(tFlete);
+        mov.setTipoMontoP(tMontoP);
+        mov.setTipoMontoR(tMontoR);
+        mov.setTipoFleteP(tFleteP);
+        mov.setTipoFleteR(tFleteR);
+        mov.setCuentaCorriente(cC);
+        mov.setObservaciones(obs);
         ctrl.modificarMovimiento(mov);
     }
 
