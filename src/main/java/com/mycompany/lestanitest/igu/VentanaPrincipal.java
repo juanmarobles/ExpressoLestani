@@ -4,6 +4,13 @@
  */
 package com.mycompany.lestanitest.igu;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.plaf.metal.MetalLookAndFeel;
+import javax.swing.plaf.synth.SynthLookAndFeel;
+
 /**
  *
  * @author Usuario
@@ -51,12 +58,15 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jCheckBoxMenuItem1.setText("jCheckBoxMenuItem1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(51, 102, 255));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/Fondo de pantalla.png"))); // NOI18N
 
-        jMenuBar1.setBorder(null);
+        jMenuBar1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jMenuBar1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jMenuBar1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jMenuBar1.setMinimumSize(new java.awt.Dimension(505, 38));
+        jMenuBar1.setPreferredSize(new java.awt.Dimension(505, 40));
 
         MenuMovimientos.setText("Movimientos   ");
         MenuMovimientos.addActionListener(new java.awt.event.ActionListener() {
@@ -68,6 +78,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         CargaMovimiento.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         CargaMovimiento.setText("Cargar Movimientos");
         CargaMovimiento.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        CargaMovimiento.setPreferredSize(new java.awt.Dimension(173, 36));
         CargaMovimiento.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 CargaMovimientoActionPerformed(evt);
@@ -87,6 +98,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jMenuItem1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jMenuItem1.setText("Consultar Movimientos");
         jMenuItem1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jMenuItem1.setPreferredSize(new java.awt.Dimension(191, 36));
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem1ActionPerformed(evt);
@@ -98,11 +110,22 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         jMenu2.setText(" Hoja de Ruta ");
 
+        jMenuItem6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jMenuItem6.setText("Por Representante");
+        jMenuItem6.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jMenuItem6.setPreferredSize(new java.awt.Dimension(144, 36));
+        jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem6ActionPerformed(evt);
+            }
+        });
         jMenu2.add(jMenuItem6);
         jMenu2.add(jSeparator6);
 
+        jMenuItem7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jMenuItem7.setText("Hoja de Ruta");
+        jMenuItem7.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jMenuItem7.setPreferredSize(new java.awt.Dimension(127, 36));
         jMenuItem7.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem7ActionPerformed(evt);
@@ -117,6 +140,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         MenuLocalidades.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         MenuLocalidades.setText("Localidades");
         MenuLocalidades.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        MenuLocalidades.setPreferredSize(new java.awt.Dimension(118, 36));
         MenuLocalidades.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 MenuLocalidadesActionPerformed(evt);
@@ -128,6 +152,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         MenuClientes.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         MenuClientes.setText("Clientes");
         MenuClientes.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        MenuClientes.setPreferredSize(new java.awt.Dimension(96, 36));
         MenuClientes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 MenuClientesActionPerformed(evt);
@@ -139,6 +164,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jMenuItem3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jMenuItem3.setText("Representantes");
         jMenuItem3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jMenuItem3.setPreferredSize(new java.awt.Dimension(142, 36));
         jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem3ActionPerformed(evt);
@@ -150,6 +176,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         MenuVehiculos.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         MenuVehiculos.setText("Vechiculos");
         MenuVehiculos.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        MenuVehiculos.setPreferredSize(new java.awt.Dimension(112, 36));
         MenuVehiculos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 MenuVehiculosActionPerformed(evt);
@@ -161,6 +188,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         MenuServicios.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         MenuServicios.setText("Servicios");
         MenuServicios.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        MenuServicios.setPreferredSize(new java.awt.Dimension(100, 36));
         MenuServicios.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 MenuServiciosActionPerformed(evt);
@@ -173,7 +201,10 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jMenu4.setBorder(null);
         jMenu4.setText("Recibos");
 
+        Recibos.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         Recibos.setText("Generar Recibo");
+        Recibos.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        Recibos.setPreferredSize(new java.awt.Dimension(152, 36));
         Recibos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 RecibosActionPerformed(evt);
@@ -197,7 +228,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 1080, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 3, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
@@ -246,16 +277,22 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         rc.setVisible(true);
     }//GEN-LAST:event_RecibosActionPerformed
 
-    private void MenuVehiculosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuVehiculosActionPerformed
-        VerDatosVehiculos vehiculo = new VerDatosVehiculos();
-        vehiculo.setVisible(true);
-        
-    }//GEN-LAST:event_MenuVehiculosActionPerformed
-
     private void MenuServiciosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuServiciosActionPerformed
        VerDatosServicios servi = new VerDatosServicios();
         servi.setVisible(true);
     }//GEN-LAST:event_MenuServiciosActionPerformed
+
+    private void MenuVehiculosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuVehiculosActionPerformed
+        VerDatosVehiculos vehiculo = new VerDatosVehiculos();
+        vehiculo.setVisible(true);
+
+    }//GEN-LAST:event_MenuVehiculosActionPerformed
+
+    private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
+       HDDRepresentantes hdd = new HDDRepresentantes();
+       hdd.setVisible(true);
+       
+    }//GEN-LAST:event_jMenuItem6ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -287,6 +324,10 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
+                 
+                
+               
+              
               new VentanaPrincipal().setVisible(true);
             }
         });
