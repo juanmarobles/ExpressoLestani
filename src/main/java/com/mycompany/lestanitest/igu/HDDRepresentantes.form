@@ -69,7 +69,7 @@
                                               <Component id="jPanel3" alignment="0" min="-2" max="-2" attributes="0"/>
                                           </Group>
                                           <EmptySpace min="-2" pref="38" max="-2" attributes="0"/>
-                                          <Component id="btnMostrar" min="-2" pref="120" max="-2" attributes="0"/>
+                                          <Component id="btnMostrar" min="-2" pref="124" max="-2" attributes="0"/>
                                       </Group>
                                       <Group type="102" alignment="0" attributes="0">
                                           <Component id="jLabel5" min="-2" pref="139" max="-2" attributes="0"/>
