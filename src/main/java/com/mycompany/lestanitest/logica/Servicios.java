@@ -78,7 +78,7 @@ public class Servicios implements Serializable {
 
     @Override
     public String toString() {
-        return  servicio ;
+        return  servicio;
     }
     
 }

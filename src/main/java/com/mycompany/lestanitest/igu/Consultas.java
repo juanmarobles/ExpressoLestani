@@ -143,6 +143,11 @@ public class Consultas extends javax.swing.JFrame {
         txtCliente = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         btnLimpiar = new javax.swing.JButton();
+        jPanel9 = new javax.swing.JPanel();
+        jLabel16 = new javax.swing.JLabel();
+        txtFleteCambio = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        btnCambiar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Expreso Lestani S.R.L - Consultas");
@@ -612,6 +617,56 @@ public class Consultas extends javax.swing.JFrame {
             }
         });
 
+        jPanel9.setBackground(new java.awt.Color(66, 66, 66));
+        jPanel9.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
+
+        jLabel16.setForeground(new java.awt.Color(236, 240, 241));
+        jLabel16.setText("Cambiar precio de Flete");
+
+        jLabel5.setText("$");
+
+        btnCambiar.setBackground(new java.awt.Color(51, 51, 51));
+        btnCambiar.setForeground(new java.awt.Color(236, 240, 241));
+        btnCambiar.setText("Cambiar");
+        btnCambiar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnCambiar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCambiarActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
+        jPanel9.setLayout(jPanel9Layout);
+        jPanel9Layout.setHorizontalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel9Layout.createSequentialGroup()
+                        .addGap(8, 8, 8)
+                        .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel9Layout.createSequentialGroup()
+                        .addGap(14, 14, 14)
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btnCambiar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(txtFleteCambio, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel9Layout.setVerticalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel16)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtFleteCambio, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnCambiar, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(22, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -623,6 +678,11 @@ public class Consultas extends javax.swing.JFrame {
                         .addComponent(jScrollPane1))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(161, 161, 161)
+                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(73, 73, 73)
+                                .addComponent(btnImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
@@ -651,19 +711,42 @@ public class Consultas extends javax.swing.JFrame {
                                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(18, 18, 18)
                                         .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(30, 30, 30))))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(161, 161, 161)
-                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(73, 73, 73)
-                                .addComponent(btnImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 326, Short.MAX_VALUE)))
+                                        .addGap(30, 30, 30)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 176, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(19, 19, 19)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(26, 26, 26))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(36, 36, 36)
                         .addComponent(jLabel1)
@@ -672,35 +755,10 @@ public class Consultas extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(CuentaCorriente)
                         .addGap(24, 24, 24)
-                        .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(19, 19, 19)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(28, 28, 28))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(0, 0, Short.MAX_VALUE)))))
+                        .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(2, 2, 2)))
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
+                .addGap(20, 20, 20)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -731,9 +789,72 @@ public class Consultas extends javax.swing.JFrame {
     private void btnMostrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarActionPerformed
         String fechaDesde = txtFechaDesde.getText();
         String fechaHasta = txtFechaHasta.getText();
-        listaFiltrada = filtrarPorFechas(control.traerMovimientos(), fechaDesde, fechaHasta);
+        String nombreCliente = txtCliente.getText();
+
+        listaFiltrada = filtrarPorFechas(control.traerMovimientos(), fechaDesde, fechaHasta, nombreCliente);
         mostrarTablaMovimientos(listaFiltrada);
+
+        double totalMonto = calcularTotalMonto(listaFiltrada);
+        double totalFlete = calcularTotalFlete(listaFiltrada);
+        int totalBultos = calcularTotalBultos(listaFiltrada);
+
+        DecimalFormat decimalFormat = new DecimalFormat("#,###.000");
+        String totalMontoFormateado = decimalFormat.format(totalMonto);
+        String totalFleteFormateado = decimalFormat.format(totalFlete);
+
+        txtTotalMonto.setText(totalMontoFormateado);
+        txtTotalFlete.setText(totalFleteFormateado);
+        txtCantBultos.setText(String.valueOf(totalBultos));
     }//GEN-LAST:event_btnMostrarActionPerformed
+    private double calcularTotalMonto(List<Movimientos> movimientos) {
+        double totalMonto = 0.0;
+        DecimalFormat formatoMoneda = (DecimalFormat) DecimalFormat.getCurrencyInstance(Locale.CANADA);
+        formatoMoneda.setGroupingUsed(false);
+
+        for (Movimientos movimiento : movimientos) {
+            try {
+                String montoString = movimiento.getMonto();
+                Number monto = formatoMoneda.parse(montoString);
+                double montoDouble = monto.doubleValue();
+                totalMonto += montoDouble;
+            } catch (ParseException ex) {
+                Logger.getLogger(Consultas.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        return totalMonto;
+    }
+
+    private double calcularTotalFlete(List<Movimientos> movimientos) {
+        double totalFlete = 0.0;
+        DecimalFormat formatoMoneda = (DecimalFormat) DecimalFormat.getCurrencyInstance(Locale.CANADA);
+        formatoMoneda.setGroupingUsed(false);
+
+        for (Movimientos movimiento : movimientos) {
+            try {
+                String fleteString = movimiento.getFlete();
+                Number flete = formatoMoneda.parse(fleteString);
+                double fleteDouble = flete.doubleValue();
+                totalFlete += fleteDouble;
+            } catch (ParseException ex) {
+                Logger.getLogger(Consultas.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        return totalFlete;
+    }
+
+    private int calcularTotalBultos(List<Movimientos> movimientos) {
+        int totalBultos = 0;
+
+        for (Movimientos movimiento : movimientos) {
+            int bultos = movimiento.getBultos();
+            totalBultos += bultos;
+        }
+
+        return totalBultos;
+    }
+
     private void mostrarTablaMovimientos(List<Movimientos> listaMovimientos) {
         //filas y columnas no editables
         DefaultTableModel tabla = new DefaultTableModel() {
@@ -780,7 +901,7 @@ public class Consultas extends javax.swing.JFrame {
 
     }
 
-    public List<Movimientos> filtrarPorFechas(List<Movimientos> objetos, String fechaDesde, String fechaHasta) {
+    private List<Movimientos> filtrarPorFechas(List<Movimientos> objetos, String fechaDesde, String fechaHasta, String nombreCliente) {
         List<Movimientos> resultados = new ArrayList<>();
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
         try {
@@ -796,8 +917,9 @@ public class Consultas extends javax.swing.JFrame {
 
         for (Movimientos objeto : objetos) {
             Date fecha = objeto.getFecha();
+            String cliente = objeto.getCliente();
 
-            if (fecha != null) {
+            if (fecha != null && cliente != null && cliente.equalsIgnoreCase(nombreCliente)) {
                 try {
                     if (!fecha.before(formato.parse(fechaDesde)) && !fecha.after(formato.parse(fechaHasta))) {
                         resultados.add(objeto);
@@ -813,7 +935,7 @@ public class Consultas extends javax.swing.JFrame {
 
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        mostrarTablaMovimientos();
+
     }//GEN-LAST:event_formWindowOpened
 
     private void txtClienteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtClienteKeyTyped
@@ -848,75 +970,6 @@ public class Consultas extends javax.swing.JFrame {
     }//GEN-LAST:event_cbFletePagadoActionPerformed
 
     private void txtClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtClienteActionPerformed
-        txtCliente.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String clienteSeleccionado = txtCliente.getText();
-                Double montoTotal = 0.0;
-                Double fleteTotal = 0.0;
-                int bultoTotal = 0;
-                DecimalFormat formatoMoneda = (DecimalFormat) DecimalFormat.getCurrencyInstance(Locale.CANADA);
-                formatoMoneda.setGroupingUsed(false);
-                NumberFormat fmtMoneda = NumberFormat.getCurrencyInstance();
-                // TOTAL MONTO
-                for (int i = 0; i < tablaConsultas.getRowCount(); i++) {
-                    String cliente = (String) tablaConsultas.getValueAt(i, 2);
-                    if (cliente.equals(clienteSeleccionado)) {
-                        try {
-                            String montoString = (String) tablaConsultas.getValueAt(i, 6);
-                            Number monto = formatoMoneda.parse(montoString);
-                            double montoDouble = monto.doubleValue();
-                            montoTotal += montoDouble;
-                        } catch (ParseException ex) {
-                            Logger.getLogger(Consultas.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
-                }
-
-                // ...
-                // FLETE TOTAL
-                for (int i = 0; i < tablaConsultas.getRowCount(); i++) {
-                    String cliente = (String) tablaConsultas.getValueAt(i, 2);
-                    if (cliente.equals(clienteSeleccionado)) {
-                        try {
-                            String montoString = (String) tablaConsultas.getValueAt(i, 9);
-                            Number monto = formatoMoneda.parse(montoString);
-                            double montoDouble = monto.doubleValue();
-                            fleteTotal += montoDouble;
-                        } catch (ParseException ex) {
-                            Logger.getLogger(Consultas.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
-                }
-
-                //TOTAL BULTOS
-                for (int i = 0; i < tablaConsultas.getRowCount(); i++) {
-                    String cliente = (String) tablaConsultas.getValueAt(i, 2);
-                    if (cliente.equals(clienteSeleccionado)) {
-                        int bultos = (int) tablaConsultas.getValueAt(i, 5);
-                        bultoTotal += bultos;
-                    }
-                }
-
-                // Formatear el resultado con tres decimales
-                DecimalFormat decimalFormat = new DecimalFormat("#,###.000");
-                String fleteTotalFormateado = decimalFormat.format(fleteTotal);
-                String montoTotalFormateado = decimalFormat.format(montoTotal);
-
-                //para pdf
-                montoTotalImpreso = montoTotalFormateado;
-                fleteTotalImpreso = fleteTotalFormateado;
-
-                txtTotalMonto.setText(String.valueOf(montoTotalFormateado));
-                txtTotalMonto.setEditable(false);
-
-                txtTotalFlete.setText(String.valueOf(fleteTotalFormateado));
-                txtTotalFlete.setEditable(false);
-
-                txtCantBultos.setText(Integer.toString(bultoTotal));
-                txtCantBultos.setEditable(false);
-            }
-
-        });
 
     }//GEN-LAST:event_txtClienteActionPerformed
 
@@ -955,8 +1008,39 @@ public class Consultas extends javax.swing.JFrame {
         txtTotalMonto.setText("");
         txtTotalFlete.setText("");
         txtCantBultos.setText("");
-        mostrarTablaMovimientos();
     }//GEN-LAST:event_btnLimpiarActionPerformed
+
+    private void btnCambiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCambiarActionPerformed
+        cambiarValorFlete();
+    }//GEN-LAST:event_btnCambiarActionPerformed
+    private void cambiarValorFlete() {
+        int[] filasSeleccionadas = tablaConsultas.getSelectedRows(); // Obtener índices de las filas seleccionadas
+        String nuevoValorFleteTexto = txtFleteCambio.getText().trim(); // Obtener el nuevo valor del campo de texto
+        double nuevoValorFlete = Double.parseDouble(nuevoValorFleteTexto); // Convertir a tipo numérico
+
+        DefaultTableModel modeloTabla = (DefaultTableModel) tablaConsultas.getModel();
+        for (int fila : filasSeleccionadas) {
+            int idMovimientos = (int) modeloTabla.getValueAt(fila, 0);
+            Movimientos movimiento = null;
+
+            // Buscar el movimiento en la lista filtrada en lugar de control.traerMovimiento(idMovimientos)
+            for (Movimientos mov : listaFiltrada) {
+                if (mov.getId_movimientos() == idMovimientos) {
+                    movimiento = mov;
+                    break;
+                }
+            }
+
+            if (movimiento != null) {
+                movimiento.setFlete(nuevoValorFleteTexto); // Guardar el valor sin el signo "$"
+                control.actualizarPrecioFlete(movimiento, nuevoValorFleteTexto);
+                String nuevoValorFleteConSigno = "$" + nuevoValorFleteTexto; // Agregar el signo "$"
+                modeloTabla.setValueAt(nuevoValorFleteConSigno, fila, 9); // Actualizar el valor en la columna "FLETE" (columna indexada en 9)
+            }
+        }
+
+        modeloTabla.fireTableDataChanged();
+    }
 
     private void updateCc() {
         DefaultTableModel tableModel = (DefaultTableModel) tablaConsultas.getModel();
@@ -1072,6 +1156,7 @@ public class Consultas extends javax.swing.JFrame {
     private javax.swing.JCheckBox CuentaCorriente;
     private javax.swing.ButtonGroup Grupo1;
     private javax.swing.ButtonGroup Grupo2;
+    private javax.swing.JButton btnCambiar;
     private javax.swing.JButton btnImprimir;
     private javax.swing.JButton btnLimpiar;
     private javax.swing.JButton btnMPFletes;
@@ -1091,9 +1176,11 @@ public class Consultas extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
@@ -1104,12 +1191,14 @@ public class Consultas extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
+    private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tablaConsultas;
     private javax.swing.JTextField txtCantBultos;
     private javax.swing.JTextField txtCliente;
     private javax.swing.JFormattedTextField txtFechaDesde;
     private javax.swing.JFormattedTextField txtFechaHasta;
+    private javax.swing.JTextField txtFleteCambio;
     private javax.swing.JTextField txtTotalFlete;
     private javax.swing.JTextField txtTotalMonto;
     // End of variables declaration//GEN-END:variables
@@ -1232,58 +1321,6 @@ public class Consultas extends javax.swing.JFrame {
             modeloTabla.fireTableDataChanged();
         }
 
-    }
-
-    //TABLA CONSULTAS
-    private JTable mostrarTablaMovimientos() {
-        //filas y columnas no editables
-        DefaultTableModel tabla = new DefaultTableModel() {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-
-        };
-        //nombres de columnas
-        String titulos[] = {"MOVIMIENTO", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "PAGADO", "RENDIDO", "FLETE", "PAGADO", "RENDIDO", "A_CARGO_DE", "REPRESENTANTE", "CC", "OBS"};
-        tabla.setColumnIdentifiers(titulos);
-        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tabla);
-        tablaConsultas.setRowSorter(sorter);
-        sorter.setSortKeys(java.util.Arrays.asList(new RowSorter.SortKey(1, SortOrder.DESCENDING)));
-        //carga de los datos desde la bd
-        List<Movimientos> listaMovimientos = control.traerMovimientos();
-
-        //recorrer lista y mostrar elementos en la tabla
-        if (listaMovimientos != null) {
-            for (Movimientos mov : listaMovimientos) {
-                Object[] objeto = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
-
-                tabla.addRow(objeto);
-
-            }
-        }
-        tablaConsultas.setModel(tabla);
-        // Establecer el ancho específico de las columnas
-        int[] anchos = {60, 50, 100, 100, 40, 30, 100, 30, 30, 100, 30, 30, 60, 100, 5, 200}; // Anchos deseados para cada columna en píxeles
-
-        if (anchos.length == tabla.getColumnCount()) {
-            TableColumnModel columnModel = tablaConsultas.getColumnModel();
-            for (int i = 0; i < anchos.length; i++) {
-                TableColumn columna = columnModel.getColumn(i);
-                columna.setPreferredWidth(anchos[i]);
-
-                // Renderizador personalizado para centrar el contenido de las celdas
-                DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
-                renderer.setHorizontalAlignment(SwingConstants.CENTER);
-                tablaConsultas.setDefaultRenderer(Object.class, renderer);
-
-                // Renderizador personalizado para centrar el título de las columnas
-                DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) tablaConsultas.getTableHeader().getDefaultRenderer();
-                headerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-            }
-        }
-
-        return tablaConsultas;
     }
 
     //IMPRIMIR CONSULTAS

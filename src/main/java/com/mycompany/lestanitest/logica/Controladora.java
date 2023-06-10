@@ -273,6 +273,11 @@ public class Controladora {
         m.setTipoFleteP(tFlete);
         ctrl.modificarMovimiento(m);
     }
+     public void actualizarPrecioFlete(Movimientos m, String pFlete) {
+        m.setFlete(pFlete);
+        ctrl.modificarMovimiento(m);
+    }
+    
 
     /**
      * ----------------------------------------------BORRAR-----------------------------------------------------------------

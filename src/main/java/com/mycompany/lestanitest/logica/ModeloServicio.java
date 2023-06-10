@@ -32,7 +32,8 @@ public class ModeloServicio {
             while(rs.next()){
                 Servicios ser = new Servicios();               
                 ser.setId_servicio(rs.getInt("ID_SERVICIO"));
-                ser.setServicio(rs.getString("SERVICIO"));          
+                ser.setServicio(rs.getString("SERVICIO"));  
+                ser.setPrecio(rs.getDouble("PRECIO"));
                 listaServicios.add(ser);
             }
         } catch (SQLException ex) {

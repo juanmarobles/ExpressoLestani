@@ -146,7 +146,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
         tablaMovimientos = new javax.swing.JTable();
         jLabel6 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnGenerarPdf = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         cbCC = new javax.swing.JRadioButton();
         cbContado = new javax.swing.JRadioButton();
@@ -281,10 +281,10 @@ public class HDDRepresentantes extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setText("Generar PDF");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnGenerarPdf.setText("Generar PDF");
+        btnGenerarPdf.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnGenerarPdfActionPerformed(evt);
             }
         });
 
@@ -395,7 +395,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                                 .addGap(139, 139, 139)
                                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(49, 49, 49)
-                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(btnGenerarPdf, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 445, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -427,7 +427,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
-                    .addComponent(jButton2))
+                    .addComponent(btnGenerarPdf))
                 .addContainerGap(19, Short.MAX_VALUE))
         );
 
@@ -447,17 +447,29 @@ public class HDDRepresentantes extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        mostrarTablaMovimientos();
+
     }//GEN-LAST:event_formWindowOpened
 
     private void btnMostrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarActionPerformed
         String fecha = txtFecha.getText();
+        String representante = txtRepresentante.getText();
+        boolean mostrarCuentaCorriente = cbCC.isSelected();
+        boolean mostrarContado = cbContado.isSelected();
+        boolean mostrarTodos = cbTodos.isSelected();
+
         List<Movimientos> listaMovimientos = control.traerMovimientos();
-        List<Movimientos> listaFiltrada = filtrarPorFecha(listaMovimientos, fecha);
+        List<Movimientos> listaFiltrada;
+
+        if (mostrarTodos) {
+            listaFiltrada = filtrarPorFechayRep(listaMovimientos, fecha, representante);
+        } else {
+            listaFiltrada = filtrarMovimientos(listaMovimientos, fecha, representante, mostrarCuentaCorriente, mostrarContado);
+        }
+
         mostrarTablaMovimientos(listaFiltrada);
     }//GEN-LAST:event_btnMostrarActionPerformed
 
-    public List<Movimientos> filtrarPorFecha(List<Movimientos> objetos, String fechaSeleccionada) {
+    public List<Movimientos> filtrarMovimientos(List<Movimientos> objetos, String fechaSeleccionada, String representante, boolean mostrarCuentaCorriente, boolean mostrarContado) {
         List<Movimientos> resultados = new ArrayList<>();
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -466,11 +478,27 @@ public class HDDRepresentantes extends javax.swing.JFrame {
 
             for (Movimientos objeto : objetos) {
                 Date fechaMovimiento = objeto.getFecha();
+                String representanteMovimiento = objeto.getRepresentante();
+                String cuentaCorriente = objeto.getCuentaCorriente();
+                boolean esCuentaCorriente = cuentaCorriente.equalsIgnoreCase("si");
 
-                if (fechaMovimiento != null) {
-                    if (formato.format(fechaMovimiento).equals(fechaSeleccionada)) {
-                        resultados.add(objeto);
-                    }
+                // Verificar si se debe mostrar el movimiento según los filtros
+                boolean mostrarMovimiento = true;
+                if (fechaMovimiento != null && !formato.format(fechaMovimiento).equals(fechaSeleccionada)) {
+                    mostrarMovimiento = false; // No coincide con la fecha seleccionada
+                }
+                if (representante != null && !representante.isEmpty() && !representanteMovimiento.equals(representante)) {
+                    mostrarMovimiento = false; // No coincide con el representante seleccionado
+                }
+                if (!mostrarCuentaCorriente && esCuentaCorriente) {
+                    mostrarMovimiento = false; // Se debe mostrar solo movimientos no cuenta corriente
+                }
+                if (!mostrarContado && !esCuentaCorriente) {
+                    mostrarMovimiento = false; // Se debe mostrar solo movimientos cuenta corriente
+                }
+
+                if (mostrarMovimiento) {
+                    resultados.add(objeto);
                 }
             }
         } catch (ParseException ex) {
@@ -523,55 +551,40 @@ public class HDDRepresentantes extends javax.swing.JFrame {
 
     }
     private void cbCCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbCCActionPerformed
-        updateCc();
+
         if (cbCC.isSelected()) {
             cbContado.setSelected(false);
             cbTodos.setSelected(false);
         }
 
     }//GEN-LAST:event_cbCCActionPerformed
-    private void updateCc() {
-        DefaultTableModel tableModel = (DefaultTableModel) tablaMovimientos.getModel();
-        tableModel.setRowCount(0); // Limpiar la tabla
+   
+    public List<Movimientos> filtrarPorFechayRep(List<Movimientos> objetos, String fechaSeleccionada, String representanteSeleccionado) {
+        List<Movimientos> resultados = new ArrayList<>();
+        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
 
-        List<Movimientos> listaMovimientos = control.traerMovimientos();
-        String fechaSeleccionada = txtFecha.getText(); // Obtener la fecha seleccionada
+        try {
+            Date fecha = formato.parse(fechaSeleccionada);
 
-        // Recorrer la lista y agregar filas a la tabla
-        tableModel.setRowCount(0);
-        for (Movimientos mov : listaMovimientos) {
-            if ((!cbCC.isSelected() || mov.getCuentaCorriente().equals("Si"))
-                    && filtrarPorFecha(Arrays.asList(mov), fechaSeleccionada).size() > 0) {
-                Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
-                tableModel.addRow(row);
+            for (Movimientos objeto : objetos) {
+                Date fechaMovimiento = objeto.getFecha();
+                String representanteMovimiento = objeto.getRepresentante();
+
+                if (fechaMovimiento != null && formato.format(fechaMovimiento).equals(fechaSeleccionada)
+                        && representanteMovimiento != null && representanteMovimiento.equalsIgnoreCase(representanteSeleccionado)) {
+                    resultados.add(objeto);
+                }
             }
+        } catch (ParseException ex) {
+            Logger.getLogger(Consultas.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
 
-    private void updateContado() {
-        DefaultTableModel tableModel = (DefaultTableModel) tablaMovimientos.getModel();
-        tableModel.setRowCount(0); // Limpiar la tabla
-
-        List<Movimientos> listaMovimientos = control.traerMovimientos();
-        String fechaSeleccionada = txtFecha.getText(); // Obtener la fecha seleccionada
-
-        /**
-         * CHECK BOX CONTADO
-         */
-        tableModel.setRowCount(0);
-        for (Movimientos mov : listaMovimientos) {
-            if ((!cbContado.isSelected() || mov.getCuentaCorriente().equals("No"))
-                    && filtrarPorFecha(Arrays.asList(mov), fechaSeleccionada).size() > 0) {
-                Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
-                tableModel.addRow(row);
-            }
-
-        }
+        return resultados;
     }
 
 
     private void cbContadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbContadoActionPerformed
-        updateContado();
+
         if (cbContado.isSelected()) {
             cbCC.setSelected(false);
             cbTodos.setSelected(false);
@@ -579,7 +592,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
     }//GEN-LAST:event_cbContadoActionPerformed
 
     private void cbTodosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbTodosActionPerformed
-        mostrarTablaMovimientos();
+
         if (cbTodos.isSelected()) {
             cbCC.setSelected(false);
             cbContado.setSelected(false);
@@ -598,60 +611,13 @@ public class HDDRepresentantes extends javax.swing.JFrame {
         tablaMovimientos.setRowSorter(trs);
     }//GEN-LAST:event_txtRepresentanteKeyTyped
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void btnGenerarPdfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarPdfActionPerformed
         generarPDF();
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_btnGenerarPdfActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void mostrarTablaMovimientos() {
-        //filas y columnas no editables
-        DefaultTableModel tabla = new DefaultTableModel() {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-
-        };
-        //nombres de columnas
-        String titulos[] = {"MOVIMIENTO", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "PAGADO", "RENDIDO", "FLETE", "PAGADO", "RENDIDO", "A_CARGO_DE", "REPRESENTANTE", "CC", "OBS"};
-        tabla.setColumnIdentifiers(titulos);
-        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tabla);
-        tablaMovimientos.setRowSorter(sorter);
-        sorter.setSortKeys(java.util.Arrays.asList(new RowSorter.SortKey(1, SortOrder.DESCENDING)));
-        //carga de los datos desde la bd
-        List<Movimientos> listaMovimientos = control.traerMovimientos();
-
-        //recorrer lista y mostrar elementos en la tabla
-        if (listaMovimientos != null) {
-            for (Movimientos mov : listaMovimientos) {
-                Object[] objeto = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
-
-                tabla.addRow(objeto);
-
-            }
-        }
-        tablaMovimientos.setModel(tabla);
-        // Establecer el ancho específico de las columnas
-        int[] anchos = {60, 50, 100, 100, 40, 30, 100, 30, 30, 100, 30, 30, 60, 100, 5, 200}; // Anchos deseados para cada columna en píxeles
-
-        if (anchos.length == tabla.getColumnCount()) {
-            TableColumnModel columnModel = tablaMovimientos.getColumnModel();
-            for (int i = 0; i < anchos.length; i++) {
-                TableColumn columna = columnModel.getColumn(i);
-                columna.setPreferredWidth(anchos[i]);
-                // Renderizador personalizado para centrar el contenido de las celdas
-                DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
-                renderer.setHorizontalAlignment(SwingConstants.CENTER);
-                columna.setCellRenderer(renderer);
-                // Renderizador personalizado para centrar el título de las columnas
-                DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) tablaMovimientos.getTableHeader().getDefaultRenderer();
-                headerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-            }
-        }
-    }
 
     /**
      * @param args the command line arguments
@@ -689,6 +655,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnGenerarPdf;
     private javax.swing.JButton btnMostrar;
     private javax.swing.JRadioButton cbCC;
     private javax.swing.JComboBox<String> cbChofer;
@@ -696,7 +663,6 @@ public class HDDRepresentantes extends javax.swing.JFrame {
     private javax.swing.JRadioButton cbTodos;
     private javax.swing.JComboBox<Vehiculo> cbVehiculo;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -752,7 +718,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                 Font fontDatos = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, NORMAL);
                 Font fontTotales = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
                 Font fontFecha = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
-                Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 8);
+                Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10);
 
                 // LOGO
                 Image logo = Image.getInstance("src/main/java/com/imagenes/logosolo.jpg");
@@ -818,7 +784,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
 
                 // Ajustar espacio horizontal
                 // Ajustar espacio horizontal
-                float[] columnWidths = {0.8f, 0.8f, 0.7f, 0.7f, 1f, 0.7f, 1f, 0.7f, 0.8f, 0.4f, 1f}; // Añadir un ancho para la nueva columna "observaciones"
+                float[] columnWidths = {0.8f, 0.8f, 0.7f, 0.7f, 1f, 0.7f, 1f, 0.7f, 0.8f, 0.5f, 1f}; // Añadir un ancho para la nueva columna "observaciones"
                 table.setWidths(columnWidths);
 
                 table.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
