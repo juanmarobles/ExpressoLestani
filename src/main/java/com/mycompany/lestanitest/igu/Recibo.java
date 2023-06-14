@@ -249,11 +249,9 @@ public class Recibo extends javax.swing.JFrame {
             // Obtener los movimientos filtrados por fechas y cliente
             List<Movimientos> listaFiltrada = filtrarPorFechasCliente(control.traerMovimientos(), fechaDesdeFormatted, fechaHastaFormatted, cliente);
 
-            System.out.println("Cantidad de movimientos: " + listaFiltrada.size());
-
             // Crear una instancia de la ventana de movimientos
             Recibos rc = new Recibos(cliente, listaFiltrada, fechaDesde, fechaHasta);
-
+            
             // Mostrar la ventana de movimientos
             rc.setVisible(true);
 

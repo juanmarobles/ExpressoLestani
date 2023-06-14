@@ -26,6 +26,8 @@ import com.mycompany.lestanitest.logica.Movimientos;
 import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.print.PrinterException;
@@ -86,6 +88,7 @@ public class Recibos extends javax.swing.JFrame {
     Controladora control = new Controladora();
     TableRowSorter trs;
     DefaultTableModel tabla = new DefaultTableModel();
+    private Cliente clienteSeleccionado;
     private String cliente;
     private String fechaDesde;
     private String fechaHasta;
@@ -103,6 +106,7 @@ public class Recibos extends javax.swing.JFrame {
         initComponents();
         txtCliente.setText(cliente);
         cargarClientes();
+        actualizarLocalidad();
         // Cargar el número de recibo desde el archivo (si existe)
         cargarNumeroRecibo();
         txtReciboNro.setText(String.format("%05d", numeroRecibo));
@@ -232,37 +236,29 @@ public class Recibos extends javax.swing.JFrame {
         AutoCompleteDecorator.decorate(txtCliente, listaClientes, false);
 
         // Agregar un listener al textfield del cliente
-        txtCliente.getDocument().addDocumentListener(new DocumentListener() {
+        txtCliente.addFocusListener(new FocusAdapter() {
             @Override
-            public void insertUpdate(DocumentEvent e) {
+            public void focusLost(FocusEvent e) {
                 actualizarLocalidad();
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                actualizarLocalidad();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                actualizarLocalidad();
-            }
-
-            private void actualizarLocalidad() {
-
-                //carga de los datos desde la bd
-                List<Cliente> listaC = control.traerClientes();
-                // Buscar el cliente correspondiente en la lista
-                String nombreCliente = txtCliente.getText().trim().toLowerCase();
-                for (Cliente cliente : listaC) {
-                    if (cliente.getNombre().toLowerCase().equals(nombreCliente)) {
-                        // Mostrar la localidad en el textfield correspondiente
-                        txtDomicilio.setText(cliente.getDireccion());
-                        return;
-                    }
-                }
             }
         });
+    }
+
+    private void actualizarLocalidad() {
+        // Carga de los datos desde la base de datos
+        List<Cliente> listaC = control.traerClientes();
+        // Buscar el cliente correspondiente en la lista
+        String nombreCliente = txtCliente.getText().trim().toLowerCase();
+        for (Cliente cliente : listaC) {
+            if (cliente.getNombre().toLowerCase().equals(nombreCliente)) {
+                clienteSeleccionado = cliente;
+                // Mostrar la localidad en el textfield correspondiente
+                txtDomicilio.setText(cliente.getDireccion());
+                return;
+            }
+        }
+        // Si no se encuentra el cliente, se establece el campo de texto del domicilio como vacío
+        txtDomicilio.setText("");
     }
 
     /**
@@ -365,6 +361,12 @@ public class Recibos extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setText("Domicilio:");
+
+        txtDomicilio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtDomicilioActionPerformed(evt);
+            }
+        });
 
         txtConcepto.setText("PAGO CONTRAREEMBOLSO");
 
@@ -893,6 +895,10 @@ public class Recibos extends javax.swing.JFrame {
         txtTotalMonto.setText("");
         txtTotalFlete.setText("");
     }//GEN-LAST:event_btnQuitarActionPerformed
+
+    private void txtDomicilioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDomicilioActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtDomicilioActionPerformed
     private void generarPdfSinFlete() {
         Document document = new Document();
         // Incrementar el contador de recibo
@@ -1258,7 +1264,7 @@ public class Recibos extends javax.swing.JFrame {
                     // Agregar las celdas de encabezado a la tabla, excluyendo las columnas suprimidas
                     for (int i = 0; i < tablaMovimientos.getColumnCount(); i++) {
                         String col = tablaMovimientos.getColumnName(i);
-                        if (!col.equals("PAGADO") && !col.equals("REPRESENTANTE") && !col.equals("CLIENTE") && !col.equals("CC")&& !col.equals("RENDIDO")&& !col.equals("RENDIDO")) {
+                        if (!col.equals("PAGADO") && !col.equals("REPRESENTANTE") && !col.equals("CLIENTE") && !col.equals("CC") && !col.equals("RENDIDO") && !col.equals("RENDIDO")) {
                             PdfPCell cell = new PdfPCell(new Phrase(col, fontColumnas));
                             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                             cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
@@ -1271,7 +1277,7 @@ public class Recibos extends javax.swing.JFrame {
                         // Agregar las celdas de datos excluyendo las columnas suprimidas
                         for (int col = 0; col < tablaMovimientos.getColumnCount(); col++) {
                             String colName = tablaMovimientos.getColumnName(col);
-                            if (!colName.equals("REPRESENTANTE") && !colName.equals("CLIENTE") && !colName.equals("PAGADO") && !colName.equals("CC")&& !colName.equals("RENDIDO")&& !colName.equals("RENDIDO")) {
+                            if (!colName.equals("REPRESENTANTE") && !colName.equals("CLIENTE") && !colName.equals("PAGADO") && !colName.equals("CC") && !colName.equals("RENDIDO") && !colName.equals("RENDIDO")) {
                                 Object value = tablaMovimientos.getValueAt(fila, col);
                                 if (value != null) {
                                     PdfPCell cell = new PdfPCell(new Phrase(value.toString(), fontFilas));

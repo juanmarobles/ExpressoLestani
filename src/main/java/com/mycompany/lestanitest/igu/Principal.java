@@ -14,6 +14,7 @@ import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPCellEvent;
+import com.itextpdf.text.pdf.PdfPRow;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import static com.mycompany.lestanitest.igu.Recibos.fechaActual;
@@ -77,8 +78,10 @@ public class Principal extends javax.swing.JFrame {
     TableRowSorter trs;
     DefaultTableModel dtm = new DefaultTableModel();
     private Cliente clienteSeleccionado;
+    private Movimientos movimientoSeleccionado;
     private Servicios servicioSeleccionado;
     int numeroRemito = 0;
+     int numeroRemitoAnterior = 0;
 
     public Principal() {
         initComponents();
@@ -96,6 +99,7 @@ public class Principal extends javax.swing.JFrame {
         TextPrompt filtroCl = new TextPrompt("Busqueda por cliente", txtFiltroCliente);
         TextPrompt filtroRe = new TextPrompt("Busqueda por remito", txtFiltroRemito);
         cargarNumeroRemito();
+        cargarNumeroFacturaRemito();
         // Agregar un listener al campo txtServicio
         txtServicio.getDocument().addDocumentListener(new DocumentListener() {
             @Override
@@ -1258,6 +1262,13 @@ public class Principal extends javax.swing.JFrame {
             tFleteP = "No";
         }
 
+        // Verificar si faltan datos por ingresar
+        if (cliente.isEmpty() || destino.isEmpty() || servicio.isEmpty() || representante.isEmpty()
+                || txtBulto.getText().isEmpty() || monto.isEmpty() || flete.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Faltan datos por ingresar", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
         control.cargarMovimiento(cliente, destino, servicio, representante, bulto, monto, flete, tFlete, remito, tMontoP, tMontoR, tFleteP, tFleteR, fecha, cC, obs);
         //mostrarMensaje("Movimiento agregado correctamente", "Info", "Agregado con exito!");
         generarPdf();
@@ -1491,19 +1502,36 @@ public class Principal extends javax.swing.JFrame {
             remitenteHeader.setAlignment(Element.ALIGN_CENTER);
             remitenteCell.addElement(remitenteHeader);
 
-            Paragraph nombreParagraph = new Paragraph(clienteSeleccionado.getNombre().toUpperCase(), fontR);
+            String nombreCliente = "";
+            String direccion = "";
+            String localidad = "";
+            String cuit = "";
+            if (clienteSeleccionado != null && clienteSeleccionado.getDireccion() != null && clienteSeleccionado.getLocalidad() != null
+                    && clienteSeleccionado.getCuit() != null && clienteSeleccionado.getNombre() != null) {
+                nombreCliente = clienteSeleccionado.getNombre();
+                direccion = clienteSeleccionado.getDireccion().toUpperCase();
+                localidad = clienteSeleccionado.getLocalidad().toUpperCase();
+                cuit = clienteSeleccionado.getCuit().toUpperCase();
+            } else {
+                nombreCliente = tCliente.getText().toUpperCase();
+                direccion = "";
+                localidad = txtDestino.getText().toUpperCase();
+                cuit = "";
+            }
+
+            Paragraph nombreParagraph = new Paragraph(nombreCliente, fontR);
             nombreParagraph.setAlignment(Element.ALIGN_CENTER);
             remitenteCell.addElement(nombreParagraph);
 
-            Paragraph direccionParagraph = new Paragraph("DIRECCION: " + clienteSeleccionado.getDireccion().toUpperCase(), fontR);
+            Paragraph direccionParagraph = new Paragraph("DIRECCION: " + direccion, fontR);
             direccionParagraph.setAlignment(Element.ALIGN_CENTER);
             remitenteCell.addElement(direccionParagraph);
 
-            Paragraph localidadParagraph = new Paragraph("LOCALIDAD: " + clienteSeleccionado.getLocalidad().toUpperCase(), fontR);
+            Paragraph localidadParagraph = new Paragraph("LOCALIDAD: " + localidad, fontR);
             localidadParagraph.setAlignment(Element.ALIGN_CENTER);
             remitenteCell.addElement(localidadParagraph);
 
-            Paragraph cuitParagraph = new Paragraph("CUIT: " + clienteSeleccionado.getCuit().toUpperCase(), fontR);
+            Paragraph cuitParagraph = new Paragraph("CUIT: " + cuit, fontR);
             cuitParagraph.setAlignment(Element.ALIGN_CENTER);
             remitenteCell.addElement(cuitParagraph);
 
@@ -1522,7 +1550,7 @@ public class Principal extends javax.swing.JFrame {
             dirExpreso.setAlignment(Element.ALIGN_CENTER);
             destinatarioCell.addElement(dirExpreso);
 
-            Paragraph locExpreso = new Paragraph("LOCALIDAD: RESISTENCIA CHACO(3500)", fontR);
+            Paragraph locExpreso = new Paragraph("LOCALIDAD: RESISTENCIA CHACO (3500)", fontR);
             locExpreso.setAlignment(Element.ALIGN_CENTER);
             destinatarioCell.addElement(locExpreso);
 
@@ -1536,13 +1564,53 @@ public class Principal extends javax.swing.JFrame {
 
             document.add(tablaContenedora);
 
+            // Agregar espacio arriba de la tabla
+            Paragraph espacio = new Paragraph(10f, " "); // 20f es el tamaño del espacio
+            document.add(espacio);
+
+            // Crear la tabla con 6 columnas
+            PdfPTable tablaa = new PdfPTable(6);
+            tablaa.setWidthPercentage(100);
+
+            // Establecer el borde de las celdas de las filas como NO_BORDER
+            PdfPCell bordeTop = new PdfPCell();
+            bordeTop.setBorder(Rectangle.TOP | Rectangle.LEFT | Rectangle.RIGHT);
+            PdfPCell celdaConBorde = new PdfPCell();
+            celdaConBorde.setBorder(Rectangle.BOTTOM | Rectangle.LEFT | Rectangle.RIGHT);
+
+            // Agregar las celdas a la tabla
+            tablaa.addCell(createCell("Descripción", font, bordeTop));
+            tablaa.addCell(createCell("Seguro", font, bordeTop));
+            tablaa.addCell(createCell("Com. contrarrembolso", font, bordeTop));
+            tablaa.addCell(createCell("Redespacho", font, bordeTop));
+            tablaa.addCell(createCell("Valor Declarado", font, bordeTop));
+            tablaa.addCell(createCell("Observaciones", font, bordeTop));
+
+            // Obtener los valores de los campos de texto
+            String descripcion = txtBulto.getText() + " bultos";
+            String observaciones = txtObservaciones.getText();
+
+            // Agregar los valores a la tabla
+            tablaa.addCell(createCell(descripcion, font, celdaConBorde));
+            tablaa.addCell(createCell("$0", font, celdaConBorde)); // Columna "Seguro"
+            tablaa.addCell(createCell("$0", font, celdaConBorde)); // Columna "Com. Contrarrembolso"
+            tablaa.addCell(createCell("$0", font, celdaConBorde)); // Columna "Redespacho"
+            tablaa.addCell(createCell("$0", font, celdaConBorde)); // Columna "Valor Declarado"
+            tablaa.addCell(createCell(observaciones, font, celdaConBorde));
+
+            // Agregar la tabla al documento
+            document.add(tablaa);
+
+            document.add(espacio);
             Paragraph recibenB = new Paragraph("SE RECIBEN LOS BULTOS SIN ESPECIFICAR SU CONTENIDO", fontR);
             recibenB.setAlignment(Element.ALIGN_CENTER);
             document.add(recibenB);
 
+            document.add(espacio);
             // Crear la tabla con 2 columnas
             PdfPTable tabla = new PdfPTable(2);
             tabla.setWidthPercentage(100);
+            tabla.setWidths(new float[]{1, 0.5f}); // Ajustar el ancho de las columnas
 
             // Agregar la imagen a la primera celda
             PdfPCell imagenCell = new PdfPCell();
@@ -1554,23 +1622,75 @@ public class Principal extends javax.swing.JFrame {
             tabla.addCell(imagenCell);
 
             // Agregar el texto a la segunda celda
+            String condicionFlete = cbCuentaCorriente.isSelected() ? "CUENTA CORRIENTE" : "CONTADO";
+            String flete = "";
+            if (cbfOrigen.isSelected()) {
+                flete = "origen";
+            } else if (cbfDestino.isSelected()) {
+                flete = "destino";
+            }
+
             PdfPCell textoCell = new PdfPCell();
-            Paragraph totalMonto = new Paragraph("TOTAL $" + txtMonto.getText(), fontR);
-            totalMonto.setAlignment(Element.ALIGN_RIGHT);
-            Paragraph c = new Paragraph("CONTRAREEMBOLSO $ ", fontR);
-            c.setAlignment(Element.ALIGN_RIGHT);
-            Paragraph a = new Paragraph("CONDICION DE VENTA: ", fontR);
-            a.setAlignment(Element.ALIGN_RIGHT);
-            Paragraph f = new Paragraph("FLETE:  ", fontR);
-            f.setAlignment(Element.ALIGN_RIGHT);
-            textoCell.addElement(c);
-            textoCell.addElement(a);
-            textoCell.addElement(f);
-            textoCell.addElement(totalMonto);
             textoCell.setBorder(Rectangle.NO_BORDER);
+            // Crear una tabla interna para el texto
+            PdfPTable tablaTexto = new PdfPTable(1);
+            tablaTexto.setWidthPercentage(100);
+
+            Paragraph c = new Paragraph("CONTRAREEMBOLSO: $" + txtMonto.getText() + ".0", fontR);
+            c.setAlignment(Element.ALIGN_LEFT);
+            PdfPCell celdaC = new PdfPCell(c);
+            celdaC.setBorder(Rectangle.LEFT | Rectangle.RIGHT | Rectangle.TOP | Rectangle.BOTTOM); // Agregar borde alrededor de la celda "c"
+            celdaC.setPadding(3f); // Ajustar el relleno de la celda "c"
+            celdaC.setPaddingBottom(4f); // Ajustar el relleno de la celda "c"
+            tablaTexto.addCell(celdaC);
+
+            Paragraph b = new Paragraph("FLETE: $" + txtFlete.getText(), fontR);
+            b.setAlignment(Element.ALIGN_LEFT);
+            PdfPCell celdaB = new PdfPCell(b);
+            celdaB.setBorder(Rectangle.LEFT | Rectangle.RIGHT | Rectangle.BOTTOM); // Agregar borde alrededor de la celda "b"
+            celdaB.setPadding(1f); // Ajustar el relleno de la celda "b"
+            celdaB.setPaddingBottom(4f); // Ajustar el relleno de la celda "b"
+            tablaTexto.addCell(celdaB);
+
+            Paragraph a = new Paragraph("Condicion de venta: " + condicionFlete, fontR);
+            a.setAlignment(Element.ALIGN_RIGHT);
+            PdfPCell celdaA = new PdfPCell(a);
+            celdaA.setBorder(Rectangle.NO_BORDER); // Sin borde para la celda "a"
+            celdaA.setPaddingBottom(2); // Ajustar el espacio inferior de la celda "a"
+            tablaTexto.addCell(celdaA);
+
+            Paragraph f = new Paragraph("Flete: a cobrar en " + flete, fontR);
+            f.setAlignment(Element.ALIGN_RIGHT);
+            PdfPCell celdaF = new PdfPCell(f);
+            celdaF.setBorder(Rectangle.NO_BORDER); // Sin borde para la celda "f"
+            celdaF.setPaddingBottom(2); // Ajustar el espacio inferior de la celda "f"
+            tablaTexto.addCell(celdaF);
+
+            // Incrementar el contador de remito
+            numeroRemitoAnterior++;
+            Paragraph facturaremito = new Paragraph("Factura/ Remito N° " + String.format("%010d", numeroRemitoAnterior)+ "-1", fontR);
+            guardarNumeroFacturaRemito();
+            facturaremito.setAlignment(Element.ALIGN_RIGHT);
+            PdfPCell celdafacturaremito = new PdfPCell(facturaremito);
+            celdafacturaremito.setBorder(Rectangle.NO_BORDER); // Sin borde para la celda "f"
+            celdafacturaremito.setPaddingBottom(2); // Ajustar el espacio inferior de la celda "f"
+            tablaTexto.addCell(celdafacturaremito);
+            
+            double monto = Double.parseDouble(txtMonto.getText());
+            double fletee = Double.parseDouble(txtFlete.getText());
+            double total = monto + fletee;
+            Paragraph totalMonto = new Paragraph("TOTAL $" + total, fontR);
+            totalMonto.setAlignment(Element.ALIGN_RIGHT);
+            PdfPCell celdaTotal = new PdfPCell(totalMonto);
+            celdaTotal.setBorder(Rectangle.NO_BORDER); // Sin borde para la celda "total"
+            celdaTotal.setPaddingBottom(2); // Ajustar el espacio inferior de la celda "total"
+            tablaTexto.addCell(celdaTotal);
+
+            textoCell.addElement(tablaTexto);
             tabla.addCell(textoCell);
 
-            // Agregar la tabla al documento
+            // Ajustar el espacio entre las filas de la tabla
+            tabla.setSpacingAfter(3);
             document.add(tabla);
 
             document.close();
@@ -1581,7 +1701,53 @@ public class Principal extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }
+    // Método auxiliar para crear una celda con el contenido y fuente especificados
 
+    private PdfPCell createCell(String text, Font font, PdfPCell cell) {
+        PdfPCell newCell = new PdfPCell(new Phrase(text, font));
+        newCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        newCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        newCell.setBorder(cell.getBorder());
+        return newCell;
+    }
+    
+    //factura-remito
+    private void guardarNumeroFacturaRemito() {
+        try {
+            // Crear un archivo de texto para almacenar el número de remito
+            File archivo = new File("numerofacturaremito.txt");
+
+            // Escribir el valor del número de remito en el archivo
+            FileWriter escritor = new FileWriter(archivo);
+            escritor.write(Integer.toString(numeroRemitoAnterior));
+            escritor.close();
+        } catch (IOException e) {
+            // Manejar el error de escritura del archivo
+            e.printStackTrace();
+        }
+    }
+
+    private void cargarNumeroFacturaRemito() {
+        try {
+            // Abrir el archivo de texto para cargar el número de remito (si existe)
+            File archivo = new File("numerofacturaremito.txt");
+            if (archivo.exists()) {
+                // Leer el valor del número de recibo desde el archivo
+                FileReader lector = new FileReader(archivo);
+                BufferedReader buffer = new BufferedReader(lector);
+                String linea = buffer.readLine();
+                if (linea != null && !linea.isEmpty()) {
+                    numeroRemitoAnterior = Integer.parseInt(linea);
+                }
+                buffer.close();
+            }
+        } catch (IOException e) {
+            // Manejar el error de lectura del archivo
+            e.printStackTrace();
+        }
+    }
+    
+    //remito
     private void guardarNumeroRemito() {
         try {
             // Crear un archivo de texto para almacenar el número de remito
