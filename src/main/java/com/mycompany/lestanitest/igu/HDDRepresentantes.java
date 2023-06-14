@@ -718,7 +718,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                 Font fontDatos = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, NORMAL);
                 Font fontTotales = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
                 Font fontFecha = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
-                Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10);
+                Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 8);
 
                 // LOGO
                 Image logo = Image.getInstance("src/main/java/com/imagenes/logosolo.jpg");

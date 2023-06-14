@@ -81,7 +81,6 @@ public class Principal extends javax.swing.JFrame {
     private Movimientos movimientoSeleccionado;
     private Servicios servicioSeleccionado;
     int numeroRemito = 0;
-     int numeroRemitoAnterior = 0;
 
     public Principal() {
         initComponents();
@@ -99,7 +98,6 @@ public class Principal extends javax.swing.JFrame {
         TextPrompt filtroCl = new TextPrompt("Busqueda por cliente", txtFiltroCliente);
         TextPrompt filtroRe = new TextPrompt("Busqueda por remito", txtFiltroRemito);
         cargarNumeroRemito();
-        cargarNumeroFacturaRemito();
         // Agregar un listener al campo txtServicio
         txtServicio.getDocument().addDocumentListener(new DocumentListener() {
             @Override
@@ -1508,7 +1506,7 @@ public class Principal extends javax.swing.JFrame {
             String cuit = "";
             if (clienteSeleccionado != null && clienteSeleccionado.getDireccion() != null && clienteSeleccionado.getLocalidad() != null
                     && clienteSeleccionado.getCuit() != null && clienteSeleccionado.getNombre() != null) {
-                nombreCliente = clienteSeleccionado.getNombre();
+                nombreCliente = clienteSeleccionado.getNombre().toUpperCase();
                 direccion = clienteSeleccionado.getDireccion().toUpperCase();
                 localidad = clienteSeleccionado.getLocalidad().toUpperCase();
                 cuit = clienteSeleccionado.getCuit().toUpperCase();
@@ -1665,21 +1663,18 @@ public class Principal extends javax.swing.JFrame {
             celdaF.setBorder(Rectangle.NO_BORDER); // Sin borde para la celda "f"
             celdaF.setPaddingBottom(2); // Ajustar el espacio inferior de la celda "f"
             tablaTexto.addCell(celdaF);
-
-            // Incrementar el contador de remito
-            numeroRemitoAnterior++;
-            Paragraph facturaremito = new Paragraph("Factura/ Remito N° " + String.format("%010d", numeroRemitoAnterior)+ "-1", fontR);
-            guardarNumeroFacturaRemito();
+            
+            Paragraph facturaremito = new Paragraph("Factura/Remito N°: " + txtRemito.getText(), fontR);
             facturaremito.setAlignment(Element.ALIGN_RIGHT);
             PdfPCell celdafacturaremito = new PdfPCell(facturaremito);
             celdafacturaremito.setBorder(Rectangle.NO_BORDER); // Sin borde para la celda "f"
             celdafacturaremito.setPaddingBottom(2); // Ajustar el espacio inferior de la celda "f"
             tablaTexto.addCell(celdafacturaremito);
-            
+
             double monto = Double.parseDouble(txtMonto.getText());
             double fletee = Double.parseDouble(txtFlete.getText());
             double total = monto + fletee;
-            Paragraph totalMonto = new Paragraph("TOTAL $" + total, fontR);
+            Paragraph totalMonto = new Paragraph("TOTAL: $" + total, fontR);
             totalMonto.setAlignment(Element.ALIGN_RIGHT);
             PdfPCell celdaTotal = new PdfPCell(totalMonto);
             celdaTotal.setBorder(Rectangle.NO_BORDER); // Sin borde para la celda "total"
@@ -1710,43 +1705,9 @@ public class Principal extends javax.swing.JFrame {
         newCell.setBorder(cell.getBorder());
         return newCell;
     }
-    
-    //factura-remito
-    private void guardarNumeroFacturaRemito() {
-        try {
-            // Crear un archivo de texto para almacenar el número de remito
-            File archivo = new File("numerofacturaremito.txt");
 
-            // Escribir el valor del número de remito en el archivo
-            FileWriter escritor = new FileWriter(archivo);
-            escritor.write(Integer.toString(numeroRemitoAnterior));
-            escritor.close();
-        } catch (IOException e) {
-            // Manejar el error de escritura del archivo
-            e.printStackTrace();
-        }
-    }
-
-    private void cargarNumeroFacturaRemito() {
-        try {
-            // Abrir el archivo de texto para cargar el número de remito (si existe)
-            File archivo = new File("numerofacturaremito.txt");
-            if (archivo.exists()) {
-                // Leer el valor del número de recibo desde el archivo
-                FileReader lector = new FileReader(archivo);
-                BufferedReader buffer = new BufferedReader(lector);
-                String linea = buffer.readLine();
-                if (linea != null && !linea.isEmpty()) {
-                    numeroRemitoAnterior = Integer.parseInt(linea);
-                }
-                buffer.close();
-            }
-        } catch (IOException e) {
-            // Manejar el error de lectura del archivo
-            e.printStackTrace();
-        }
-    }
     
+ 
     //remito
     private void guardarNumeroRemito() {
         try {

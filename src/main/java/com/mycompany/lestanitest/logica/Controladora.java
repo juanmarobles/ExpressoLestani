@@ -273,11 +273,11 @@ public class Controladora {
         m.setTipoFleteP(tFlete);
         ctrl.modificarMovimiento(m);
     }
-     public void actualizarPrecioFlete(Movimientos m, String pFlete) {
+
+    public void actualizarPrecioFlete(Movimientos m, String pFlete) {
         m.setFlete(pFlete);
         ctrl.modificarMovimiento(m);
     }
-    
 
     /**
      * ----------------------------------------------BORRAR-----------------------------------------------------------------
@@ -291,12 +291,6 @@ public class Controladora {
      */
     public List<Movimientos> traerMovimientos() {
         return ctrl.traerMovimientos();
-    }
-
-    public void cargarDestino(String destino) {
-        Destinos d = new Destinos();
-        d.setLocaliad(destino);
-        ctrl.guardarDestino(d);
     }
 
     //RECIBOS
@@ -331,9 +325,34 @@ public class Controladora {
     }
 
     /**
-     * ----------------------------------------------CLASE CONSULTAS
+     * ----------------------------------------------CLASE DESTINOS
      * METODOS!!-----------------------------------------------------------------
      */
+    public void cargarDestino(String destino) {
+        Destinos d = new Destinos();
+        d.setLocaliad(destino);
+        ctrl.guardarDestino(d);
+    }
+
+    public List<Destinos> traerDestino() {
+        return ctrl.traerDestino();
+    }
+
+    public Destinos traerDestino(int idDestino) {
+        return ctrl.traerDestino(idDestino);
+    }
+
+    public void editarDestino(Destinos d, String localidad) {
+        d.setLocaliad(localidad);
+        ctrl.modificarDestino(d);
+    }
+
+    public void borrarDestino(int idDestino) {
+        ctrl.borrarDestino(idDestino);
+    }
+
+    
+
 }
 /**
  * ----------------------------------------------EDITAR-----------------------------------------------------------------

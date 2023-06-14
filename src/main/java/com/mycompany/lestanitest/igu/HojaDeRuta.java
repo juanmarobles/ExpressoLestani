@@ -613,7 +613,7 @@ public class HojaDeRuta extends javax.swing.JFrame {
                 Font fontDatos = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, NORMAL);
                 Font fontTotales = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
                 Font fontFecha = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
-                Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10);
+                Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 8);
 
                 // LOGO
                 Image logo = Image.getInstance("src/main/java/com/imagenes/logosolo.jpg");
@@ -695,6 +695,7 @@ public class HojaDeRuta extends javax.swing.JFrame {
 
                     }
                 }
+
                 for (int row = 0; row < tablaMovimientos.getRowCount(); row++) {
                     for (int col = 0; col < tablaMovimientos.getColumnCount(); col++) {
                         String colName = tablaMovimientos.getColumnName(col);

@@ -253,7 +253,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem7ActionPerformed
 
     private void MenuLocalidadesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuLocalidadesActionPerformed
-        Localidades lo = new Localidades();
+        VerDatosLocalidades lo = new VerDatosLocalidades();
        lo.setVisible(true); 
     }//GEN-LAST:event_MenuLocalidadesActionPerformed
 
