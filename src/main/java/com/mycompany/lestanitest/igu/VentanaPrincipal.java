@@ -76,6 +76,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         });
 
         CargaMovimiento.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        CargaMovimiento.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/camiones.png"))); // NOI18N
         CargaMovimiento.setText("Cargar Movimientos");
         CargaMovimiento.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         CargaMovimiento.setPreferredSize(new java.awt.Dimension(173, 36));
@@ -96,6 +97,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         });
 
         jMenuItem1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/camionatras.png"))); // NOI18N
         jMenuItem1.setText("Consultar Movimientos");
         jMenuItem1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jMenuItem1.setPreferredSize(new java.awt.Dimension(191, 36));
@@ -108,12 +110,13 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         jMenuBar1.add(Consultas);
 
-        jMenu2.setText(" Hoja de Ruta ");
+        jMenu2.setText("    Hoja de Ruta   ");
 
         jMenuItem6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jMenuItem6.setText("Por Representante");
+        jMenuItem6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/equipo.png"))); // NOI18N
+        jMenuItem6.setText("Por Representante   ");
         jMenuItem6.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jMenuItem6.setPreferredSize(new java.awt.Dimension(144, 36));
+        jMenuItem6.setPreferredSize(new java.awt.Dimension(164, 36));
         jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem6ActionPerformed(evt);
@@ -123,6 +126,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jMenu2.add(jSeparator6);
 
         jMenuItem7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jMenuItem7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/ruta.png"))); // NOI18N
         jMenuItem7.setText("Hoja de Ruta");
         jMenuItem7.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jMenuItem7.setPreferredSize(new java.awt.Dimension(127, 36));
@@ -135,9 +139,10 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu2);
 
-        jMenu3.setText("   Datos Cargados   ");
+        jMenu3.setText("      Datos Cargados   ");
 
         MenuLocalidades.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        MenuLocalidades.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/localizacion.png"))); // NOI18N
         MenuLocalidades.setText("Localidades");
         MenuLocalidades.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         MenuLocalidades.setPreferredSize(new java.awt.Dimension(118, 36));
@@ -150,6 +155,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jMenu3.add(jSeparator1);
 
         MenuClientes.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        MenuClientes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/cliente.png"))); // NOI18N
         MenuClientes.setText("Clientes");
         MenuClientes.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         MenuClientes.setPreferredSize(new java.awt.Dimension(96, 36));
@@ -162,6 +168,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jMenu3.add(jSeparator2);
 
         jMenuItem3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jMenuItem3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/equipo.png"))); // NOI18N
         jMenuItem3.setText("Representantes");
         jMenuItem3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jMenuItem3.setPreferredSize(new java.awt.Dimension(142, 36));
@@ -174,6 +181,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jMenu3.add(jSeparator3);
 
         MenuVehiculos.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        MenuVehiculos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/camiones.png"))); // NOI18N
         MenuVehiculos.setText("Vechiculos");
         MenuVehiculos.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         MenuVehiculos.setPreferredSize(new java.awt.Dimension(112, 36));
@@ -186,6 +194,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jMenu3.add(jSeparator4);
 
         MenuServicios.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        MenuServicios.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/entrega-de-paquetes.png"))); // NOI18N
         MenuServicios.setText("Servicios");
         MenuServicios.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         MenuServicios.setPreferredSize(new java.awt.Dimension(100, 36));
@@ -199,9 +208,10 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jMenuBar1.add(jMenu3);
 
         jMenu4.setBorder(null);
-        jMenu4.setText("Recibos");
+        jMenu4.setText("   Recibos");
 
         Recibos.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        Recibos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/factura.png"))); // NOI18N
         Recibos.setText("Generar Recibo");
         Recibos.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         Recibos.setPreferredSize(new java.awt.Dimension(152, 36));
@@ -289,9 +299,9 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_MenuVehiculosActionPerformed
 
     private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
-       HDDRepresentantes hdd = new HDDRepresentantes();
-       hdd.setVisible(true);
-       
+        HDDRepresentantes hdd = new HDDRepresentantes();
+        hdd.setVisible(true);
+
     }//GEN-LAST:event_jMenuItem6ActionPerformed
 
     /**

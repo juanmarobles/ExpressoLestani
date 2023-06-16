@@ -7,6 +7,7 @@ package com.mycompany.lestanitest.igu;
 
 import com.mycompany.lestanitest.logica.Cliente;
 import com.mycompany.lestanitest.logica.Controladora;
+import com.mycompany.lestanitest.logica.TextPrompt;
 import java.util.List;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -28,6 +29,7 @@ public class VerDatosCliente extends javax.swing.JFrame {
     public VerDatosCliente() {
          control = new Controladora();
           initComponents();
+          TextPrompt FiltroBusqueda = new TextPrompt("Buscar Cliente",txtBusqueda );
     }
 
     /**
@@ -95,17 +97,23 @@ public class VerDatosCliente extends javax.swing.JFrame {
             }
         });
 
-        txtBusqueda.setText("Buscar Cliente");
         txtBusqueda.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtBusquedaActionPerformed(evt);
             }
         });
 
+        btnBuscar.setBackground(new java.awt.Color(51, 51, 51));
         btnBuscar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnBuscar.setForeground(new java.awt.Color(255, 255, 255));
         btnBuscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/busqueda-de-lupa.png"))); // NOI18N
         btnBuscar.setText("Buscar");
         btnBuscar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarActionPerformed(evt);
+            }
+        });
 
         jLabel2.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
@@ -240,6 +248,10 @@ public class VerDatosCliente extends javax.swing.JFrame {
         agregar.setLocationRelativeTo(null);
         this.dispose();
     }//GEN-LAST:event_btnAgregarClientesActionPerformed
+
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnBuscarActionPerformed
  public void mostrarMensaje (String mensaje, String tipo, String titulo){
 JOptionPane optionPane = new JOptionPane(mensaje);
 if(tipo.equals("Info")){

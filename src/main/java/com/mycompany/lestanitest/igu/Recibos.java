@@ -326,6 +326,7 @@ public class Recibos extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(66, 66, 66));
         jPanel1.setFocusable(false);
 
+        cbReciboSin.setBackground(new java.awt.Color(66, 66, 66));
         buttonGroup1.add(cbReciboSin);
         cbReciboSin.setForeground(new java.awt.Color(255, 255, 255));
         cbReciboSin.setText("Recibo Sin Flete");
@@ -335,6 +336,7 @@ public class Recibos extends javax.swing.JFrame {
             }
         });
 
+        cbReciboCon.setBackground(new java.awt.Color(66, 66, 66));
         buttonGroup1.add(cbReciboCon);
         cbReciboCon.setForeground(new java.awt.Color(255, 255, 255));
         cbReciboCon.setText("Recibo Con Flete");
@@ -359,6 +361,7 @@ public class Recibos extends javax.swing.JFrame {
             }
         });
 
+        jLabel2.setBackground(new java.awt.Color(66, 66, 66));
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("Recibo N°");
 
@@ -377,15 +380,20 @@ public class Recibos extends javax.swing.JFrame {
         jLabel5.setText("RECIBI DE EXPRESSO LESTANI LA SUMA DE: ");
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel6.setForeground(new java.awt.Color(255, 255, 255));
         jLabel6.setText("TOTAL MONTO:  $ ");
 
         txtTotalMonto.setText("0");
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel7.setForeground(new java.awt.Color(255, 255, 255));
         jLabel7.setText("TOTAL FLETE:  $");
 
         txtTotalFlete.setText("0");
 
+        btnAgregar.setBackground(new java.awt.Color(51, 51, 51));
+        btnAgregar.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        btnAgregar.setForeground(new java.awt.Color(255, 255, 255));
         btnAgregar.setText("AGREGAR");
         btnAgregar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

@@ -4,13 +4,18 @@
  */
 package com.mycompany.lestanitest.igu;
 
+import com.mycompany.lestanitest.logica.Controladora;
 import static java.awt.SystemColor.control;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author Usuario
  */
 public class PNuevoCliente extends javax.swing.JFrame {
+
+    Controladora control = new Controladora();
 
     /**
      * Creates new form PNuevoCliente
@@ -45,7 +50,7 @@ public class PNuevoCliente extends javax.swing.JFrame {
         txtCuit = new javax.swing.JTextField();
         txtLocalidad = new javax.swing.JTextField();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jPanel2.setBackground(new java.awt.Color(66, 66, 66));
 
@@ -196,6 +201,7 @@ public class PNuevoCliente extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
@@ -204,8 +210,30 @@ public class PNuevoCliente extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void btnCargarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCargarActionPerformed
-   //Code
+        String nombre = txtNombre.getText();
+        String direccion = txtDireccion.getText();
+        String cuit = txtCuit.getText();
+        String email = txtEmail.getText();
+        String telefono = txtTel.getText();
+        String localidad = txtLocalidad.getText();
+
+        control.cargarCliente(nombre, direccion, cuit, email, localidad, telefono);
+        mostrarMensaje("Cliente agregado correctamente", "Info", "Agregado con exito!");
+
+        this.dispose();
     }//GEN-LAST:event_btnCargarActionPerformed
+    public void mostrarMensaje(String mensaje, String tipo, String titulo) {
+        JOptionPane optionPane = new JOptionPane(mensaje);
+        if (tipo.equals("Info")) {
+            optionPane.setMessageType(JOptionPane.INFORMATION_MESSAGE);
+
+        } else if (tipo.equals("Error")) {
+            optionPane.setMessageType(JOptionPane.ERROR_MESSAGE);
+        }
+        JDialog dialog = optionPane.createDialog(titulo);
+        dialog.setAlwaysOnTop(true);
+        dialog.setVisible(true);
+    }
 
     /**
      * @param args the command line arguments

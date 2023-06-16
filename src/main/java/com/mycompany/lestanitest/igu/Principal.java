@@ -11,15 +11,22 @@ import com.mycompany.lestanitest.logica.Movimientos;
 import com.mycompany.lestanitest.logica.Representantes;
 import com.mycompany.lestanitest.logica.Servicios;
 import com.mycompany.lestanitest.logica.TextPrompt;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.FocusTraversalPolicy;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.table.TableColumn;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
@@ -45,6 +52,7 @@ import javax.swing.table.TableColumnModel;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import org.jdesktop.swingx.autocomplete.ObjectToStringConverter;
 
+
 public class Principal extends javax.swing.JFrame {
 
     Controladora control = new Controladora();
@@ -64,7 +72,31 @@ public class Principal extends javax.swing.JFrame {
         txtFecha.setText(fechaActual());
         TextPrompt filtroCl = new TextPrompt("Busqueda por cliente", txtFiltroCliente);
         TextPrompt filtroRe = new TextPrompt("Busqueda por remito", txtFiltroRemito);
+        
+   
+        
+      
+        // Tabulador cambiar Default
+        tCliente.setNextFocusableComponent(txtFecha);
+        txtFecha.setNextFocusableComponent(txtDestino);
+        txtDestino.setNextFocusableComponent(txtServicio);
+        txtServicio.setNextFocusableComponent(txtBulto);
+        txtBulto.setNextFocusableComponent(txtRemito);
+        txtRemito.setNextFocusableComponent(txtRepresentante);
+        txtRepresentante.setNextFocusableComponent(txtObservaciones); 
+        
+        
+        
+        
+       
+
     }
+
+    
+    
+  
+   
+    
 
     private void cargarServicios() {
         ModeloServicio modServicio = new ModeloServicio();
@@ -222,6 +254,7 @@ public class Principal extends javax.swing.JFrame {
         txtFiltroRemito = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jLabel19 = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -350,6 +383,11 @@ public class Principal extends javax.swing.JFrame {
                 tClienteActionPerformed(evt);
             }
         });
+        tCliente.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                tClienteKeyTyped(evt);
+            }
+        });
 
         txtDestino.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -404,7 +442,7 @@ public class Principal extends javax.swing.JFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(8, Short.MAX_VALUE)
+                .addContainerGap(12, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(cbfOrigen)
@@ -518,7 +556,7 @@ public class Principal extends javax.swing.JFrame {
                 .addComponent(jLabel6)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addContainerGap(8, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -630,11 +668,10 @@ public class Principal extends javax.swing.JFrame {
                     .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.TRAILING)
                         .addComponent(jLabel14))
-                    .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(btnAgregarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(tCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel13))))
+                    .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(tCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel13))
+                    .addComponent(btnAgregarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
@@ -717,27 +754,38 @@ public class Principal extends javax.swing.JFrame {
 
         jLabel19.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/busqueda-de-lupa.png"))); // NOI18N
 
+        jLabel1.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel1.setText("Busquedas");
+
         javax.swing.GroupLayout PanelBusquedasLayout = new javax.swing.GroupLayout(PanelBusquedas);
         PanelBusquedas.setLayout(PanelBusquedasLayout);
         PanelBusquedasLayout.setHorizontalGroup(
             PanelBusquedasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PanelBusquedasLayout.createSequentialGroup()
-                .addGap(35, 35, 35)
-                .addGroup(PanelBusquedasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, PanelBusquedasLayout.createSequentialGroup()
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtFiltroRemito, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, PanelBusquedasLayout.createSequentialGroup()
-                        .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtFiltroCliente)))
-                .addContainerGap(122, Short.MAX_VALUE))
+                .addGroup(PanelBusquedasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(PanelBusquedasLayout.createSequentialGroup()
+                        .addGap(35, 35, 35)
+                        .addGroup(PanelBusquedasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, PanelBusquedasLayout.createSequentialGroup()
+                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtFiltroRemito, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, PanelBusquedasLayout.createSequentialGroup()
+                                .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtFiltroCliente))))
+                    .addGroup(PanelBusquedasLayout.createSequentialGroup()
+                        .addGap(122, 122, 122)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(62, Short.MAX_VALUE))
         );
         PanelBusquedasLayout.setVerticalGroup(
             PanelBusquedasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PanelBusquedasLayout.createSequentialGroup()
-                .addGap(32, 32, 32)
+                .addGap(13, 13, 13)
+                .addComponent(jLabel1)
+                .addGap(18, 18, 18)
                 .addGroup(PanelBusquedasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(txtFiltroCliente, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
                     .addComponent(jLabel19, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -745,7 +793,7 @@ public class Principal extends javax.swing.JFrame {
                 .addGroup(PanelBusquedasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtFiltroRemito, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(44, Short.MAX_VALUE))
+                .addContainerGap(53, Short.MAX_VALUE))
         );
 
         jButton2.setBackground(new java.awt.Color(51, 51, 51));
@@ -774,7 +822,7 @@ public class Principal extends javax.swing.JFrame {
                                 .addGap(117, 117, 117)
                                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(30, 30, 30)
+                                .addGap(57, 57, 57)
                                 .addComponent(PanelBusquedas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap(20, Short.MAX_VALUE))
         );
@@ -783,16 +831,14 @@ public class Principal extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(panelCargaMovimientos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(17, 17, 17))
+                    .addComponent(panelCargaMovimientos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(PanelBusquedas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                        .addComponent(PanelBusquedas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(8, 8, Short.MAX_VALUE)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 575, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(35, Short.MAX_VALUE))
+                .addContainerGap(34, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -919,8 +965,7 @@ public class Principal extends javax.swing.JFrame {
 
         String fPagado = "";
         String fRendido = "";
-        //String fOrigen="";
-        // String fDestino="";
+        
         String tFlete = "";
         String tMontoP = "";
         String tMontoR = "";
@@ -929,7 +974,7 @@ public class Principal extends javax.swing.JFrame {
         String cC = "";
         int remito = 0;
         Date fecha = getDate();
-        //String cliente = (String) cmbCliente.getSelectedItem().toString();
+       
         String cliente = tCliente.getText();
         String destino = (String) txtDestino.getText();
         String servicio = (String) txtServicio.getText();
@@ -1071,7 +1116,7 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_txtFechaActionPerformed
 
     private void tClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tClienteActionPerformed
-
+    
     }//GEN-LAST:event_tClienteActionPerformed
 
     private void txtDestinoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDestinoActionPerformed
@@ -1112,6 +1157,10 @@ public class Principal extends javax.swing.JFrame {
     private void cbCuentaCorrienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbCuentaCorrienteActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_cbCuentaCorrienteActionPerformed
+
+    private void tClienteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tClienteKeyTyped
+        
+    }//GEN-LAST:event_tClienteKeyTyped
 
     /**
      * @param args the command line arguments
@@ -1164,6 +1213,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JCheckBox cbfleteRendido;
     private javax.swing.JCheckBox cbmontoPagado;
     private javax.swing.JButton jButton2;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
@@ -1216,5 +1266,8 @@ public class Principal extends javax.swing.JFrame {
         }
         return date;
     }
+    
+    
+    
 
 }
