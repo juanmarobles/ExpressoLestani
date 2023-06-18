@@ -1,4 +1,3 @@
-
 package com.mycompany.lestanitest.persistencia;
 
 import com.mycompany.lestanitest.logica.Cliente;
@@ -17,67 +16,92 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
-
 public class ControladoraPersistencia {
+
     ClienteJpaController clienteJpa = new ClienteJpaController();
     VehiculoJpaController vehiculoJpa = new VehiculoJpaController();
-    RepresentantesJpaController  representanteJpa = new RepresentantesJpaController();
+    RepresentantesJpaController representanteJpa = new RepresentantesJpaController();
     ServiciosJpaController servicioJpa = new ServiciosJpaController();
     MovimientosJpaController movJpa = new MovimientosJpaController();
     UsuarioJpaController usuJpa = new UsuarioJpaController();
     DestinosJpaController desJpa = new DestinosJpaController();
-    
-    
-    /**--------------------------------------Verificacion Usuario-------------------------------------------------*/
-     public List<Usuario> traerUsuarios() {
+
+    /**
+     * --------------------------------------Verificacion
+     * Usuario-------------------------------------------------
+     */
+    public List<Usuario> traerUsuarios() {
         return usuJpa.findUsuarioEntities();
     }
-    /**--------------------------------------CRUD PERSISTENCIA CLASE CLIENTE-------------------------------------------------*/
-    /**----------------------------------------------GUARDAR-----------------------------------------------------------------*/
+
+    /**
+     * --------------------------------------CRUD PERSISTENCIA CLASE
+     * CLIENTE-------------------------------------------------
+     */
+    /**
+     * ----------------------------------------------GUARDAR-----------------------------------------------------------------
+     */
     public void guardarCliente(Cliente cliente) {
         clienteJpa.create(cliente);
     }
-     /**----------------------------------------------MOSTRAR----------------------------------------------------------------*/
-   public List<Cliente> traerClientes() {
-       
+
+    /**
+     * ----------------------------------------------MOSTRAR----------------------------------------------------------------
+     */
+    public List<Cliente> traerClientes() {
+
         return clienteJpa.findClienteEntities();
     }
-   
-      /**----------------------------------------------BORRAR-----------------------------------------------------------------*/
-     public void borrarCliente(int idCliente) {
+
+    /**
+     * ----------------------------------------------BORRAR-----------------------------------------------------------------
+     */
+    public void borrarCliente(int idCliente) {
         try {
             clienteJpa.destroy(idCliente);
         } catch (NonexistentEntityException ex) {
             Logger.getLogger(ControladoraPersistencia.class.getName()).log(Level.SEVERE, null, ex);
         }
-     }
-     /**----------------------------------------------EDITAR-----------------------------------------------------------------*/
-     public Cliente traerClientes(int idCliente) {
-         return clienteJpa.findCliente(idCliente);
-     }
-     public void modificarCliente(Cliente cliente) {
+    }
+
+    /**
+     * ----------------------------------------------EDITAR-----------------------------------------------------------------
+     */
+    public Cliente traerClientes(int idCliente) {
+        return clienteJpa.findCliente(idCliente);
+    }
+
+    public void modificarCliente(Cliente cliente) {
         try {
             clienteJpa.edit(cliente);
         } catch (Exception ex) {
             Logger.getLogger(ControladoraPersistencia.class.getName()).log(Level.SEVERE, null, ex);
         }
-        }
+    }
 
-    
-    /**--------------------------------------CRUD PERSISTENCIA CLASE VEHICULO-------------------------------------------------*/
-    /**----------------------------------------------GUARDAR-----------------------------------------------------------------*/
+    /**
+     * --------------------------------------CRUD PERSISTENCIA CLASE
+     * VEHICULO-------------------------------------------------
+     */
+    /**
+     * ----------------------------------------------GUARDAR-----------------------------------------------------------------
+     */
     public void guardarVehiculo(Vehiculo vehiculo) {
         vehiculoJpa.create(vehiculo);
     }
-     /**----------------------------------------------MOSTRAR----------------------------------------------------------------*/
+
+    /**
+     * ----------------------------------------------MOSTRAR----------------------------------------------------------------
+     */
     public List<Vehiculo> traerVehiculos() {
-            return vehiculoJpa.findVehiculoEntities();
+        return vehiculoJpa.findVehiculoEntities();
     }
-    
-     /**----------------------------------------------EDITAR-----------------------------------------------------------------*/
-     public Vehiculo traerVehiculo(int idVehiculo) {
-         return vehiculoJpa.findVehiculo(idVehiculo);
+
+    /**
+     * ----------------------------------------------EDITAR-----------------------------------------------------------------
+     */
+    public Vehiculo traerVehiculo(int idVehiculo) {
+        return vehiculoJpa.findVehiculo(idVehiculo);
     }
 
     public void modificarVehiculo(Vehiculo vehiculo) {
@@ -87,7 +111,10 @@ public class ControladoraPersistencia {
             Logger.getLogger(ControladoraPersistencia.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-      /**----------------------------------------------BORRAR-----------------------------------------------------------------*/
+
+    /**
+     * ----------------------------------------------BORRAR-----------------------------------------------------------------
+     */
     public void borrarVehiculo(int idVehiculo) {
         try {
             vehiculoJpa.destroy(idVehiculo);
@@ -95,53 +122,73 @@ public class ControladoraPersistencia {
             Logger.getLogger(ControladoraPersistencia.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    /**--------------------------------------CRUD PERSISTENCIA CLASE REPRESENTANTE-------------------------------------------------*/
-    /**----------------------------------------------GUARDAR-----------------------------------------------------------------*/
+
+    /**
+     * --------------------------------------CRUD PERSISTENCIA CLASE
+     * REPRESENTANTE-------------------------------------------------
+     */
+    /**
+     * ----------------------------------------------GUARDAR-----------------------------------------------------------------
+     */
     public void guardarRepresentante(Representantes representante) {
         representanteJpa.create(representante);
     }
-     /**----------------------------------------------MOSTRAR----------------------------------------------------------------*/
+
+    /**
+     * ----------------------------------------------MOSTRAR----------------------------------------------------------------
+     */
     public List<Representantes> traerRepresentantes() {
         return representanteJpa.findRepresentantesEntities();
-        }
-     /**----------------------------------------------EDITAR-----------------------------------------------------------------*/
-     public Representantes traerRepresentantes(int idRepresentante) {
-                 return representanteJpa.findRepresentantes(idRepresentante);
+    }
+
+    /**
+     * ----------------------------------------------EDITAR-----------------------------------------------------------------
+     */
+    public Representantes traerRepresentantes(int idRepresentante) {
+        return representanteJpa.findRepresentantes(idRepresentante);
 
     }
-     public void modificarRepresentante(Representantes representante) {
+
+    public void modificarRepresentante(Representantes representante) {
         try {
             representanteJpa.edit(representante);
         } catch (Exception ex) {
             Logger.getLogger(ControladoraPersistencia.class.getName()).log(Level.SEVERE, null, ex);
         }
-     }
-     
-      /**----------------------------------------------BORRAR-----------------------------------------------------------------*/
-     public void borrarRepresentante(int idRepresentante) {
+    }
+
+    /**
+     * ----------------------------------------------BORRAR-----------------------------------------------------------------
+     */
+    public void borrarRepresentante(int idRepresentante) {
         try {
             representanteJpa.destroy(idRepresentante);
         } catch (NonexistentEntityException ex) {
             Logger.getLogger(ControladoraPersistencia.class.getName()).log(Level.SEVERE, null, ex);
         }
-     }
+    }
 
-    
-    
-    /**--------------------------------------CRUD PERSISTENCIA CLASE SERVICIO-------------------------------------------------*/
-    /**----------------------------------------------GUARDAR-----------------------------------------------------------------*/
+    /**
+     * --------------------------------------CRUD PERSISTENCIA CLASE
+     * SERVICIO-------------------------------------------------
+     */
+    /**
+     * ----------------------------------------------GUARDAR-----------------------------------------------------------------
+     */
     public void guardarServicios(Servicios s) {
         servicioJpa.create(s);
     }
-    
-     /**----------------------------------------------MOSTRAR----------------------------------------------------------------*/
 
+    /**
+     * ----------------------------------------------MOSTRAR----------------------------------------------------------------
+     */
     public List<Servicios> traerServicios() {
-    return servicioJpa.findServiciosEntities();
+        return servicioJpa.findServiciosEntities();
     }
-    
-     /**----------------------------------------------EDITAR-----------------------------------------------------------------*/
 
+    /**
+     * ----------------------------------------------EDITAR-----------------------------------------------------------------
+     */
     public Servicios traerServicio(int idServicio) {
         return servicioJpa.findServicios(idServicio);
     }
@@ -153,8 +200,10 @@ public class ControladoraPersistencia {
             Logger.getLogger(ControladoraPersistencia.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-      /**----------------------------------------------BORRAR-----------------------------------------------------------------*/
 
+    /**
+     * ----------------------------------------------BORRAR-----------------------------------------------------------------
+     */
     public void borrarServicio(int idServicio) {
         try {
             servicioJpa.destroy(idServicio);
@@ -162,104 +211,99 @@ public class ControladoraPersistencia {
             Logger.getLogger(ControladoraPersistencia.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-  
-     /**--------------------------------------CRUD PERSISTENCIA CLASE MOVIMIENTOS-------------------------------------------------*/
-    /**----------------------------------------------GUARDAR-----------------------------------------------------------------*/
 
+    /**
+     * --------------------------------------CRUD PERSISTENCIA CLASE
+     * MOVIMIENTOS-------------------------------------------------
+     */
+    /**
+     * ----------------------------------------------GUARDAR-----------------------------------------------------------------
+     */
     public void guardarMovimiento(Movimientos m) {
         movJpa.create(m);
     }
 
-     /**----------------------------------------------MOSTRAR----------------------------------------------------------------*/
-       public List<Movimientos> traerMovimientos() {
-           return movJpa.findMovimientosEntities();
-       }
-    /**----------------------------------------------BORRAR-----------------------------------------------------------------*/
-   public void borrarMovimiento(int idM) {
+    /**
+     * ----------------------------------------------MOSTRAR----------------------------------------------------------------
+     */
+    public List<Movimientos> traerMovimientos() {
+        return movJpa.findMovimientosEntities();
+    }
+
+    /**
+     * ----------------------------------------------BORRAR-----------------------------------------------------------------
+     */
+    public void borrarMovimiento(int idM) {
         try {
             movJpa.destroy(idM);
         } catch (NonexistentEntityException ex) {
             Logger.getLogger(ControladoraPersistencia.class.getName()).log(Level.SEVERE, null, ex);
         }
-   }
-   
-   /**----------------------------------------------EDITAR-----------------------------------------------------------------*/
-   public Movimientos traerMovimiento(int idMovimiento) {
-       return movJpa.findMovimientos(idMovimiento);
-   }
-   
-   public void modificarMovimiento(Movimientos mov) {
+    }
+
+    /**
+     * ----------------------------------------------EDITAR-----------------------------------------------------------------
+     */
+    public Movimientos traerMovimiento(int idMovimiento) {
+        return movJpa.findMovimientos(idMovimiento);
+    }
+
+    public void modificarMovimiento(Movimientos mov) {
         try {
             movJpa.edit(mov);
         } catch (Exception ex) {
             Logger.getLogger(ControladoraPersistencia.class.getName()).log(Level.SEVERE, null, ex);
         }
-        }
-   
+    }
 
-       /**--------------------------------------CRUD PERSISTENCIA CLASE DESTINOS-------------------------------------------------*/
-    /**----------------------------------------------GUARDAR-----------------------------------------------------------------*/
-   
-        public void guardarDestino(Destinos d) {
-          desJpa.create(d);
-        }
+    /**
+     * --------------------------------------CRUD PERSISTENCIA CLASE
+     * DESTINOS-------------------------------------------------
+     */
+    /**
+     * ----------------------------------------------GUARDAR-----------------------------------------------------------------
+     */
+    public void guardarDestino(Destinos d) {
+        desJpa.create(d);
+    }
 
-    
+    public List<Destinos> traerDestino() {
+        return desJpa.findDestinosEntities();
+    }
 
-    
+    public Destinos traerDestino(int idDestino) {
+        return desJpa.findDestinos(idDestino);
+    }
 
-    
-
-    
-
-    
-    
-   
-      /**----------------------------------------------BORRAR-----------------------------------------------------------------
-     public void borrarCliente(int idCliente) {
+    public void modificarDestino(Destinos destino) {
         try {
-            clienteJpa.destroy(idCliente);
+            desJpa.edit(destino);
+        } catch (Exception ex) {
+            Logger.getLogger(ControladoraPersistencia.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void borrarDestino(int idDestino) {
+        try {
+            desJpa.destroy(idDestino);
         } catch (NonexistentEntityException ex) {
             Logger.getLogger(ControladoraPersistencia.class.getName()).log(Level.SEVERE, null, ex);
         }
-     }*/
-     /**----------------------------------------------EDITAR-----------------------------------------------------------------
-     public Cliente traerClientes(int idCliente) {
-         return clienteJpa.findCliente(idCliente);
-     }
-     public void modificarCliente(Cliente cliente) {
-        try {
-            clienteJpa.edit(cliente);
-        } catch (Exception ex) {
-            Logger.getLogger(ControladoraPersistencia.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
-        
+    }
+    /**
+     * ----------------------------------------------BORRAR-----------------------------------------------------------------
+     * public void borrarCliente(int idCliente) { try {
+     * clienteJpa.destroy(idCliente); } catch (NonexistentEntityException ex) {
+     * Logger.getLogger(ControladoraPersistencia.class.getName()).log(Level.SEVERE,
+     * null, ex); } }
+     */
+    /**
+     * ----------------------------------------------EDITAR-----------------------------------------------------------------
+     * public Cliente traerClientes(int idCliente) { return
+     * clienteJpa.findCliente(idCliente); } public void modificarCliente(Cliente
+     * cliente) { try { clienteJpa.edit(cliente); } catch (Exception ex) {
+     * Logger.getLogger(ControladoraPersistencia.class.getName()).log(Level.SEVERE,
+     * null, ex); }
+     */
 
-
-    
-
-    
-
-   
-    
-    
-    
-
-    
-
-    
-
-   
-    
-    
-
- 
-    
-
-    
-
-    
-
-    
-    
 }

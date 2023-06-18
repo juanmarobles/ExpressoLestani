@@ -18,18 +18,19 @@ import javax.persistence.criteria.Root;
 
 /**
  *
- * @author Juanma
+ * @author juanm
  */
 public class MovimientosJpaController implements Serializable {
 
     public MovimientosJpaController(EntityManagerFactory emf) {
         this.emf = emf;
     }
-    
-     public MovimientosJpaController(){
-    emf = Persistence.createEntityManagerFactory("expressoJPAPU");
-    }
     private EntityManagerFactory emf = null;
+
+    public MovimientosJpaController() {
+        emf = Persistence.createEntityManagerFactory("expressoJPAPU");
+
+    }
 
     public EntityManager getEntityManager() {
         return emf.createEntityManager();
@@ -138,5 +139,5 @@ public class MovimientosJpaController implements Serializable {
             em.close();
         }
     }
-    
+
 }

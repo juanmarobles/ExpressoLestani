@@ -179,14 +179,12 @@
                                   <Group type="102" attributes="0">
                                       <Component id="jLabel13" min="-2" pref="69" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
-                                      <Group type="103" groupAlignment="0" attributes="0">
-                                          <Component id="txtFecha" min="-2" pref="117" max="-2" attributes="0"/>
-                                          <Group type="102" attributes="0">
-                                              <Component id="tCliente" min="-2" pref="117" max="-2" attributes="0"/>
-                                              <EmptySpace max="-2" attributes="0"/>
-                                              <Component id="btnAgregarCliente" min="-2" pref="30" max="-2" attributes="0"/>
-                                          </Group>
+                                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                          <Component id="txtFecha" pref="117" max="32767" attributes="0"/>
+                                          <Component id="tCliente" max="32767" attributes="0"/>
                                       </Group>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="btnAgregarCliente" min="-2" pref="30" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                               <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
@@ -216,7 +214,7 @@
                       </Group>
                       <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="btnRemito" pref="150" max="32767" attributes="0"/>
+                          <Component id="btnGenerarRemito" pref="150" max="32767" attributes="0"/>
                           <Component id="btnAgregar" alignment="0" max="32767" attributes="0"/>
                           <Component id="btnEditarMovimiento" alignment="0" max="32767" attributes="0"/>
                           <Component id="btnEliminarMovimiento" alignment="0" max="32767" attributes="0"/>
@@ -229,7 +227,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace min="-2" pref="49" max="-2" attributes="0"/>
-                      <Component id="btnRemito" min="-2" pref="50" max="-2" attributes="0"/>
+                      <Component id="btnGenerarRemito" min="-2" pref="50" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
                       <Component id="btnAgregar" min="-2" pref="56" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -244,8 +242,8 @@
                               <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="1" attributes="0">
                                   <Group type="103" groupAlignment="3" attributes="0">
-                                      <Component id="tCliente" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="jLabel13" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="tCliente" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <Component id="btnAgregarCliente" min="-2" pref="26" max="-2" attributes="0"/>
                               </Group>
@@ -402,6 +400,9 @@
               </Events>
             </Component>
             <Component class="javax.swing.JTextField" name="txtRemito">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="0"/>
+              </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtRemitoActionPerformed"/>
               </Events>
@@ -470,17 +471,6 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtFechaActionPerformed"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JTextField" name="tCliente">
-              <Properties>
-                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="33" green="33" red="33" type="rgb"/>
-                </Property>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tClienteActionPerformed"/>
-                <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="tClienteKeyTyped"/>
-              </Events>
-            </Component>
             <Component class="javax.swing.JTextField" name="txtDestino">
               <Properties>
                 <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -492,6 +482,9 @@
               </Events>
             </Component>
             <Component class="javax.swing.JTextField" name="txtServicio">
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtServicioActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JTextField" name="txtRepresentante">
             </Component>
@@ -807,6 +800,9 @@
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="txtFlete">
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtFleteActionPerformed"/>
+                  </Events>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel16">
                   <Properties>
@@ -858,7 +854,7 @@
                 </Component>
               </SubComponents>
             </Container>
-            <Component class="javax.swing.JButton" name="btnRemito">
+            <Component class="javax.swing.JButton" name="btnGenerarRemito">
               <Properties>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="33" green="33" red="33" type="rgb"/>
@@ -874,6 +870,14 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Agregar + Remito"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnGenerarRemitoActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JTextField" name="tCliente">
+              <Events>
+                <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="tClienteKeyTyped"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>

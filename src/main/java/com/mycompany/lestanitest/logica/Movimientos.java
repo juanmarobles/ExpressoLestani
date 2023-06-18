@@ -113,8 +113,6 @@ public class Movimientos implements Serializable {
         this.tipoFleteR = tipoFleteR;
     }
 
-    
-
     public String getObservaciones() {
         return observaciones;
     }
@@ -198,21 +196,14 @@ public class Movimientos implements Serializable {
         this.monto = monto;
     }
 
-   
     public String getFlete() {
-        String fleteFormateado = "";
-
-        try {
-            BigDecimal fleteBigDecimal = new BigDecimal(flete.replace(',', '.'));
-            DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
-            simbolos.setDecimalSeparator(',');
-            simbolos.setGroupingSeparator('.');
-            DecimalFormat formato = new DecimalFormat("#,##0.00", simbolos);
-            fleteFormateado = formato.format(fleteBigDecimal);
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-        }
-
+        BigDecimal fleteBigDecimal = new BigDecimal(flete);
+        DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
+        simbolos.setGroupingSeparator('.');
+        simbolos.setDecimalSeparator(',');
+        DecimalFormat formatoPersonalizado = new DecimalFormat("###,###.##", simbolos);
+        formatoPersonalizado.setParseBigDecimal(true);
+        String fleteFormateado = formatoPersonalizado.format(fleteBigDecimal);
         return "$" + fleteFormateado;
     }
 
@@ -251,8 +242,6 @@ public class Movimientos implements Serializable {
     public void setFleteDestinoOrigen(String fleteDestinoOrigen) {
         this.fleteDestinoOrigen = fleteDestinoOrigen;
     }
-
-  
 
     @Override
     public String toString() {

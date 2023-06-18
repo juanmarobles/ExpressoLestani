@@ -4,7 +4,54 @@
  */
 package com.mycompany.lestanitest.igu;
 
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+import static com.mycompany.lestanitest.igu.HDDRepresentantes.fechaActual;
 import static com.mycompany.lestanitest.igu.Principal.fechaActual;
+import com.mycompany.lestanitest.logica.Controladora;
+import com.mycompany.lestanitest.logica.ModeloRepresentante;
+import com.mycompany.lestanitest.logica.ModeloVehiculo;
+import com.mycompany.lestanitest.logica.Movimientos;
+import com.mycompany.lestanitest.logica.Representantes;
+import com.mycompany.lestanitest.logica.Vehiculo;
+import static java.awt.Frame.NORMAL;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableRowSorter;
+import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 /**
  *
@@ -12,12 +59,57 @@ import static com.mycompany.lestanitest.igu.Principal.fechaActual;
  */
 public class HojaDeRuta extends javax.swing.JFrame {
 
+    Controladora control = new Controladora();
+    TableRowSorter trs;
+
     /**
      * Creates new form HojaDeRuta
      */
     public HojaDeRuta() {
         initComponents();
-        
+        llenarVehiculo();
+        llenarChofer();
+        txtFecha.setText(fechaActual());
+    }
+
+    public static String fechaActual() {
+        Date fecha = new Date();
+        SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/YYYY");
+        return formatoFecha.format(fecha);
+    }
+
+    //llenar vehiculo
+    private void llenarVehiculo() {
+        ModeloVehiculo modVehiculo = new ModeloVehiculo();
+        ArrayList<Vehiculo> listaVehiculo = modVehiculo.getVehiculos();
+        cbVehiculo.removeAllItems(); // Limpiar los elementos existentes en el ComboBox
+
+        // Agregar los nuevos elementos del ArrayList al ComboBox
+        for (int i = 0; i < listaVehiculo.size(); i++) {
+            cbVehiculo.addItem(listaVehiculo.get(i));
+        }
+        // Agregar un listener al ComboBox para capturar la selección
+        cbVehiculo.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // Obtener el vehículo seleccionado
+                Vehiculo vehiculoSeleccionado = (Vehiculo) cbVehiculo.getSelectedItem();
+
+                // Actualizar el valor del TextField con la patente del vehículo seleccionado
+                txtPatente.setText(vehiculoSeleccionado.getPatente());
+            }
+        });
+    }
+    //llenar chofer
+
+    private void llenarChofer() {
+        ModeloVehiculo modVehiculo = new ModeloVehiculo();
+        ArrayList<Vehiculo> listaVehiculo = modVehiculo.getVehiculos();
+        cbChofer.removeAllItems(); // Limpiar los elementos existentes en el ComboBox
+
+        // Agregar los nombres de los choferes al ComboBox
+        for (int i = 0; i < listaVehiculo.size(); i++) {
+            cbChofer.addItem(listaVehiculo.get(i).getChofer());
+        }
     }
 
     /**
@@ -34,28 +126,33 @@ public class HojaDeRuta extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jPanel6 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
-        txtFechaDesde = new javax.swing.JFormattedTextField();
+        txtFecha = new javax.swing.JFormattedTextField();
         jPanel1 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        txtPatente = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
+        cbChofer = new javax.swing.JComboBox<>();
+        cbVehiculo = new javax.swing.JComboBox<>();
+        jLabel2 = new javax.swing.JLabel();
         btnImprimir = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        tablaMovimientos = new javax.swing.JTable();
+        btnGenerarPdf = new javax.swing.JButton();
+        btnMostrar = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
-        jRadioButton1 = new javax.swing.JRadioButton();
-        jRadioButton2 = new javax.swing.JRadioButton();
-        jRadioButton3 = new javax.swing.JRadioButton();
+        cbCC = new javax.swing.JRadioButton();
+        cbContado = new javax.swing.JRadioButton();
+        cbTodos = new javax.swing.JRadioButton();
         jLabel7 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Expreso Lestani SRL-[Hoja de Ruta]");
         setExtendedState(6);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         jPanel2.setBackground(new java.awt.Color(66, 66, 66));
 
@@ -71,7 +168,7 @@ public class HojaDeRuta extends javax.swing.JFrame {
         jLabel4.setText("Fecha:");
 
         try {
-            txtFechaDesde.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("##/##/####")));
+            txtFecha.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("##/##/####")));
         } catch (java.text.ParseException ex) {
             ex.printStackTrace();
         }
@@ -84,7 +181,7 @@ public class HojaDeRuta extends javax.swing.JFrame {
                 .addGap(14, 14, 14)
                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(txtFechaDesde, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(41, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
@@ -92,17 +189,13 @@ public class HojaDeRuta extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
                 .addContainerGap(15, Short.MAX_VALUE)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtFechaDesde, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4))
                 .addGap(17, 17, 17))
         );
 
         jPanel1.setBackground(new java.awt.Color(66, 66, 66));
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel2.setText("Vehiculo:");
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
@@ -112,6 +205,10 @@ public class HojaDeRuta extends javax.swing.JFrame {
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setText("Chofer:");
 
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel2.setText("Vehiculo:");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -119,29 +216,29 @@ public class HojaDeRuta extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(36, 36, 36)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jTextField2)
-                    .addComponent(jTextField1)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5))
+                    .addComponent(txtPatente, javax.swing.GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5)
+                    .addComponent(cbChofer, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(cbVehiculo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(12, 12, 12)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(cbVehiculo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(cbChofer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtPatente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(31, Short.MAX_VALUE))
         );
 
@@ -155,7 +252,7 @@ public class HojaDeRuta extends javax.swing.JFrame {
             }
         });
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tablaMovimientos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {},
                 {},
@@ -166,36 +263,46 @@ public class HojaDeRuta extends javax.swing.JFrame {
 
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tablaMovimientos);
 
-        jButton1.setBackground(new java.awt.Color(51, 51, 51));
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/pdf_24px-pdf.png"))); // NOI18N
-        jButton1.setText("Generar PDF");
+        btnGenerarPdf.setBackground(new java.awt.Color(51, 51, 51));
+        btnGenerarPdf.setForeground(new java.awt.Color(255, 255, 255));
+        btnGenerarPdf.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/pdf_24px-pdf.png"))); // NOI18N
+        btnGenerarPdf.setText("Generar PDF");
+        btnGenerarPdf.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGenerarPdfActionPerformed(evt);
+            }
+        });
 
-        jButton2.setBackground(new java.awt.Color(51, 51, 51));
-        jButton2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButton2.setForeground(new java.awt.Color(255, 255, 255));
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/Mostrar_24px.png"))); // NOI18N
-        jButton2.setText("Mostrar");
+        btnMostrar.setBackground(new java.awt.Color(51, 51, 51));
+        btnMostrar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnMostrar.setForeground(new java.awt.Color(255, 255, 255));
+        btnMostrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/Mostrar_24px.png"))); // NOI18N
+        btnMostrar.setText("Mostrar");
+        btnMostrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMostrarActionPerformed(evt);
+            }
+        });
 
         jPanel3.setBackground(new java.awt.Color(61, 61, 61));
         jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        buttonGroup1.add(jRadioButton1);
-        jRadioButton1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jRadioButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jRadioButton1.setText("Cuenta Corriente");
+        buttonGroup1.add(cbCC);
+        cbCC.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        cbCC.setForeground(new java.awt.Color(255, 255, 255));
+        cbCC.setText("Cuenta Corriente");
 
-        buttonGroup1.add(jRadioButton2);
-        jRadioButton2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jRadioButton2.setForeground(new java.awt.Color(255, 255, 255));
-        jRadioButton2.setText("Contado");
+        buttonGroup1.add(cbContado);
+        cbContado.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        cbContado.setForeground(new java.awt.Color(255, 255, 255));
+        cbContado.setText("Contado");
 
-        buttonGroup1.add(jRadioButton3);
-        jRadioButton3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jRadioButton3.setForeground(new java.awt.Color(255, 255, 255));
-        jRadioButton3.setText("Todos");
+        buttonGroup1.add(cbTodos);
+        cbTodos.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        cbTodos.setForeground(new java.awt.Color(255, 255, 255));
+        cbTodos.setText("Todos");
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(255, 255, 255));
@@ -210,9 +317,9 @@ public class HojaDeRuta extends javax.swing.JFrame {
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(22, 22, 22)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jRadioButton3)
-                            .addComponent(jRadioButton2)
-                            .addComponent(jRadioButton1)))
+                            .addComponent(cbTodos)
+                            .addComponent(cbContado)
+                            .addComponent(cbCC)))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(33, 33, 33)
                         .addComponent(jLabel7)))
@@ -223,11 +330,11 @@ public class HojaDeRuta extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addComponent(jLabel7)
                 .addGap(11, 11, 11)
-                .addComponent(jRadioButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(cbCC, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jRadioButton2)
+                .addComponent(cbContado)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jRadioButton3)
+                .addComponent(cbTodos)
                 .addContainerGap(21, Short.MAX_VALUE))
         );
 
@@ -248,7 +355,7 @@ public class HojaDeRuta extends javax.swing.JFrame {
                         .addGap(44, 44, 44)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(btnMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 721, Short.MAX_VALUE))
                     .addComponent(jScrollPane1))
                 .addContainerGap())
@@ -256,7 +363,7 @@ public class HojaDeRuta extends javax.swing.JFrame {
                 .addGap(71, 71, 71)
                 .addComponent(btnImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(39, 39, 39)
-                .addComponent(jButton1)
+                .addComponent(btnGenerarPdf)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -273,14 +380,14 @@ public class HojaDeRuta extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 383, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnGenerarPdf, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(17, 17, 17))
         );
 
@@ -302,6 +409,323 @@ public class HojaDeRuta extends javax.swing.JFrame {
     private void btnImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnImprimirActionPerformed
+
+    private void btnGenerarPdfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarPdfActionPerformed
+        generarPdf();
+    }//GEN-LAST:event_btnGenerarPdfActionPerformed
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+
+    }//GEN-LAST:event_formWindowOpened
+
+    private void btnMostrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarActionPerformed
+        String fecha = txtFecha.getText();
+        boolean mostrarCuentaCorriente = cbCC.isSelected();
+        boolean mostrarContado = cbContado.isSelected();
+        boolean mostrarTodos = cbTodos.isSelected();
+
+        List<Movimientos> listaMovimientos = control.traerMovimientos();
+        List<Movimientos> listaFiltrada;
+
+        if (mostrarTodos) {
+            listaFiltrada = filtrarPorFecha(listaMovimientos, fecha);
+        } else {
+            listaFiltrada = filtrarMovimientos(listaMovimientos, fecha, mostrarCuentaCorriente, mostrarContado);
+        }
+
+        mostrarTablaMovimientos(listaFiltrada);
+    }//GEN-LAST:event_btnMostrarActionPerformed
+    public List<Movimientos> filtrarPorFecha(List<Movimientos> objetos, String fechaSeleccionada) {
+        List<Movimientos> resultados = new ArrayList<>();
+        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+
+        try {
+            Date fecha = formato.parse(fechaSeleccionada);
+
+            for (Movimientos objeto : objetos) {
+                Date fechaMovimiento = objeto.getFecha();
+                String representanteMovimiento = objeto.getRepresentante();
+
+                if (fechaMovimiento != null && formato.format(fechaMovimiento).equals(fechaSeleccionada)) {
+                    resultados.add(objeto);
+                }
+            }
+        } catch (ParseException ex) {
+            Logger.getLogger(Consultas.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return resultados;
+    }
+
+    public List<Movimientos> filtrarMovimientos(List<Movimientos> objetos, String fechaSeleccionada, boolean mostrarCuentaCorriente, boolean mostrarContado) {
+        List<Movimientos> resultados = new ArrayList<>();
+        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+
+        try {
+            Date fecha = formato.parse(fechaSeleccionada);
+
+            for (Movimientos objeto : objetos) {
+                Date fechaMovimiento = objeto.getFecha();
+                String cuentaCorriente = objeto.getCuentaCorriente();
+                boolean esCuentaCorriente = cuentaCorriente.equalsIgnoreCase("si");
+
+                // Verificar si se debe mostrar el movimiento según los filtros
+                boolean mostrarMovimiento = true;
+                if (fechaMovimiento != null && !formato.format(fechaMovimiento).equals(fechaSeleccionada)) {
+                    mostrarMovimiento = false; // No coincide con la fecha seleccionada
+                }
+
+                if (!mostrarCuentaCorriente && esCuentaCorriente) {
+                    mostrarMovimiento = false; // Se debe mostrar solo movimientos no cuenta corriente
+                }
+                if (!mostrarContado && !esCuentaCorriente) {
+                    mostrarMovimiento = false; // Se debe mostrar solo movimientos cuenta corriente
+                }
+
+                if (mostrarMovimiento) {
+                    resultados.add(objeto);
+                }
+            }
+        } catch (ParseException ex) {
+            Logger.getLogger(Consultas.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return resultados;
+    }
+
+    private void mostrarTablaMovimientos(List<Movimientos> listaMovimientos) {
+        //filas y columnas no editables
+        DefaultTableModel tabla = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+
+        };
+        //nombres de columnas
+        String titulos[] = {"MOVIMIENTO", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "PAGADO", "RENDIDO", "FLETE", "PAGADO", "RENDIDO", "A_CARGO_DE", "REPRESENTANTE", "CC", "OBS"};
+        tabla.setColumnIdentifiers(titulos);
+        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tabla);
+        tablaMovimientos.setRowSorter(sorter);
+        sorter.setSortKeys(java.util.Arrays.asList(new RowSorter.SortKey(1, SortOrder.DESCENDING)));
+        //carga de los datos desde la lista filtrada
+        for (Movimientos mov : listaMovimientos) {
+            Object[] objeto = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
+            tabla.addRow(objeto);
+        }
+        tablaMovimientos.setModel(tabla);
+        // Establecer el ancho específico de las columnas
+        int[] anchos = {60, 50, 100, 100, 40, 30, 100, 30, 30, 100, 30, 30, 60, 100, 5, 200}; // Anchos deseados para cada columna en píxeles
+
+        if (anchos.length == tabla.getColumnCount()) {
+            TableColumnModel columnModel = tablaMovimientos.getColumnModel();
+            for (int i = 0; i < anchos.length; i++) {
+                TableColumn columna = columnModel.getColumn(i);
+                columna.setPreferredWidth(anchos[i]);
+
+                // Renderizador personalizado para centrar el contenido de las celdas
+                DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
+                renderer.setHorizontalAlignment(SwingConstants.CENTER);
+                tablaMovimientos.setDefaultRenderer(Object.class, renderer);
+
+                // Renderizador personalizado para centrar el título de las columnas
+                DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) tablaMovimientos.getTableHeader().getDefaultRenderer();
+                headerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+            }
+        }
+    }
+
+    private void cbCCActionPerformed(java.awt.event.ActionEvent evt) {
+        updateCc();
+        if (cbCC.isSelected()) {
+            cbContado.setSelected(false);
+            cbTodos.setSelected(false);
+        }
+
+    }
+
+    private void updateCc() {
+        DefaultTableModel tableModel = (DefaultTableModel) tablaMovimientos.getModel();
+        tableModel.setRowCount(0); // Limpiar la tabla
+
+        List<Movimientos> listaMovimientos = control.traerMovimientos();
+        String fechaSeleccionada = txtFecha.getText(); // Obtener la fecha seleccionada
+
+        // Recorrer la lista y agregar filas a la tabla
+        tableModel.setRowCount(0);
+        for (Movimientos mov : listaMovimientos) {
+            if ((!cbCC.isSelected() || mov.getCuentaCorriente().equals("Si"))
+                    && filtrarPorFecha(Arrays.asList(mov), fechaSeleccionada).size() > 0) {
+                Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
+                tableModel.addRow(row);
+            }
+        }
+    }
+
+    private void updateContado() {
+        DefaultTableModel tableModel = (DefaultTableModel) tablaMovimientos.getModel();
+        tableModel.setRowCount(0); // Limpiar la tabla
+
+        List<Movimientos> listaMovimientos = control.traerMovimientos();
+        String fechaSeleccionada = txtFecha.getText(); // Obtener la fecha seleccionada
+
+        /**
+         * CHECK BOX CONTADO
+         */
+        tableModel.setRowCount(0);
+        for (Movimientos mov : listaMovimientos) {
+            if ((!cbContado.isSelected() || mov.getCuentaCorriente().equals("No"))
+                    && filtrarPorFecha(Arrays.asList(mov), fechaSeleccionada).size() > 0) {
+                Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
+                tableModel.addRow(row);
+            }
+
+        }
+    }
+
+    private void generarPdf() {
+        Document document = new Document();
+        try {
+            // Crear un diálogo de selección de archivo
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setDialogTitle("Guardar PDF");
+            fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            // Mostrar el diálogo de selección de archivo
+            int userSelection = fileChooser.showSaveDialog(null);
+
+            if (userSelection == JFileChooser.APPROVE_OPTION) {
+                // Obtener el archivo seleccionado por el usuario
+                File selectedFile = fileChooser.getSelectedFile();
+                String outputPath = selectedFile.getAbsolutePath();
+
+                // Agregar la extensión ".pdf" al nombre del archivo si no está presente
+                if (!outputPath.toLowerCase().endsWith(".pdf")) {
+                    outputPath += ".pdf";
+                }
+
+                // Crear el archivo de salida
+                File outputFile = new File(outputPath);
+                PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile));
+                document.open();
+
+                //FUENTES
+                Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 8, Font.BOLD);
+                Font fontDatos = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, NORMAL);
+                Font fontTotales = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
+                Font fontFecha = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
+                Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 8);
+
+                // LOGO
+                Image logo = Image.getInstance("src/main/java/com/imagenes/logosolo.jpg");
+                logo.scaleToFit(450, 800);
+                logo.setAlignment(Element.ALIGN_CENTER);
+                document.add(logo);
+                // TITULO
+                Paragraph titulo = new Paragraph("HOJA DE RUTA", FontFactory.getFont(FontFactory.TIMES_ROMAN, 16, Font.BOLD, BaseColor.BLACK));
+                titulo.setAlignment(Element.ALIGN_CENTER);
+                titulo.setSpacingAfter(10f); // Espacio después del título (en puntos)
+                document.add(titulo);
+                // FECHAS
+                String fecha = txtFecha.getText();
+                // Agregar fechas desde y hasta al título
+                Chunk chunkFechas = new Chunk("Fecha: " + fecha, fontFecha);
+                Paragraph fechas = new Paragraph(chunkFechas);
+                fechas.setAlignment(Element.ALIGN_CENTER);
+                fechas.setSpacingAfter(5f); // Espacio después de las fechas (en puntos)
+                document.add(fechas);
+
+                // DATOS -> VEHICULO,PATENTE Y CHOFER
+                // Crear una tabla para los datos
+                PdfPTable datos = new PdfPTable(1);
+                datos.setWidthPercentage(100);
+
+                // Obtener el valor seleccionado del ComboBox VEHICULO
+                String vehiculoSeleccionado = cbVehiculo.getSelectedItem().toString();
+                Phrase vehiculo = new Phrase("Vehiculo: " + vehiculoSeleccionado, fontDatos);
+                PdfPCell vehiculoCell = new PdfPCell(vehiculo);
+                vehiculoCell.setBorder(Rectangle.NO_BORDER);
+                vehiculoCell.setHorizontalAlignment(Element.ALIGN_RIGHT); // Alinear la celda al centro
+                datos.addCell(vehiculoCell);
+
+                // Obtener el valor seleccionado del ComboBox PATENTE
+                String patenteSeleccionada = txtPatente.getText();
+                Phrase patente = new Phrase("Patente: " + patenteSeleccionada, fontDatos);
+                PdfPCell patenteCell = new PdfPCell(patente);
+                patenteCell.setBorder(Rectangle.NO_BORDER);
+                patenteCell.setHorizontalAlignment(Element.ALIGN_RIGHT); // Alinear la celda al centro
+                datos.addCell(patenteCell);
+
+                // Obtener el valor seleccionado del ComboBox CHOFER
+                String choferSeleccionado = cbChofer.getSelectedItem().toString();
+                Phrase chofer = new Phrase("Chofer: " + choferSeleccionado, fontDatos);
+                PdfPCell choferCell = new PdfPCell(chofer);
+                choferCell.setBorder(Rectangle.NO_BORDER);
+                choferCell.setHorizontalAlignment(Element.ALIGN_RIGHT); // Alinear la celda al centro
+                datos.addCell(choferCell);
+
+                // Agregar la tabla al documento PDF
+                document.add(datos);
+
+                //CREACION DE TABLA
+                PdfPTable table = new PdfPTable(tablaMovimientos.getColumnCount() - 6); // Excluir columnas FECHA, MOVIMIENTO, CC y OBS
+                table.setSpacingBefore(10f); // Espacio antes de la tabla (en puntos)
+                table.setSpacingAfter(10f);
+
+                // Ajustar espacio horizontal
+                float[] columnWidths = {1f, 0.8f, 0.7f, 0.7f, 1f, 0.7f, 1f, 0.8f, 0.7f, 0.8f}; // Anchos deseados para cada columna en píxeles
+                table.setWidths(columnWidths);
+
+                table.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
+
+                // Agregar las celdas a la tabla
+                for (int i = 0; i < tablaMovimientos.getColumnCount(); i++) {
+                    String col = tablaMovimientos.getColumnName(i);
+                    if (!col.equals("FECHA") && !col.equals("MOVIMIENTO") && !col.equals("CC") && !col.equals("OBS") && !col.equals("RENDIDO") && !col.equals("RENDIDO")) {
+                        // Cambiar el nombre de la columna "REPRESENTANTE" a "Rep."
+                        if (col.equals("REPRESENTANTE")) {
+                            col = "REP";
+                        }
+                        if (col.equals("A_CARGO_DE")) {
+                            col = "FLETE A CARGO";
+                        }
+                        PdfPCell cell = new PdfPCell(new Phrase(col, font));
+                        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                        cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
+                        table.addCell(cell);
+
+                    }
+                }
+
+                for (int row = 0; row < tablaMovimientos.getRowCount(); row++) {
+                    for (int col = 0; col < tablaMovimientos.getColumnCount(); col++) {
+                        String colName = tablaMovimientos.getColumnName(col);
+                        if (!colName.equals("FECHA") && !colName.equals("CC") && !colName.equals("OBS") && !colName.equals("MOVIMIENTO")
+                                && !colName.equals("RENDIDO") && !colName.equals("RENDIDO")) {
+                            Object value = tablaMovimientos.getValueAt(row, col);
+                            if (value != null) {
+                                PdfPCell cell = new PdfPCell(new Phrase(value.toString(), fontFilas));
+                                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                                cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
+                                table.addCell(cell);
+                            }
+                        }
+                    }
+                }
+
+                document.add(table);
+
+                document.close();
+                writer.close();
+
+                JOptionPane.showMessageDialog(null, "El archivo se generó correctamente.", "Información", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (DocumentException | FileNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "Error al generar el archivo PDF.", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException ex) {
+            Logger.getLogger(Consultas.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
 
     /**
      * @param args the command line arguments
@@ -339,10 +763,15 @@ public class HojaDeRuta extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnGenerarPdf;
     private javax.swing.JButton btnImprimir;
+    private javax.swing.JButton btnMostrar;
     private javax.swing.ButtonGroup buttonGroup1;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JRadioButton cbCC;
+    private javax.swing.JComboBox<String> cbChofer;
+    private javax.swing.JRadioButton cbContado;
+    private javax.swing.JRadioButton cbTodos;
+    private javax.swing.JComboBox<Vehiculo> cbVehiculo;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -353,14 +782,10 @@ public class HojaDeRuta extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel6;
-    private javax.swing.JRadioButton jRadioButton1;
-    private javax.swing.JRadioButton jRadioButton2;
-    private javax.swing.JRadioButton jRadioButton3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JFormattedTextField txtFechaDesde;
+    private javax.swing.JTable tablaMovimientos;
+    private javax.swing.JFormattedTextField txtFecha;
+    private javax.swing.JTextField txtPatente;
     // End of variables declaration//GEN-END:variables
+
 }

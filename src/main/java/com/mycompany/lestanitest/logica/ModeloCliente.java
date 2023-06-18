@@ -34,6 +34,8 @@ public class ModeloCliente {
                 cl.setId(rs.getInt("ID_CLIENTE"));
                 cl.setNombre(rs.getString("NOMBRE"));
                 cl.setLocalidad(rs.getString("LOCALIDAD"));
+                cl.setDireccion(rs.getString("DIRECCION"));
+                cl.setCuit(rs.getString("CUIT"));
                 listaClientes.add(cl);
             }
         } catch (SQLException ex) {
