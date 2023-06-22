@@ -39,6 +39,9 @@ import java.awt.event.ActionListener;
 import javax.swing.table.TableColumn;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -58,6 +61,7 @@ import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import javax.swing.ListModel;
 import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
@@ -73,6 +77,11 @@ import javax.swing.filechooser.FileSystemView;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumnModel;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
+import javax.swing.text.DocumentFilter.FilterBypass;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import org.jdesktop.swingx.autocomplete.ObjectToStringConverter;
 
@@ -114,11 +123,60 @@ public class Principal extends javax.swing.JFrame {
         txtMonto.setNextFocusableComponent(txtFlete);
         txtFlete.setNextFocusableComponent(txtObservaciones); 
 
+        // Listener al mause para editar con doble click el movimiento.
+        tablaMovimientos.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    // Acción a realizar cuando se haga doble clic en un elemento de la tabla
+                     int filaSeleccionada = tablaMovimientos.getSelectedRow();
+                    int id = (int) tablaMovimientos.getValueAt(filaSeleccionada, 0);
+                    // Realizar la acción deseada con el ID obtenido
+                    System.out.println("ID seleccionado: " + id);
+                    EditarMovimientos editar = new EditarMovimientos(id);
+                    editar.setVisible(true);
+                    editar.setLocationRelativeTo(null);
+                    
+                }
+            }
+        });
+        
+         // Agregar el KeyListener a txtMonto y txtFlete
+        KeyListener keyListener = new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                JTextField textField = (JTextField) e.getSource();
+                // Obtener el carácter ingresado
+                char c = e.getKeyChar();
+
+                // Verificar si el carácter no es un número, punto decimal o coma
+                if (!Character.isDigit(c) && c != '.' && c != ',') {
+                    // Mostrar una alerta solo si la cadena no contiene solo números y símbolos válidos
+                    if (!textField.getText().matches("[\\d.,]*")) {
+                        JOptionPane.showMessageDialog(null, "Solo se permiten números y símbolos decimales (punto o coma).", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+
+                    // Consumir el evento para evitar que el carácter se ingrese en el JTextField
+                    e.consume();
+                }
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                // No se utiliza en este ejemplo
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                // No se utiliza en este ejemplo
+            }
+        };
+
+        txtMonto.addKeyListener(keyListener);
+        txtFlete.addKeyListener(keyListener);
         
         
-        
-        
-        
+      
         
         
         
@@ -341,10 +399,10 @@ public class Principal extends javax.swing.JFrame {
         jLabel16 = new javax.swing.JLabel();
         cbfletePagado = new javax.swing.JCheckBox();
         cbfleteRendido = new javax.swing.JCheckBox();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        txtObservaciones = new javax.swing.JTextArea();
         btnGenerarRemito = new javax.swing.JButton();
         tCliente = new javax.swing.JTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txtObservaciones = new javax.swing.JTextArea();
         PanelBusquedas = new javax.swing.JPanel();
         txtFiltroCliente = new javax.swing.JTextField();
         txtFiltroRemito = new javax.swing.JTextField();
@@ -683,10 +741,6 @@ public class Principal extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        txtObservaciones.setColumns(20);
-        txtObservaciones.setRows(5);
-        jScrollPane3.setViewportView(txtObservaciones);
-
         btnGenerarRemito.setBackground(new java.awt.Color(51, 51, 51));
         btnGenerarRemito.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnGenerarRemito.setForeground(new java.awt.Color(255, 255, 255));
@@ -703,6 +757,10 @@ public class Principal extends javax.swing.JFrame {
                 tClienteKeyTyped(evt);
             }
         });
+
+        txtObservaciones.setColumns(20);
+        txtObservaciones.setRows(5);
+        jScrollPane1.setViewportView(txtObservaciones);
 
         javax.swing.GroupLayout panelCargaMovimientosLayout = new javax.swing.GroupLayout(panelCargaMovimientos);
         panelCargaMovimientos.setLayout(panelCargaMovimientosLayout);
@@ -748,7 +806,7 @@ public class Principal extends javax.swing.JFrame {
                         .addGap(30, 30, 30)
                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
-                        .addGap(51, 51, 51)
+                        .addGap(24, 24, 24)
                         .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(cbCuentaCorriente)
                             .addComponent(jLabel8)
@@ -756,9 +814,9 @@ public class Principal extends javax.swing.JFrame {
                             .addComponent(txtRepresentante, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(41, 41, 41)
                         .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel14))))
-                .addGap(36, 36, 36)
+                            .addComponent(jLabel14)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnGenerarRemito, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
                     .addComponent(btnAgregar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -771,13 +829,13 @@ public class Principal extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelCargaMovimientosLayout.createSequentialGroup()
                 .addGap(49, 49, 49)
                 .addComponent(btnGenerarRemito, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(27, 27, 27)
+                .addGap(21, 21, 21)
                 .addComponent(btnAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnEditarMovimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnEliminarMovimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(47, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelCargaMovimientosLayout.createSequentialGroup()
                 .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
@@ -810,10 +868,10 @@ public class Principal extends javax.swing.JFrame {
                                 .addComponent(txtRepresentante, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(cbCuentaCorriente))
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(4, 4, 4)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(24, 24, 24)
+                .addGap(18, 18, 18)
                 .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -826,7 +884,7 @@ public class Principal extends javax.swing.JFrame {
                             .addComponent(txtRemito, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(17, 17, 17)))
-                .addContainerGap(24, Short.MAX_VALUE))
+                .addContainerGap(23, Short.MAX_VALUE))
         );
 
         PanelBusquedas.setBackground(new java.awt.Color(66, 66, 66));
@@ -940,7 +998,7 @@ public class Principal extends javax.swing.JFrame {
                         .addComponent(PanelBusquedas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 575, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(57, Short.MAX_VALUE))
+                .addContainerGap(58, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -1149,7 +1207,7 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAgregarActionPerformed
 
     private void txtMontoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMontoActionPerformed
-        // TODO add your handling code here:
+       
     }//GEN-LAST:event_txtMontoActionPerformed
 
     private void txtBultoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBultoActionPerformed
@@ -1412,8 +1470,8 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JPanel panelCargaMovimientos;
     private javax.swing.JTextField tCliente;
     private javax.swing.JTable tablaMovimientos;

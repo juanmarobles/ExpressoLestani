@@ -166,7 +166,7 @@ public class Consultas extends javax.swing.JFrame {
         jLabel1.setText("Cliente");
 
         btnMostrar.setBackground(new java.awt.Color(51, 51, 51));
-        btnMostrar.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        btnMostrar.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         btnMostrar.setForeground(new java.awt.Color(236, 240, 241));
         btnMostrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/Mostrar_24px.png"))); // NOI18N
         btnMostrar.setText("Mostrar");
@@ -557,6 +557,7 @@ public class Consultas extends javax.swing.JFrame {
         jLabel15.setText("Marcar como Rendidos");
 
         btnMRFletes.setBackground(new java.awt.Color(51, 51, 51));
+        btnMRFletes.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         btnMRFletes.setForeground(new java.awt.Color(236, 240, 241));
         btnMRFletes.setText("Fletes");
         btnMRFletes.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -605,9 +606,9 @@ public class Consultas extends javax.swing.JFrame {
         jButton1.setText("Imprimir");
 
         btnLimpiar.setBackground(new java.awt.Color(51, 51, 51));
-        btnLimpiar.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        btnLimpiar.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         btnLimpiar.setForeground(new java.awt.Color(236, 240, 241));
-        btnLimpiar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/Mostrar_24px.png"))); // NOI18N
+        btnLimpiar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/limpiar.png"))); // NOI18N
         btnLimpiar.setText("Limpiar");
         btnLimpiar.setBorder(null);
         btnLimpiar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -626,7 +627,8 @@ public class Consultas extends javax.swing.JFrame {
         jLabel5.setText("$");
 
         btnCambiar.setBackground(new java.awt.Color(51, 51, 51));
-        btnCambiar.setForeground(new java.awt.Color(236, 240, 241));
+        btnCambiar.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        btnCambiar.setForeground(new java.awt.Color(255, 255, 255));
         btnCambiar.setText("Cambiar");
         btnCambiar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnCambiar.addActionListener(new java.awt.event.ActionListener() {
@@ -640,18 +642,17 @@ public class Consultas extends javax.swing.JFrame {
         jPanel9Layout.setHorizontalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel9Layout.createSequentialGroup()
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel9Layout.createSequentialGroup()
-                        .addGap(8, 8, 8)
-                        .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel9Layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
-                        .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(btnCambiar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(txtFleteCambio, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(14, 14, 14)
+                .addComponent(jLabel5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnCambiar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtFleteCambio, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addGap(8, 8, 8)
+                .addComponent(jLabel16, javax.swing.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -662,7 +663,7 @@ public class Consultas extends javax.swing.JFrame {
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(txtFleteCambio, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnCambiar, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(22, Short.MAX_VALUE))
         );
@@ -714,7 +715,7 @@ public class Consultas extends javax.swing.JFrame {
                                         .addGap(30, 30, 30)))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 176, Short.MAX_VALUE)))
+                        .addGap(0, 415, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -769,10 +770,9 @@ public class Consultas extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
