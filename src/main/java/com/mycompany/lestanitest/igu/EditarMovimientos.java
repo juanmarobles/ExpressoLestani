@@ -484,9 +484,7 @@ public class EditarMovimientos extends javax.swing.JFrame {
     }//GEN-LAST:event_txtRemitoActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-        Principal verAnterior = new Principal();
-        verAnterior.setVisible(true);
-        verAnterior.setLocationRelativeTo(null);
+       
         dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
 
@@ -563,9 +561,7 @@ public class EditarMovimientos extends javax.swing.JFrame {
 
         mostrarMensaje("Movimiento modificado correctamente", "Info", "Edicion exitosa!");
 
-        Principal verAnterior = new Principal();
-        verAnterior.setVisible(true);
-        verAnterior.setLocationRelativeTo(null);
+        
 
         this.dispose();
 
@@ -635,6 +631,7 @@ public class EditarMovimientos extends javax.swing.JFrame {
         txtMonto.setText(mov.getMonto());
         txtFlete.setText(mov.getFlete());
         txtRemito.setText(Integer.toString(mov.getRemito()));
+        txtObservaciones.setText(mov.getObservaciones());
     }
 
     public static String fechaActual() {
