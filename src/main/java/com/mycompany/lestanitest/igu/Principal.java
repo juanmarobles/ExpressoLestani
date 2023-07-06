@@ -50,6 +50,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -64,6 +66,7 @@ import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListModel;
 import javax.swing.RowFilter;
@@ -112,6 +115,38 @@ public class Principal extends javax.swing.JFrame {
         txtServicio.setText("Normal");
         txtBulto.setText("1");
         txtFecha.setText(fechaActual());  //FECHA
+   
+        
+        /*
+//Formato para la carga de Monto
+
+// Crear un formato personalizado para mostrar el monto con todos los dígitos
+    NumberFormat numberFormat = new DecimalFormat("#,##0.000");
+
+// Obtener la columna de montos por su nombre
+TableColumn montoColumn = tablaMovimientos.getColumn("MONTO");
+
+// Crear un DefaultTableCellRenderer personalizado
+DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
+    @Override
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+        // Aplicar el formato personalizado al valor
+        if (value instanceof Number) {
+            value = numberFormat.format(value);
+        }
+        return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+    }
+};
+
+// Asignar el renderer personalizado a la columna de montos
+montoColumn.setCellRenderer(renderer);
+*/
+        
+        
+        
+        
+        
+        
         
         TextPrompt filtroCl = new TextPrompt("Busqueda por cliente", txtFiltroCliente);
         TextPrompt filtroRe = new TextPrompt("Busqueda por remito", txtFiltroRemito);

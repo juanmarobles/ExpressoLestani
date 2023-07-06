@@ -34,6 +34,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -45,6 +46,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -71,17 +73,28 @@ public class Consultas extends javax.swing.JFrame {
     private SimpleDateFormat sdf;
     private String montoTotalImpreso;
     private String fleteTotalImpreso;
+    //Nuevo
     private List<Movimientos> listaFiltrada;
+    private boolean mostrarPagados = false;
+    private boolean mostrarNoPagados = false;
+    private boolean mostrarTodos = true;
+    private boolean botonMostrarPresionado = false;
+    private boolean mostrarFPagados = false;
+private boolean mostrarFNoPagados = false;
+private boolean mostrarFTodos = true;
 
     public Consultas() {
         initComponents();
-        //setSize(1920, 1080);
-        //setExtendedState(MAXIMIZED_BOTH);
+         mostrarTablaMovimientos(control.traerMovimientos());
         cargarSugerencias();
         txtFechaHasta.setText(fechaActual());
         this.setLocationRelativeTo(null);
         this.setResizable(false);
-
+         txtTotalMonto.setEditable(false);
+         txtTotalFlete.setEditable(false);
+         txtCantBultos.setEditable(false);
+        
+        
     }
 
     private void cargarSugerencias() {
@@ -317,7 +330,7 @@ public class Consultas extends javax.swing.JFrame {
         );
 
         tablaConsultas.setBackground(new java.awt.Color(66, 66, 66));
-        tablaConsultas.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        tablaConsultas.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         tablaConsultas.setForeground(new java.awt.Color(236, 240, 241));
         tablaConsultas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -338,6 +351,11 @@ public class Consultas extends javax.swing.JFrame {
         jPanel4.setForeground(new java.awt.Color(236, 240, 241));
 
         txtTotalMonto.setText("0");
+        txtTotalMonto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtTotalMontoActionPerformed(evt);
+            }
+        });
 
         jLabel11.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel11.setForeground(new java.awt.Color(236, 240, 241));
@@ -787,25 +805,153 @@ public class Consultas extends javax.swing.JFrame {
     }//GEN-LAST:event_btnMPFletesActionPerformed
 
     private void btnMostrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarActionPerformed
-        String fechaDesde = txtFechaDesde.getText();
-        String fechaHasta = txtFechaHasta.getText();
-        String nombreCliente = txtCliente.getText();
 
-        listaFiltrada = filtrarPorFechas(control.traerMovimientos(), fechaDesde, fechaHasta, nombreCliente);
-        mostrarTablaMovimientos(listaFiltrada);
-
-        double totalMonto = calcularTotalMonto(listaFiltrada);
-        double totalFlete = calcularTotalFlete(listaFiltrada);
-        int totalBultos = calcularTotalBultos(listaFiltrada);
-
-        DecimalFormat decimalFormat = new DecimalFormat("#,###.000");
-        String totalMontoFormateado = decimalFormat.format(totalMonto);
-        String totalFleteFormateado = decimalFormat.format(totalFlete);
-
-        txtTotalMonto.setText(totalMontoFormateado);
-        txtTotalFlete.setText(totalFleteFormateado);
-        txtCantBultos.setText(String.valueOf(totalBultos));
+        botonMostrarPresionado = true;
+          aplicarFiltros();
+  
+    
     }//GEN-LAST:event_btnMostrarActionPerformed
+   
+    
+    private void aplicarFiltros() {
+        // Verificar si se ha presionado el botón "Mostrar"
+        if (!botonMostrarPresionado) {
+            return;
+        }
+        List<Movimientos> movimientosFiltrados = control.traerMovimientos();
+
+        // Aplicar los filtros seleccionados
+        String clienteFiltrado = txtCliente.getText();
+        boolean cuentaCorrienteFiltrada = CuentaCorriente.isSelected();
+        // ... otros filtros ...
+
+        // Filtrar por cliente
+        if (!clienteFiltrado.isEmpty()) {
+            movimientosFiltrados = movimientosFiltrados.stream()
+                    .filter(mov -> mov.getCliente().equals(clienteFiltrado))
+                    .collect(Collectors.toList());
+        }
+
+        // Filtrar por cuenta corriente
+        if (cuentaCorrienteFiltrada) {
+            movimientosFiltrados = movimientosFiltrados.stream()
+                    .filter(mov -> mov.getCuentaCorriente().equals("Si"))
+                    .collect(Collectors.toList());
+        }
+
+        // Filtrar por fechas
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        final Date desdeFecha;
+        final Date hastaFecha;
+
+        try {
+            desdeFecha = dateFormat.parse(txtFechaDesde.getText());
+            hastaFecha = dateFormat.parse(txtFechaHasta.getText());
+        } catch (ParseException ex) {
+            // Manejar la excepción en caso de que el formato de fecha sea incorrecto
+            ex.printStackTrace();
+            return; // Salir del método o agregar otro manejo de error según sea necesario
+        }
+
+        if (desdeFecha != null && hastaFecha != null) {
+             movimientosFiltrados = movimientosFiltrados.stream()
+             .filter(mov -> {
+            Date fechaMovimiento = mov.getFecha();
+            return fechaMovimiento != null && fechaMovimiento.compareTo(desdeFecha) >= 0 && fechaMovimiento.compareTo(hastaFecha) <= 0;
+        })
+        .collect(Collectors.toList());
+}
+        boolean mostrarPagados = cbPagados.isSelected();
+        boolean mostrarNoPagados = cbNoPagados.isSelected();
+        boolean mostrarFPagados = cbFletePagado.isSelected();
+        boolean mostrarFNoPagados = cbFleteNoPagado.isSelected();
+        
+        //Filtrado de Feltes y Montos
+      movimientosFiltrados = movimientosFiltrados.stream()
+    .filter(mov -> {
+        boolean estadoPagoCumple = true;
+        boolean fletesCumple = true;
+
+        // Filtrar por estado de pago
+        if (mostrarPagados && !mov.getTipoMontoP().equals("Si")) {
+            estadoPagoCumple = false;
+        } else if (mostrarNoPagados && !mov.getTipoMontoP().equals("No")) {
+            estadoPagoCumple = false;
+        }
+
+        // Filtrar por fletes
+        if (mostrarFPagados && !mov.getTipoFleteP().equals("Si")) {
+            fletesCumple = false;
+        } else if (mostrarFNoPagados && !mov.getTipoFleteP().equals("No")) {
+            fletesCumple = false;
+        }
+
+        return estadoPagoCumple && fletesCumple;
+    })
+    .collect(Collectors.toList());
+      
+
+        // Mostrar la tabla con los movimientos filtrados
+        mostrarTablaMovimientos(movimientosFiltrados);
+        calcularTotalMonto(movimientosFiltrados);
+        calcularTotalFlete(movimientosFiltrados);
+        calcularTotalBultos(movimientosFiltrados);
+        
+        
+    }
+      private void calcularTotalMonto(List<Movimientos> movimientosFiltrados) {
+        // Calcular el total de los montos
+        double totalMonto = movimientosFiltrados.stream()
+                .mapToDouble(mov -> {
+                    String monto = mov.getMonto().replaceAll("[^0-9.]", ""); // Eliminar caracteres no numéricos
+                    try {
+                        return Double.parseDouble(monto);
+                    } catch (NumberFormatException e) {
+                        return 0.0;
+                    }
+                })
+                .sum();
+
+// Formatear el total en el formato deseado
+        DecimalFormat decimalFormat = new DecimalFormat("#,##0.000");
+        String totalFormateado = decimalFormat.format(totalMonto);
+
+// Mostrar el total en el JTextField
+        txtTotalMonto.setText(totalFormateado);
+    }
+      
+      private void calcularTotalFlete(List<Movimientos> movimientosFiltrados) {
+        // Calcular el total de los montos
+        double totalFlete = movimientosFiltrados.stream()
+                .mapToDouble(mov -> {
+                    String monto = mov.getFlete().replaceAll("[^0-9.]", ""); // Eliminar caracteres no numéricos
+                    try {
+                        return Double.parseDouble(monto);
+                    } catch (NumberFormatException e) {
+                        return 0.0;
+                    }
+                })
+                .sum();
+
+// Formatear el total en el formato deseado
+        DecimalFormat decimalFormat = new DecimalFormat("#,##0.000");
+        String totalFormateado = decimalFormat.format(totalFlete);
+
+// Mostrar el total en el JTextField
+        txtTotalFlete.setText(totalFormateado);
+    }
+      
+    private void calcularTotalBultos(List<Movimientos> movimientosFiltrados){
+        int sumaBultos = movimientosFiltrados.stream()
+                .mapToInt(Movimientos::getBultos)
+                .sum();
+
+        txtCantBultos.setText(String.format("%,d", sumaBultos));
+    }
+
+    
+    
+   /* 
     private double calcularTotalMonto(List<Movimientos> movimientos) {
         double totalMonto = 0.0;
         DecimalFormat formatoMoneda = (DecimalFormat) DecimalFormat.getCurrencyInstance(Locale.CANADA);
@@ -833,7 +979,7 @@ public class Consultas extends javax.swing.JFrame {
         for (Movimientos movimiento : movimientos) {
             try {
                 String fleteString = movimiento.getFlete();
-                Number flete = formatoMoneda.parse(fleteString);
+                Number flete = (Number) formatoMoneda.parse(fleteString);
                 double fleteDouble = flete.doubleValue();
                 totalFlete += fleteDouble;
             } catch (ParseException ex) {
@@ -854,7 +1000,7 @@ public class Consultas extends javax.swing.JFrame {
 
         return totalBultos;
     }
-
+*/
     private void mostrarTablaMovimientos(List<Movimientos> listaMovimientos) {
         //filas y columnas no editables
         DefaultTableModel tabla = new DefaultTableModel() {
@@ -901,37 +1047,6 @@ public class Consultas extends javax.swing.JFrame {
 
     }
 
-    private List<Movimientos> filtrarPorFechas(List<Movimientos> objetos, String fechaDesde, String fechaHasta, String nombreCliente) {
-        List<Movimientos> resultados = new ArrayList<>();
-        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
-        try {
-            formato.parse(fechaDesde);
-        } catch (ParseException ex) {
-            Logger.getLogger(Consultas.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
-            formato.parse(fechaHasta);
-        } catch (ParseException ex) {
-            Logger.getLogger(Consultas.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        for (Movimientos objeto : objetos) {
-            Date fecha = objeto.getFecha();
-            String cliente = objeto.getCliente();
-
-            if (fecha != null && cliente != null && cliente.equalsIgnoreCase(nombreCliente)) {
-                try {
-                    if (!fecha.before(formato.parse(fechaDesde)) && !fecha.after(formato.parse(fechaHasta))) {
-                        resultados.add(objeto);
-                    }
-                } catch (ParseException ex) {
-                    Logger.getLogger(Consultas.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }
-
-        return resultados;
-    }
 
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
@@ -939,34 +1054,28 @@ public class Consultas extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowOpened
 
     private void txtClienteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtClienteKeyTyped
-        txtCliente.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyReleased(KeyEvent e) {
-                trs.setRowFilter(RowFilter.regexFilter("(?i)" + txtCliente.getText(), 2));
-            }
-
-        });
-        trs = new TableRowSorter(tablaConsultas.getModel());
-        tablaConsultas.setRowSorter(trs);
+     
 
     }//GEN-LAST:event_txtClienteKeyTyped
     /**
      * CHECK BOX PAGADOS
+     * 
      */
+     
     private void cbPagadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbPagadosActionPerformed
-        updateMonto();
+        aplicarFiltros();
     }//GEN-LAST:event_cbPagadosActionPerformed
 
     private void cbNoPagadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbNoPagadosActionPerformed
-        updateMonto();
+       aplicarFiltros();
     }//GEN-LAST:event_cbNoPagadosActionPerformed
 
     private void cbmTodosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbmTodosActionPerformed
-        updateMonto();
+        aplicarFiltros();
     }//GEN-LAST:event_cbmTodosActionPerformed
 
     private void cbFletePagadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbFletePagadoActionPerformed
-        updateFlete();
+        aplicarFiltros();
     }//GEN-LAST:event_cbFletePagadoActionPerformed
 
     private void txtClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtClienteActionPerformed
@@ -978,11 +1087,11 @@ public class Consultas extends javax.swing.JFrame {
     }//GEN-LAST:event_btnMPMontosActionPerformed
 
     private void cbfTodosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbfTodosActionPerformed
-        updateFlete();
+        aplicarFiltros();
     }//GEN-LAST:event_cbfTodosActionPerformed
 
     private void cbFleteNoPagadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbFleteNoPagadoActionPerformed
-        updateFlete();
+        aplicarFiltros();
     }//GEN-LAST:event_cbFleteNoPagadoActionPerformed
 
     private void btnMRFletesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMRFletesActionPerformed
@@ -994,7 +1103,7 @@ public class Consultas extends javax.swing.JFrame {
     }//GEN-LAST:event_txtTotalFleteActionPerformed
 
     private void CuentaCorrienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CuentaCorrienteActionPerformed
-        updateCc();
+        
     }//GEN-LAST:event_CuentaCorrienteActionPerformed
 
     private void btnImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirActionPerformed
@@ -1002,17 +1111,25 @@ public class Consultas extends javax.swing.JFrame {
     }//GEN-LAST:event_btnImprimirActionPerformed
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
-        txtFechaDesde.setText("");
-        txtFechaHasta.setText("");
+      /*  txtFechaDesde.setText("");
+       // txtFechaHasta.setText("");
         txtCliente.setText("");
         txtTotalMonto.setText("");
         txtTotalFlete.setText("");
-        txtCantBultos.setText("");
+        txtCantBultos.setText("");*/
+        dispose();
+        Consultas con = new Consultas();
+        con.setVisible(true);
+        
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
     private void btnCambiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCambiarActionPerformed
         cambiarValorFlete();
     }//GEN-LAST:event_btnCambiarActionPerformed
+
+    private void txtTotalMontoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTotalMontoActionPerformed
+      
+    }//GEN-LAST:event_txtTotalMontoActionPerformed
     private void cambiarValorFlete() {
         int[] filasSeleccionadas = tablaConsultas.getSelectedRows(); // Obtener índices de las filas seleccionadas
         String nuevoValorFleteTexto = txtFleteCambio.getText().trim(); // Obtener el nuevo valor del campo de texto
@@ -1042,49 +1159,10 @@ public class Consultas extends javax.swing.JFrame {
         modeloTabla.fireTableDataChanged();
     }
 
-    private void updateCc() {
-        DefaultTableModel tableModel = (DefaultTableModel) tablaConsultas.getModel();
-        tableModel.setRowCount(0); // Limpiar la tabla
+  
+         
 
-        List<Movimientos> listaMovimientos = control.traerMovimientos();
-        // Recorrer la lista y agregar filas a la tabla
-
-        /**
-         * CHECKBOX CUENTA CORRIENTE
-         */
-        for (Movimientos mov : listaMovimientos) {
-            if (CuentaCorriente.isSelected() && Arrays.asList("Si").contains(mov.getCuentaCorriente())) {
-                Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
-                tableModel.addRow(row);
-            }
-            if (!CuentaCorriente.isSelected()) {
-                Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
-                tableModel.addRow(row);
-            }
-        }
-    }
-
-    private void updateMonto() {
-        DefaultTableModel tableModel = (DefaultTableModel) tablaConsultas.getModel();
-        tableModel.setRowCount(0); // Limpiar la tabla
-
-        for (Movimientos mov : listaFiltrada) {
-            boolean mostrarFila = true;
-
-            if (cbPagados.isSelected() && !Arrays.asList("Si").contains(mov.getTipoMontoP())) {
-                mostrarFila = false;
-            }
-
-            if (cbNoPagados.isSelected() && !mov.getTipoFleteP().equals("No")) {
-                mostrarFila = false;
-            }
-
-            if (mostrarFila) {
-                Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
-                tableModel.addRow(row);
-            }
-        }
-    }
+   
 
     private void updateFlete() {
         DefaultTableModel tableModel = (DefaultTableModel) tablaConsultas.getModel();
