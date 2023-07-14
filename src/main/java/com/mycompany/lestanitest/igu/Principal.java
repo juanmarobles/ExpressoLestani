@@ -49,6 +49,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -116,37 +117,7 @@ public class Principal extends javax.swing.JFrame {
         txtBulto.setText("1");
         txtFecha.setText(fechaActual());  //FECHA
    
-        
-        /*
-//Formato para la carga de Monto
-
-// Crear un formato personalizado para mostrar el monto con todos los dígitos
-    NumberFormat numberFormat = new DecimalFormat("#,##0.000");
-
-// Obtener la columna de montos por su nombre
-TableColumn montoColumn = tablaMovimientos.getColumn("MONTO");
-
-// Crear un DefaultTableCellRenderer personalizado
-DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
-    @Override
-    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-        // Aplicar el formato personalizado al valor
-        if (value instanceof Number) {
-            value = numberFormat.format(value);
-        }
-        return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-    }
-};
-
-// Asignar el renderer personalizado a la columna de montos
-montoColumn.setCellRenderer(renderer);
-*/
-        
-        
-        
-        
-        
-        
+  
         
         TextPrompt filtroCl = new TextPrompt("Busqueda por cliente", txtFiltroCliente);
         TextPrompt filtroRe = new TextPrompt("Busqueda por remito", txtFiltroRemito);
@@ -180,34 +151,23 @@ montoColumn.setCellRenderer(renderer);
             }
         });
         
-         // Agregar el KeyListener a txtMonto y txtFlete
-        KeyListener keyListener = new KeyListener() {
+        KeyListener keyListener = new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent e) {
                 JTextField textField = (JTextField) e.getSource();
-                // Obtener el carácter ingresado
                 char c = e.getKeyChar();
 
-                // Verificar si el carácter no es un número, punto decimal o coma
-                if (!Character.isDigit(c) && c != '.' && c != ',') {
-                    // Mostrar una alerta solo si la cadena no contiene solo números y símbolos válidos
-                    if (!textField.getText().matches("[\\d.,]*")) {
-                        JOptionPane.showMessageDialog(null, "Solo se permiten números y símbolos decimales (punto o coma).", "Error", JOptionPane.ERROR_MESSAGE);
+                // Verificar si el carácter no es un número o un punto
+                if (!Character.isDigit(c) && c != '.') {
+                    // Mostrar una alerta solo si la cadena no contiene solo números y puntos
+
+                    if (!textField.getText().matches("[\\d.]*")) {
+                        JOptionPane.showMessageDialog(null, "Solo se permiten números y puntos decimales.", "Error", JOptionPane.ERROR_MESSAGE);
                     }
 
                     // Consumir el evento para evitar que el carácter se ingrese en el JTextField
                     e.consume();
                 }
-            }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-                // No se utiliza en este ejemplo
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-                // No se utiliza en este ejemplo
             }
         };
 
@@ -276,44 +236,35 @@ montoColumn.setCellRenderer(renderer);
 
     }
 
-    private void actualizarFlete() {
-        String bultoText = txtBulto.getText().trim();
-        if (!bultoText.isEmpty()) {
-            int bulto = Integer.parseInt(bultoText);
-            // carga de los datos desde la bd
-            List<Servicios> listaServicios = control.traerServicios();
-
-            // Buscar el servicio correspondiente en la lista
-            String nombreServicio = txtServicio.getText().trim().toLowerCase();
-
-            for (Servicios s : listaServicios) {
-                if (s.getServicio().toLowerCase().equals(nombreServicio)) {
-                    // Calcular el flete multiplicando el precio del servicio por la cantidad de bultos
-                    double flete = s.getPrecio() * bulto;
-
-                    // Mostrar el flete en el campo txtFlete
-                    txtFlete.setText(Double.toString(flete));
-
-                    return;
-                }
+  private void actualizarFlete() {
+    String bultoText = txtBulto.getText().trim();
+    if (!bultoText.isEmpty()) {
+        int bulto = Integer.parseInt(bultoText);
+        
+        // Cargar los datos desde la base de datos
+        List<Servicios> listaServicios = control.traerServicios();
+        
+        // Buscar el servicio correspondiente en la lista
+        String nombreServicio = txtServicio.getText().trim().toLowerCase();
+        
+        for (Servicios s : listaServicios) {
+            if (s.getServicio().toLowerCase().equals(nombreServicio)) {
+                // Calcular el flete multiplicando el precio del servicio por la cantidad de bultos
+                BigDecimal precio = BigDecimal.valueOf(s.getPrecio());
+                BigDecimal montoFlete = precio.multiply(BigDecimal.valueOf(bulto));
+                
+                // Mostrar el flete en el campo txtFlete
+                txtFlete.setText(montoFlete.toString());
+                
+                return;
             }
         }
-        
     }
+}
         
       
        
 
-        
-        
-        
-        
-       
-
-   
-
-    
-    
   
    
     

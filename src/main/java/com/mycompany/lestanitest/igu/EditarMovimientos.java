@@ -628,8 +628,8 @@ public class EditarMovimientos extends javax.swing.JFrame {
         txtServicios.setText(mov.getServicio());
         txtBulto.setText(Integer.toString(mov.getBultos()));
         txtRepresentante.setText(mov.getRepresentante());
-        txtMonto.setText(mov.getMonto());
-        txtFlete.setText(mov.getFlete());
+       // txtMonto.setText(mov.getMonto());
+       // txtFlete.setText(mov.getFlete());
         txtRemito.setText(Integer.toString(mov.getRemito()));
         txtObservaciones.setText(mov.getObservaciones());
     }

@@ -111,7 +111,122 @@ public class Recibos extends javax.swing.JFrame {
         cargarNumeroRecibo();
         txtReciboNro.setText(String.format("%05d", numeroRecibo));
         cargarTablaMovimientos();
+        
+        
+        //Por defecto
+        cbReciboCon.setSelected(true);
+
+      ActionListener listener = new ActionListener() {
+    public void actionPerformed(ActionEvent e) {
+        
+        if (cbReciboCon.isSelected()) {
+            // Acciones para el radio button "Recibo con" seleccionado
+            TableColumn fleteColumn = tablaMovimientos.getColumnModel().getColumn(7);
+            TableColumn pagadoColumn = tablaMovimientos.getColumnModel().getColumn(8);
+
+            // Mostrar las columnas "flete" y "pagado"
+            fleteColumn.setMinWidth(75);  // Ajusta los tamaños de columna según tus necesidades
+            fleteColumn.setMaxWidth(100);
+            fleteColumn.setWidth(100);
+            pagadoColumn.setMinWidth(75);
+            pagadoColumn.setMaxWidth(100);
+            pagadoColumn.setWidth(100);
+
+        } else if (cbReciboSin.isSelected()) {
+            
+           TableColumn fleteColumn = tablaMovimientos.getColumnModel().getColumn(7);
+        TableColumn pagadoColumn = tablaMovimientos.getColumnModel().getColumn(8);
+
+        
+            // Ocultar las columnas "flete" y "pagado"
+            fleteColumn.setMinWidth(0);
+            fleteColumn.setMaxWidth(0);
+            fleteColumn.setWidth(0);
+            pagadoColumn.setMinWidth(0);
+            pagadoColumn.setMaxWidth(0);
+            pagadoColumn.setWidth(0);
+        
+            // Mostrar nuevamente las columnas "flete" y "pagado"
+            fleteColumn.setMinWidth(75);  // Ajusta los tamaños de columna según tus necesidades
+            fleteColumn.setMaxWidth(100);
+            fleteColumn.setWidth(100);
+            pagadoColumn.setMinWidth(75);
+            pagadoColumn.setMaxWidth(100);
+            pagadoColumn.setWidth(100);
+       
+
+        // Actualizar el cálculo del flete total
+        if (!cbReciboSin.isSelected()) {
+            calcularTotales();
+        } else {
+            txtTotalFlete.setText("");
+        }
+
+        // Actualizar la tabla para reflejar los cambios
+        tablaMovimientos.getTableHeader().resizeAndRepaint();
+        tablaMovimientos.repaint();
+
+        }
+
+        // Actualizar la tabla para reflejar los cambios
+        tablaMovimientos.getTableHeader().resizeAndRepaint();
+        tablaMovimientos.repaint();
     }
+};
+
+cbReciboCon.addActionListener(listener);
+cbReciboSin.addActionListener(listener);
+
+    //Boton agregar
+    
+     btnAgregar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                int[] filasSeleccionadas = tablaMovimientos.getSelectedRows();
+                double sumaMontos = 0.0;
+                double sumaFletes = 0.0;
+
+                boolean reciboSinFlete = cbReciboSin.isSelected();
+
+                for (int fila : filasSeleccionadas) {
+                    String montoStr = tablaMovimientos.getValueAt(fila, 5).toString().substring(1).replace(".", "").replace(",", ".");
+
+                    double monto = Double.parseDouble(montoStr);
+                    sumaMontos += monto;
+
+                    if (!reciboSinFlete) {
+                        String fleteStr = tablaMovimientos.getValueAt(fila, 8).toString().substring(1).replace(".", "").replace(",", ".");
+                        double flete = Double.parseDouble(fleteStr);
+                        sumaFletes += flete;
+                    }
+                }
+
+                System.out.println("Suma de montos: " + sumaMontos);
+                System.out.println("Suma de fletes: " + sumaFletes);
+                // Crear un objeto DecimalFormatSymbols con los símbolos personalizados
+                DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
+                simbolos.setGroupingSeparator('.');
+                simbolos.setDecimalSeparator(',');
+                DecimalFormat decimalFormat = new DecimalFormat("###,###.##", simbolos);
+
+                // Crear el objeto DecimalFormat con el formato y los símbolos personalizados
+                //DecimalFormat decimalFormat = new DecimalFormat("#,###.###", new DecimalFormatSymbols(Locale.US));
+                // Formatear el resultado con tres decimales
+                String fleteTotalFormateado = decimalFormat.format(sumaFletes);
+                String montoTotalFormateado = decimalFormat.format(sumaMontos);
+
+                txtTotalMonto.setText(montoTotalFormateado);
+                txtTotalMonto.setEditable(false);
+
+                txtTotalFlete.setText(fleteTotalFormateado);
+                txtTotalFlete.setEditable(false);
+            }
+        });
+
+    
+    }
+    
+     
+
 
     private void guardarNumeroRecibo() {
         try {
@@ -403,7 +518,7 @@ public class Recibos extends javax.swing.JFrame {
             }
         });
 
-        tablaMovimientos.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        tablaMovimientos.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         tablaMovimientos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {},
@@ -485,7 +600,7 @@ public class Recibos extends javax.swing.JFrame {
                                     .addComponent(txtRecibi, javax.swing.GroupLayout.PREFERRED_SIZE, 503, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(txtReciboNro, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 429, Short.MAX_VALUE))
+                        .addGap(0, 626, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -582,53 +697,11 @@ public class Recibos extends javax.swing.JFrame {
     }//GEN-LAST:event_txtClienteActionPerformed
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
-        btnAgregar.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                int[] filasSeleccionadas = tablaMovimientos.getSelectedRows();
-                double sumaMontos = 0.0;
-                double sumaFletes = 0.0;
-
-                boolean reciboSinFlete = cbReciboSin.isSelected();
-
-                for (int fila : filasSeleccionadas) {
-                    String montoStr = tablaMovimientos.getValueAt(fila, 5).toString().substring(1).replace(".", "").replace(",", ".");
-
-                    double monto = Double.parseDouble(montoStr);
-                    sumaMontos += monto;
-
-                    if (!reciboSinFlete) {
-                        String fleteStr = tablaMovimientos.getValueAt(fila, 8).toString().substring(1).replace(".", "").replace(",", ".");
-                        double flete = Double.parseDouble(fleteStr);
-                        sumaFletes += flete;
-                    }
-                }
-
-                System.out.println("Suma de montos: " + sumaMontos);
-                System.out.println("Suma de fletes: " + sumaFletes);
-                // Crear un objeto DecimalFormatSymbols con los símbolos personalizados
-                DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
-                simbolos.setGroupingSeparator('.');
-                simbolos.setDecimalSeparator(',');
-                DecimalFormat decimalFormat = new DecimalFormat("###,###.##", simbolos);
-
-                // Crear el objeto DecimalFormat con el formato y los símbolos personalizados
-                //DecimalFormat decimalFormat = new DecimalFormat("#,###.###", new DecimalFormatSymbols(Locale.US));
-                // Formatear el resultado con tres decimales
-                String fleteTotalFormateado = decimalFormat.format(sumaFletes);
-                String montoTotalFormateado = decimalFormat.format(sumaMontos);
-
-                txtTotalMonto.setText(montoTotalFormateado);
-                txtTotalMonto.setEditable(false);
-
-                txtTotalFlete.setText(fleteTotalFormateado);
-                txtTotalFlete.setEditable(false);
-            }
-        });
-
+       
     }//GEN-LAST:event_btnAgregarActionPerformed
 
     private void cbReciboSinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbReciboSinActionPerformed
-        boolean reciboSinFlete = cbReciboSin.isSelected();
+       /* boolean reciboSinFlete = cbReciboSin.isSelected();
 
         TableColumn fleteColumn = tablaMovimientos.getColumnModel().getColumn(7);
         TableColumn pagadoColumn = tablaMovimientos.getColumnModel().getColumn(8);
@@ -660,11 +733,11 @@ public class Recibos extends javax.swing.JFrame {
 
         // Actualizar la tabla para reflejar los cambios
         tablaMovimientos.getTableHeader().resizeAndRepaint();
-        tablaMovimientos.repaint();
+        tablaMovimientos.repaint();*/
     }//GEN-LAST:event_cbReciboSinActionPerformed
 
     private void cbReciboConActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbReciboConActionPerformed
-        boolean reciboConFlete = cbReciboCon.isSelected();
+     /*   boolean reciboConFlete = cbReciboCon.isSelected();
 
         TableColumn fleteColumn = tablaMovimientos.getColumnModel().getColumn(7);
         TableColumn pagadoColumn = tablaMovimientos.getColumnModel().getColumn(8);
@@ -689,11 +762,43 @@ public class Recibos extends javax.swing.JFrame {
 
         // Actualizar la tabla para reflejar los cambios
         tablaMovimientos.getTableHeader().resizeAndRepaint();
-        tablaMovimientos.repaint();
+        tablaMovimientos.repaint();*/
     }//GEN-LAST:event_cbReciboConActionPerformed
 
     private void btnImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirActionPerformed
-        imprimir();
+        btnImprimir.addActionListener(new ActionListener() {
+    public void actionPerformed(ActionEvent e) {
+        // Obtén el índice de la fila seleccionada en la tabla
+        int rowIndex = tablaMovimientos.getSelectedRow();
+
+        // Obtén el modelo de tabla asociado a la tabla
+        DefaultTableModel model = (DefaultTableModel) tablaMovimientos.getModel();
+
+        // Verifica si hay una fila seleccionada
+        if (rowIndex != -1) {
+            // Elimina la fila del modelo de tabla
+            model.removeRow(rowIndex);
+
+            // Actualiza la visualización de la tabla
+            tablaMovimientos.repaint();
+        } else {
+            // No se ha seleccionado ninguna fila, muestra un mensaje de error o realiza alguna otra acción
+            JOptionPane.showMessageDialog(null, "No se ha seleccionado ninguna fila.");
+        }
+
+        // Aquí puedes agregar el código adicional para generar el recibo o el PDF
+        // ...
+         imprimir();
+    }
+});
+
+
+
+
+
+
+        
+       
     }//GEN-LAST:event_btnImprimirActionPerformed
 
     private void imprimir() {
