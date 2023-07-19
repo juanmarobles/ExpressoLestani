@@ -983,7 +983,159 @@ private boolean mostrarFTodos = true;
 
     
     
-  
+   /* 
+    private double calcularTotalMonto(List<Movimientos> movimientos) {
+        double totalMonto = 0.0;
+        DecimalFormat formatoMoneda = (DecimalFormat) DecimalFormat.getCurrencyInstance(Locale.CANADA);
+        formatoMoneda.setGroupingUsed(false);
+
+        // Aplicar los filtros seleccionados
+        String clienteFiltrado = txtCliente.getText();
+        boolean cuentaCorrienteFiltrada = CuentaCorriente.isSelected();
+        // ... otros filtros ...
+
+        // Filtrar por cliente
+        if (!clienteFiltrado.isEmpty()) {
+            movimientosFiltrados = movimientosFiltrados.stream()
+                    .filter(mov -> mov.getCliente().equals(clienteFiltrado))
+                    .collect(Collectors.toList());
+        }
+
+        return totalMonto;
+    }
+
+    private double calcularTotalFlete(List<Movimientos> movimientos) {
+        double totalFlete = 0.0;
+        DecimalFormat formatoMoneda = (DecimalFormat) DecimalFormat.getCurrencyInstance(Locale.CANADA);
+        formatoMoneda.setGroupingUsed(false);
+
+        for (Movimientos movimiento : movimientos) {
+            try {
+                String fleteString = movimiento.getFlete();
+                Number flete = (Number) formatoMoneda.parse(fleteString);
+                double fleteDouble = flete.doubleValue();
+                totalFlete += fleteDouble;
+            } catch (ParseException ex) {
+                Logger.getLogger(Consultas.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        // Filtrar por fechas
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        final Date desdeFecha;
+        final Date hastaFecha;
+
+        try {
+            desdeFecha = dateFormat.parse(txtFechaDesde.getText());
+            hastaFecha = dateFormat.parse(txtFechaHasta.getText());
+        } catch (ParseException ex) {
+            // Manejar la excepción en caso de que el formato de fecha sea incorrecto
+            ex.printStackTrace();
+            return; // Salir del método o agregar otro manejo de error según sea necesario
+        }
+
+        if (desdeFecha != null && hastaFecha != null) {
+             movimientosFiltrados = movimientosFiltrados.stream()
+             .filter(mov -> {
+            Date fechaMovimiento = mov.getFecha();
+            return fechaMovimiento != null && fechaMovimiento.compareTo(desdeFecha) >= 0 && fechaMovimiento.compareTo(hastaFecha) <= 0;
+        })
+        .collect(Collectors.toList());
+}       //Chechbox
+        boolean mostrarPagados = cbPagados.isSelected();
+        boolean mostrarNoPagados = cbNoPagados.isSelected();
+        boolean mostrarFPagados = cbFletePagado.isSelected();
+        boolean mostrarFNoPagados = cbFleteNoPagado.isSelected();
+        
+        //Filtrado de Fletes y Montos
+      movimientosFiltrados = movimientosFiltrados.stream()
+    .filter(mov -> {
+        boolean estadoPagoCumple = true;
+        boolean fletesCumple = true;
+
+        // Filtrar por estado de pago
+        if (mostrarPagados && !mov.getTipoMontoP().equals("Si")) {
+            estadoPagoCumple = false;
+        } else if (mostrarNoPagados && !mov.getTipoMontoP().equals("No")) {
+            estadoPagoCumple = false;
+        }
+
+        // Filtrar por fletes
+        if (mostrarFPagados && !mov.getTipoFleteP().equals("Si")) {
+            fletesCumple = false;
+        } else if (mostrarFNoPagados && !mov.getTipoFleteP().equals("No")) {
+            fletesCumple = false;
+        }
+
+        return estadoPagoCumple && fletesCumple;
+    })
+    .collect(Collectors.toList());
+      
+
+        // Mostrar la tabla con los movimientos filtrados
+        mostrarTablaMovimientos(movimientosFiltrados);
+        calcularTotalMonto(movimientosFiltrados);
+        calcularTotalFlete(movimientosFiltrados);
+        calcularTotalBultos(movimientosFiltrados);
+        
+        
+    }
+      private void calcularTotalMonto(List<Movimientos> movimientosFiltrados) {
+        // Calcular el total de los montos
+        double totalMonto = movimientosFiltrados.stream()
+                .mapToDouble(mov -> {
+                        String monto = mov.getMonto().replace(".", ""); // Eliminar el separador de miles (punto)
+                         monto = monto.replace(",", "."); // Reemplazar la coma por punto decimal
+                         monto = monto.replace("$", ""); // Eliminar el signo de dólar
+                    try {
+                        return Double.parseDouble(monto);
+                    } catch (NumberFormatException e) {
+                        return 0.0;
+                    }
+                })
+                .sum();
+                //Formato de Monto
+          DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+          symbols.setDecimalSeparator(',');
+          symbols.setGroupingSeparator('.');
+          DecimalFormat decimalFormat = new DecimalFormat("###,###.00", symbols);
+          String totalFormateado = decimalFormat.format(totalMonto);
+          
+          txtTotalMonto.setText(totalFormateado);
+    }
+      
+      private void calcularTotalFlete(List<Movimientos> movimientosFiltrados) {
+    // Calcular el total de los montos
+    double totalFlete = movimientosFiltrados.stream()
+            .mapToDouble(mov -> {
+                String monto = mov.getFlete().replace(".", ""); // Eliminar el separador de miles (punto)
+                monto = monto.replace(",", "."); // Reemplazar la coma por punto decimal
+                monto = monto.replace("$", ""); // Eliminar el signo de dólar
+                try {
+                    return Double.parseDouble(monto);
+                } catch (NumberFormatException e) {
+                    return 0.0;
+                }
+            })
+            .sum();
+
+    DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+    symbols.setDecimalSeparator(',');
+    symbols.setGroupingSeparator('.');
+    DecimalFormat decimalFormat = new DecimalFormat("###,###.00", symbols);
+    String totalFormateado = decimalFormat.format(totalFlete);
+
+    txtTotalFlete.setText(totalFormateado);
+}
+      
+    private void calcularTotalBultos(List<Movimientos> movimientosFiltrados){
+        int sumaBultos = movimientosFiltrados.stream()
+                .mapToInt(Movimientos::getBultos)
+                .sum();
+
+        txtCantBultos.setText(String.format("%,d", sumaBultos));
+    }
+*/
     private void mostrarTablaMovimientos(List<Movimientos> listaMovimientos) {
         //filas y columnas no editables
         DefaultTableModel tabla = new DefaultTableModel() {
@@ -1280,6 +1432,111 @@ private boolean mostrarFTodos = true;
 }
     
     
+/*
+    private void cambiarTipoMonto() {
+        int[] filasSeleccionadas = tablaConsultas.getSelectedRows();
+        if (filasSeleccionadas.length > 0) {
+            DefaultTableModel modeloTabla = (DefaultTableModel) tablaConsultas.getModel();
+            for (int i = 0; i < filasSeleccionadas.length; i++) {
+                int filaSeleccionada = filasSeleccionadas[i];
+                int idMovimientos = (int) modeloTabla.getValueAt(filaSeleccionada, 0);
+                Movimientos movimiento = null;
+
+                // Buscar el movimiento en la lista filtrada en lugar de
+                for (Movimientos mov : listaFiltrada) {
+                    if (mov.getId_movimientos() == idMovimientos) {
+                        movimiento = mov;
+                        break;
+                    }
+                }
+
+                if (movimiento != null) {
+                    String tipoMonto = (String) modeloTabla.getValueAt(filaSeleccionada, 7);
+                    if (!tipoMonto.equals("Si")) {
+                        movimiento.setTipoMontoP("Si");
+                        control.actualizarMonto(movimiento, "Si");
+                        modeloTabla.setValueAt("Si", filaSeleccionada, 7);
+                    }
+                }
+            }
+            modeloTabla.fireTableDataChanged();
+        }
+    }*/
+     //Nuevo metodo para marcar como pagados fletes
+   private void cambiarTipoFlete() {
+    int[] filasSeleccionadas = tablaConsultas.getSelectedRows();
+    if (filasSeleccionadas.length > 0) {
+        DefaultTableModel modeloTabla = (DefaultTableModel) tablaConsultas.getModel();
+
+        for (int filaSeleccionada : filasSeleccionadas) {
+            int idMovimientos = (int) modeloTabla.getValueAt(filaSeleccionada, 0);
+
+            Movimientos movimiento = control.traerMovimiento(idMovimientos); // Reemplaza el método traerMovimiento() según corresponda
+
+            if (movimiento != null) {
+                String tipoFlete = (String) modeloTabla.getValueAt(filaSeleccionada, 10);
+
+                if (tipoFlete.equals("No")) {
+                    control.actualizarFlete(movimiento, "Si");
+                    modeloTabla.setValueAt("Si", filaSeleccionada, 10);
+                }
+            }
+        }
+
+        modeloTabla.fireTableDataChanged();
+    }
+}
+   /* private void cambiarTipoFlete() {
+        int[] filasSeleccionadas = tablaConsultas.getSelectedRows();
+        if (filasSeleccionadas.length > 0) {
+            DefaultTableModel modeloTabla = (DefaultTableModel) tablaConsultas.getModel();
+            for (int i = 0; i < filasSeleccionadas.length; i++) {
+                int filaSeleccionada = filasSeleccionadas[i];
+                int idMovimientos = (int) modeloTabla.getValueAt(filaSeleccionada, 0);
+                Movimientos movimiento = null;
+
+              
+
+                if (movimiento != null) {
+                    String tipoFlete = (String) modeloTabla.getValueAt(filaSeleccionada, 10);
+                    if (!tipoFlete.equals("Si")) {
+                        movimiento.setTipoFleteP("Si");
+                        control.actualizarFlete(movimiento, "Si");
+                        modeloTabla.setValueAt("Si", filaSeleccionada, 10);
+                    }
+                }
+            }
+            modeloTabla.fireTableDataChanged();
+        }
+    }*/
+
+    /*
+    private void updateMonto() {
+        DefaultTableModel tableModel = (DefaultTableModel) tablaConsultas.getModel();
+        tableModel.setRowCount(0); // Limpiar la tabla
+
+        for (Movimientos mov : listaFiltrada) {
+            boolean mostrarFila = true;
+
+            if (cbPagados.isSelected() && !Arrays.asList("Si", "Rendido", "Pagado/Rendido").contains(mov.getTipoMonto())) {
+                mostrarFila = false;
+            }
+
+            if (cbNoPagados.isSelected() && !mov.getTipoMonto().equals("No")) {
+                mostrarFila = false;
+            }
+
+            if (mostrarFila) {
+                Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
+                tableModel.addRow(row);
+            }
+        }
+
+        modeloTabla.fireTableDataChanged();
+    }
+}
+    
+    
 
      //Nuevo metodo para marcar como pagados fletes
    private void cambiarTipoFlete() {
@@ -1305,7 +1562,7 @@ private boolean mostrarFTodos = true;
         modeloTabla.fireTableDataChanged();
     }
 }
-   
+   */
     private void cambiarTipoFleteRendido() {
         int[] filasSeleccionadas = tablaConsultas.getSelectedRows();
         if (filasSeleccionadas.length > 0) {
@@ -1330,7 +1587,6 @@ private boolean mostrarFTodos = true;
         }
 
     }
-
     //IMPRIMIR CONSULTAS
     private void generarPDF() {
         Document document = new Document();

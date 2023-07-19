@@ -280,8 +280,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_CargaMovimientoActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        Consultas cl = new Consultas();
-        cl.setVisible(true);
+       Consultas cl = new Consultas();
+       cl.setVisible(true);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void RecibosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RecibosActionPerformed

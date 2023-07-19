@@ -96,6 +96,11 @@
                               <Component id="txtFechaRuta" min="-2" pref="117" max="-2" attributes="0"/>
                           </Group>
                       </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <Component id="btnCancelar" min="-2" pref="120" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="54" max="-2" attributes="0"/>
+                          <Component id="btnGuardar" min="-2" pref="120" max="-2" attributes="0"/>
+                      </Group>
                   </Group>
                   <EmptySpace min="0" pref="26" max="32767" attributes="0"/>
               </Group>

@@ -1,5 +1,11 @@
 package com.mycompany.lestanitest.igu;
 
+import java.awt.print.PrinterException;
+import com.google.protobuf.TextFormat.Printer;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
+import java.io.File;
+import java.io.IOException;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
@@ -16,6 +22,7 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPCellEvent;
 import com.itextpdf.text.pdf.PdfPRow;
 import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfWriter;
 import static com.mycompany.lestanitest.igu.Recibos.fechaActual;
 import com.mycompany.lestanitest.logica.Cliente;
@@ -45,6 +52,24 @@ import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
+import com.itextpdf.text.pdf.PdfReader;
+import com.itextpdf.text.pdf.PdfStamper;
+import java.awt.print.Printable;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.pdf.PdfDocument;
+import com.itextpdf.text.pdf.PdfImportedPage;
+import com.itextpdf.text.pdf.PdfReader;
+import com.itextpdf.text.pdf.PdfStamper;
+import com.itextpdf.text.pdf.SimpleBookmark;
+import java.awt.Desktop;
+import java.awt.Graphics2D;
+import java.awt.print.Pageable;
+import java.awt.print.Paper;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -1417,6 +1442,7 @@ public class Principal extends javax.swing.JFrame {
         control.cargarMovimiento(cliente, destino, servicio, representante, bulto, monto, flete, tFlete, remito, tMontoP, tMontoR, tFleteP, tFleteR, fecha, cC, obs, horaSQL);
         //mostrarMensaje("Movimiento agregado correctamente", "Info", "Agregado con exito!");
         generarPdf();
+
         // Actualizar la tabla
         DefaultTableModel modeloTabla = (DefaultTableModel) tablaMovimientos.getModel();
         modeloTabla.setRowCount(0);
@@ -1657,13 +1683,6 @@ public class Principal extends javax.swing.JFrame {
                 direccion = clienteSeleccionado.getDireccion().toUpperCase();
                 localidad = clienteSeleccionado.getLocalidad().toUpperCase();
                 cuit = clienteSeleccionado.getCuit().toUpperCase();
-                // Mensajes de depuración para verificar los datos del cliente
-                System.out.println("Datos del cliente remitente:");
-                System.out.println("Nombre: " + nombreCliente);
-                System.out.println("Dirección: " + direccion);
-                System.out.println("Localidad: " + localidad);
-                System.out.println("CUIT: " + cuit);
-
             } else {
                 nombreCliente = tCliente.getText().toUpperCase();
                 direccion = "";
@@ -1709,12 +1728,7 @@ public class Principal extends javax.swing.JFrame {
                 direccionDestinatario = destinatarioSeleccionado.getDireccion().toUpperCase();
                 localidadDestinatario = destinatarioSeleccionado.getLocalidad().toUpperCase();
                 cuitDestinatario = destinatarioSeleccionado.getCuit().toUpperCase();
-                // Mensajes de depuración para verificar los datos del destinatario
-                System.out.println("Datos del destinatario:");
-                System.out.println("Nombre: " + nombreDestinatario);
-                System.out.println("Dirección: " + direccionDestinatario);
-                System.out.println("Localidad: " + localidadDestinatario);
-                System.out.println("CUIT: " + cuitDestinatario);
+
             } else {
                 nombreDestinatario = txtDestino.getText().toUpperCase();
                 direccionDestinatario = "";
@@ -1872,13 +1886,49 @@ public class Principal extends javax.swing.JFrame {
             document.close();
             writer.close();
 
-            JOptionPane.showMessageDialog(null, "El remito se generó correctamente.", "Información", JOptionPane.INFORMATION_MESSAGE);
+            // Llamar al método para imprimir el archivo PDF generado
+            // Imprimir el archivo PDF utilizando Desktop.print()
+            File pdfFile = new File(outputPath);
+            if (pdfFile.exists() && Desktop.isDesktopSupported()) {
+                Desktop.getDesktop().print(pdfFile);
+                JOptionPane.showMessageDialog(null, "El remito se generó e imprimió correctamente.", "Información", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(null, "Error al imprimir el remito.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         } catch (Exception e) {
             e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error al generar el remito.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-    // Método auxiliar para crear una celda con el contenido y fuente especificados
 
+    private void imprimirPDF(String rutaArchivoPDF) {
+        try {
+            // Cargamos el archivo PDF en un objeto File
+            File pdfFile = new File(rutaArchivoPDF);
+
+            // Verificamos si Desktop es compatible con esta plataforma
+            if (Desktop.isDesktopSupported()) {
+                Desktop desktop = Desktop.getDesktop();
+
+                // Verificamos si el archivo PDF existe
+                if (pdfFile.exists()) {
+                    // Abrimos el archivo PDF con la aplicación predeterminada
+                    desktop.print(pdfFile);
+                } else {
+                    // El archivo PDF no existe
+                    JOptionPane.showMessageDialog(null, "El archivo PDF no existe.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                // La plataforma no admite Desktop, no se puede abrir la ventana de impresión
+                JOptionPane.showMessageDialog(null, "La plataforma no admite la apertura de la ventana de impresión.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (IOException e) {
+            // Error al intentar abrir el archivo PDF
+            JOptionPane.showMessageDialog(null, "Error al abrir la ventana de impresión: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    // Método auxiliar para crear una celda con el contenido y fuente especificados
     private PdfPCell createCell(String text, Font font, PdfPCell cell) {
         PdfPCell newCell = new PdfPCell(new Phrase(text, font));
         newCell.setHorizontalAlignment(Element.ALIGN_CENTER);
