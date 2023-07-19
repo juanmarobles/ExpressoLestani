@@ -2,6 +2,7 @@ package com.mycompany.lestanitest.logica;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.Time;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -26,11 +27,13 @@ public class Movimientos implements Serializable {
 
     @Column(name = "FECHA", nullable = true)
     private Date fecha;
+    @Column(name = "HORA", nullable = true)
+    private Time hora;
 
     @Column(name = "DESTINO", length = 50)
     private String destino;
     @Column(name = "REMITO", length = 50)
-    private int remito;
+    private String remito;
     @Column(name = "BULTOS", length = 50)
     private int bultos;
     @Column(name = "MONTO", length = 50)
@@ -61,7 +64,7 @@ public class Movimientos implements Serializable {
     public Movimientos() {
     }
 
-    public Movimientos(int id_movimientos, Date fecha, String destino, int remito, int bultos, String monto, String tipoMontoP, String tipoMontoR, String flete, String tipoFleteP, String tipoFleteR, String representante, String cliente, String servicio, String fleteDestinoOrigen, String cuentaCorriente, String observaciones) {
+    public Movimientos(int id_movimientos, Date fecha, String destino, String remito, int bultos, String monto, String tipoMontoP, String tipoMontoR, String flete, String tipoFleteP, String tipoFleteR, String representante, String cliente, String servicio, String fleteDestinoOrigen, String cuentaCorriente, String observaciones, Time hora) {
         this.id_movimientos = id_movimientos;
         this.fecha = fecha;
         this.destino = destino;
@@ -79,6 +82,15 @@ public class Movimientos implements Serializable {
         this.fleteDestinoOrigen = fleteDestinoOrigen;
         this.cuentaCorriente = cuentaCorriente;
         this.observaciones = observaciones;
+        this.hora = hora;
+    }
+
+    public Time getHora() {
+        return hora;
+    }
+
+    public void setHora(Time hora) {
+        this.hora = hora;
     }
 
     public String getTipoMontoP() {
@@ -165,11 +177,11 @@ public class Movimientos implements Serializable {
         this.destino = destino;
     }
 
-    public int getRemito() {
+    public String getRemito() {
         return remito;
     }
 
-    public void setRemito(int remito) {
+    public void setRemito(String remito) {
         this.remito = remito;
     }
 

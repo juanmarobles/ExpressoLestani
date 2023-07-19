@@ -30,11 +30,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -45,9 +48,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.RowFilter;
 import javax.swing.RowSorter;
 import javax.swing.SortOrder;
@@ -71,17 +76,51 @@ public class Consultas extends javax.swing.JFrame {
     private SimpleDateFormat sdf;
     private String montoTotalImpreso;
     private String fleteTotalImpreso;
-    private List<Movimientos> listaFiltrada;
+    //Nuevo
+   // private List<Movimientos> listaFiltrada;
+    private boolean mostrarPagados = false;
+    private boolean mostrarNoPagados = false;
+    private boolean mostrarTodos = true;
+    private boolean botonMostrarPresionado = false;
+    private boolean mostrarFPagados = false;
+private boolean mostrarFNoPagados = false;
+private boolean mostrarFTodos = true;
 
     public Consultas() {
         initComponents();
-        //setSize(1920, 1080);
-        //setExtendedState(MAXIMIZED_BOTH);
+         mostrarTablaMovimientos(control.traerMovimientos());
         cargarSugerencias();
         txtFechaHasta.setText(fechaActual());
         this.setLocationRelativeTo(null);
         this.setResizable(false);
+         txtTotalMonto.setEditable(false);
+         txtTotalFlete.setEditable(false);
+         txtCantBultos.setEditable(false);
+         
+         //Listener para evitar que pongan letras en Fletes
+         KeyListener keyListener = new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                JTextField textField = (JTextField) e.getSource();
+                char c = e.getKeyChar();
 
+                // Verificar si el carácter no es un número o un punto
+                if (!Character.isDigit(c) && c != '.') {
+                    // Mostrar una alerta solo si la cadena no contiene solo números y puntos
+
+                    if (!textField.getText().matches("[\\d.]*")) {
+                        JOptionPane.showMessageDialog(null, "Solo se permiten números y puntos decimales.", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+
+                    // Consumir el evento para evitar que el carácter se ingrese en el JTextField
+                    e.consume();
+                }
+            }
+        };
+
+        txtFleteCambio.addKeyListener(keyListener);
+        
+        
     }
 
     private void cargarSugerencias() {
@@ -166,7 +205,7 @@ public class Consultas extends javax.swing.JFrame {
         jLabel1.setText("Cliente");
 
         btnMostrar.setBackground(new java.awt.Color(51, 51, 51));
-        btnMostrar.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        btnMostrar.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         btnMostrar.setForeground(new java.awt.Color(236, 240, 241));
         btnMostrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/Mostrar_24px.png"))); // NOI18N
         btnMostrar.setText("Mostrar");
@@ -317,7 +356,7 @@ public class Consultas extends javax.swing.JFrame {
         );
 
         tablaConsultas.setBackground(new java.awt.Color(66, 66, 66));
-        tablaConsultas.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        tablaConsultas.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         tablaConsultas.setForeground(new java.awt.Color(236, 240, 241));
         tablaConsultas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -338,6 +377,11 @@ public class Consultas extends javax.swing.JFrame {
         jPanel4.setForeground(new java.awt.Color(236, 240, 241));
 
         txtTotalMonto.setText("0");
+        txtTotalMonto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtTotalMontoActionPerformed(evt);
+            }
+        });
 
         jLabel11.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel11.setForeground(new java.awt.Color(236, 240, 241));
@@ -557,6 +601,7 @@ public class Consultas extends javax.swing.JFrame {
         jLabel15.setText("Marcar como Rendidos");
 
         btnMRFletes.setBackground(new java.awt.Color(51, 51, 51));
+        btnMRFletes.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         btnMRFletes.setForeground(new java.awt.Color(236, 240, 241));
         btnMRFletes.setText("Fletes");
         btnMRFletes.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -605,9 +650,9 @@ public class Consultas extends javax.swing.JFrame {
         jButton1.setText("Imprimir");
 
         btnLimpiar.setBackground(new java.awt.Color(51, 51, 51));
-        btnLimpiar.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        btnLimpiar.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         btnLimpiar.setForeground(new java.awt.Color(236, 240, 241));
-        btnLimpiar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/Mostrar_24px.png"))); // NOI18N
+        btnLimpiar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/limpiar.png"))); // NOI18N
         btnLimpiar.setText("Limpiar");
         btnLimpiar.setBorder(null);
         btnLimpiar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -626,7 +671,8 @@ public class Consultas extends javax.swing.JFrame {
         jLabel5.setText("$");
 
         btnCambiar.setBackground(new java.awt.Color(51, 51, 51));
-        btnCambiar.setForeground(new java.awt.Color(236, 240, 241));
+        btnCambiar.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        btnCambiar.setForeground(new java.awt.Color(255, 255, 255));
         btnCambiar.setText("Cambiar");
         btnCambiar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnCambiar.addActionListener(new java.awt.event.ActionListener() {
@@ -640,18 +686,17 @@ public class Consultas extends javax.swing.JFrame {
         jPanel9Layout.setHorizontalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel9Layout.createSequentialGroup()
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel9Layout.createSequentialGroup()
-                        .addGap(8, 8, 8)
-                        .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel9Layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
-                        .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(btnCambiar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(txtFleteCambio, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(14, 14, 14)
+                .addComponent(jLabel5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnCambiar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtFleteCambio, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addGap(8, 8, 8)
+                .addComponent(jLabel16, javax.swing.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -662,7 +707,7 @@ public class Consultas extends javax.swing.JFrame {
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(txtFleteCambio, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnCambiar, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(22, Short.MAX_VALUE))
         );
@@ -714,7 +759,7 @@ public class Consultas extends javax.swing.JFrame {
                                         .addGap(30, 30, 30)))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 176, Short.MAX_VALUE)))
+                        .addGap(0, 415, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -769,10 +814,9 @@ public class Consultas extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -787,74 +831,159 @@ public class Consultas extends javax.swing.JFrame {
     }//GEN-LAST:event_btnMPFletesActionPerformed
 
     private void btnMostrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarActionPerformed
-        String fechaDesde = txtFechaDesde.getText();
-        String fechaHasta = txtFechaHasta.getText();
-        String nombreCliente = txtCliente.getText();
 
-        listaFiltrada = filtrarPorFechas(control.traerMovimientos(), fechaDesde, fechaHasta, nombreCliente);
-        mostrarTablaMovimientos(listaFiltrada);
-
-        double totalMonto = calcularTotalMonto(listaFiltrada);
-        double totalFlete = calcularTotalFlete(listaFiltrada);
-        int totalBultos = calcularTotalBultos(listaFiltrada);
-
-        DecimalFormat decimalFormat = new DecimalFormat("#,###.000");
-        String totalMontoFormateado = decimalFormat.format(totalMonto);
-        String totalFleteFormateado = decimalFormat.format(totalFlete);
-
-        txtTotalMonto.setText(totalMontoFormateado);
-        txtTotalFlete.setText(totalFleteFormateado);
-        txtCantBultos.setText(String.valueOf(totalBultos));
+        botonMostrarPresionado = true;
+          aplicarFiltros();
+  
+    
     }//GEN-LAST:event_btnMostrarActionPerformed
-    private double calcularTotalMonto(List<Movimientos> movimientos) {
-        double totalMonto = 0.0;
-        DecimalFormat formatoMoneda = (DecimalFormat) DecimalFormat.getCurrencyInstance(Locale.CANADA);
-        formatoMoneda.setGroupingUsed(false);
+   
+    
+    private void aplicarFiltros() {
+        // Verificar si se ha presionado el botón "Mostrar"
+        if (!botonMostrarPresionado) {
+            return;
+        }
+        List<Movimientos> movimientosFiltrados = control.traerMovimientos();
 
-        for (Movimientos movimiento : movimientos) {
-            try {
-                String montoString = movimiento.getMonto();
-                Number monto = formatoMoneda.parse(montoString);
-                double montoDouble = monto.doubleValue();
-                totalMonto += montoDouble;
-            } catch (ParseException ex) {
-                Logger.getLogger(Consultas.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        // Aplicar los filtros seleccionados
+        String clienteFiltrado = txtCliente.getText();
+        boolean cuentaCorrienteFiltrada = CuentaCorriente.isSelected();
+        // ... otros filtros ...
+
+        // Filtrar por cliente
+        if (!clienteFiltrado.isEmpty()) {
+            movimientosFiltrados = movimientosFiltrados.stream()
+                    .filter(mov -> mov.getCliente().equals(clienteFiltrado))
+                    .collect(Collectors.toList());
         }
 
-        return totalMonto;
-    }
-
-    private double calcularTotalFlete(List<Movimientos> movimientos) {
-        double totalFlete = 0.0;
-        DecimalFormat formatoMoneda = (DecimalFormat) DecimalFormat.getCurrencyInstance(Locale.CANADA);
-        formatoMoneda.setGroupingUsed(false);
-
-        for (Movimientos movimiento : movimientos) {
-            try {
-                String fleteString = movimiento.getFlete();
-                Number flete = formatoMoneda.parse(fleteString);
-                double fleteDouble = flete.doubleValue();
-                totalFlete += fleteDouble;
-            } catch (ParseException ex) {
-                Logger.getLogger(Consultas.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        // Filtrar por cuenta corriente
+        if (cuentaCorrienteFiltrada) {
+            movimientosFiltrados = movimientosFiltrados.stream()
+                    .filter(mov -> mov.getCuentaCorriente().equals("Si"))
+                    .collect(Collectors.toList());
         }
 
-        return totalFlete;
-    }
+        // Filtrar por fechas
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        final Date desdeFecha;
+        final Date hastaFecha;
 
-    private int calcularTotalBultos(List<Movimientos> movimientos) {
-        int totalBultos = 0;
-
-        for (Movimientos movimiento : movimientos) {
-            int bultos = movimiento.getBultos();
-            totalBultos += bultos;
+        try {
+            desdeFecha = dateFormat.parse(txtFechaDesde.getText());
+            hastaFecha = dateFormat.parse(txtFechaHasta.getText());
+        } catch (ParseException ex) {
+            // Manejar la excepción en caso de que el formato de fecha sea incorrecto
+            ex.printStackTrace();
+            return; // Salir del método o agregar otro manejo de error según sea necesario
         }
 
-        return totalBultos;
+        if (desdeFecha != null && hastaFecha != null) {
+             movimientosFiltrados = movimientosFiltrados.stream()
+             .filter(mov -> {
+            Date fechaMovimiento = mov.getFecha();
+            return fechaMovimiento != null && fechaMovimiento.compareTo(desdeFecha) >= 0 && fechaMovimiento.compareTo(hastaFecha) <= 0;
+        })
+        .collect(Collectors.toList());
+}       //Chechbox
+        boolean mostrarPagados = cbPagados.isSelected();
+        boolean mostrarNoPagados = cbNoPagados.isSelected();
+        boolean mostrarFPagados = cbFletePagado.isSelected();
+        boolean mostrarFNoPagados = cbFleteNoPagado.isSelected();
+        
+        //Filtrado de Fletes y Montos
+      movimientosFiltrados = movimientosFiltrados.stream()
+    .filter(mov -> {
+        boolean estadoPagoCumple = true;
+        boolean fletesCumple = true;
+
+        // Filtrar por estado de pago
+        if (mostrarPagados && !mov.getTipoMontoP().equals("Si")) {
+            estadoPagoCumple = false;
+        } else if (mostrarNoPagados && !mov.getTipoMontoP().equals("No")) {
+            estadoPagoCumple = false;
+        }
+
+        // Filtrar por fletes
+        if (mostrarFPagados && !mov.getTipoFleteP().equals("Si")) {
+            fletesCumple = false;
+        } else if (mostrarFNoPagados && !mov.getTipoFleteP().equals("No")) {
+            fletesCumple = false;
+        }
+
+        return estadoPagoCumple && fletesCumple;
+    })
+    .collect(Collectors.toList());
+      
+
+        // Mostrar la tabla con los movimientos filtrados
+        mostrarTablaMovimientos(movimientosFiltrados);
+        calcularTotalMonto(movimientosFiltrados);
+        calcularTotalFlete(movimientosFiltrados);
+        calcularTotalBultos(movimientosFiltrados);
+        
+        
+    }
+      private void calcularTotalMonto(List<Movimientos> movimientosFiltrados) {
+        // Calcular el total de los montos
+        double totalMonto = movimientosFiltrados.stream()
+                .mapToDouble(mov -> {
+                        String monto = mov.getMonto().replace(".", ""); // Eliminar el separador de miles (punto)
+                         monto = monto.replace(",", "."); // Reemplazar la coma por punto decimal
+                         monto = monto.replace("$", ""); // Eliminar el signo de dólar
+                    try {
+                        return Double.parseDouble(monto);
+                    } catch (NumberFormatException e) {
+                        return 0.0;
+                    }
+                })
+                .sum();
+                //Formato de Monto
+          DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+          symbols.setDecimalSeparator(',');
+          symbols.setGroupingSeparator('.');
+          DecimalFormat decimalFormat = new DecimalFormat("###,###.00", symbols);
+          String totalFormateado = decimalFormat.format(totalMonto);
+          
+          txtTotalMonto.setText(totalFormateado);
+    }
+      
+      private void calcularTotalFlete(List<Movimientos> movimientosFiltrados) {
+    // Calcular el total de los montos
+    double totalFlete = movimientosFiltrados.stream()
+            .mapToDouble(mov -> {
+                String monto = mov.getFlete().replace(".", ""); // Eliminar el separador de miles (punto)
+                monto = monto.replace(",", "."); // Reemplazar la coma por punto decimal
+                monto = monto.replace("$", ""); // Eliminar el signo de dólar
+                try {
+                    return Double.parseDouble(monto);
+                } catch (NumberFormatException e) {
+                    return 0.0;
+                }
+            })
+            .sum();
+
+    DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+    symbols.setDecimalSeparator(',');
+    symbols.setGroupingSeparator('.');
+    DecimalFormat decimalFormat = new DecimalFormat("###,###.00", symbols);
+    String totalFormateado = decimalFormat.format(totalFlete);
+
+    txtTotalFlete.setText(totalFormateado);
+}
+      
+    private void calcularTotalBultos(List<Movimientos> movimientosFiltrados){
+        int sumaBultos = movimientosFiltrados.stream()
+                .mapToInt(Movimientos::getBultos)
+                .sum();
+
+        txtCantBultos.setText(String.format("%,d", sumaBultos));
     }
 
+    
+    
+  
     private void mostrarTablaMovimientos(List<Movimientos> listaMovimientos) {
         //filas y columnas no editables
         DefaultTableModel tabla = new DefaultTableModel() {
@@ -865,7 +994,7 @@ public class Consultas extends javax.swing.JFrame {
 
         };
         //nombres de columnas
-        String titulos[] = {"MOVIMIENTO", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "PAGADO", "RENDIDO", "FLETE", "PAGADO", "RENDIDO", "A_CARGO_DE", "REPRESENTANTE", "CC", "OBS"};
+        String titulos[] = {"MOVIMIENTO", "FECHA","HORA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "PAGADO", "RENDIDO", "FLETE", "PAGADO", "RENDIDO", "A_CARGO_DE", "REPRESENTANTE", "CC", "OBS"};
         tabla.setColumnIdentifiers(titulos);
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tabla);
         tablaConsultas.setRowSorter(sorter);
@@ -873,7 +1002,7 @@ public class Consultas extends javax.swing.JFrame {
         //carga de los datos desde la lista filtrada
         if (listaMovimientos != null) {
             for (Movimientos mov : listaMovimientos) {
-                Object[] objeto = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
+                Object[] objeto = {mov.getId_movimientos(), mov.getFechaFormateada(),mov.getHora(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
                 tabla.addRow(objeto);
             }
         }
@@ -901,37 +1030,6 @@ public class Consultas extends javax.swing.JFrame {
 
     }
 
-    private List<Movimientos> filtrarPorFechas(List<Movimientos> objetos, String fechaDesde, String fechaHasta, String nombreCliente) {
-        List<Movimientos> resultados = new ArrayList<>();
-        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
-        try {
-            formato.parse(fechaDesde);
-        } catch (ParseException ex) {
-            Logger.getLogger(Consultas.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
-            formato.parse(fechaHasta);
-        } catch (ParseException ex) {
-            Logger.getLogger(Consultas.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        for (Movimientos objeto : objetos) {
-            Date fecha = objeto.getFecha();
-            String cliente = objeto.getCliente();
-
-            if (fecha != null && cliente != null && cliente.equalsIgnoreCase(nombreCliente)) {
-                try {
-                    if (!fecha.before(formato.parse(fechaDesde)) && !fecha.after(formato.parse(fechaHasta))) {
-                        resultados.add(objeto);
-                    }
-                } catch (ParseException ex) {
-                    Logger.getLogger(Consultas.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }
-
-        return resultados;
-    }
 
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
@@ -939,34 +1037,28 @@ public class Consultas extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowOpened
 
     private void txtClienteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtClienteKeyTyped
-        txtCliente.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyReleased(KeyEvent e) {
-                trs.setRowFilter(RowFilter.regexFilter("(?i)" + txtCliente.getText(), 2));
-            }
-
-        });
-        trs = new TableRowSorter(tablaConsultas.getModel());
-        tablaConsultas.setRowSorter(trs);
+     
 
     }//GEN-LAST:event_txtClienteKeyTyped
     /**
      * CHECK BOX PAGADOS
+     * 
      */
+     
     private void cbPagadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbPagadosActionPerformed
-        updateMonto();
+        aplicarFiltros();
     }//GEN-LAST:event_cbPagadosActionPerformed
 
     private void cbNoPagadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbNoPagadosActionPerformed
-        updateMonto();
+       aplicarFiltros();
     }//GEN-LAST:event_cbNoPagadosActionPerformed
 
     private void cbmTodosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbmTodosActionPerformed
-        updateMonto();
+        aplicarFiltros();
     }//GEN-LAST:event_cbmTodosActionPerformed
 
     private void cbFletePagadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbFletePagadoActionPerformed
-        updateFlete();
+        aplicarFiltros();
     }//GEN-LAST:event_cbFletePagadoActionPerformed
 
     private void txtClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtClienteActionPerformed
@@ -978,11 +1070,11 @@ public class Consultas extends javax.swing.JFrame {
     }//GEN-LAST:event_btnMPMontosActionPerformed
 
     private void cbfTodosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbfTodosActionPerformed
-        updateFlete();
+        aplicarFiltros();
     }//GEN-LAST:event_cbfTodosActionPerformed
 
     private void cbFleteNoPagadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbFleteNoPagadoActionPerformed
-        updateFlete();
+        aplicarFiltros();
     }//GEN-LAST:event_cbFleteNoPagadoActionPerformed
 
     private void btnMRFletesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMRFletesActionPerformed
@@ -994,7 +1086,7 @@ public class Consultas extends javax.swing.JFrame {
     }//GEN-LAST:event_txtTotalFleteActionPerformed
 
     private void CuentaCorrienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CuentaCorrienteActionPerformed
-        updateCc();
+        
     }//GEN-LAST:event_CuentaCorrienteActionPerformed
 
     private void btnImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirActionPerformed
@@ -1002,111 +1094,64 @@ public class Consultas extends javax.swing.JFrame {
     }//GEN-LAST:event_btnImprimirActionPerformed
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
-        txtFechaDesde.setText("");
-        txtFechaHasta.setText("");
+      /*  txtFechaDesde.setText("");
+       // txtFechaHasta.setText("");
         txtCliente.setText("");
         txtTotalMonto.setText("");
         txtTotalFlete.setText("");
-        txtCantBultos.setText("");
+        txtCantBultos.setText("");*/
+        dispose();
+        Consultas con = new Consultas();
+        con.setVisible(true);
+        
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
     private void btnCambiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCambiarActionPerformed
-        cambiarValorFlete();
+       String nuevoMontoFlete = txtFleteCambio.getText();
+        double montoDouble = Double.parseDouble(nuevoMontoFlete);// Obtener el nuevo monto de flete ingresado
+        cambiarValorFlete(montoDouble);
     }//GEN-LAST:event_btnCambiarActionPerformed
-    private void cambiarValorFlete() {
-        int[] filasSeleccionadas = tablaConsultas.getSelectedRows(); // Obtener índices de las filas seleccionadas
-        String nuevoValorFleteTexto = txtFleteCambio.getText().trim(); // Obtener el nuevo valor del campo de texto
-        double nuevoValorFlete = Double.parseDouble(nuevoValorFleteTexto); // Convertir a tipo numérico
 
+    private void txtTotalMontoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTotalMontoActionPerformed
+      
+    }//GEN-LAST:event_txtTotalMontoActionPerformed
+    private void cambiarValorFlete(double nuevoMontoFlete) {
+    int[] filasSeleccionadas = tablaConsultas.getSelectedRows(); // Obtener índices de las filas seleccionadas
+    String nuevoValorFleteTexto = txtFleteCambio.getText().trim(); // Obtener el nuevo valor del campo de texto
+    double nuevoValorFlete = Double.parseDouble(nuevoValorFleteTexto); // Convertir a tipo numérico
+
+    if (filasSeleccionadas.length > 0) {
         DefaultTableModel modeloTabla = (DefaultTableModel) tablaConsultas.getModel();
-        for (int fila : filasSeleccionadas) {
-            int idMovimientos = (int) modeloTabla.getValueAt(fila, 0);
-            Movimientos movimiento = null;
+        int columnaFlete = 9; // Índice de la columna "Flete" en el modelo de tabla
 
-            // Buscar el movimiento en la lista filtrada en lugar de control.traerMovimiento(idMovimientos)
-            for (Movimientos mov : listaFiltrada) {
-                if (mov.getId_movimientos() == idMovimientos) {
-                    movimiento = mov;
-                    break;
-                }
-            }
+        for (int filaSeleccionada : filasSeleccionadas) {
+            int fila = filaSeleccionada; // Declarar y asignar el valor de filaSeleccionada a fila
+            modeloTabla.setValueAt(nuevoMontoFlete, fila, columnaFlete);
+
+            int idMovimientos = (int) modeloTabla.getValueAt(fila, 0);
+            Movimientos movimiento = control.traerMovimiento(idMovimientos);
 
             if (movimiento != null) {
                 movimiento.setFlete(nuevoValorFleteTexto); // Guardar el valor sin el signo "$"
-                control.actualizarPrecioFlete(movimiento, nuevoValorFleteTexto);
+                control.actualizarPrecioFlete(movimiento, nuevoValorFleteTexto); // Utilizar el método actualizarPrecioFlete() de la controladora
                 String nuevoValorFleteConSigno = "$" + nuevoValorFleteTexto; // Agregar el signo "$"
-                modeloTabla.setValueAt(nuevoValorFleteConSigno, fila, 9); // Actualizar el valor en la columna "FLETE" (columna indexada en 9)
+                modeloTabla.setValueAt(nuevoValorFleteConSigno, fila, columnaFlete); // Actualizar el valor en la columna "FLETE"
             }
         }
 
         modeloTabla.fireTableDataChanged();
+        JOptionPane.showMessageDialog(null, "Se cambió el monto de los fletes seleccionados con éxito", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+    } else {
+        JOptionPane.showMessageDialog(null, "No se pudo cambiar el monto cargado", "Error", JOptionPane.ERROR_MESSAGE);
     }
+}
 
-    private void updateCc() {
-        DefaultTableModel tableModel = (DefaultTableModel) tablaConsultas.getModel();
-        tableModel.setRowCount(0); // Limpiar la tabla
+  
+         
 
-        List<Movimientos> listaMovimientos = control.traerMovimientos();
-        // Recorrer la lista y agregar filas a la tabla
+   
 
-        /**
-         * CHECKBOX CUENTA CORRIENTE
-         */
-        for (Movimientos mov : listaMovimientos) {
-            if (CuentaCorriente.isSelected() && Arrays.asList("Si").contains(mov.getCuentaCorriente())) {
-                Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
-                tableModel.addRow(row);
-            }
-            if (!CuentaCorriente.isSelected()) {
-                Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
-                tableModel.addRow(row);
-            }
-        }
-    }
-
-    private void updateMonto() {
-        DefaultTableModel tableModel = (DefaultTableModel) tablaConsultas.getModel();
-        tableModel.setRowCount(0); // Limpiar la tabla
-
-        for (Movimientos mov : listaFiltrada) {
-            boolean mostrarFila = true;
-
-            if (cbPagados.isSelected() && !Arrays.asList("Si").contains(mov.getTipoMontoP())) {
-                mostrarFila = false;
-            }
-
-            if (cbNoPagados.isSelected() && !mov.getTipoFleteP().equals("No")) {
-                mostrarFila = false;
-            }
-
-            if (mostrarFila) {
-                Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
-                tableModel.addRow(row);
-            }
-        }
-    }
-
-    private void updateFlete() {
-        DefaultTableModel tableModel = (DefaultTableModel) tablaConsultas.getModel();
-        tableModel.setRowCount(0); // Limpiar la tabla
-
-        for (Movimientos mov : listaFiltrada) {
-            boolean mostrarFila = true;
-
-            if (cbFletePagado.isSelected() && !Arrays.asList("Si").contains(mov.getTipoFleteP())) {
-                mostrarFila = false;
-            }
-            if (cbFleteNoPagado.isSelected() && !mov.getTipoFleteP().equals("No")) {
-                mostrarFila = false;
-            }
-
-            if (mostrarFila) {
-                Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
-                tableModel.addRow(row);
-            }
-        }
-
-    }
+    
 
     /**
      * @param args the command line arguments
@@ -1207,91 +1252,60 @@ public class Consultas extends javax.swing.JFrame {
         Date fecha = new Date();
         SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/YYYY");
         return formatoFecha.format(fecha);
+ 
     }
+    //Nueva funcion de marcar como pagados Monto
+   private void cambiarTipoMonto() {
+    int[] filasSeleccionadas = tablaConsultas.getSelectedRows();
+    if (filasSeleccionadas.length > 0) {
+        DefaultTableModel modeloTabla = (DefaultTableModel) tablaConsultas.getModel();
 
-    private void cambiarTipoMonto() {
-        int[] filasSeleccionadas = tablaConsultas.getSelectedRows();
-        if (filasSeleccionadas.length > 0) {
-            DefaultTableModel modeloTabla = (DefaultTableModel) tablaConsultas.getModel();
-            for (int i = 0; i < filasSeleccionadas.length; i++) {
-                int filaSeleccionada = filasSeleccionadas[i];
-                int idMovimientos = (int) modeloTabla.getValueAt(filaSeleccionada, 0);
-                Movimientos movimiento = null;
+        for (int filaSeleccionada : filasSeleccionadas) {
+            int idMovimientos = (int) modeloTabla.getValueAt(filaSeleccionada, 0);
 
-                // Buscar el movimiento en la lista filtrada en lugar de control.traerMovimiento(idMovimientos)
-                for (Movimientos mov : listaFiltrada) {
-                    if (mov.getId_movimientos() == idMovimientos) {
-                        movimiento = mov;
-                        break;
-                    }
+            Movimientos movimiento = control.traerMovimiento(idMovimientos); // Reemplaza el método traerMovimiento() según corresponda
+
+            if (movimiento != null) {
+                String tipoMonto = (String) modeloTabla.getValueAt(filaSeleccionada, 7);
+
+                if (tipoMonto.equals("No")) {
+                    control.actualizarMonto(movimiento, "Si");
+                    modeloTabla.setValueAt("Si", filaSeleccionada, 7);
                 }
-
-                if (movimiento != null) {
-                    String tipoMonto = (String) modeloTabla.getValueAt(filaSeleccionada, 7);
-                    if (!tipoMonto.equals("Si")) {
-                        movimiento.setTipoMontoP("Si");
-                        control.actualizarMonto(movimiento, "Si");
-                        modeloTabla.setValueAt("Si", filaSeleccionada, 7);
-                    }
-                }
-            }
-            modeloTabla.fireTableDataChanged();
-        }
-    }
-
-    private void cambiarTipoFlete() {
-        int[] filasSeleccionadas = tablaConsultas.getSelectedRows();
-        if (filasSeleccionadas.length > 0) {
-            DefaultTableModel modeloTabla = (DefaultTableModel) tablaConsultas.getModel();
-            for (int i = 0; i < filasSeleccionadas.length; i++) {
-                int filaSeleccionada = filasSeleccionadas[i];
-                int idMovimientos = (int) modeloTabla.getValueAt(filaSeleccionada, 0);
-                Movimientos movimiento = null;
-
-                // Buscar el movimiento en la lista filtrada en lugar de control.traerMovimiento(idMovimientos)
-                for (Movimientos mov : listaFiltrada) {
-                    if (mov.getId_movimientos() == idMovimientos) {
-                        movimiento = mov;
-                        break;
-                    }
-                }
-
-                if (movimiento != null) {
-                    String tipoFlete = (String) modeloTabla.getValueAt(filaSeleccionada, 10);
-                    if (!tipoFlete.equals("Si")) {
-                        movimiento.setTipoFleteP("Si");
-                        control.actualizarFlete(movimiento, "Si");
-                        modeloTabla.setValueAt("Si", filaSeleccionada, 10);
-                    }
-                }
-            }
-            modeloTabla.fireTableDataChanged();
-        }
-    }
-
-    /*
-    private void updateMonto() {
-        DefaultTableModel tableModel = (DefaultTableModel) tablaConsultas.getModel();
-        tableModel.setRowCount(0); // Limpiar la tabla
-
-        for (Movimientos mov : listaFiltrada) {
-            boolean mostrarFila = true;
-
-            if (cbPagados.isSelected() && !Arrays.asList("Si", "Rendido", "Pagado/Rendido").contains(mov.getTipoMonto())) {
-                mostrarFila = false;
-            }
-
-            if (cbNoPagados.isSelected() && !mov.getTipoMonto().equals("No")) {
-                mostrarFila = false;
-            }
-
-            if (mostrarFila) {
-                Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
-                tableModel.addRow(row);
             }
         }
+
+        modeloTabla.fireTableDataChanged();
     }
-     */
+}
+    
+    
+
+     //Nuevo metodo para marcar como pagados fletes
+   private void cambiarTipoFlete() {
+    int[] filasSeleccionadas = tablaConsultas.getSelectedRows();
+    if (filasSeleccionadas.length > 0) {
+        DefaultTableModel modeloTabla = (DefaultTableModel) tablaConsultas.getModel();
+
+        for (int filaSeleccionada : filasSeleccionadas) {
+            int idMovimientos = (int) modeloTabla.getValueAt(filaSeleccionada, 0);
+
+            Movimientos movimiento = control.traerMovimiento(idMovimientos); // Reemplaza el método traerMovimiento() según corresponda
+
+            if (movimiento != null) {
+                String tipoFlete = (String) modeloTabla.getValueAt(filaSeleccionada, 10);
+
+                if (tipoFlete.equals("No")) {
+                    control.actualizarFlete(movimiento, "Si");
+                    modeloTabla.setValueAt("Si", filaSeleccionada, 10);
+                }
+            }
+        }
+
+        modeloTabla.fireTableDataChanged();
+    }
+}
+   
     private void cambiarTipoFleteRendido() {
         int[] filasSeleccionadas = tablaConsultas.getSelectedRows();
         if (filasSeleccionadas.length > 0) {
@@ -1301,13 +1315,7 @@ public class Consultas extends javax.swing.JFrame {
                 int idMovimientos = (int) modeloTabla.getValueAt(filaSeleccionada, 0);
                 Movimientos movimiento = null;
 
-                // Buscar el movimiento en la lista filtrada en lugar de control.traerMovimiento(idMovimientos)
-                for (Movimientos mov : listaFiltrada) {
-                    if (mov.getId_movimientos() == idMovimientos) {
-                        movimiento = mov;
-                        break;
-                    }
-                }
+               
 
                 if (movimiento != null) {
                     String tipoFlete = (String) modeloTabla.getValueAt(filaSeleccionada, 11);

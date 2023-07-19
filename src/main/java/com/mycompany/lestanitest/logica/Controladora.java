@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -103,11 +104,13 @@ public class Controladora {
     /**
      * ----------------------------------------------GUARDAR-----------------------------------------------------------------
      */
-    public void cargarVehiculo(String vehiculo, String chofer, String patente) {
+    public void cargarVehiculo(String vehiculo, String chofer, String patente, Date fechaTecnica, Date fechaRuta) {
         Vehiculo v = new Vehiculo();
         v.setChofer(chofer);
         v.setVehiculo(vehiculo);
         v.setPatente(patente);
+        v.setFechaTecnica(fechaTecnica);
+        v.setFechaRuta(fechaRuta);
         ctrl.guardarVehiculo(v);
     }
 
@@ -237,7 +240,7 @@ public class Controladora {
     /**
      * ----------------------------------------------GUARDAR-----------------------------------------------------------------
      */
-    public void cargarMovimiento(String cliente, String destino, String servicio, String representante, int bulto, String monto, String flete, String tFlete, int remito, String tMontoP, String tMontoR, String tFleteP, String tFleteR, Date fecha, String cC, String obs) {
+    public void cargarMovimiento(String cliente, String destino, String servicio, String representante, int bulto, String monto, String flete, String tFlete, String remito, String tMontoP, String tMontoR, String tFleteP, String tFleteR, Date fecha, String cC, String obs, Time hora) {
         Movimientos m = new Movimientos();
         m.setCliente(cliente);
         m.setDestino(destino);
@@ -255,6 +258,7 @@ public class Controladora {
         m.setTipoFleteR(tFleteR);
         m.setCuentaCorriente(cC);
         m.setObservaciones(obs);
+        m.setHora(hora);
         ctrl.guardarMovimiento(m);
 
     }
@@ -305,7 +309,7 @@ public class Controladora {
         return ctrl.traerMovimiento(idMovimiento);
     }
 
-    public void editarMovimiento(Movimientos mov, String cliente, String destino, String servicio, String representante, int bulto, String monto, String flete, String tFlete, int remito, String tMontoP, String tMontoR, String tFleteP, String tFleteR, Date fecha, String cC, String obs) {
+    public void editarMovimiento(Movimientos mov, String cliente, String destino, String servicio, String representante, int bulto, String monto, String flete, String tFlete, String remito, String tMontoP, String tMontoR, String tFleteP, String tFleteR, Date fecha, String cC, String obs) {
         mov.setCliente(cliente);
         mov.setDestino(destino);
         mov.setServicio(servicio);
@@ -351,9 +355,13 @@ public class Controladora {
         ctrl.borrarDestino(idDestino);
     }
 
-    
-
 }
+
+//control fechas rev tecnica y ruta
+
+
+
+
 /**
  * ----------------------------------------------EDITAR-----------------------------------------------------------------
  * public Vehiculo traerVehiculo(int idVehiculo) { return

@@ -8,6 +8,7 @@ import com.mycompany.lestanitest.igu.NuevoVehiculo;
 
 import com.mycompany.lestanitest.logica.Controladora;
 import com.mycompany.lestanitest.logica.Vehiculo;
+import java.util.Date;
 import java.util.List;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -18,8 +19,10 @@ import javax.swing.table.DefaultTableModel;
  * @author Marco
  */
 public class VerDatosVehiculos extends javax.swing.JFrame {
-Controladora control;
-    /** 
+
+    Controladora control;
+
+    /**
      * Creates new form CargaVehiculos
      */
     public VerDatosVehiculos() {
@@ -109,16 +112,12 @@ Controladora control;
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(10, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(61, 61, 61)
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 113, Short.MAX_VALUE)
                         .addComponent(btnEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -126,6 +125,10 @@ Controladora control;
                             .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnAgregarVehiculos, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(21, 21, 21))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1)
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -138,7 +141,7 @@ Controladora control;
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -151,9 +154,7 @@ Controladora control;
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -168,43 +169,41 @@ Controladora control;
     }//GEN-LAST:event_btnAgregarVehiculosActionPerformed
 
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
-         // Control de q la tabla no este vacia
-        if(tablaVehiculo.getRowCount() > 0){
+        // Control de q la tabla no este vacia
+        if (tablaVehiculo.getRowCount() > 0) {
             //validar q se haya seleccionado un registro
-            if(tablaVehiculo.getSelectedRow() != -1){
+            if (tablaVehiculo.getSelectedRow() != -1) {
                 //obtener la id de lo q quiero editar
-                int idVehiculo = Integer.parseInt(String.valueOf(tablaVehiculo.getValueAt(tablaVehiculo.getSelectedRow(),0)));
-                    EditarVehiculo editar = new EditarVehiculo(idVehiculo);
+                int idVehiculo = Integer.parseInt(String.valueOf(tablaVehiculo.getValueAt(tablaVehiculo.getSelectedRow(), 0)));
+                EditarVehiculo editar = new EditarVehiculo(idVehiculo);
                 editar.setVisible(true);
-                editar.setLocationRelativeTo(null);               
+                editar.setLocationRelativeTo(null);
                 this.dispose();
-            }
-            else{
+            } else {
                 mostrarMensaje("No seleccinó un Registro para editar", "Error", "Error al editar");
             }
-        }else{
+        } else {
             mostrarMensaje("La tabla esta vacia, no se puede editar", "Error", "Error al editar");
         }
     }//GEN-LAST:event_btnEditarActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
         // Control de q la tabla no este vacia
-        if(tablaVehiculo.getRowCount() > 0){
+        if (tablaVehiculo.getRowCount() > 0) {
             //validar q se haya seleccionado un registro
-            if(tablaVehiculo.getSelectedRow() != -1){
-               //obtener la id de lo q quiero borrar
-               int idVehiculo = Integer.parseInt(String.valueOf(tablaVehiculo.getValueAt(tablaVehiculo.getSelectedRow(),0)));
-               
-               control.borrarVehiculo(idVehiculo);
-               mostrarMensaje("Servicio borrado correctamente","Info","Borrado con exito!");
-               mostrarTablaVehiculos();
+            if (tablaVehiculo.getSelectedRow() != -1) {
+                //obtener la id de lo q quiero borrar
+                int idVehiculo = Integer.parseInt(String.valueOf(tablaVehiculo.getValueAt(tablaVehiculo.getSelectedRow(), 0)));
+
+                control.borrarVehiculo(idVehiculo);
+                mostrarMensaje("Servicio borrado correctamente", "Info", "Borrado con exito!");
+                mostrarTablaVehiculos();
+            } else {
+                mostrarMensaje("No seleccinó un Registro para eliminar", "Error", "Error al eliminar");
             }
-            else{
-                   mostrarMensaje("No seleccinó un Registro para eliminar", "Error", "Error al eliminar");
-            }
-        }else{
+        } else {
             mostrarMensaje("La tabla esta vacia, no se puede eliminar", "Error", "Error al eliminar");
-       }
+        }
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
@@ -214,18 +213,19 @@ Controladora control;
     /**
      * @param args the command line arguments
      */
-     public void mostrarMensaje (String mensaje, String tipo, String titulo){
-JOptionPane optionPane = new JOptionPane(mensaje);
-if(tipo.equals("Info")){
-optionPane.setMessageType(JOptionPane.INFORMATION_MESSAGE);
+    public void mostrarMensaje(String mensaje, String tipo, String titulo) {
+        JOptionPane optionPane = new JOptionPane(mensaje);
+        if (tipo.equals("Info")) {
+            optionPane.setMessageType(JOptionPane.INFORMATION_MESSAGE);
 
-}else if(tipo.equals("Error")){
-optionPane.setMessageType(JOptionPane.ERROR_MESSAGE);
-}
-JDialog dialog = optionPane.createDialog(titulo);
-dialog.setAlwaysOnTop(true);
-dialog.setVisible(true);
-}
+        } else if (tipo.equals("Error")) {
+            optionPane.setMessageType(JOptionPane.ERROR_MESSAGE);
+        }
+        JDialog dialog = optionPane.createDialog(titulo);
+        dialog.setAlwaysOnTop(true);
+        dialog.setVisible(true);
+    }
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -272,28 +272,32 @@ dialog.setVisible(true);
     // End of variables declaration//GEN-END:variables
 private void mostrarTablaVehiculos() {
         //filas y columnas no editables
-        DefaultTableModel tabla = new DefaultTableModel(){
+        DefaultTableModel tabla = new DefaultTableModel() {
             @Override
-            public boolean isCellEditable(int row, int column){
+            public boolean isCellEditable(int row, int column) {
                 return false;
-            }                    
-        };
-            //nombres de columnas
-            String titulos[] = {"Id_Vehiculo", "Vehiculo", "Patente", "Chofer"};
-            tabla.setColumnIdentifiers(titulos);
-            
-            //carga de los datos desde la bd
-            List<Vehiculo> listaVehiculos = control.traerVehiculos();
-            
-            //recorrer lista y mostrar elementos en la tabla
-            if(listaVehiculos!=null){
-                for(Vehiculo v : listaVehiculos){
-                    Object[] objeto = {v.getId_Vehiculo(),v.getVehiculo(),v.getPatente(),v.getChofer()};
-                    
-                    tabla.addRow(objeto);
-                }
             }
-            tablaVehiculo.setModel(tabla);
+        };
+        //nombres de columnas
+        String titulos[] = {"Id_Vehiculo", "Fecha Ruta", "Rev. Tecnica", "Vehiculo", "Patente", "Chofer"};
+        tabla.setColumnIdentifiers(titulos);
+
+        //carga de los datos desde la bd
+        List<Vehiculo> listaVehiculos = control.traerVehiculos();
+
+        //recorrer lista y mostrar elementos en la tabla
+        if (listaVehiculos != null) {
+            for (Vehiculo v : listaVehiculos) {
+                Object[] objeto = {v.getId_Vehiculo(), v.getFechaRutaFormateada(), v.getFechaTecnicaFormateada(), v.getVehiculo(), v.getPatente(), v.getChofer()};
+
+                tabla.addRow(objeto);
+            }
+        }
+        tablaVehiculo.setModel(tabla);
     }
+
+
+  
+
 
 }

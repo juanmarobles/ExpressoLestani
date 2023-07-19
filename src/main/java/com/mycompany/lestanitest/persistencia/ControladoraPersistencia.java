@@ -96,6 +96,7 @@ public class ControladoraPersistencia {
     public List<Vehiculo> traerVehiculos() {
         return vehiculoJpa.findVehiculoEntities();
     }
+    
 
     /**
      * ----------------------------------------------EDITAR-----------------------------------------------------------------
