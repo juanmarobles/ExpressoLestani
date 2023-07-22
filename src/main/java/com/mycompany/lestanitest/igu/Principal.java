@@ -1,5 +1,7 @@
 package com.mycompany.lestanitest.igu;
 
+
+
 import java.awt.print.PrinterException;
 import com.google.protobuf.TextFormat.Printer;
 import java.awt.print.PrinterException;
@@ -116,6 +118,8 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.DocumentFilter.FilterBypass;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.printing.PDFPageable;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import org.jdesktop.swingx.autocomplete.ObjectToStringConverter;
 
@@ -1886,15 +1890,30 @@ public class Principal extends javax.swing.JFrame {
             document.close();
             writer.close();
 
-            // Llamar al método para imprimir el archivo PDF generado
-            // Imprimir el archivo PDF utilizando Desktop.print()
-            File pdfFile = new File(outputPath);
-            if (pdfFile.exists() && Desktop.isDesktopSupported()) {
-                Desktop.getDesktop().print(pdfFile);
+            // Imprimir el archivo PDF automáticamente
+            try {
+                // Cargar el archivo PDF generado previamente
+                PDDocument pdfDocument = PDDocument.load(new File(outputPath));
+
+                // Obtener la impresora predeterminada y crear un objeto PDFPageable
+                PrinterJob printerJob = PrinterJob.getPrinterJob();
+                PDFPageable pageable = new PDFPageable(pdfDocument);
+
+                // Establecer el objeto PDFPageable en el trabajo de impresión
+                printerJob.setPageable(pageable);
+
+                // Imprimir el documento
+                printerJob.print();
+
+                // Cerrar el documento PDF después de imprimir
+                pdfDocument.close();
+
                 JOptionPane.showMessageDialog(null, "El remito se generó e imprimió correctamente.", "Información", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(null, "Error al imprimir el remito.", "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (Exception e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Error al generar o imprimir el remito.", "Error", JOptionPane.ERROR_MESSAGE);
             }
+
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, "Error al generar el remito.", "Error", JOptionPane.ERROR_MESSAGE);

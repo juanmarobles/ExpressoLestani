@@ -66,6 +66,11 @@
         <artifactId>javafx-graphics</artifactId>
         <version>16</version> <!-- Puedes cambiar la versión según tu instalación de JavaFX -->
     </dependency>
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>2.0.29</version>
+        </dependency>
     </dependencies>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
