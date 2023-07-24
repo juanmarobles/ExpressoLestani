@@ -129,10 +129,12 @@ public class Controladora {
 
     }
 
-    public void editarVehiculo(Vehiculo vehiculo, String v, String chofer, String patente) {
+    public void editarVehiculo(Vehiculo vehiculo, String v, String chofer, String patente, Date fechaTecnica, Date fechaRuta) {
         vehiculo.setVehiculo(v);
         vehiculo.setPatente(patente);
         vehiculo.setChofer(chofer);
+        vehiculo.setFechaTecnica(fechaTecnica);
+        vehiculo.setFechaRuta(fechaRuta);
         ctrl.modificarVehiculo(vehiculo);
     }
 

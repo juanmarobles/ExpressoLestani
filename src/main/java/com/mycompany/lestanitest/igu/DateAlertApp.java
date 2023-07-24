@@ -66,7 +66,7 @@ public class DateAlertApp extends javax.swing.JFrame {
             for (Vehiculo v : listaVehiculos) {
                 // Verificar si la fecha de Ruta está cerca (por ejemplo, dentro de 31 días)
                 if (isDateNear(v.getFechaRutaFormateada(), 31) && !vehiculosAlertadosRuta.contains(v.getId_Vehiculo())) {
-                    String mensaje = "El vehículo " + v.getVehiculo() + " tiene una Ruta por vencer el: " + v.getFechaRutaFormateada();
+                    String mensaje = "El vehículo: " + v.getVehiculo().toUpperCase()+ " dominio: " + v.getPatente().toUpperCase()+ " tiene una Ruta por vencer el: " + v.getFechaRutaFormateada();
                     mostrarAlerta(mensaje);
                     // Agregar el ID del vehículo al conjunto de vehículos alertados por ruta
                     vehiculosAlertadosRuta.add(v.getId_Vehiculo());
@@ -74,7 +74,7 @@ public class DateAlertApp extends javax.swing.JFrame {
 
                 // Verificar si la fecha de Revisión Técnica está cerca (por ejemplo, dentro de 31 días)
                 if (isDateNear(v.getFechaTecnicaFormateada(), 31) && !vehiculosAlertadosTecnica.contains(v.getId_Vehiculo())) {
-                    String mensaje = "El vehículo " + v.getVehiculo() + " tiene una Revisión Técnica por vencer el: " + v.getFechaTecnicaFormateada();
+                    String mensaje = "El vehículo: " + v.getVehiculo().toUpperCase() + " dominio: " + v.getPatente().toUpperCase() + " tiene una Revisión Técnica por vencer el: " + v.getFechaTecnicaFormateada();
                     mostrarAlerta(mensaje);
                     // Agregar el ID del vehículo al conjunto de vehículos alertados por revisión técnica
                     vehiculosAlertadosTecnica.add(v.getId_Vehiculo());
@@ -102,14 +102,14 @@ public class DateAlertApp extends javax.swing.JFrame {
     }
 
     private void mostrarAlerta(String mensaje) {
-        JDialog dialog = new JDialog(this, "Alerta de Fecha", true); // El tercer argumento (true) hace que el diálogo sea modal
+        JDialog dialog = new JDialog(this, "Alerta de Vencimiento", true); // El tercer argumento (true) hace que el diálogo sea modal
         JLabel label = new JLabel(mensaje);
         JButton okButton = new JButton("OK");
 
         okButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                dialog.dispose(); // Cerrar la ventana de alerta cuando el usuario hace clic en "OK"
+                dialog.dispose();
             }
         });
         JPanel panel = new JPanel();
@@ -120,6 +120,7 @@ public class DateAlertApp extends javax.swing.JFrame {
         dialog.pack();
         dialog.setLocationRelativeTo(null); // Centrar la ventana de alerta con respecto a la ventana principal
         dialog.setVisible(true);
+        dispose();
     }
 
     /**
