@@ -6,6 +6,8 @@ package com.mycompany.lestanitest.igu;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.metal.MetalLookAndFeel;
@@ -18,6 +20,7 @@ import javax.swing.plaf.synth.SynthLookAndFeel;
 public class VentanaPrincipal extends javax.swing.JFrame {
 
     private static VentanaPrincipal instancia;
+    private static DateAlertApp dateAlertApp;
 
     /**
      * Creates new form VentanaPrincipal
@@ -26,6 +29,13 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         initComponents();
         this.setExtendedState(MAXIMIZED_BOTH);
         instancia = this;
+    }
+// Función para mostrar la ventana de alerta personalizada
+
+    public static void mostrarVentanaAlerta(String mensaje) {
+        if (dateAlertApp != null) {
+            dateAlertApp.mostrarAlertaPublico(mensaje);
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -280,8 +290,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_CargaMovimientoActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-       Consultas cl = new Consultas();
-       cl.setVisible(true);
+        Consultas cl = new Consultas();
+        cl.setVisible(true);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void RecibosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RecibosActionPerformed
@@ -310,34 +320,20 @@ public class VentanaPrincipal extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(VentanaPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(VentanaPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(VentanaPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(VentanaPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
+                DateAlertApp app = new DateAlertApp();
+                app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                app.pack();
+                app.setVisible(true);
 
-                new VentanaPrincipal().setVisible(true);
+                // Guardar referencia a la instancia de DateAlertApp
+                dateAlertApp = app;
+
+                // Crear la instancia de VentanaPrincipal y mostrarla
+                VentanaPrincipal ventanaPrincipal = new VentanaPrincipal();
+                ventanaPrincipal.setVisible(true);
             }
         });
     }
