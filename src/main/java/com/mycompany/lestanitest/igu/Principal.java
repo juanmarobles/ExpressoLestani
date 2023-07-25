@@ -1,7 +1,5 @@
 package com.mycompany.lestanitest.igu;
 
-
-
 import java.awt.print.PrinterException;
 import com.google.protobuf.TextFormat.Printer;
 import java.awt.print.PrinterException;
@@ -62,11 +60,13 @@ import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfDocument;
 import com.itextpdf.text.pdf.PdfImportedPage;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
 import com.itextpdf.text.pdf.SimpleBookmark;
+import com.mycompany.lestanitest.logica.GenerarPDFDuplicado;
 import java.awt.Desktop;
 import java.awt.Graphics2D;
 import java.awt.print.Pageable;
@@ -122,6 +122,13 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.printing.PDFPageable;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import org.jdesktop.swingx.autocomplete.ObjectToStringConverter;
+import java.io.File;
+import java.io.IOException;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
 public class Principal extends javax.swing.JFrame {
 
@@ -457,6 +464,7 @@ public class Principal extends javax.swing.JFrame {
         tCliente = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtObservaciones = new javax.swing.JTextArea();
+        btnGenerarRemitoDuplicado = new javax.swing.JButton();
         PanelBusquedas = new javax.swing.JPanel();
         txtFiltroCliente = new javax.swing.JTextField();
         txtFiltroRemito = new javax.swing.JTextField();
@@ -816,6 +824,17 @@ public class Principal extends javax.swing.JFrame {
         txtObservaciones.setRows(5);
         jScrollPane1.setViewportView(txtObservaciones);
 
+        btnGenerarRemitoDuplicado.setBackground(new java.awt.Color(51, 51, 51));
+        btnGenerarRemitoDuplicado.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnGenerarRemitoDuplicado.setForeground(new java.awt.Color(255, 255, 255));
+        btnGenerarRemitoDuplicado.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/imprimir_16px.png"))); // NOI18N
+        btnGenerarRemitoDuplicado.setText("Agregar + Remito Duplicado");
+        btnGenerarRemitoDuplicado.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGenerarRemitoDuplicadoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panelCargaMovimientosLayout = new javax.swing.GroupLayout(panelCargaMovimientos);
         panelCargaMovimientos.setLayout(panelCargaMovimientosLayout);
         panelCargaMovimientosLayout.setHorizontalGroup(
@@ -874,24 +893,27 @@ public class Principal extends javax.swing.JFrame {
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(32, 32, 32)
                 .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnGenerarRemito, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
+                    .addComponent(btnGenerarRemito, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnAgregar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnEditarMovimiento, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnEliminarMovimiento, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnEliminarMovimiento, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnGenerarRemitoDuplicado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(26, 26, 26))
         );
         panelCargaMovimientosLayout.setVerticalGroup(
             panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelCargaMovimientosLayout.createSequentialGroup()
-                .addGap(49, 49, 49)
+                .addContainerGap()
                 .addComponent(btnGenerarRemito, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(21, 21, 21)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnGenerarRemitoDuplicado, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(8, 8, 8)
                 .addComponent(btnAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnEditarMovimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnEliminarMovimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(7, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelCargaMovimientosLayout.createSequentialGroup()
                 .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
@@ -1035,18 +1057,19 @@ public class Principal extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 1668, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(panelCargaMovimientos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(29, 29, 29)
+                                .addGap(1, 1, 1)
                                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(78, 78, 78)
-                                .addComponent(PanelBusquedas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(30, Short.MAX_VALUE))
+                                .addGap(50, 50, 50)
+                                .addComponent(PanelBusquedas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 156, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane2)))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1059,8 +1082,8 @@ public class Principal extends javax.swing.JFrame {
                         .addComponent(PanelBusquedas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(panelCargaMovimientos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 882, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 673, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -1471,6 +1494,105 @@ public class Principal extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_tClienteKeyTyped
 
+    private void btnGenerarRemitoDuplicadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarRemitoDuplicadoActionPerformed
+
+        String fPagado = "";
+        String fRendido = "";
+        //String fOrigen="";
+        // String fDestino="";
+        String tFlete = "";
+        String tMontoP = "";
+        String tMontoR = "";
+        String tFleteP = "";
+        String tFleteR = "";
+        String cC = "";
+        String remito;
+        //Fecha
+        Date fecha = getDate();
+        //Hora
+        LocalTime horaActual = LocalTime.now();
+        Time horaSQL = Time.valueOf(horaActual);
+
+        String cliente = tCliente.getText();
+        String destino = txtDestino.getText();
+        String servicio = (String) txtServicio.getText();
+        String representante = txtRepresentante.getText();
+        int bulto = Integer.parseInt(txtBulto.getText());
+        String monto = txtMonto.getText();
+        String flete = txtFlete.getText();
+        String obs = txtObservaciones.getText();
+        //verif flete origen/destino
+        if (cbfDestino.isSelected()) {
+            tFlete = "Destino";
+            cbfOrigen.setSelected(false);
+
+        }
+        if (cbfOrigen.isSelected()) {
+            tFlete = "Origen";
+            cbfDestino.setSelected(false);
+        }
+
+        //verif Cuenta Corriente
+        if (cbCuentaCorriente.isSelected()) {
+            cC = "Si";
+        } else {
+            cC = "No";
+        }
+
+        //remito
+        remito = txtRemito.getText();
+
+        //verif de monto pagado/rendido
+        if (cbmontoPagado.isSelected() && cbMontoRendido.isSelected()) {
+            tMontoP = "Si";
+            tMontoR = "Si";
+        } else if (cbmontoPagado.isSelected()) {
+            tMontoP = "Si";
+            tMontoR = "No";
+        } else if (cbMontoRendido.isSelected()) {
+            tMontoR = "Si";
+            tMontoP = "No";
+        } else {
+            tMontoR = "No";
+            tMontoP = "No";
+        }
+        //verif de flete pagado/rendido
+        if (cbfletePagado.isSelected() && cbfleteRendido.isSelected()) {
+            tFleteP = "Si";
+            tFleteR = "Si";
+        } else if (cbfleteRendido.isSelected()) {
+            tFleteR = "Si";
+            tFleteP = "No";
+        } else if (cbfletePagado.isSelected()) {
+            tFleteR = "No";
+            tFleteP = "Si";
+        } else {
+            tFleteR = "No";
+            tFleteP = "No";
+        }
+
+        // Verificar si faltan datos por ingresar
+        if (cliente.isEmpty() || destino.isEmpty() || servicio.isEmpty() || representante.isEmpty()
+                || txtBulto.getText().isEmpty() || monto.isEmpty() || flete.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Faltan datos por ingresar", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        control.cargarMovimiento(cliente, destino, servicio, representante, bulto, monto, flete, tFlete, remito, tMontoP, tMontoR, tFleteP, tFleteR, fecha, cC, obs, horaSQL);
+        //mostrarMensaje("Movimiento agregado correctamente", "Info", "Agregado con exito!");
+        generarPdfDuplicado();
+
+        // Actualizar la tabla
+        DefaultTableModel modeloTabla = (DefaultTableModel) tablaMovimientos.getModel();
+        modeloTabla.setRowCount(0);
+        List<Movimientos> movimientos = control.traerMovimientos();
+        for (Movimientos mov : movimientos) {
+            Object[] objeto = {mov.getId_movimientos(), mov.getHora(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
+
+            modeloTabla.addRow(objeto);
+        }
+    }//GEN-LAST:event_btnGenerarRemitoDuplicadoActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1513,6 +1635,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JButton btnEditarMovimiento;
     private javax.swing.JButton btnEliminarMovimiento;
     private javax.swing.JButton btnGenerarRemito;
+    private javax.swing.JButton btnGenerarRemitoDuplicado;
     private javax.swing.JLabel bulto;
     private javax.swing.JCheckBox cbCuentaCorriente;
     private javax.swing.JCheckBox cbMontoRendido;
@@ -1918,6 +2041,337 @@ public class Principal extends javax.swing.JFrame {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, "Error al generar el remito.", "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private void generarPdfDuplicado() {
+        Document document = new Document();
+        // Incrementar el contador de remito
+        numeroRemito++;
+        // Generar el número de remito en formato de 8 dígitos
+        String numeroRemitoString = String.format("%08d", numeroRemito);
+        try {
+            // Obtener la ruta del escritorio del usuario
+            String userHome = FileSystemView.getFileSystemView().getHomeDirectory().getAbsolutePath();
+            // Especificar la ruta de salida del archivo PDF en el escritorio
+            String outputPath = userHome + File.separator + "archivo.pdf";
+
+            // Crear el archivo de salida
+            File outputFile = new File(outputPath);
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile));
+
+            document.open();
+
+            //FUENTES
+            Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.NORMAL);
+            Font fontColumnas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD);
+            Font fontTotales = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
+            Font fontFecha = FontFactory.getFont(FontFactory.TIMES_ROMAN, 15, Font.BOLD, BaseColor.BLACK);
+            Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 9, Font.NORMAL, BaseColor.BLACK);
+            Font fontR = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.NORMAL, BaseColor.BLACK);
+            // Crear una tabla para organizar los elementos
+            PdfPTable table = new PdfPTable(3); // 2 columnas
+            table.setWidthPercentage(100); // Ancho de la tabla en porcentaje del ancho de página
+
+            // LOGO 
+            Image logo = Image.getInstance("src/main/java/com/imagenes/logoreportes.jpg");
+            logo.scaleAbsolute(220, 133); // Ajusta los valores de ancho y alto según tus necesidades
+            logo.setAlignment(Element.ALIGN_LEFT);
+            // TEXTO
+            Image texto = Image.getInstance("src/main/java/com/imagenes/texto.png");
+            texto.scaleToFit(220, 200);
+            texto.setAlignment(Element.ALIGN_LEFT);
+            texto.setSpacingBefore(5f);
+            // REMITO NO VALIDO
+            Image rem = Image.getInstance("src/main/java/com/imagenes/Remito.jpg");
+            rem.scaleToFit(80, 80);
+            rem.setAlignment(Element.ALIGN_CENTER);
+
+            // REMITO
+            Image remito = Image.getInstance("src/main/java/com/imagenes/remito_cuit.jpg");
+            remito.scaleToFit(200, 200);
+            remito.setAlignment(Element.ALIGN_RIGHT);
+
+            // FECHAS
+            Chunk chunkFechas = new Chunk("Fecha: " + fechaActual(), fontFecha);
+            Paragraph fecha = new Paragraph(chunkFechas);
+            fecha.setAlignment(Element.ALIGN_RIGHT);
+            fecha.setSpacingAfter(5f); // Espacio después de las fechas (en puntos)
+            //REMITO NRO
+            Paragraph nroRemito = new Paragraph("REMITO N° " + String.format("%08d", numeroRemito), FontFactory.getFont(FontFactory.TIMES_ROMAN, 15, Font.BOLD));
+            guardarNumeroRemito();
+            nroRemito.setAlignment(Element.ALIGN_RIGHT);
+            nroRemito.setSpacingAfter(10f); // Espacio después del título (en puntos)
+
+            // Celda 1: Logo + Texto relacionado al logo + Fecha
+            PdfPCell cell1 = new PdfPCell();
+            cell1.addElement(logo);
+            cell1.addElement(texto);
+            cell1.setHorizontalAlignment(Element.ALIGN_CENTER); // Alinear a la izquierda
+            cell1.setVerticalAlignment(Element.ALIGN_RIGHT); // Alinear arriba
+            cell1.setBorder(Rectangle.NO_BORDER); // Sin bordes
+
+            table.addCell(cell1);
+
+            // Celda 3: Remito
+            PdfPCell cell3 = new PdfPCell(rem);
+            cell3.addElement(rem);
+            cell3.setHorizontalAlignment(Element.ALIGN_CENTER); // Alinear a la derecha
+            cell3.setVerticalAlignment(Element.ALIGN_RIGHT); // Alinear abajo
+            cell3.setBorder(Rectangle.NO_BORDER); // Sin bordes
+            table.addCell(cell3);
+
+            // Celda 2: 
+            PdfPCell cell2 = new PdfPCell(remito);
+            cell2.addElement(fecha);
+            cell2.addElement(nroRemito);
+            cell2.addElement(remito);
+            cell2.setHorizontalAlignment(Element.ALIGN_CENTER); // Alinear a la derecha
+            cell2.setVerticalAlignment(Element.ALIGN_RIGHT); // Alinear abajo
+            cell2.setBorder(Rectangle.NO_BORDER); // Sin bordes
+            table.addCell(cell2);
+
+            document.add(table);
+            // Crear una tabla contenedora con 2 columnas
+            PdfPTable tablaContenedora = new PdfPTable(2);
+            tablaContenedora.setWidthPercentage(100);
+            float[] columnWidths = {1, 1}; // Ajusta los valores según tu necesidad
+            tablaContenedora.setWidths(columnWidths);
+
+            PdfPCell remitenteCell = new PdfPCell();
+            remitenteCell.setBorder(Rectangle.BOX);
+
+            Paragraph remitenteHeader = new Paragraph("REMITENTE", fontColumnas);
+            remitenteHeader.setAlignment(Element.ALIGN_CENTER);
+            remitenteCell.addElement(remitenteHeader);
+
+            String nombreCliente = "";
+            String direccion = "";
+            String localidad = "";
+            String cuit = "";
+            if (clienteSeleccionado != null && clienteSeleccionado.getDireccion() != null && clienteSeleccionado.getLocalidad() != null
+                    && clienteSeleccionado.getCuit() != null && clienteSeleccionado.getNombre() != null) {
+                nombreCliente = clienteSeleccionado.getNombre().toUpperCase();
+                direccion = clienteSeleccionado.getDireccion().toUpperCase();
+                localidad = clienteSeleccionado.getLocalidad().toUpperCase();
+                cuit = clienteSeleccionado.getCuit().toUpperCase();
+            } else {
+                nombreCliente = tCliente.getText().toUpperCase();
+                direccion = "";
+                localidad = txtDestino.getText().toUpperCase();
+                cuit = "";
+            }
+
+            Paragraph nombreParagraph = new Paragraph(nombreCliente, fontR);
+            nombreParagraph.setAlignment(Element.ALIGN_CENTER);
+            remitenteCell.addElement(nombreParagraph);
+
+            Paragraph direccionParagraph = new Paragraph("DIRECCION: " + direccion, fontR);
+            direccionParagraph.setAlignment(Element.ALIGN_CENTER);
+            remitenteCell.addElement(direccionParagraph);
+
+            Paragraph localidadParagraph = new Paragraph("LOCALIDAD: " + localidad, fontR);
+            localidadParagraph.setAlignment(Element.ALIGN_CENTER);
+            remitenteCell.addElement(localidadParagraph);
+
+            Paragraph cuitParagraph = new Paragraph("CUIT: " + cuit, fontR);
+            cuitParagraph.setAlignment(Element.ALIGN_CENTER);
+            remitenteCell.addElement(cuitParagraph);
+
+            remitenteCell.setHorizontalAlignment(Element.ALIGN_CENTER); // Alineación horizontal de la celda
+            tablaContenedora.addCell(remitenteCell);
+
+            // Crear la celda del destinatario
+            PdfPCell destinatarioCell = new PdfPCell();
+            destinatarioCell.setBorder(Rectangle.BOX);
+
+            Paragraph destinatarioHeader = new Paragraph("DESTINATARIO", fontColumnas);
+            destinatarioHeader.setAlignment(Element.ALIGN_CENTER);
+            destinatarioCell.addElement(destinatarioHeader);
+
+            String nombreDestinatario = "";
+            String direccionDestinatario = "";
+            String localidadDestinatario = "";
+            String cuitDestinatario = "";
+
+            if (destinatarioSeleccionado != null && destinatarioSeleccionado.getDireccion() != null && destinatarioSeleccionado.getLocalidad() != null
+                    && destinatarioSeleccionado.getCuit() != null && destinatarioSeleccionado.getNombre() != null) {
+                nombreDestinatario = destinatarioSeleccionado.getNombre().toUpperCase();
+                direccionDestinatario = destinatarioSeleccionado.getDireccion().toUpperCase();
+                localidadDestinatario = destinatarioSeleccionado.getLocalidad().toUpperCase();
+                cuitDestinatario = destinatarioSeleccionado.getCuit().toUpperCase();
+
+            } else {
+                nombreDestinatario = txtDestino.getText().toUpperCase();
+                direccionDestinatario = "";
+                localidadDestinatario = "";
+                cuitDestinatario = "";
+            }
+
+            Paragraph nombreDestinatarioParagraph = new Paragraph(nombreDestinatario, fontR);
+            nombreDestinatarioParagraph.setAlignment(Element.ALIGN_CENTER);
+            destinatarioCell.addElement(nombreDestinatarioParagraph);
+
+            Paragraph direccionDestinatarioParagraph = new Paragraph("DIRECCION: " + direccionDestinatario, fontR);
+            direccionDestinatarioParagraph.setAlignment(Element.ALIGN_CENTER);
+            destinatarioCell.addElement(direccionDestinatarioParagraph);
+
+            Paragraph localidadDestinatarioParagraph = new Paragraph("LOCALIDAD: " + localidadDestinatario, fontR);
+            localidadDestinatarioParagraph.setAlignment(Element.ALIGN_CENTER);
+            destinatarioCell.addElement(localidadDestinatarioParagraph);
+
+            Paragraph cuitDestinatarioParagraph = new Paragraph("CUIT: " + cuitDestinatario, fontR);
+            cuitDestinatarioParagraph.setAlignment(Element.ALIGN_CENTER);
+            destinatarioCell.addElement(cuitDestinatarioParagraph);
+
+            destinatarioCell.setHorizontalAlignment(Element.ALIGN_CENTER); // Alineación horizontal de la celda
+            tablaContenedora.addCell(destinatarioCell);
+
+            document.add(tablaContenedora);
+
+            // Agregar espacio arriba de la tabla
+            Paragraph espacio = new Paragraph(10f, " "); // 20f es el tamaño del espacio
+            document.add(espacio);
+
+            // Crear la tabla con 6 columnas
+            PdfPTable tablaa = new PdfPTable(6);
+            tablaa.setWidthPercentage(100);
+
+            // Establecer el borde de las celdas de las filas como NO_BORDER
+            PdfPCell bordeTop = new PdfPCell();
+            bordeTop.setBorder(Rectangle.TOP | Rectangle.LEFT | Rectangle.RIGHT);
+            PdfPCell celdaConBorde = new PdfPCell();
+            celdaConBorde.setBorder(Rectangle.BOTTOM | Rectangle.LEFT | Rectangle.RIGHT);
+
+            // Agregar las celdas a la tabla
+            tablaa.addCell(createCell("Descripción", font, bordeTop));
+            tablaa.addCell(createCell("Seguro", font, bordeTop));
+            tablaa.addCell(createCell("Com. contrarrembolso", font, bordeTop));
+            tablaa.addCell(createCell("Redespacho", font, bordeTop));
+            tablaa.addCell(createCell("Valor Declarado", font, bordeTop));
+            tablaa.addCell(createCell("Observaciones", font, bordeTop));
+
+            // Obtener los valores de los campos de texto
+            String descripcion = txtBulto.getText() + " bultos";
+            String observaciones = txtObservaciones.getText();
+
+            // Agregar los valores a la tabla
+            tablaa.addCell(createCell(descripcion, font, celdaConBorde));
+            tablaa.addCell(createCell("$0", font, celdaConBorde)); // Columna "Seguro"
+            tablaa.addCell(createCell("$0", font, celdaConBorde)); // Columna "Com. Contrarrembolso"
+            tablaa.addCell(createCell("$0", font, celdaConBorde)); // Columna "Redespacho"
+            tablaa.addCell(createCell("$0", font, celdaConBorde)); // Columna "Valor Declarado"
+            tablaa.addCell(createCell(observaciones, font, celdaConBorde));
+
+            // Agregar la tabla al documento
+            document.add(tablaa);
+
+            document.add(espacio);
+            Paragraph recibenB = new Paragraph("SE RECIBEN LOS BULTOS SIN ESPECIFICAR SU CONTENIDO", fontR);
+            recibenB.setAlignment(Element.ALIGN_CENTER);
+            document.add(recibenB);
+
+            document.add(espacio);
+            // Crear la tabla con 2 columnas
+            PdfPTable tabla = new PdfPTable(2);
+            tabla.setWidthPercentage(100);
+            tabla.setWidths(new float[]{1, 0.5f}); // Ajustar el ancho de las columnas
+
+            // Agregar la imagen a la primera celda
+            PdfPCell imagenCell = new PdfPCell();
+            Image firmasello = Image.getInstance("src/main/java/com/imagenes/firma_aclaracion.png");
+            firmasello.scaleToFit(300, 200);
+            firmasello.setAlignment(Element.ALIGN_LEFT);
+            imagenCell.addElement(firmasello);
+            imagenCell.setBorder(Rectangle.NO_BORDER);
+            tabla.addCell(imagenCell);
+
+            // Agregar el texto a la segunda celda
+            String condicionFlete = cbCuentaCorriente.isSelected() ? "CUENTA CORRIENTE" : "CONTADO";
+            String flete = "";
+            if (cbfOrigen.isSelected()) {
+                flete = "origen";
+            } else if (cbfDestino.isSelected()) {
+                flete = "destino";
+            }
+
+            PdfPCell textoCell = new PdfPCell();
+            textoCell.setBorder(Rectangle.NO_BORDER);
+            // Crear una tabla interna para el texto
+            PdfPTable tablaTexto = new PdfPTable(1);
+            tablaTexto.setWidthPercentage(100);
+
+            Paragraph c = new Paragraph("CONTRAREEMBOLSO: $" + txtMonto.getText() + ".0", fontR);
+            c.setAlignment(Element.ALIGN_LEFT);
+            PdfPCell celdaC = new PdfPCell(c);
+            celdaC.setBorder(Rectangle.LEFT | Rectangle.RIGHT | Rectangle.TOP | Rectangle.BOTTOM); // Agregar borde alrededor de la celda "c"
+            celdaC.setPadding(3f); // Ajustar el relleno de la celda "c"
+            celdaC.setPaddingBottom(4f); // Ajustar el relleno de la celda "c"
+            tablaTexto.addCell(celdaC);
+
+            Paragraph b = new Paragraph("FLETE: $" + txtFlete.getText(), fontR);
+            b.setAlignment(Element.ALIGN_LEFT);
+            PdfPCell celdaB = new PdfPCell(b);
+            celdaB.setBorder(Rectangle.LEFT | Rectangle.RIGHT | Rectangle.BOTTOM); // Agregar borde alrededor de la celda "b"
+            celdaB.setPadding(1f); // Ajustar el relleno de la celda "b"
+            celdaB.setPaddingBottom(4f); // Ajustar el relleno de la celda "b"
+            tablaTexto.addCell(celdaB);
+
+            Paragraph a = new Paragraph("Condicion de venta: " + condicionFlete, fontR);
+            a.setAlignment(Element.ALIGN_RIGHT);
+            PdfPCell celdaA = new PdfPCell(a);
+            celdaA.setBorder(Rectangle.NO_BORDER); // Sin borde para la celda "a"
+            celdaA.setPaddingBottom(2); // Ajustar el espacio inferior de la celda "a"
+            tablaTexto.addCell(celdaA);
+
+            Paragraph f = new Paragraph("Flete: a cobrar en " + flete, fontR);
+            f.setAlignment(Element.ALIGN_RIGHT);
+            PdfPCell celdaF = new PdfPCell(f);
+            celdaF.setBorder(Rectangle.NO_BORDER); // Sin borde para la celda "f"
+            celdaF.setPaddingBottom(2); // Ajustar el espacio inferior de la celda "f"
+            tablaTexto.addCell(celdaF);
+
+            Paragraph facturaremito = new Paragraph("Factura/Remito N°: " + txtRemito.getText(), fontR);
+            facturaremito.setAlignment(Element.ALIGN_RIGHT);
+            PdfPCell celdafacturaremito = new PdfPCell(facturaremito);
+            celdafacturaremito.setBorder(Rectangle.NO_BORDER); // Sin borde para la celda "f"
+            celdafacturaremito.setPaddingBottom(2); // Ajustar el espacio inferior de la celda "f"
+            tablaTexto.addCell(celdafacturaremito);
+
+            double monto = Double.parseDouble(txtMonto.getText());
+            double fletee = Double.parseDouble(txtFlete.getText());
+            double total = monto + fletee;
+            Paragraph totalMonto = new Paragraph("TOTAL: $" + total, fontR);
+            totalMonto.setAlignment(Element.ALIGN_RIGHT);
+            PdfPCell celdaTotal = new PdfPCell(totalMonto);
+            celdaTotal.setBorder(Rectangle.NO_BORDER); // Sin borde para la celda "total"
+            celdaTotal.setPaddingBottom(2); // Ajustar el espacio inferior de la celda "total"
+            tablaTexto.addCell(celdaTotal);
+
+            textoCell.addElement(tablaTexto);
+            tabla.addCell(textoCell);
+
+            // Ajustar el espacio entre las filas de la tabla
+            tabla.setSpacingAfter(3);
+            document.add(tabla);
+
+            document.close();
+            writer.close();
+            // Clonar el contenido de la primera página y agregarlo debajo
+            PDDocument pdfDocument = PDDocument.load(new File(outputPath));
+            pdfDocument.addPage(pdfDocument.getPage(0));
+
+            // Imprimir el archivo PDF automáticamente
+            PrinterJob printerJob = PrinterJob.getPrinterJob();
+            PDFPageable pageable = new PDFPageable(pdfDocument);
+            printerJob.setPageable(pageable);
+            printerJob.print();
+            pdfDocument.close();
+            JOptionPane.showMessageDialog(null, "El remito se generó e imprimió correctamente.", "Información", JOptionPane.INFORMATION_MESSAGE);
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error al generar o imprimir el remito.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
     }
 
     private void imprimirPDF(String rutaArchivoPDF) {
