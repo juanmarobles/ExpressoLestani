@@ -124,6 +124,7 @@ import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import org.jdesktop.swingx.autocomplete.ObjectToStringConverter;
 import java.io.File;
 import java.io.IOException;
+import javax.swing.JComboBox;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -145,13 +146,17 @@ public class Principal extends javax.swing.JFrame {
         initComponents();
 
         setTitle("Expreso Lestani S.R.L - [Panel Principal]");
-
+        //Cargar Combobox
         cargarClientes();
         cargarDestinos();
-        llenarRepresentantes();
+        cargarRepresentantes();
         cargarServicios();
+        
+        
         actualizarFlete();
-        txtServicio.setText("Normal");
+        
+        
+        
         txtBulto.setText("1");
         txtFecha.setText(fechaActual());  //FECHA
 
@@ -159,15 +164,17 @@ public class Principal extends javax.swing.JFrame {
         TextPrompt filtroRe = new TextPrompt("Busqueda por remito", txtFiltroRemito);
 
         // Tabulador cambiar Default
-        tCliente.setNextFocusableComponent(txtFecha);
-        txtFecha.setNextFocusableComponent(txtDestino);
-        txtDestino.setNextFocusableComponent(txtServicio);
-        txtServicio.setNextFocusableComponent(txtBulto);
+        cbClientes.setNextFocusableComponent(txtFecha);
+        txtFecha.setNextFocusableComponent(cbDestinos);
+        cbDestinos.setNextFocusableComponent(cbServicios);
+        cbServicios.setNextFocusableComponent(txtBulto);
         txtBulto.setNextFocusableComponent(txtRemito);
-        txtRemito.setNextFocusableComponent(txtRepresentante);
-        txtRepresentante.setNextFocusableComponent(txtMonto);
+        txtRemito.setNextFocusableComponent(cbRepresentantes);
+        cbRepresentantes.setNextFocusableComponent(txtMonto);
         txtMonto.setNextFocusableComponent(txtFlete);
         txtFlete.setNextFocusableComponent(txtObservaciones);
+        
+   
 
         // Listener al mause para editar con doble click el movimiento.
         tablaMovimientos.addMouseListener(new MouseAdapter() {
@@ -229,20 +236,15 @@ public class Principal extends javax.swing.JFrame {
 
         cargarNumeroRemito();
 
-        // Agregar un listener al campo txtServicio
-        txtServicio.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                actualizarFlete();
-            }
+        // Agregar un ActionListener al combobox cbServicios
+        cbServicios.addActionListener(e -> {
+            actualizarFlete();
+        });
 
+// Agregar un listener al campo txtServicio
+        cbServicios.getEditor().getEditorComponent().addKeyListener(new KeyAdapter() {
             @Override
-            public void removeUpdate(DocumentEvent e) {
-                actualizarFlete();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
+            public void keyReleased(KeyEvent e) {
                 actualizarFlete();
             }
         });
@@ -266,17 +268,21 @@ public class Principal extends javax.swing.JFrame {
         });
 
     }
-
+   
+    
+    //Actualizar flete nuevo
     private void actualizarFlete() {
-        String bultoText = txtBulto.getText().trim();
-        if (!bultoText.isEmpty()) {
-            int bulto = Integer.parseInt(bultoText);
+    String bultoText = txtBulto.getText().trim();
+    if (!bultoText.isEmpty()) {
+        int bulto = Integer.parseInt(bultoText);
+        
+        // Cargar los datos desde la base de datos
+        List<Servicios> listaServicios = control.traerServicios();
 
-            // Cargar los datos desde la base de datos
-            List<Servicios> listaServicios = control.traerServicios();
-
-            // Buscar el servicio correspondiente en la lista
-            String nombreServicio = txtServicio.getText().trim().toLowerCase();
+        // Buscar el servicio correspondiente en la lista
+        Object selectedItem = cbServicios.getSelectedItem();
+        if (selectedItem != null) {
+            String nombreServicio = selectedItem.toString().trim().toLowerCase();
 
             for (Servicios s : listaServicios) {
                 if (s.getServicio().toLowerCase().equals(nombreServicio)) {
@@ -284,138 +290,189 @@ public class Principal extends javax.swing.JFrame {
                     BigDecimal precio = BigDecimal.valueOf(s.getPrecio());
                     BigDecimal montoFlete = precio.multiply(BigDecimal.valueOf(bulto));
 
-                    // Mostrar el flete en el campo txtFlete
+                    // Mostrar el archivo en el campo txtFlete
                     txtFlete.setText(montoFlete.toString());
 
                     return;
                 }
             }
+        } else {
+            // Handle the case where no item is selected
+            // Maybe display an error message or set a default value for txtFlete
+            // For example, if txtFlete is a JTextField, you could set it to an empty string:
+            // txtFlete.setText("");
         }
     }
+}
+    
+    
+ ModeloCliente modClientes = new ModeloCliente();
+ArrayList<Cliente> listaClientes = modClientes.getClientes();
+
+private static void mostrarResultadosBusqueda(JComboBox<String> cbDestinos, String textoBusqueda) {
+    
+
+    // Buscar el resultado de búsqueda
+    for (int i = 0; i < cbDestinos.getItemCount(); i++) {
+        String item = cbDestinos.getItemAt(i).toString();
+        if (item.toLowerCase().contains(textoBusqueda.toLowerCase())) { 
+            cbDestinos.setSelectedItem(item);
+            cbDestinos.getEditor().setItem(item);
+            return; // Terminar la búsqueda después de seleccionar el primer resultado
+        }
+    }
+}
+
+private void cargarDestinos() {
+    cbDestinos.setEditable(true);
+
+    // Agregar los clientes al combobox
+    for (Cliente cliente : listaClientes) {
+        cbDestinos.addItem(cliente.getNombre());
+    }
+
+    
+// Eliminar la opción en blanco después de configurar el decorador
+    cbDestinos.removeItem("");
+
+    // Establecer el índice seleccionado a -1 para no mostrar ninguna selección
+    cbDestinos.setSelectedIndex(-1);
+    
+    // Agregar ActionListener para capturar el evento "Enter"
+    cbDestinos.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String textoBusqueda = cbDestinos.getEditor().getItem().toString();
+            mostrarResultadosBusqueda(cbDestinos, textoBusqueda);
+        }
+    });
+
+     // Agregar KeyListener para capturar el evento "Enter"
+    cbDestinos.getEditor().getEditorComponent().addKeyListener(new KeyAdapter() {
+        @Override
+        public void keyReleased(KeyEvent e) {
+            if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                String textoBusqueda = cbDestinos.getEditor().getItem().toString();
+                mostrarResultadosBusqueda(cbDestinos, textoBusqueda);
+            }
+        }
+    });
+}
+
 
     private void cargarServicios() {
-        ModeloServicio modServicio = new ModeloServicio();
-        ArrayList<Servicios> listaServicios = modServicio.getServicios();
-        AutoCompleteDecorator.decorate(txtServicio, listaServicios, false);
+        ModeloServicio modServ= new ModeloServicio();
+ArrayList<Servicios> listaServ = modServ.getServicios();
+       cbServicios.setEditable(true);
 
-        // Agregar un listener al textfield del cliente
-        txtServicio.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                actualizarFlete();
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                actualizarFlete();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                actualizarFlete();
-            }
-
-            private void actualizarFlete() {
-
-                List<Servicios> listaS = control.traerServicios();
-                // Buscar el cliente correspondiente en la lista
-                String nombreServicio = txtServicio.getText().trim().toLowerCase();
-                for (Servicios servicio : listaS) {
-                    if (servicio.getServicio().toLowerCase().equals(nombreServicio)) {
-                        servicioSeleccionado = servicio;
-                        // Mostrar la localidad en el textfield correspondiente
-                        txtFlete.setText(Double.toString(servicio.getPrecio()));
-                        return;
-                    }
-                }
-            }
-        });
+    // Agregar los clientes al combobox
+    for (Servicios Servicios : listaServ) {
+        cbServicios.addItem(Servicios.getServicio());
     }
 
-    private void llenarRepresentantes() {
-        ModeloRepresentante modRepresentante = new ModeloRepresentante();
-        ArrayList<Representantes> listaRepresentantes = modRepresentante.getRepresentantes();
-        AutoCompleteDecorator.decorate(txtRepresentante, listaRepresentantes, false);
+    
+// Eliminar la opción en blanco después de configurar el decorador
+    cbServicios.removeItem("");
 
+    // Establecer el índice seleccionado a -1 para no mostrar ninguna selección
+    cbServicios.setSelectedIndex(-1);
+    
+    // Agregar ActionListener para capturar el evento "Enter"
+    cbServicios.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String textoBusqueda = cbServicios.getEditor().getItem().toString();
+            mostrarResultadosBusqueda(cbServicios, textoBusqueda);
+        }
+    });
+
+     // Agregar KeyListener para capturar el evento "Enter"
+    cbServicios.getEditor().getEditorComponent().addKeyListener(new KeyAdapter() {
+        @Override
+        public void keyReleased(KeyEvent e) {
+            if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                String textoBusqueda = cbServicios.getEditor().getItem().toString();
+                mostrarResultadosBusqueda(cbServicios, textoBusqueda);
+            }
+        }
+    });
     }
 
-    //LLENAR TEXTFIELD CLIENTES
+    private void cargarRepresentantes() {
+ModeloRepresentante modRepre = new ModeloRepresentante();
+ArrayList<Representantes> listaRepresentantes = modRepre.getRepresentantes();
+      cbRepresentantes.setEditable(true);
+
+    // Agregar los clientes al combobox
+    for (Representantes Repre : listaRepresentantes) {
+        cbRepresentantes.addItem(Repre.getNombre());
+    }
+
+    
+// Eliminar la opción en blanco después de configurar el decorador
+    cbRepresentantes.removeItem("");
+
+    // Establecer el índice seleccionado a -1 para no mostrar ninguna selección
+    cbRepresentantes.setSelectedIndex(-1);
+    
+    // Agregar ActionListener para capturar el evento "Enter"
+    cbRepresentantes.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String textoBusqueda = cbClientes.getEditor().getItem().toString();
+            mostrarResultadosBusqueda(cbClientes, textoBusqueda);
+        }
+    });
+
+     // Agregar KeyListener para capturar el evento "Enter"
+    cbRepresentantes.getEditor().getEditorComponent().addKeyListener(new KeyAdapter() {
+        @Override
+        public void keyReleased(KeyEvent e) {
+            if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                String textoBusqueda = cbRepresentantes.getEditor().getItem().toString();
+                mostrarResultadosBusqueda(cbRepresentantes, textoBusqueda);
+            }
+        }
+    });
+    }
+
     private void cargarClientes() {
-        ModeloCliente modClientes = new ModeloCliente();
-        ArrayList<Cliente> listaClientes = modClientes.getClientes();
-        AutoCompleteDecorator.decorate(tCliente, listaClientes, false);
-        AutoCompleteDecorator.decorate(txtDestino, listaClientes, false);
-        // Agregar un listener al textfield del cliente
-        tCliente.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                actualizarLocalidad();
-            }
+       cbClientes.setEditable(true);
 
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                actualizarLocalidad();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                actualizarLocalidad();
-            }
-
-            private void actualizarLocalidad() {
-
-                //carga de los datos desde la bd
-                List<Cliente> listaC = control.traerClientes();
-                // Buscar el cliente correspondiente en la lista
-                String nombreCliente = tCliente.getText().trim().toLowerCase();
-                for (Cliente cliente : listaC) {
-                    if (cliente.getNombre().toLowerCase().equals(nombreCliente)) {
-                        clienteSeleccionado = cliente;
-                        return;
-                    }
-                }
-            }
-        });
-        // Agregar un listener al textfield del destinatario
-        txtDestino.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                actualizarDestinatario();
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                actualizarDestinatario();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                actualizarDestinatario();
-            }
-
-            private void actualizarDestinatario() {
-                // Carga de los datos desde la base de datos o donde corresponda
-                List<Cliente> listaC = control.traerClientes();
-                // Buscar el cliente destinatario correspondiente en la lista
-                String nombreDestinatario = txtDestino.getText().trim().toLowerCase();
-                for (Cliente cliente : listaC) {
-                    if (cliente.getNombre().toLowerCase().equals(nombreDestinatario)) {
-                        destinatarioSeleccionado = cliente;
-                        return;
-                    }
-                }
-                // Si no se encuentra el destinatario, puedes crear un nuevo objeto Cliente o establecerlo como null, dependiendo de tu lógica.
-                destinatarioSeleccionado = null;
-            }
-        });
+    // Agregar los clientes al combobox
+    for (Cliente cliente : listaClientes) {
+        cbClientes.addItem(cliente.getNombre());
     }
 
-    private void cargarDestinos() {
-        ModeloDestinos modDestino = new ModeloDestinos();
-        ArrayList<Destinos> listaDestinos = modDestino.getDestinos();
-        AutoCompleteDecorator.decorate(txtDestino, listaDestinos, false);
+    
+// Eliminar la opción en blanco después de configurar el decorador
+    cbClientes.removeItem("");
 
+    // Establecer el índice seleccionado a -1 para no mostrar ninguna selección
+    cbClientes.setSelectedIndex(-1);
+    
+    // Agregar ActionListener para capturar el evento "Enter"
+    cbClientes.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String textoBusqueda = cbClientes.getEditor().getItem().toString();
+            mostrarResultadosBusqueda(cbClientes, textoBusqueda);
+        }
+    });
+
+     // Agregar KeyListener para capturar el evento "Enter"
+    cbClientes.getEditor().getEditorComponent().addKeyListener(new KeyAdapter() {
+        @Override
+        public void keyReleased(KeyEvent e) {
+            if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                String textoBusqueda = cbClientes.getEditor().getItem().toString();
+                mostrarResultadosBusqueda(cbClientes, textoBusqueda);
+            }
+        }
+    });
     }
+
+   
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -438,9 +495,6 @@ public class Principal extends javax.swing.JFrame {
         btnEliminarMovimiento = new javax.swing.JButton();
         btnEditarMovimiento = new javax.swing.JButton();
         txtFecha = new javax.swing.JFormattedTextField();
-        txtDestino = new javax.swing.JTextField();
-        txtServicio = new javax.swing.JTextField();
-        txtRepresentante = new javax.swing.JTextField();
         jLabel13 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
         btnAgregarCliente = new javax.swing.JButton();
@@ -461,10 +515,13 @@ public class Principal extends javax.swing.JFrame {
         cbfletePagado = new javax.swing.JCheckBox();
         cbfleteRendido = new javax.swing.JCheckBox();
         btnGenerarRemito = new javax.swing.JButton();
-        tCliente = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtObservaciones = new javax.swing.JTextArea();
         btnGenerarRemitoDuplicado = new javax.swing.JButton();
+        cbClientes = new javax.swing.JComboBox<>();
+        cbDestinos = new javax.swing.JComboBox<>();
+        cbServicios = new javax.swing.JComboBox<>();
+        cbRepresentantes = new javax.swing.JComboBox<>();
         PanelBusquedas = new javax.swing.JPanel();
         txtFiltroCliente = new javax.swing.JTextField();
         txtFiltroRemito = new javax.swing.JTextField();
@@ -592,19 +649,6 @@ public class Principal extends javax.swing.JFrame {
         txtFecha.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtFechaActionPerformed(evt);
-            }
-        });
-
-        txtDestino.setMinimumSize(new java.awt.Dimension(15, 20));
-        txtDestino.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtDestinoActionPerformed(evt);
-            }
-        });
-
-        txtServicio.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtServicioActionPerformed(evt);
             }
         });
 
@@ -814,12 +858,6 @@ public class Principal extends javax.swing.JFrame {
             }
         });
 
-        tCliente.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                tClienteKeyTyped(evt);
-            }
-        });
-
         txtObservaciones.setColumns(20);
         txtObservaciones.setRows(5);
         jScrollPane1.setViewportView(txtObservaciones);
@@ -835,63 +873,77 @@ public class Principal extends javax.swing.JFrame {
             }
         });
 
+        cbClientes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbClientesActionPerformed(evt);
+            }
+        });
+
+        cbServicios.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbServiciosActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panelCargaMovimientosLayout = new javax.swing.GroupLayout(panelCargaMovimientos);
         panelCargaMovimientos.setLayout(panelCargaMovimientosLayout);
         panelCargaMovimientosLayout.setHorizontalGroup(
             panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
                 .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelCargaMovimientosLayout.createSequentialGroup()
+                    .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
                         .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
-                                .addGap(31, 31, 31)
-                                .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(tCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnAgregarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(13, 13, 13)
+                                .addComponent(bulto))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelCargaMovimientosLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
+                                .addGap(11, 11, 11)
+                                .addComponent(cbServicios, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(txtBulto, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 48, Short.MAX_VALUE))
+                    .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
+                        .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jLabel12)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(txtRemito, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
                                 .addGap(19, 19, 19)
                                 .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel10)
                                     .addComponent(jLabel9)
-                                    .addComponent(bulto))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtDestino, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel10))
+                                .addGap(18, 18, 18)
+                                .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(cbClientes, 0, 174, Short.MAX_VALUE)
                                     .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtServicio, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGap(6, 6, 6))
-                    .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
-                        .addGap(50, 50, 50)
-                        .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtBulto, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelCargaMovimientosLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel12)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtRemito, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(14, 14, 14)))
-                .addGap(24, 24, 24)
+                                    .addComponent(cbDestinos, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnAgregarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cbRepresentantes, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(28, 28, 28)
-                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(24, 24, 24)
+                        .addComponent(jLabel8))
                     .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
-                        .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cbCuentaCorriente)
-                            .addComponent(jLabel8)
-                            .addComponent(txtRepresentante, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
-                                .addGap(36, 36, 36)
-                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(41, 41, 41)
-                        .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel14)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(32, 32, 32)
+                        .addGap(20, 20, 20)
+                        .addComponent(cbCuentaCorriente)))
+                .addGap(18, 18, 18)
+                .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel14)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
                 .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnGenerarRemito, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnAgregar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -902,73 +954,70 @@ public class Principal extends javax.swing.JFrame {
         );
         panelCargaMovimientosLayout.setVerticalGroup(
             panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelCargaMovimientosLayout.createSequentialGroup()
+            .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(btnGenerarRemito, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnGenerarRemitoDuplicado, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(8, 8, 8)
-                .addComponent(btnAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnEditarMovimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnEliminarMovimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(7, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelCargaMovimientosLayout.createSequentialGroup()
-                .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
-                        .addGap(25, 25, 25)
-                        .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jLabel13)
-                                .addComponent(tCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(btnAgregarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnGenerarRemito, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnGenerarRemitoDuplicado, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnEditarMovimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnEliminarMovimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
-                        .addGap(0, 1, Short.MAX_VALUE)
-                        .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
+                                .addGap(9, 9, 9)
+                                .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jLabel13)
+                                        .addComponent(cbClientes, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(btnAgregarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel8))
+                                .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
+                                        .addGap(17, 17, 17)
+                                        .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                            .addComponent(jLabel9)
+                                            .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(cbRepresentantes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
+                                        .addGap(29, 29, 29)
+                                        .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                            .addComponent(cbDestinos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jLabel10))
+                                        .addGap(28, 28, 28)
+                                        .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                            .addComponent(cbServicios, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(bulto)))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelCargaMovimientosLayout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(cbCuentaCorriente)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
+                                .addComponent(jLabel14)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(18, 18, 18)
+                        .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
                                 .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel8)
-                                    .addComponent(jLabel14))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
-                                        .addComponent(txtRepresentante, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                            .addComponent(cbCuentaCorriente)
-                                            .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jLabel9))
-                                        .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
-                                                .addGap(18, 18, 18)
-                                                .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                                    .addComponent(txtDestino, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                    .addComponent(jLabel10))
-                                                .addGap(27, 27, 27)
-                                                .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                                    .addComponent(txtServicio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                    .addComponent(bulto)))
-                                            .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
-                                                .addGap(2, 2, 2)
-                                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
-                                        .addGap(15, 15, 15)
-                                        .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                            .addComponent(txtBulto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jLabel7))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                            .addComponent(txtRemito, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                    .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
-                                        .addGap(18, 18, 18)
-                                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap(11, Short.MAX_VALUE))
+                                    .addComponent(jLabel7)
+                                    .addComponent(txtBulto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(25, 25, 25)
+                                .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(txtRemito, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
 
         PanelBusquedas.setBackground(new java.awt.Color(66, 66, 66));
@@ -1063,9 +1112,9 @@ public class Principal extends javax.swing.JFrame {
                                 .addGap(1, 1, 1)
                                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(50, 50, 50)
+                                .addGap(18, 18, 18)
                                 .addComponent(PanelBusquedas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 156, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 229, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jScrollPane2)))
@@ -1074,15 +1123,15 @@ public class Principal extends javax.swing.JFrame {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(87, 87, 87)
                         .addComponent(PanelBusquedas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(panelCargaMovimientos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 673, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 632, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -1222,10 +1271,10 @@ public class Principal extends javax.swing.JFrame {
         LocalTime horaActual = LocalTime.now().withSecond(0);
         Time horaSQL = Time.valueOf(horaActual);
 
-        String cliente = tCliente.getText();
-        String destino = (String) txtDestino.getText();
-        String servicio = (String) txtServicio.getText();
-        String representante = txtRepresentante.getText();
+        String cliente = cbClientes.getSelectedItem().toString();
+        String destino =  cbDestinos.getSelectedItem().toString();
+        String servicio =  cbServicios.getSelectedItem().toString();
+        String representante = cbRepresentantes.getSelectedItem().toString();
         int bulto = Integer.parseInt(txtBulto.getText());
         String monto = txtMonto.getText();
         String flete = txtFlete.getText();
@@ -1343,10 +1392,6 @@ public class Principal extends javax.swing.JFrame {
 
     }//GEN-LAST:event_txtFechaActionPerformed
 
-    private void txtDestinoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDestinoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtDestinoActionPerformed
-
     private void cbfDestinoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbfDestinoActionPerformed
         String tFlete = "";
         if (cbfDestino.isSelected()) {
@@ -1401,10 +1446,10 @@ public class Principal extends javax.swing.JFrame {
         LocalTime horaActual = LocalTime.now();
         Time horaSQL = Time.valueOf(horaActual);
 
-        String cliente = tCliente.getText();
-        String destino = txtDestino.getText();
-        String servicio = (String) txtServicio.getText();
-        String representante = txtRepresentante.getText();
+        String cliente = cbClientes.getSelectedItem().toString();
+        String destino = cbDestinos.getSelectedItem().toString();
+        String servicio =  cbServicios.getSelectedItem().toString();
+        String representante = cbRepresentantes.getSelectedItem().toString();
         int bulto = Integer.parseInt(txtBulto.getText());
         String monto = txtMonto.getText();
         String flete = txtFlete.getText();
@@ -1486,14 +1531,6 @@ public class Principal extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtFleteActionPerformed
 
-    private void txtServicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtServicioActionPerformed
-
-    }//GEN-LAST:event_txtServicioActionPerformed
-
-    private void tClienteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tClienteKeyTyped
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tClienteKeyTyped
-
     private void btnGenerarRemitoDuplicadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarRemitoDuplicadoActionPerformed
 
         String fPagado = "";
@@ -1513,10 +1550,10 @@ public class Principal extends javax.swing.JFrame {
         LocalTime horaActual = LocalTime.now();
         Time horaSQL = Time.valueOf(horaActual);
 
-        String cliente = tCliente.getText();
-        String destino = txtDestino.getText();
-        String servicio = (String) txtServicio.getText();
-        String representante = txtRepresentante.getText();
+        String cliente = cbClientes.getSelectedItem().toString();
+        String destino =  cbDestinos.getSelectedItem().toString();
+        String servicio =  cbServicios.getSelectedItem().toString();
+        String representante = cbRepresentantes.getSelectedItem().toString();
         int bulto = Integer.parseInt(txtBulto.getText());
         String monto = txtMonto.getText();
         String flete = txtFlete.getText();
@@ -1593,6 +1630,14 @@ public class Principal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnGenerarRemitoDuplicadoActionPerformed
 
+    private void cbClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbClientesActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbClientesActionPerformed
+
+    private void cbServiciosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbServiciosActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbServiciosActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1637,8 +1682,12 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JButton btnGenerarRemito;
     private javax.swing.JButton btnGenerarRemitoDuplicado;
     private javax.swing.JLabel bulto;
+    private javax.swing.JComboBox<String> cbClientes;
     private javax.swing.JCheckBox cbCuentaCorriente;
+    private javax.swing.JComboBox<String> cbDestinos;
     private javax.swing.JCheckBox cbMontoRendido;
+    private javax.swing.JComboBox<String> cbRepresentantes;
+    private javax.swing.JComboBox<String> cbServicios;
     private javax.swing.JCheckBox cbfDestino;
     private javax.swing.JCheckBox cbfOrigen;
     private javax.swing.JCheckBox cbfletePagado;
@@ -1667,10 +1716,8 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JPanel panelCargaMovimientos;
-    private javax.swing.JTextField tCliente;
     private javax.swing.JTable tablaMovimientos;
     private javax.swing.JTextField txtBulto;
-    private javax.swing.JTextField txtDestino;
     private javax.swing.JFormattedTextField txtFecha;
     private javax.swing.JTextField txtFiltroCliente;
     private javax.swing.JTextField txtFiltroRemito;
@@ -1678,8 +1725,6 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JTextField txtMonto;
     private javax.swing.JTextArea txtObservaciones;
     private javax.swing.JTextField txtRemito;
-    private javax.swing.JTextField txtRepresentante;
-    private javax.swing.JTextField txtServicio;
     // End of variables declaration//GEN-END:variables
 
     public static String fechaActual() {
@@ -1811,9 +1856,9 @@ public class Principal extends javax.swing.JFrame {
                 localidad = clienteSeleccionado.getLocalidad().toUpperCase();
                 cuit = clienteSeleccionado.getCuit().toUpperCase();
             } else {
-                nombreCliente = tCliente.getText().toUpperCase();
+                nombreCliente = cbClientes.getSelectedItem().toString().toUpperCase();
                 direccion = "";
-                localidad = txtDestino.getText().toUpperCase();
+                localidad = cbDestinos.getSelectedItem().toString().toUpperCase();
                 cuit = "";
             }
 
@@ -1857,7 +1902,7 @@ public class Principal extends javax.swing.JFrame {
                 cuitDestinatario = destinatarioSeleccionado.getCuit().toUpperCase();
 
             } else {
-                nombreDestinatario = txtDestino.getText().toUpperCase();
+                nombreDestinatario = cbDestinos.getSelectedItem().toString().toUpperCase();
                 direccionDestinatario = "";
                 localidadDestinatario = "";
                 cuitDestinatario = "";
@@ -2155,9 +2200,9 @@ public class Principal extends javax.swing.JFrame {
                 localidad = clienteSeleccionado.getLocalidad().toUpperCase();
                 cuit = clienteSeleccionado.getCuit().toUpperCase();
             } else {
-                nombreCliente = tCliente.getText().toUpperCase();
+                nombreCliente = cbClientes.getSelectedItem().toString().toUpperCase();
                 direccion = "";
-                localidad = txtDestino.getText().toUpperCase();
+                localidad = cbDestinos.getSelectedItem().toString().toUpperCase();
                 cuit = "";
             }
 
@@ -2201,7 +2246,7 @@ public class Principal extends javax.swing.JFrame {
                 cuitDestinatario = destinatarioSeleccionado.getCuit().toUpperCase();
 
             } else {
-                nombreDestinatario = txtDestino.getText().toUpperCase();
+                nombreDestinatario = cbDestinos.getSelectedItem().toString().toUpperCase();
                 direccionDestinatario = "";
                 localidadDestinatario = "";
                 cuitDestinatario = "";
