@@ -125,6 +125,7 @@ import org.jdesktop.swingx.autocomplete.ObjectToStringConverter;
 import java.io.File;
 import java.io.IOException;
 import javax.swing.JComboBox;
+import javax.swing.KeyStroke;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -164,15 +165,22 @@ public class Principal extends javax.swing.JFrame {
         TextPrompt filtroRe = new TextPrompt("Busqueda por remito", txtFiltroRemito);
 
         // Tabulador cambiar Default
-        cbClientes.setNextFocusableComponent(txtFecha);
+        
+        
+         // Establecer el siguiente componente enfocable para el campo de texto del JComboBox
+        JTextField textCliente = (JTextField) cbClientes.getEditor().getEditorComponent();
+        textCliente.setNextFocusableComponent(txtFecha);
         txtFecha.setNextFocusableComponent(cbDestinos);
-        cbDestinos.setNextFocusableComponent(cbServicios);
-        cbServicios.setNextFocusableComponent(txtBulto);
+        JTextField textDestinos = (JTextField) cbDestinos.getEditor().getEditorComponent();
+        textDestinos.setNextFocusableComponent(cbServicios);
+        JTextField textServicios = (JTextField) cbServicios.getEditor().getEditorComponent();
+        textServicios.setNextFocusableComponent(txtBulto);
         txtBulto.setNextFocusableComponent(txtRemito);
         txtRemito.setNextFocusableComponent(cbRepresentantes);
-        cbRepresentantes.setNextFocusableComponent(txtMonto);
+        JTextField textRepre = (JTextField) cbRepresentantes.getEditor().getEditorComponent();
+        textRepre.setNextFocusableComponent(txtMonto);
         txtMonto.setNextFocusableComponent(txtFlete);
-        txtFlete.setNextFocusableComponent(txtObservaciones);
+        txtFlete.setNextFocusableComponent(txtObservaciones); 
         
    
 
@@ -268,6 +276,9 @@ public class Principal extends javax.swing.JFrame {
         });
 
     }
+    
+ 
+    
    
     
     //Actualizar flete nuevo
