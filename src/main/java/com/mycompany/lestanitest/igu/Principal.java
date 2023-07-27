@@ -152,12 +152,9 @@ public class Principal extends javax.swing.JFrame {
         cargarDestinos();
         cargarRepresentantes();
         cargarServicios();
-        
-        
+
         actualizarFlete();
-        
-        
-        
+
         txtBulto.setText("1");
         txtFecha.setText(fechaActual());  //FECHA
 
@@ -165,9 +162,7 @@ public class Principal extends javax.swing.JFrame {
         TextPrompt filtroRe = new TextPrompt("Busqueda por remito", txtFiltroRemito);
 
         // Tabulador cambiar Default
-        
-        
-         // Establecer el siguiente componente enfocable para el campo de texto del JComboBox
+        // Establecer el siguiente componente enfocable para el campo de texto del JComboBox
         JTextField textCliente = (JTextField) cbClientes.getEditor().getEditorComponent();
         textCliente.setNextFocusableComponent(txtFecha);
         txtFecha.setNextFocusableComponent(cbDestinos);
@@ -180,9 +175,7 @@ public class Principal extends javax.swing.JFrame {
         JTextField textRepre = (JTextField) cbRepresentantes.getEditor().getEditorComponent();
         textRepre.setNextFocusableComponent(txtMonto);
         txtMonto.setNextFocusableComponent(txtFlete);
-        txtFlete.setNextFocusableComponent(txtObservaciones); 
-        
-   
+        txtFlete.setNextFocusableComponent(txtObservaciones);
 
         // Listener al mause para editar con doble click el movimiento.
         tablaMovimientos.addMouseListener(new MouseAdapter() {
@@ -276,229 +269,216 @@ public class Principal extends javax.swing.JFrame {
         });
 
     }
-    
- 
-    
-   
-    
+
     //Actualizar flete nuevo
     private void actualizarFlete() {
-    String bultoText = txtBulto.getText().trim();
-    if (!bultoText.isEmpty()) {
-        int bulto = Integer.parseInt(bultoText);
-        
-        // Cargar los datos desde la base de datos
-        List<Servicios> listaServicios = control.traerServicios();
+        String bultoText = txtBulto.getText().trim();
+        if (!bultoText.isEmpty()) {
+            int bulto = Integer.parseInt(bultoText);
 
-        // Buscar el servicio correspondiente en la lista
-        Object selectedItem = cbServicios.getSelectedItem();
-        if (selectedItem != null) {
-            String nombreServicio = selectedItem.toString().trim().toLowerCase();
+            // Cargar los datos desde la base de datos
+            List<Servicios> listaServicios = control.traerServicios();
 
-            for (Servicios s : listaServicios) {
-                if (s.getServicio().toLowerCase().equals(nombreServicio)) {
-                    // Calcular el flete multiplicando el precio del servicio por la cantidad de bultos
-                    BigDecimal precio = BigDecimal.valueOf(s.getPrecio());
-                    BigDecimal montoFlete = precio.multiply(BigDecimal.valueOf(bulto));
+            // Buscar el servicio correspondiente en la lista
+            Object selectedItem = cbServicios.getSelectedItem();
+            if (selectedItem != null) {
+                String nombreServicio = selectedItem.toString().trim().toLowerCase();
 
-                    // Mostrar el archivo en el campo txtFlete
-                    txtFlete.setText(montoFlete.toString());
+                for (Servicios s : listaServicios) {
+                    if (s.getServicio().toLowerCase().equals(nombreServicio)) {
+                        // Calcular el flete multiplicando el precio del servicio por la cantidad de bultos
+                        BigDecimal precio = BigDecimal.valueOf(s.getPrecio());
+                        BigDecimal montoFlete = precio.multiply(BigDecimal.valueOf(bulto));
 
-                    return;
+                        // Mostrar el archivo en el campo txtFlete
+                        txtFlete.setText(montoFlete.toString());
+
+                        return;
+                    }
                 }
+            } else {
+                // Handle the case where no item is selected
+                // Maybe display an error message or set a default value for txtFlete
+                // For example, if txtFlete is a JTextField, you could set it to an empty string:
+                // txtFlete.setText("");
             }
-        } else {
-            // Handle the case where no item is selected
-            // Maybe display an error message or set a default value for txtFlete
-            // For example, if txtFlete is a JTextField, you could set it to an empty string:
-            // txtFlete.setText("");
         }
     }
-}
-    
-    
- ModeloCliente modClientes = new ModeloCliente();
-ArrayList<Cliente> listaClientes = modClientes.getClientes();
 
-private static void mostrarResultadosBusqueda(JComboBox<String> cbDestinos, String textoBusqueda) {
-    
+    ModeloCliente modClientes = new ModeloCliente();
+    ArrayList<Cliente> listaClientes = modClientes.getClientes();
 
-    // Buscar el resultado de búsqueda
-    for (int i = 0; i < cbDestinos.getItemCount(); i++) {
-        String item = cbDestinos.getItemAt(i).toString();
-        if (item.toLowerCase().contains(textoBusqueda.toLowerCase())) { 
-            cbDestinos.setSelectedItem(item);
-            cbDestinos.getEditor().setItem(item);
-            return; // Terminar la búsqueda después de seleccionar el primer resultado
+    private static void mostrarResultadosBusqueda(JComboBox<String> cbDestinos, String textoBusqueda) {
+
+        // Buscar el resultado de búsqueda
+        for (int i = 0; i < cbDestinos.getItemCount(); i++) {
+            String item = cbDestinos.getItemAt(i).toString();
+            if (item.toLowerCase().contains(textoBusqueda.toLowerCase())) {
+                cbDestinos.setSelectedItem(item);
+                cbDestinos.getEditor().setItem(item);
+                return; // Terminar la búsqueda después de seleccionar el primer resultado
+            }
         }
     }
-}
 
-private void cargarDestinos() {
-    cbDestinos.setEditable(true);
+    private void cargarDestinos() {
+        cbDestinos.setEditable(true);
 
-    // Agregar los clientes al combobox
-    for (Cliente cliente : listaClientes) {
-        cbDestinos.addItem(cliente.getNombre());
-    }
+        // Agregar los clientes al combobox
+        for (Cliente cliente : listaClientes) {
+            cbDestinos.addItem(cliente.getNombre());
+        }
 
-    
 // Eliminar la opción en blanco después de configurar el decorador
-    cbDestinos.removeItem("");
+        cbDestinos.removeItem("");
 
-    // Establecer el índice seleccionado a -1 para no mostrar ninguna selección
-    cbDestinos.setSelectedIndex(-1);
-    
-    // Agregar ActionListener para capturar el evento "Enter"
-    cbDestinos.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            String textoBusqueda = cbDestinos.getEditor().getItem().toString();
-            mostrarResultadosBusqueda(cbDestinos, textoBusqueda);
-            if (cbDestinos.getSelectedIndex() != -1) {
-                // Obtener el cliente seleccionado del combobox
-                destinatarioSeleccionado = listaClientes.get(cbDestinos.getSelectedIndex());
+        // Establecer el índice seleccionado a -1 para no mostrar ninguna selección
+        cbDestinos.setSelectedIndex(-1);
 
-                // Actualizar los datos del remitente en el PDF usando clienteSeleccionado
-                // ... (el código para generar el PDF se mantiene igual)
-            }
-        }
-    });
-
-     // Agregar KeyListener para capturar el evento "Enter"
-    cbDestinos.getEditor().getEditorComponent().addKeyListener(new KeyAdapter() {
-        @Override
-        public void keyReleased(KeyEvent e) {
-            if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+        // Agregar ActionListener para capturar el evento "Enter"
+        cbDestinos.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
                 String textoBusqueda = cbDestinos.getEditor().getItem().toString();
                 mostrarResultadosBusqueda(cbDestinos, textoBusqueda);
+                if (cbDestinos.getSelectedIndex() != -1) {
+                    // Obtener el cliente seleccionado del combobox
+                    destinatarioSeleccionado = listaClientes.get(cbDestinos.getSelectedIndex());
+
+                    // Actualizar los datos del remitente en el PDF usando clienteSeleccionado
+                    // ... (el código para generar el PDF se mantiene igual)
+                }
             }
-        }
-    });
-}
+        });
 
-
-    private void cargarServicios() {
-        ModeloServicio modServ= new ModeloServicio();
-ArrayList<Servicios> listaServ = modServ.getServicios();
-       cbServicios.setEditable(true);
-
-    // Agregar los clientes al combobox
-    for (Servicios Servicios : listaServ) {
-        cbServicios.addItem(Servicios.getServicio());
+        // Agregar KeyListener para capturar el evento "Enter"
+        cbDestinos.getEditor().getEditorComponent().addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    String textoBusqueda = cbDestinos.getEditor().getItem().toString();
+                    mostrarResultadosBusqueda(cbDestinos, textoBusqueda);
+                }
+            }
+        });
     }
 
-    
-// Eliminar la opción en blanco después de configurar el decorador
-    cbServicios.removeItem("");
+    private void cargarServicios() {
+        ModeloServicio modServ = new ModeloServicio();
+        ArrayList<Servicios> listaServ = modServ.getServicios();
+        cbServicios.setEditable(true);
 
-    // Establecer el índice seleccionado a -1 para no mostrar ninguna selección
-    cbServicios.setSelectedIndex(-1);
-    
-    // Agregar ActionListener para capturar el evento "Enter"
-    cbServicios.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            String textoBusqueda = cbServicios.getEditor().getItem().toString();
-            mostrarResultadosBusqueda(cbServicios, textoBusqueda);
+        // Agregar los clientes al combobox
+        for (Servicios Servicios : listaServ) {
+            cbServicios.addItem(Servicios.getServicio());
         }
-    });
 
-     // Agregar KeyListener para capturar el evento "Enter"
-    cbServicios.getEditor().getEditorComponent().addKeyListener(new KeyAdapter() {
-        @Override
-        public void keyReleased(KeyEvent e) {
-            if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+// Eliminar la opción en blanco después de configurar el decorador
+        cbServicios.removeItem("");
+
+        // Establecer el índice seleccionado a -1 para no mostrar ninguna selección
+        cbServicios.setSelectedIndex(-1);
+
+        // Agregar ActionListener para capturar el evento "Enter"
+        cbServicios.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
                 String textoBusqueda = cbServicios.getEditor().getItem().toString();
                 mostrarResultadosBusqueda(cbServicios, textoBusqueda);
             }
-        }
-    });
+        });
+
+        // Agregar KeyListener para capturar el evento "Enter"
+        cbServicios.getEditor().getEditorComponent().addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    String textoBusqueda = cbServicios.getEditor().getItem().toString();
+                    mostrarResultadosBusqueda(cbServicios, textoBusqueda);
+                }
+            }
+        });
     }
 
     private void cargarRepresentantes() {
-ModeloRepresentante modRepre = new ModeloRepresentante();
-ArrayList<Representantes> listaRepresentantes = modRepre.getRepresentantes();
-      cbRepresentantes.setEditable(true);
+        ModeloRepresentante modRepre = new ModeloRepresentante();
+        ArrayList<Representantes> listaRepresentantes = modRepre.getRepresentantes();
+        cbRepresentantes.setEditable(true);
 
-    // Agregar los clientes al combobox
-    for (Representantes Repre : listaRepresentantes) {
-        cbRepresentantes.addItem(Repre.getNombre());
-    }
+        // Agregar los clientes al combobox
+        for (Representantes Repre : listaRepresentantes) {
+            cbRepresentantes.addItem(Repre.getNombre());
+        }
 
-    
 // Eliminar la opción en blanco después de configurar el decorador
-    cbRepresentantes.removeItem("");
+        cbRepresentantes.removeItem("");
 
-    // Establecer el índice seleccionado a -1 para no mostrar ninguna selección
-    cbRepresentantes.setSelectedIndex(-1);
-    
-    // Agregar ActionListener para capturar el evento "Enter"
-    cbRepresentantes.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            String textoBusqueda = cbClientes.getEditor().getItem().toString();
-            mostrarResultadosBusqueda(cbClientes, textoBusqueda);
-        }
-    });
+        // Establecer el índice seleccionado a -1 para no mostrar ninguna selección
+        cbRepresentantes.setSelectedIndex(-1);
 
-     // Agregar KeyListener para capturar el evento "Enter"
-    cbRepresentantes.getEditor().getEditorComponent().addKeyListener(new KeyAdapter() {
-        @Override
-        public void keyReleased(KeyEvent e) {
-            if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                String textoBusqueda = cbRepresentantes.getEditor().getItem().toString();
-                mostrarResultadosBusqueda(cbRepresentantes, textoBusqueda);
-            }
-        }
-    });
-    }
-
-    private void cargarClientes() {
-       cbClientes.setEditable(true);
-
-    // Agregar los clientes al combobox
-    for (Cliente cliente : listaClientes) {
-        cbClientes.addItem(cliente.getNombre());
-    }
-
-    
-// Eliminar la opción en blanco después de configurar el decorador
-    cbClientes.removeItem("");
-
-    // Establecer el índice seleccionado a -1 para no mostrar ninguna selección
-    cbClientes.setSelectedIndex(-1);
-    
-    // Agregar ActionListener para capturar el evento "Enter"
-    cbClientes.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            
-            String textoBusqueda = cbClientes.getEditor().getItem().toString();
-            mostrarResultadosBusqueda(cbClientes, textoBusqueda);
-            if (cbClientes.getSelectedIndex() != -1) {
-                // Obtener el cliente seleccionado del combobox
-                clienteSeleccionado = listaClientes.get(cbClientes.getSelectedIndex());
-
-                // Actualizar los datos del remitente en el PDF usando clienteSeleccionado
-                // ... (el código para generar el PDF se mantiene igual)
-            }
-        }
-    });
-
-     // Agregar KeyListener para capturar el evento "Enter"
-    cbClientes.getEditor().getEditorComponent().addKeyListener(new KeyAdapter() {
-        @Override
-        public void keyReleased(KeyEvent e) {
-            if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+        // Agregar ActionListener para capturar el evento "Enter"
+        cbRepresentantes.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
                 String textoBusqueda = cbClientes.getEditor().getItem().toString();
                 mostrarResultadosBusqueda(cbClientes, textoBusqueda);
             }
-        }
-    });
+        });
+
+        // Agregar KeyListener para capturar el evento "Enter"
+        cbRepresentantes.getEditor().getEditorComponent().addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    String textoBusqueda = cbRepresentantes.getEditor().getItem().toString();
+                    mostrarResultadosBusqueda(cbRepresentantes, textoBusqueda);
+                }
+            }
+        });
     }
 
-   
+    private void cargarClientes() {
+        cbClientes.setEditable(true);
+
+        // Agregar los clientes al combobox
+        for (Cliente cliente : listaClientes) {
+            cbClientes.addItem(cliente.getNombre());
+        }
+
+// Eliminar la opción en blanco después de configurar el decorador
+        cbClientes.removeItem("");
+
+        // Establecer el índice seleccionado a -1 para no mostrar ninguna selección
+        cbClientes.setSelectedIndex(-1);
+
+        // Agregar ActionListener para capturar el evento "Enter"
+        cbClientes.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                String textoBusqueda = cbClientes.getEditor().getItem().toString();
+                mostrarResultadosBusqueda(cbClientes, textoBusqueda);
+                if (cbClientes.getSelectedIndex() != -1) {
+                    // Obtener el cliente seleccionado del combobox
+                    clienteSeleccionado = listaClientes.get(cbClientes.getSelectedIndex());
+
+                    // Actualizar los datos del remitente en el PDF usando clienteSeleccionado
+                    // ... (el código para generar el PDF se mantiene igual)
+                }
+            }
+        });
+
+        // Agregar KeyListener para capturar el evento "Enter"
+        cbClientes.getEditor().getEditorComponent().addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    String textoBusqueda = cbClientes.getEditor().getItem().toString();
+                    mostrarResultadosBusqueda(cbClientes, textoBusqueda);
+                }
+            }
+        });
+    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -1283,7 +1263,6 @@ ArrayList<Representantes> listaRepresentantes = modRepre.getRepresentantes();
 
         String fPagado = "";
         String fRendido = "";
-
         String tFlete = "";
         String tMontoP = "";
         String tMontoR = "";
@@ -1298,11 +1277,18 @@ ArrayList<Representantes> listaRepresentantes = modRepre.getRepresentantes();
         Time horaSQL = Time.valueOf(horaActual);
 
         String cliente = cbClientes.getSelectedItem().toString();
-        String destino =  cbDestinos.getSelectedItem().toString();
-        String servicio =  cbServicios.getSelectedItem().toString();
+        String destino = cbDestinos.getSelectedItem().toString();
+        String servicio = cbServicios.getSelectedItem().toString();
         String representante = cbRepresentantes.getSelectedItem().toString();
         int bulto = Integer.parseInt(txtBulto.getText());
-        String monto = txtMonto.getText();
+        //txt monto
+        String txtMontoValor = txtMonto.getText();
+        String monto;
+        if (!txtMontoValor.isEmpty()) {
+            monto = txtMontoValor;
+        } else {
+            monto = "0";
+        }
         String flete = txtFlete.getText();
         String obs = txtObservaciones.getText();
         //verif flete origen/destino
@@ -1474,10 +1460,17 @@ ArrayList<Representantes> listaRepresentantes = modRepre.getRepresentantes();
 
         String cliente = cbClientes.getSelectedItem().toString();
         String destino = cbDestinos.getSelectedItem().toString();
-        String servicio =  cbServicios.getSelectedItem().toString();
+        String servicio = cbServicios.getSelectedItem().toString();
         String representante = cbRepresentantes.getSelectedItem().toString();
         int bulto = Integer.parseInt(txtBulto.getText());
-        String monto = txtMonto.getText();
+        //txt monto
+        String txtMontoValor = txtMonto.getText();
+        String monto;
+        if (!txtMontoValor.isEmpty()) {
+            monto = txtMontoValor;
+        } else {
+            monto = "0";
+        }
         String flete = txtFlete.getText();
         String obs = txtObservaciones.getText();
         //verif flete origen/destino
@@ -1577,11 +1570,18 @@ ArrayList<Representantes> listaRepresentantes = modRepre.getRepresentantes();
         Time horaSQL = Time.valueOf(horaActual);
 
         String cliente = cbClientes.getSelectedItem().toString();
-        String destino =  cbDestinos.getSelectedItem().toString();
-        String servicio =  cbServicios.getSelectedItem().toString();
+        String destino = cbDestinos.getSelectedItem().toString();
+        String servicio = cbServicios.getSelectedItem().toString();
         String representante = cbRepresentantes.getSelectedItem().toString();
         int bulto = Integer.parseInt(txtBulto.getText());
-        String monto = txtMonto.getText();
+        //txt monto
+        String txtMontoValor = txtMonto.getText();
+        String monto;
+        if (!txtMontoValor.isEmpty()) {
+            monto = txtMontoValor;
+        } else {
+            monto = "0";
+        }
         String flete = txtFlete.getText();
         String obs = txtObservaciones.getText();
         //verif flete origen/destino
@@ -1800,21 +1800,21 @@ ArrayList<Representantes> listaRepresentantes = modRepre.getRepresentantes();
             table.setWidthPercentage(100); // Ancho de la tabla en porcentaje del ancho de página
 
             // LOGO 
-            Image logo = Image.getInstance("src/main/java/com/imagenes/logoreportes.jpg");
+            Image logo = Image.getInstance("src\\main\\resources\\imagenes\\logoreportes.jpg");
             logo.scaleAbsolute(220, 133); // Ajusta los valores de ancho y alto según tus necesidades
             logo.setAlignment(Element.ALIGN_LEFT);
             // TEXTO
-            Image texto = Image.getInstance("src/main/java/com/imagenes/texto.png");
+            Image texto = Image.getInstance("src\\main\\resources\\imagenes\\texto.png");
             texto.scaleToFit(220, 200);
             texto.setAlignment(Element.ALIGN_LEFT);
             texto.setSpacingBefore(5f);
             // REMITO NO VALIDO
-            Image rem = Image.getInstance("src/main/java/com/imagenes/Remito.jpg");
+            Image rem = Image.getInstance("src\\main\\resources\\imagenes\\Remito.jpg");
             rem.scaleToFit(80, 80);
             rem.setAlignment(Element.ALIGN_CENTER);
 
             // REMITO
-            Image remito = Image.getInstance("src/main/java/com/imagenes/remito_cuit.jpg");
+            Image remito = Image.getInstance("src\\main\\resources\\imagenes\\remito_cuit.jpg");
             remito.scaleToFit(200, 200);
             remito.setAlignment(Element.ALIGN_RIGHT);
 
@@ -2005,7 +2005,7 @@ ArrayList<Representantes> listaRepresentantes = modRepre.getRepresentantes();
 
             // Agregar la imagen a la primera celda
             PdfPCell imagenCell = new PdfPCell();
-            Image firmasello = Image.getInstance("src/main/java/com/imagenes/firma_aclaracion.png");
+            Image firmasello = Image.getInstance("src\\main\\resources\\imagenes\\firma_aclaracion.png");
             firmasello.scaleToFit(300, 200);
             firmasello.setAlignment(Element.ALIGN_LEFT);
             imagenCell.addElement(firmasello);
@@ -2144,21 +2144,21 @@ ArrayList<Representantes> listaRepresentantes = modRepre.getRepresentantes();
             table.setWidthPercentage(100); // Ancho de la tabla en porcentaje del ancho de página
 
             // LOGO 
-            Image logo = Image.getInstance("src/main/java/com/imagenes/logoreportes.jpg");
+            Image logo = Image.getInstance("src\\main\\resources\\imagenes\\logoreportes.jpg");
             logo.scaleAbsolute(220, 133); // Ajusta los valores de ancho y alto según tus necesidades
             logo.setAlignment(Element.ALIGN_LEFT);
             // TEXTO
-            Image texto = Image.getInstance("src/main/java/com/imagenes/texto.png");
+            Image texto = Image.getInstance("src\\main\\resources\\imagenes\\imagenes\\texto.png");
             texto.scaleToFit(220, 200);
             texto.setAlignment(Element.ALIGN_LEFT);
             texto.setSpacingBefore(5f);
             // REMITO NO VALIDO
-            Image rem = Image.getInstance("src/main/java/com/imagenes/Remito.jpg");
+            Image rem = Image.getInstance("src\\main\\resources\\imagenes\\imagenes\\Remito.jpg");
             rem.scaleToFit(80, 80);
             rem.setAlignment(Element.ALIGN_CENTER);
 
             // REMITO
-            Image remito = Image.getInstance("src/main/java/com/imagenes/remito_cuit.jpg");
+            Image remito = Image.getInstance("src\\main\\resources\\imagenes\\imagenes\\remito_cuit.jpg");
             remito.scaleToFit(200, 200);
             remito.setAlignment(Element.ALIGN_RIGHT);
 
@@ -2349,7 +2349,7 @@ ArrayList<Representantes> listaRepresentantes = modRepre.getRepresentantes();
 
             // Agregar la imagen a la primera celda
             PdfPCell imagenCell = new PdfPCell();
-            Image firmasello = Image.getInstance("src/main/java/com/imagenes/firma_aclaracion.png");
+            Image firmasello = Image.getInstance("src\\main\\resources\\imagenes\\imagenes\\firma_aclaracion.png");
             firmasello.scaleToFit(300, 200);
             firmasello.setAlignment(Element.ALIGN_LEFT);
             imagenCell.addElement(firmasello);

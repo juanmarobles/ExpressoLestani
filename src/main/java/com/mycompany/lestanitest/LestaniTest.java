@@ -3,7 +3,6 @@
 package com.mycompany.lestanitest;
 
 import com.mycompany.lestanitest.igu.Login;
-import com.mycompany.lestanitest.igu.NuevoCliente;
 
 
 public class LestaniTest {
