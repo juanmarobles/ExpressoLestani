@@ -48,13 +48,12 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         MenuMovimientos = new javax.swing.JMenu();
         CargaMovimiento = new javax.swing.JMenuItem();
         Consultas = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
-        jMenuItem6 = new javax.swing.JMenuItem();
+        menuConsultas = new javax.swing.JMenuItem();
+        HojaDRuta = new javax.swing.JMenu();
+        MenuHDDRepresentante = new javax.swing.JMenuItem();
         jSeparator6 = new javax.swing.JPopupMenu.Separator();
-        jMenuItem7 = new javax.swing.JMenuItem();
+        HDD = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
-        MenuLocalidades = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         MenuClientes = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
@@ -110,62 +109,50 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             }
         });
 
-        jMenuItem1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/camionatras.png"))); // NOI18N
-        jMenuItem1.setText("Consultar Movimientos");
-        jMenuItem1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jMenuItem1.setPreferredSize(new java.awt.Dimension(191, 36));
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        menuConsultas.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        menuConsultas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/camionatras.png"))); // NOI18N
+        menuConsultas.setText("Consultar Movimientos");
+        menuConsultas.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        menuConsultas.setPreferredSize(new java.awt.Dimension(191, 36));
+        menuConsultas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
+                menuConsultasActionPerformed(evt);
             }
         });
-        Consultas.add(jMenuItem1);
+        Consultas.add(menuConsultas);
 
         jMenuBar1.add(Consultas);
 
-        jMenu2.setText("    Hoja de Ruta   ");
+        HojaDRuta.setText("    Hoja de Ruta   ");
 
-        jMenuItem6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jMenuItem6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/equipo.png"))); // NOI18N
-        jMenuItem6.setText("Por Representante   ");
-        jMenuItem6.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jMenuItem6.setPreferredSize(new java.awt.Dimension(164, 36));
-        jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
+        MenuHDDRepresentante.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        MenuHDDRepresentante.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/equipo.png"))); // NOI18N
+        MenuHDDRepresentante.setText("Por Representante   ");
+        MenuHDDRepresentante.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        MenuHDDRepresentante.setPreferredSize(new java.awt.Dimension(164, 36));
+        MenuHDDRepresentante.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem6ActionPerformed(evt);
+                MenuHDDRepresentanteActionPerformed(evt);
             }
         });
-        jMenu2.add(jMenuItem6);
-        jMenu2.add(jSeparator6);
+        HojaDRuta.add(MenuHDDRepresentante);
+        HojaDRuta.add(jSeparator6);
 
-        jMenuItem7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jMenuItem7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/ruta.png"))); // NOI18N
-        jMenuItem7.setText("Hoja de Ruta");
-        jMenuItem7.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jMenuItem7.setPreferredSize(new java.awt.Dimension(127, 36));
-        jMenuItem7.addActionListener(new java.awt.event.ActionListener() {
+        HDD.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        HDD.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/ruta.png"))); // NOI18N
+        HDD.setText("Hoja de Ruta");
+        HDD.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        HDD.setPreferredSize(new java.awt.Dimension(127, 36));
+        HDD.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem7ActionPerformed(evt);
+                HDDActionPerformed(evt);
             }
         });
-        jMenu2.add(jMenuItem7);
+        HojaDRuta.add(HDD);
 
-        jMenuBar1.add(jMenu2);
+        jMenuBar1.add(HojaDRuta);
 
         jMenu3.setText("      Datos Cargados   ");
-
-        MenuLocalidades.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        MenuLocalidades.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/localizacion.png"))); // NOI18N
-        MenuLocalidades.setText("Localidades");
-        MenuLocalidades.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        MenuLocalidades.setPreferredSize(new java.awt.Dimension(118, 36));
-        MenuLocalidades.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                MenuLocalidadesActionPerformed(evt);
-            }
-        });
-        jMenu3.add(MenuLocalidades);
         jMenu3.add(jSeparator1);
 
         MenuClientes.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -257,10 +244,17 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    private VerDatosCliente ventanaClientes;
     private void MenuClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuClientesActionPerformed
-        VerDatosCliente cl = new VerDatosCliente();
-        cl.setVisible(true);
+        // Verificar si la ventana ya está abierta
+    if (ventanaClientes == null || !ventanaClientes.isVisible()) {
+        // Si la ventana no está abierta o está oculta, crea una nueva instancia
+        ventanaClientes = new VerDatosCliente();
+    }
+    
+    // Mostrar la ventana y enfocarla (llevarla al frente)
+    ventanaClientes.setVisible(true);
+    ventanaClientes.toFront();
     }//GEN-LAST:event_MenuClientesActionPerformed
 
     private void MenuMovimientosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuMovimientosActionPerformed
@@ -270,53 +264,103 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private void ConsultasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConsultasActionPerformed
 
     }//GEN-LAST:event_ConsultasActionPerformed
-
-    private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
-        HojaDeRuta hd = new HojaDeRuta();
-        hd.setVisible(true);
-    }//GEN-LAST:event_jMenuItem7ActionPerformed
-
-    private void MenuLocalidadesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuLocalidadesActionPerformed
-        VerDatosLocalidades lo = new VerDatosLocalidades();
-        lo.setVisible(true);
-    }//GEN-LAST:event_MenuLocalidadesActionPerformed
-
+    private HojaDeRuta ventanaHDD;
+    private void HDDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_HDDActionPerformed
+         // Verificar si la ventana ya está abierta
+    if (ventanaHDD == null || !ventanaHDD.isVisible()) {
+        // Si la ventana no está abierta o está oculta, crea una nueva instancia
+        ventanaHDD = new HojaDeRuta();
+    }
+    
+    // Mostrar la ventana y enfocarla (llevarla al frente)
+    ventanaHDD.setVisible(true);
+    ventanaHDD.toFront();
+    }//GEN-LAST:event_HDDActionPerformed
+    private VerDatosRepresentantes ventanaDatosRepresentantes;
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
-        VerDatosRepresentantes repre = new VerDatosRepresentantes();
-        repre.setVisible(true);
+        // Verificar si la ventana ya está abierta
+    if (ventanaDatosRepresentantes == null || !ventanaDatosRepresentantes.isVisible()) {
+        // Si la ventana no está abierta o está oculta, crea una nueva instancia
+        ventanaDatosRepresentantes = new VerDatosRepresentantes();
+    }
+    
+    // Mostrar la ventana y enfocarla (llevarla al frente)
+    ventanaDatosRepresentantes.setVisible(true);
+    ventanaDatosRepresentantes.toFront();
     }//GEN-LAST:event_jMenuItem3ActionPerformed
-
+    private Principal ventanaPrincipal;
     private void CargaMovimientoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CargaMovimientoActionPerformed
-        Principal pn = new Principal();
-        pn.setVisible(true);
+        // Verificar si la ventana ya está abierta
+    if (ventanaPrincipal == null || !ventanaPrincipal.isVisible()) {
+        // Si la ventana no está abierta o está oculta, crea una nueva instancia
+        ventanaPrincipal = new Principal();
+    }
+    
+    // Mostrar la ventana y enfocarla (llevarla al frente)
+    ventanaPrincipal.setVisible(true);
+    ventanaPrincipal.toFront();
     }//GEN-LAST:event_CargaMovimientoActionPerformed
-
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        Consultas cl = new Consultas();
-        cl.setVisible(true);
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
-
+    private Consultas ventanaConsultas;
+    private void menuConsultasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuConsultasActionPerformed
+            // Verificar si la ventana ya está abierta
+    if (ventanaConsultas == null || !ventanaConsultas.isVisible()) {
+        // Si la ventana no está abierta o está oculta, crea una nueva instancia
+        ventanaConsultas = new Consultas();
+    }
+    
+    // Mostrar la ventana y enfocarla (llevarla al frente)
+    ventanaConsultas.setVisible(true);
+    ventanaConsultas.toFront();
+    }//GEN-LAST:event_menuConsultasActionPerformed
+    private Recibo ventanaRecibos;
     private void RecibosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RecibosActionPerformed
-        Recibo rc = new Recibo();
-        rc.setVisible(true);
+     // Verificar si la ventana ya está abierta
+    if (ventanaRecibos == null || !ventanaRecibos.isVisible()) {
+        // Si la ventana no está abierta o está oculta, crea una nueva instancia
+        ventanaRecibos = new Recibo();
+    }
+    
+    // Mostrar la ventana y enfocarla (llevarla al frente)
+    ventanaRecibos.setVisible(true);
+    ventanaRecibos.toFront();
     }//GEN-LAST:event_RecibosActionPerformed
-
+    private VerDatosServicios ventanaServicios;
     private void MenuServiciosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuServiciosActionPerformed
-        VerDatosServicios servi = new VerDatosServicios();
-        servi.setVisible(true);
+         // Verificar si la ventana ya está abierta
+    if (ventanaServicios == null || !ventanaServicios.isVisible()) {
+        // Si la ventana no está abierta o está oculta, crea una nueva instancia
+        ventanaServicios = new VerDatosServicios();
+    }
+    
+    // Mostrar la ventana y enfocarla (llevarla al frente)
+    ventanaServicios.setVisible(true);
+    ventanaServicios.toFront();
     }//GEN-LAST:event_MenuServiciosActionPerformed
-
+    private VerDatosVehiculos ventanaVehiculos;
     private void MenuVehiculosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuVehiculosActionPerformed
-        VerDatosVehiculos vehiculo = new VerDatosVehiculos();
-        vehiculo.setVisible(true);
+          // Verificar si la ventana ya está abierta
+    if (ventanaVehiculos == null || !ventanaVehiculos.isVisible()) {
+        // Si la ventana no está abierta o está oculta, crea una nueva instancia
+        ventanaVehiculos = new VerDatosVehiculos();
+    }
+    
+    // Mostrar la ventana y enfocarla (llevarla al frente)
+    ventanaVehiculos.setVisible(true);
+    ventanaVehiculos.toFront();
 
     }//GEN-LAST:event_MenuVehiculosActionPerformed
-
-    private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
-        HDDRepresentantes hdd = new HDDRepresentantes();
-        hdd.setVisible(true);
-
-    }//GEN-LAST:event_jMenuItem6ActionPerformed
+    private HDDRepresentantes ventanaHDDRepresentantes;
+    private void MenuHDDRepresentanteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuHDDRepresentanteActionPerformed
+        // Verificar si la ventana ya está abierta
+    if (ventanaHDDRepresentantes == null || !ventanaHDDRepresentantes.isVisible()) {
+        // Si la ventana no está abierta o está oculta, crea una nueva instancia
+        ventanaHDDRepresentantes = new HDDRepresentantes();
+    }
+    
+    // Mostrar la ventana y enfocarla (llevarla al frente)
+    ventanaHDDRepresentantes.setVisible(true);
+    ventanaHDDRepresentantes.toFront();
+    }//GEN-LAST:event_MenuHDDRepresentanteActionPerformed
 
     /**
      * @param args the command line arguments
@@ -343,26 +387,25 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem CargaMovimiento;
     private javax.swing.JMenu Consultas;
+    private javax.swing.JMenuItem HDD;
+    private javax.swing.JMenu HojaDRuta;
     private javax.swing.JMenuItem MenuClientes;
-    private javax.swing.JMenuItem MenuLocalidades;
+    private javax.swing.JMenuItem MenuHDDRepresentante;
     private javax.swing.JMenu MenuMovimientos;
     private javax.swing.JMenuItem MenuServicios;
     private javax.swing.JMenuItem MenuVehiculos;
     private javax.swing.JMenuItem Recibos;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem3;
-    private javax.swing.JMenuItem jMenuItem6;
-    private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
     private javax.swing.JPopupMenu.Separator jSeparator4;
     private javax.swing.JPopupMenu.Separator jSeparator6;
+    private javax.swing.JMenuItem menuConsultas;
     // End of variables declaration//GEN-END:variables
 }

@@ -1442,10 +1442,17 @@ ArrayList<Representantes> listaRepresentantes = modRepre.getRepresentantes();
         dispose();
 
     }//GEN-LAST:event_jButton2ActionPerformed
-
+    private PNuevoCliente ventanaCliente;
     private void btnAgregarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarClienteActionPerformed
-        PNuevoCliente nc = new PNuevoCliente();
-        nc.setVisible(true);
+        // Verificar si la ventana ya está abierta
+    if (ventanaCliente == null || !ventanaCliente.isVisible()) {
+        // Si la ventana no está abierta o está oculta, crea una nueva instancia
+        ventanaCliente = new PNuevoCliente();
+    }
+    
+    // Mostrar la ventana y enfocarla (llevarla al frente)
+    ventanaCliente.setVisible(true);
+    ventanaCliente.toFront();
 
     }//GEN-LAST:event_btnAgregarClienteActionPerformed
 
