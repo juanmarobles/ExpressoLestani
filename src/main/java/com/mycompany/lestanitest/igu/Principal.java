@@ -355,6 +355,13 @@ private void cargarDestinos() {
         public void actionPerformed(ActionEvent e) {
             String textoBusqueda = cbDestinos.getEditor().getItem().toString();
             mostrarResultadosBusqueda(cbDestinos, textoBusqueda);
+            if (cbDestinos.getSelectedIndex() != -1) {
+                // Obtener el cliente seleccionado del combobox
+                destinatarioSeleccionado = listaClientes.get(cbDestinos.getSelectedIndex());
+
+                // Actualizar los datos del remitente en el PDF usando clienteSeleccionado
+                // ... (el código para generar el PDF se mantiene igual)
+            }
         }
     });
 
@@ -466,8 +473,16 @@ ArrayList<Representantes> listaRepresentantes = modRepre.getRepresentantes();
     cbClientes.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
+            
             String textoBusqueda = cbClientes.getEditor().getItem().toString();
             mostrarResultadosBusqueda(cbClientes, textoBusqueda);
+            if (cbClientes.getSelectedIndex() != -1) {
+                // Obtener el cliente seleccionado del combobox
+                clienteSeleccionado = listaClientes.get(cbClientes.getSelectedIndex());
+
+                // Actualizar los datos del remitente en el PDF usando clienteSeleccionado
+                // ... (el código para generar el PDF se mantiene igual)
+            }
         }
     });
 

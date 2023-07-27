@@ -69,7 +69,7 @@
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" attributes="0">
                                   <EmptySpace min="-2" pref="161" max="-2" attributes="0"/>
-                                  <Component id="jButton1" min="-2" pref="136" max="-2" attributes="0"/>
+                                  <Component id="btnImprimirConsulta" min="-2" pref="136" max="-2" attributes="0"/>
                                   <EmptySpace min="-2" pref="73" max="-2" attributes="0"/>
                                   <Component id="btnImprimir" min="-2" pref="152" max="-2" attributes="0"/>
                               </Group>
@@ -177,7 +177,7 @@
                   <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="btnImprimir" alignment="3" min="-2" pref="46" max="-2" attributes="0"/>
-                      <Component id="jButton1" alignment="3" min="-2" pref="46" max="-2" attributes="0"/>
+                      <Component id="btnImprimirConsulta" alignment="3" min="-2" pref="46" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
               </Group>
@@ -950,7 +950,7 @@
             <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtClienteKeyTyped"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="jButton1">
+        <Component class="javax.swing.JButton" name="btnImprimirConsulta">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="42" green="42" red="42" type="rgb"/>
@@ -966,6 +966,9 @@
             </Property>
             <Property name="text" type="java.lang.String" value="Imprimir"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnImprimirConsultaActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnLimpiar">
           <Properties>

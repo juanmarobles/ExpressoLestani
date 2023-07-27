@@ -31,6 +31,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.print.PrinterJob;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -64,6 +65,16 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableRowSorter;
+import javax.print.*;
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.PrintRequestAttributeSet;
+import javax.print.attribute.standard.PrinterName;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import javax.swing.filechooser.FileSystemView;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.printing.PDFPageable;
 
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
@@ -77,28 +88,28 @@ public class Consultas extends javax.swing.JFrame {
     private String montoTotalImpreso;
     private String fleteTotalImpreso;
     //Nuevo
-   // private List<Movimientos> listaFiltrada;
+    // private List<Movimientos> listaFiltrada;
     private boolean mostrarPagados = false;
     private boolean mostrarNoPagados = false;
     private boolean mostrarTodos = true;
     private boolean botonMostrarPresionado = false;
     private boolean mostrarFPagados = false;
-private boolean mostrarFNoPagados = false;
-private boolean mostrarFTodos = true;
+    private boolean mostrarFNoPagados = false;
+    private boolean mostrarFTodos = true;
 
     public Consultas() {
         initComponents();
-         mostrarTablaMovimientos(control.traerMovimientos());
+        mostrarTablaMovimientos(control.traerMovimientos());
         cargarSugerencias();
         txtFechaHasta.setText(fechaActual());
         this.setLocationRelativeTo(null);
         this.setResizable(false);
-         txtTotalMonto.setEditable(false);
-         txtTotalFlete.setEditable(false);
-         txtCantBultos.setEditable(false);
-         
-         //Listener para evitar que pongan letras en Fletes
-         KeyListener keyListener = new KeyAdapter() {
+        txtTotalMonto.setEditable(false);
+        txtTotalFlete.setEditable(false);
+        txtCantBultos.setEditable(false);
+
+        //Listener para evitar que pongan letras en Fletes
+        KeyListener keyListener = new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent e) {
                 JTextField textField = (JTextField) e.getSource();
@@ -119,8 +130,7 @@ private boolean mostrarFTodos = true;
         };
 
         txtFleteCambio.addKeyListener(keyListener);
-        
-        
+
     }
 
     private void cargarSugerencias() {
@@ -180,7 +190,7 @@ private boolean mostrarFTodos = true;
         jLabel15 = new javax.swing.JLabel();
         btnMRFletes = new javax.swing.JButton();
         txtCliente = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        btnImprimirConsulta = new javax.swing.JButton();
         btnLimpiar = new javax.swing.JButton();
         jPanel9 = new javax.swing.JPanel();
         jLabel16 = new javax.swing.JLabel();
@@ -643,11 +653,16 @@ private boolean mostrarFTodos = true;
             }
         });
 
-        jButton1.setBackground(new java.awt.Color(66, 66, 66));
-        jButton1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/imprimir_24px.png"))); // NOI18N
-        jButton1.setText("Imprimir");
+        btnImprimirConsulta.setBackground(new java.awt.Color(66, 66, 66));
+        btnImprimirConsulta.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnImprimirConsulta.setForeground(new java.awt.Color(255, 255, 255));
+        btnImprimirConsulta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/imprimir_24px.png"))); // NOI18N
+        btnImprimirConsulta.setText("Imprimir");
+        btnImprimirConsulta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnImprimirConsultaActionPerformed(evt);
+            }
+        });
 
         btnLimpiar.setBackground(new java.awt.Color(51, 51, 51));
         btnLimpiar.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
@@ -725,7 +740,7 @@ private boolean mostrarFTodos = true;
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(161, 161, 161)
-                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnImprimirConsulta, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(73, 73, 73)
                                 .addComponent(btnImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -806,7 +821,7 @@ private boolean mostrarFTodos = true;
                 .addGap(20, 20, 20)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnImprimirConsulta, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(28, 28, 28))
         );
 
@@ -833,12 +848,11 @@ private boolean mostrarFTodos = true;
     private void btnMostrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarActionPerformed
 
         botonMostrarPresionado = true;
-          aplicarFiltros();
-  
-    
+        aplicarFiltros();
+
+
     }//GEN-LAST:event_btnMostrarActionPerformed
-   
-    
+
     private void aplicarFiltros() {
         // Verificar si se ha presionado el botón "Mostrar"
         if (!botonMostrarPresionado) {
@@ -880,58 +894,57 @@ private boolean mostrarFTodos = true;
         }
 
         if (desdeFecha != null && hastaFecha != null) {
-             movimientosFiltrados = movimientosFiltrados.stream()
-             .filter(mov -> {
-            Date fechaMovimiento = mov.getFecha();
-            return fechaMovimiento != null && fechaMovimiento.compareTo(desdeFecha) >= 0 && fechaMovimiento.compareTo(hastaFecha) <= 0;
-        })
-        .collect(Collectors.toList());
-}       //Chechbox
+            movimientosFiltrados = movimientosFiltrados.stream()
+                    .filter(mov -> {
+                        Date fechaMovimiento = mov.getFecha();
+                        return fechaMovimiento != null && fechaMovimiento.compareTo(desdeFecha) >= 0 && fechaMovimiento.compareTo(hastaFecha) <= 0;
+                    })
+                    .collect(Collectors.toList());
+        }       //Chechbox
         boolean mostrarPagados = cbPagados.isSelected();
         boolean mostrarNoPagados = cbNoPagados.isSelected();
         boolean mostrarFPagados = cbFletePagado.isSelected();
         boolean mostrarFNoPagados = cbFleteNoPagado.isSelected();
-        
+
         //Filtrado de Fletes y Montos
-      movimientosFiltrados = movimientosFiltrados.stream()
-    .filter(mov -> {
-        boolean estadoPagoCumple = true;
-        boolean fletesCumple = true;
+        movimientosFiltrados = movimientosFiltrados.stream()
+                .filter(mov -> {
+                    boolean estadoPagoCumple = true;
+                    boolean fletesCumple = true;
 
-        // Filtrar por estado de pago
-        if (mostrarPagados && !mov.getTipoMontoP().equals("Si")) {
-            estadoPagoCumple = false;
-        } else if (mostrarNoPagados && !mov.getTipoMontoP().equals("No")) {
-            estadoPagoCumple = false;
-        }
+                    // Filtrar por estado de pago
+                    if (mostrarPagados && !mov.getTipoMontoP().equals("Si")) {
+                        estadoPagoCumple = false;
+                    } else if (mostrarNoPagados && !mov.getTipoMontoP().equals("No")) {
+                        estadoPagoCumple = false;
+                    }
 
-        // Filtrar por fletes
-        if (mostrarFPagados && !mov.getTipoFleteP().equals("Si")) {
-            fletesCumple = false;
-        } else if (mostrarFNoPagados && !mov.getTipoFleteP().equals("No")) {
-            fletesCumple = false;
-        }
+                    // Filtrar por fletes
+                    if (mostrarFPagados && !mov.getTipoFleteP().equals("Si")) {
+                        fletesCumple = false;
+                    } else if (mostrarFNoPagados && !mov.getTipoFleteP().equals("No")) {
+                        fletesCumple = false;
+                    }
 
-        return estadoPagoCumple && fletesCumple;
-    })
-    .collect(Collectors.toList());
-      
+                    return estadoPagoCumple && fletesCumple;
+                })
+                .collect(Collectors.toList());
 
         // Mostrar la tabla con los movimientos filtrados
         mostrarTablaMovimientos(movimientosFiltrados);
         calcularTotalMonto(movimientosFiltrados);
         calcularTotalFlete(movimientosFiltrados);
         calcularTotalBultos(movimientosFiltrados);
-        
-        
+
     }
-      private void calcularTotalMonto(List<Movimientos> movimientosFiltrados) {
+
+    private void calcularTotalMonto(List<Movimientos> movimientosFiltrados) {
         // Calcular el total de los montos
         double totalMonto = movimientosFiltrados.stream()
                 .mapToDouble(mov -> {
-                        String monto = mov.getMonto().replace(".", ""); // Eliminar el separador de miles (punto)
-                         monto = monto.replace(",", "."); // Reemplazar la coma por punto decimal
-                         monto = monto.replace("$", ""); // Eliminar el signo de dólar
+                    String monto = mov.getMonto().replace(".", ""); // Eliminar el separador de miles (punto)
+                    monto = monto.replace(",", "."); // Reemplazar la coma por punto decimal
+                    monto = monto.replace("$", ""); // Eliminar el signo de dólar
                     try {
                         return Double.parseDouble(monto);
                     } catch (NumberFormatException e) {
@@ -939,41 +952,41 @@ private boolean mostrarFTodos = true;
                     }
                 })
                 .sum();
-                //Formato de Monto
-          DecimalFormatSymbols symbols = new DecimalFormatSymbols();
-          symbols.setDecimalSeparator(',');
-          symbols.setGroupingSeparator('.');
-          DecimalFormat decimalFormat = new DecimalFormat("###,###.00", symbols);
-          String totalFormateado = decimalFormat.format(totalMonto);
-          
-          txtTotalMonto.setText(totalFormateado);
+        //Formato de Monto
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        symbols.setDecimalSeparator(',');
+        symbols.setGroupingSeparator('.');
+        DecimalFormat decimalFormat = new DecimalFormat("###,###.00", symbols);
+        String totalFormateado = decimalFormat.format(totalMonto);
+
+        txtTotalMonto.setText(totalFormateado);
     }
-      
-      private void calcularTotalFlete(List<Movimientos> movimientosFiltrados) {
-    // Calcular el total de los montos
-    double totalFlete = movimientosFiltrados.stream()
-            .mapToDouble(mov -> {
-                String monto = mov.getFlete().replace(".", ""); // Eliminar el separador de miles (punto)
-                monto = monto.replace(",", "."); // Reemplazar la coma por punto decimal
-                monto = monto.replace("$", ""); // Eliminar el signo de dólar
-                try {
-                    return Double.parseDouble(monto);
-                } catch (NumberFormatException e) {
-                    return 0.0;
-                }
-            })
-            .sum();
 
-    DecimalFormatSymbols symbols = new DecimalFormatSymbols();
-    symbols.setDecimalSeparator(',');
-    symbols.setGroupingSeparator('.');
-    DecimalFormat decimalFormat = new DecimalFormat("###,###.00", symbols);
-    String totalFormateado = decimalFormat.format(totalFlete);
+    private void calcularTotalFlete(List<Movimientos> movimientosFiltrados) {
+        // Calcular el total de los montos
+        double totalFlete = movimientosFiltrados.stream()
+                .mapToDouble(mov -> {
+                    String monto = mov.getFlete().replace(".", ""); // Eliminar el separador de miles (punto)
+                    monto = monto.replace(",", "."); // Reemplazar la coma por punto decimal
+                    monto = monto.replace("$", ""); // Eliminar el signo de dólar
+                    try {
+                        return Double.parseDouble(monto);
+                    } catch (NumberFormatException e) {
+                        return 0.0;
+                    }
+                })
+                .sum();
 
-    txtTotalFlete.setText(totalFormateado);
-}
-      
-    private void calcularTotalBultos(List<Movimientos> movimientosFiltrados){
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        symbols.setDecimalSeparator(',');
+        symbols.setGroupingSeparator('.');
+        DecimalFormat decimalFormat = new DecimalFormat("###,###.00", symbols);
+        String totalFormateado = decimalFormat.format(totalFlete);
+
+        txtTotalFlete.setText(totalFormateado);
+    }
+
+    private void calcularTotalBultos(List<Movimientos> movimientosFiltrados) {
         int sumaBultos = movimientosFiltrados.stream()
                 .mapToInt(Movimientos::getBultos)
                 .sum();
@@ -981,9 +994,7 @@ private boolean mostrarFTodos = true;
         txtCantBultos.setText(String.format("%,d", sumaBultos));
     }
 
-    
-    
-   /* 
+    /* 
     private double calcularTotalMonto(List<Movimientos> movimientos) {
         double totalMonto = 0.0;
         DecimalFormat formatoMoneda = (DecimalFormat) DecimalFormat.getCurrencyInstance(Locale.CANADA);
@@ -1135,7 +1146,7 @@ private boolean mostrarFTodos = true;
 
         txtCantBultos.setText(String.format("%,d", sumaBultos));
     }
-*/
+     */
     private void mostrarTablaMovimientos(List<Movimientos> listaMovimientos) {
         //filas y columnas no editables
         DefaultTableModel tabla = new DefaultTableModel() {
@@ -1146,7 +1157,7 @@ private boolean mostrarFTodos = true;
 
         };
         //nombres de columnas
-        String titulos[] = {"MOVIMIENTO", "FECHA","HORA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "PAGADO", "RENDIDO", "FLETE", "PAGADO", "RENDIDO", "A_CARGO_DE", "REPRESENTANTE", "CC", "OBS"};
+        String titulos[] = {"MOVIMIENTO", "HORA", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "PAGADO", "RENDIDO", "FLETE", "PAGADO", "RENDIDO", "A_CARGO_DE", "REPRESENTANTE", "CC", "OBS"};
         tabla.setColumnIdentifiers(titulos);
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tabla);
         tablaConsultas.setRowSorter(sorter);
@@ -1154,7 +1165,7 @@ private boolean mostrarFTodos = true;
         //carga de los datos desde la lista filtrada
         if (listaMovimientos != null) {
             for (Movimientos mov : listaMovimientos) {
-                Object[] objeto = {mov.getId_movimientos(), mov.getFechaFormateada(),mov.getHora(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
+                Object[] objeto = {mov.getId_movimientos(), mov.getHora(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
                 tabla.addRow(objeto);
             }
         }
@@ -1183,26 +1194,25 @@ private boolean mostrarFTodos = true;
     }
 
 
-
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
 
     }//GEN-LAST:event_formWindowOpened
 
     private void txtClienteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtClienteKeyTyped
-     
+
 
     }//GEN-LAST:event_txtClienteKeyTyped
     /**
      * CHECK BOX PAGADOS
-     * 
+     *
      */
-     
+
     private void cbPagadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbPagadosActionPerformed
         aplicarFiltros();
     }//GEN-LAST:event_cbPagadosActionPerformed
 
     private void cbNoPagadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbNoPagadosActionPerformed
-       aplicarFiltros();
+        aplicarFiltros();
     }//GEN-LAST:event_cbNoPagadosActionPerformed
 
     private void cbmTodosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbmTodosActionPerformed
@@ -1238,7 +1248,7 @@ private boolean mostrarFTodos = true;
     }//GEN-LAST:event_txtTotalFleteActionPerformed
 
     private void CuentaCorrienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CuentaCorrienteActionPerformed
-        
+
     }//GEN-LAST:event_CuentaCorrienteActionPerformed
 
     private void btnImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirActionPerformed
@@ -1246,7 +1256,7 @@ private boolean mostrarFTodos = true;
     }//GEN-LAST:event_btnImprimirActionPerformed
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
-      /*  txtFechaDesde.setText("");
+        /*  txtFechaDesde.setText("");
        // txtFechaHasta.setText("");
         txtCliente.setText("");
         txtTotalMonto.setText("");
@@ -1255,55 +1265,52 @@ private boolean mostrarFTodos = true;
         dispose();
         Consultas con = new Consultas();
         con.setVisible(true);
-        
+
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
     private void btnCambiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCambiarActionPerformed
-       String nuevoMontoFlete = txtFleteCambio.getText();
+        String nuevoMontoFlete = txtFleteCambio.getText();
         double montoDouble = Double.parseDouble(nuevoMontoFlete);// Obtener el nuevo monto de flete ingresado
         cambiarValorFlete(montoDouble);
     }//GEN-LAST:event_btnCambiarActionPerformed
 
     private void txtTotalMontoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTotalMontoActionPerformed
-      
+
     }//GEN-LAST:event_txtTotalMontoActionPerformed
+
+    private void btnImprimirConsultaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirConsultaActionPerformed
+        imprimirPDF();
+    }//GEN-LAST:event_btnImprimirConsultaActionPerformed
     private void cambiarValorFlete(double nuevoMontoFlete) {
-    int[] filasSeleccionadas = tablaConsultas.getSelectedRows(); // Obtener índices de las filas seleccionadas
-    String nuevoValorFleteTexto = txtFleteCambio.getText().trim(); // Obtener el nuevo valor del campo de texto
-    double nuevoValorFlete = Double.parseDouble(nuevoValorFleteTexto); // Convertir a tipo numérico
+        int[] filasSeleccionadas = tablaConsultas.getSelectedRows(); // Obtener índices de las filas seleccionadas
+        String nuevoValorFleteTexto = txtFleteCambio.getText().trim(); // Obtener el nuevo valor del campo de texto
+        double nuevoValorFlete = Double.parseDouble(nuevoValorFleteTexto); // Convertir a tipo numérico
 
-    if (filasSeleccionadas.length > 0) {
-        DefaultTableModel modeloTabla = (DefaultTableModel) tablaConsultas.getModel();
-        int columnaFlete = 9; // Índice de la columna "Flete" en el modelo de tabla
+        if (filasSeleccionadas.length > 0) {
+            DefaultTableModel modeloTabla = (DefaultTableModel) tablaConsultas.getModel();
+            int columnaFlete = 9; // Índice de la columna "Flete" en el modelo de tabla
 
-        for (int filaSeleccionada : filasSeleccionadas) {
-            int fila = filaSeleccionada; // Declarar y asignar el valor de filaSeleccionada a fila
-            modeloTabla.setValueAt(nuevoMontoFlete, fila, columnaFlete);
+            for (int filaSeleccionada : filasSeleccionadas) {
+                int fila = filaSeleccionada; // Declarar y asignar el valor de filaSeleccionada a fila
+                modeloTabla.setValueAt(nuevoMontoFlete, fila, columnaFlete);
 
-            int idMovimientos = (int) modeloTabla.getValueAt(fila, 0);
-            Movimientos movimiento = control.traerMovimiento(idMovimientos);
+                int idMovimientos = (int) modeloTabla.getValueAt(fila, 0);
+                Movimientos movimiento = control.traerMovimiento(idMovimientos);
 
-            if (movimiento != null) {
-                movimiento.setFlete(nuevoValorFleteTexto); // Guardar el valor sin el signo "$"
-                control.actualizarPrecioFlete(movimiento, nuevoValorFleteTexto); // Utilizar el método actualizarPrecioFlete() de la controladora
-                String nuevoValorFleteConSigno = "$" + nuevoValorFleteTexto; // Agregar el signo "$"
-                modeloTabla.setValueAt(nuevoValorFleteConSigno, fila, columnaFlete); // Actualizar el valor en la columna "FLETE"
+                if (movimiento != null) {
+                    movimiento.setFlete(nuevoValorFleteTexto); // Guardar el valor sin el signo "$"
+                    control.actualizarPrecioFlete(movimiento, nuevoValorFleteTexto); // Utilizar el método actualizarPrecioFlete() de la controladora
+                    String nuevoValorFleteConSigno = "$" + nuevoValorFleteTexto; // Agregar el signo "$"
+                    modeloTabla.setValueAt(nuevoValorFleteConSigno, fila, columnaFlete); // Actualizar el valor en la columna "FLETE"
+                }
             }
+
+            modeloTabla.fireTableDataChanged();
+            JOptionPane.showMessageDialog(null, "Se cambió el monto de los fletes seleccionados con éxito", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(null, "No se pudo cambiar el monto cargado", "Error", JOptionPane.ERROR_MESSAGE);
         }
-
-        modeloTabla.fireTableDataChanged();
-        JOptionPane.showMessageDialog(null, "Se cambió el monto de los fletes seleccionados con éxito", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-    } else {
-        JOptionPane.showMessageDialog(null, "No se pudo cambiar el monto cargado", "Error", JOptionPane.ERROR_MESSAGE);
     }
-}
-
-  
-         
-
-   
-
-    
 
     /**
      * @param args the command line arguments
@@ -1355,6 +1362,7 @@ private boolean mostrarFTodos = true;
     private javax.swing.ButtonGroup Grupo2;
     private javax.swing.JButton btnCambiar;
     private javax.swing.JButton btnImprimir;
+    private javax.swing.JButton btnImprimirConsulta;
     private javax.swing.JButton btnLimpiar;
     private javax.swing.JButton btnMPFletes;
     private javax.swing.JButton btnMPMontos;
@@ -1366,7 +1374,6 @@ private boolean mostrarFTodos = true;
     private javax.swing.JRadioButton cbPagados;
     private javax.swing.JRadioButton cbfTodos;
     private javax.swing.JRadioButton cbmTodos;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
@@ -1404,165 +1411,59 @@ private boolean mostrarFTodos = true;
         Date fecha = new Date();
         SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/YYYY");
         return formatoFecha.format(fecha);
- 
+
     }
+
     //Nueva funcion de marcar como pagados Monto
-   private void cambiarTipoMonto() {
-    int[] filasSeleccionadas = tablaConsultas.getSelectedRows();
-    if (filasSeleccionadas.length > 0) {
-        DefaultTableModel modeloTabla = (DefaultTableModel) tablaConsultas.getModel();
-
-        for (int filaSeleccionada : filasSeleccionadas) {
-            int idMovimientos = (int) modeloTabla.getValueAt(filaSeleccionada, 0);
-
-            Movimientos movimiento = control.traerMovimiento(idMovimientos); // Reemplaza el método traerMovimiento() según corresponda
-
-            if (movimiento != null) {
-                String tipoMonto = (String) modeloTabla.getValueAt(filaSeleccionada, 7);
-
-                if (tipoMonto.equals("No")) {
-                    control.actualizarMonto(movimiento, "Si");
-                    modeloTabla.setValueAt("Si", filaSeleccionada, 7);
-                }
-            }
-        }
-
-        modeloTabla.fireTableDataChanged();
-    }
-}
-    
-    
-/*
     private void cambiarTipoMonto() {
         int[] filasSeleccionadas = tablaConsultas.getSelectedRows();
         if (filasSeleccionadas.length > 0) {
             DefaultTableModel modeloTabla = (DefaultTableModel) tablaConsultas.getModel();
-            for (int i = 0; i < filasSeleccionadas.length; i++) {
-                int filaSeleccionada = filasSeleccionadas[i];
-                int idMovimientos = (int) modeloTabla.getValueAt(filaSeleccionada, 0);
-                Movimientos movimiento = null;
 
-                // Buscar el movimiento en la lista filtrada en lugar de
-                for (Movimientos mov : listaFiltrada) {
-                    if (mov.getId_movimientos() == idMovimientos) {
-                        movimiento = mov;
-                        break;
-                    }
-                }
+            for (int filaSeleccionada : filasSeleccionadas) {
+                int idMovimientos = (int) modeloTabla.getValueAt(filaSeleccionada, 0);
+
+                Movimientos movimiento = control.traerMovimiento(idMovimientos); // Reemplaza el método traerMovimiento() según corresponda
 
                 if (movimiento != null) {
                     String tipoMonto = (String) modeloTabla.getValueAt(filaSeleccionada, 7);
-                    if (!tipoMonto.equals("Si")) {
-                        movimiento.setTipoMontoP("Si");
+
+                    if (tipoMonto.equals("No")) {
                         control.actualizarMonto(movimiento, "Si");
                         modeloTabla.setValueAt("Si", filaSeleccionada, 7);
                     }
                 }
             }
+
             modeloTabla.fireTableDataChanged();
         }
-    }*/
-     //Nuevo metodo para marcar como pagados fletes
-   private void cambiarTipoFlete() {
-    int[] filasSeleccionadas = tablaConsultas.getSelectedRows();
-    if (filasSeleccionadas.length > 0) {
-        DefaultTableModel modeloTabla = (DefaultTableModel) tablaConsultas.getModel();
-
-        for (int filaSeleccionada : filasSeleccionadas) {
-            int idMovimientos = (int) modeloTabla.getValueAt(filaSeleccionada, 0);
-
-            Movimientos movimiento = control.traerMovimiento(idMovimientos); // Reemplaza el método traerMovimiento() según corresponda
-
-            if (movimiento != null) {
-                String tipoFlete = (String) modeloTabla.getValueAt(filaSeleccionada, 10);
-
-                if (tipoFlete.equals("No")) {
-                    control.actualizarFlete(movimiento, "Si");
-                    modeloTabla.setValueAt("Si", filaSeleccionada, 10);
-                }
-            }
-        }
-
-        modeloTabla.fireTableDataChanged();
     }
-}
-   /* private void cambiarTipoFlete() {
+
+    //Nuevo metodo para marcar como pagados fletes
+    private void cambiarTipoFlete() {
         int[] filasSeleccionadas = tablaConsultas.getSelectedRows();
         if (filasSeleccionadas.length > 0) {
             DefaultTableModel modeloTabla = (DefaultTableModel) tablaConsultas.getModel();
-            for (int i = 0; i < filasSeleccionadas.length; i++) {
-                int filaSeleccionada = filasSeleccionadas[i];
-                int idMovimientos = (int) modeloTabla.getValueAt(filaSeleccionada, 0);
-                Movimientos movimiento = null;
 
-              
+            for (int filaSeleccionada : filasSeleccionadas) {
+                int idMovimientos = (int) modeloTabla.getValueAt(filaSeleccionada, 0);
+
+                Movimientos movimiento = control.traerMovimiento(idMovimientos); // Reemplaza el método traerMovimiento() según corresponda
 
                 if (movimiento != null) {
                     String tipoFlete = (String) modeloTabla.getValueAt(filaSeleccionada, 10);
-                    if (!tipoFlete.equals("Si")) {
-                        movimiento.setTipoFleteP("Si");
+
+                    if (tipoFlete.equals("No")) {
                         control.actualizarFlete(movimiento, "Si");
                         modeloTabla.setValueAt("Si", filaSeleccionada, 10);
                     }
                 }
             }
+
             modeloTabla.fireTableDataChanged();
         }
-    }*/
-
-    /*
-    private void updateMonto() {
-        DefaultTableModel tableModel = (DefaultTableModel) tablaConsultas.getModel();
-        tableModel.setRowCount(0); // Limpiar la tabla
-
-        for (Movimientos mov : listaFiltrada) {
-            boolean mostrarFila = true;
-
-            if (cbPagados.isSelected() && !Arrays.asList("Si", "Rendido", "Pagado/Rendido").contains(mov.getTipoMonto())) {
-                mostrarFila = false;
-            }
-
-            if (cbNoPagados.isSelected() && !mov.getTipoMonto().equals("No")) {
-                mostrarFila = false;
-            }
-
-            if (mostrarFila) {
-                Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMonto(), mov.getFlete(), mov.getTipoFlete(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
-                tableModel.addRow(row);
-            }
-        }
-
-        modeloTabla.fireTableDataChanged();
     }
-}
-    
-    
 
-     //Nuevo metodo para marcar como pagados fletes
-   private void cambiarTipoFlete() {
-    int[] filasSeleccionadas = tablaConsultas.getSelectedRows();
-    if (filasSeleccionadas.length > 0) {
-        DefaultTableModel modeloTabla = (DefaultTableModel) tablaConsultas.getModel();
-
-        for (int filaSeleccionada : filasSeleccionadas) {
-            int idMovimientos = (int) modeloTabla.getValueAt(filaSeleccionada, 0);
-
-            Movimientos movimiento = control.traerMovimiento(idMovimientos); // Reemplaza el método traerMovimiento() según corresponda
-
-            if (movimiento != null) {
-                String tipoFlete = (String) modeloTabla.getValueAt(filaSeleccionada, 10);
-
-                if (tipoFlete.equals("No")) {
-                    control.actualizarFlete(movimiento, "Si");
-                    modeloTabla.setValueAt("Si", filaSeleccionada, 10);
-                }
-            }
-        }
-
-        modeloTabla.fireTableDataChanged();
-    }
-}
-   */
     private void cambiarTipoFleteRendido() {
         int[] filasSeleccionadas = tablaConsultas.getSelectedRows();
         if (filasSeleccionadas.length > 0) {
@@ -1571,8 +1472,6 @@ private boolean mostrarFTodos = true;
                 int filaSeleccionada = filasSeleccionadas[i];
                 int idMovimientos = (int) modeloTabla.getValueAt(filaSeleccionada, 0);
                 Movimientos movimiento = null;
-
-               
 
                 if (movimiento != null) {
                     String tipoFlete = (String) modeloTabla.getValueAt(filaSeleccionada, 11);
@@ -1587,6 +1486,7 @@ private boolean mostrarFTodos = true;
         }
 
     }
+
     //IMPRIMIR CONSULTAS
     private void generarPDF() {
         Document document = new Document();
@@ -1614,10 +1514,10 @@ private boolean mostrarFTodos = true;
                 document.open();
 
                 //FUENTES
-                Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 8, Font.BOLD);
+                Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 7, Font.BOLD);
                 Font fontTotales = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
                 Font fontFecha = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
-                Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 8);
+                Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 7);
 
                 // LOGO
                 Image logo = Image.getInstance("src/main/java/com/imagenes/logo.jpg");
@@ -1643,12 +1543,12 @@ private boolean mostrarFTodos = true;
                 document.add(fechas);
 
                 //creacion de la TABLA
-                PdfPTable table = new PdfPTable(tablaConsultas.getColumnCount() - 6); // Excluir las 6 columnas A_CARGO_DE, CC, OBS, MOVIMIENTO, RENDIDO_1 y RENDIDO_2
+                PdfPTable table = new PdfPTable(tablaConsultas.getColumnCount() - 7); // Excluir las 6 columnas A_CARGO_DE, CC, OBS, MOVIMIENTO, RENDIDO_1 y RENDIDO_2
                 table.setSpacingBefore(10f); // Espacio antes de la tabla (en puntos)
                 table.setSpacingAfter(10f);
 
                 // Ajustar espacio horizontal
-                float[] columnWidths = {0.9f, 1f, 1f, 0.7f, 0.7f, 1f, 0.7f, 1f, 0.7f, 1.3f}; // Anchos de las columnas (proporciones)
+                float[] columnWidths = {0.9f, 1f, 1f, 0.8f, 0.8f, 1f, 0.8f, 1f, 0.8f, 1.5f}; // Anchos de las columnas (proporciones)
                 table.setWidths(columnWidths);
 
                 table.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
@@ -1659,7 +1559,7 @@ private boolean mostrarFTodos = true;
                 for (int i = 0; i < tablaConsultas.getColumnCount(); i++) {
                     String col = tablaConsultas.getColumnName(i);
                     if (!col.equals("A_CARGO_DE") && !col.equals("CC") && !col.equals("OBS") && !col.equals("MOVIMIENTO")
-                            && !col.equals("RENDIDO") && !col.equals("RENDIDO")) {
+                            && !col.equals("RENDIDO") && !col.equals("RENDIDO") && !col.equals("HORA")) {
                         PdfPCell cell = new PdfPCell(new Phrase(col, font));
                         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                         cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
@@ -1670,7 +1570,7 @@ private boolean mostrarFTodos = true;
                     for (int col = 0; col < tablaConsultas.getColumnCount(); col++) {
                         String colName = tablaConsultas.getColumnName(col);
                         if (!colName.equals("A_CARGO_DE") && !colName.equals("CC") && !colName.equals("OBS") && !colName.equals("MOVIMIENTO")
-                                && !colName.equals("RENDIDO") && !colName.equals("RENDIDO")) {
+                                && !colName.equals("RENDIDO") && !colName.equals("RENDIDO") && !colName.equals("HORA")) {
                             Object value = tablaConsultas.getValueAt(row, col);
                             if (value != null) {
                                 PdfPCell cell = new PdfPCell(new Phrase(value.toString(), fontFilas));
@@ -1715,5 +1615,166 @@ private boolean mostrarFTodos = true;
             Logger.getLogger(Consultas.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+    }
+
+    private void imprimirPDF() {
+        Document document = new Document();
+        try {
+            String userHome = FileSystemView.getFileSystemView().getHomeDirectory().getAbsolutePath();
+            String outputPath = userHome + File.separator + "archivo.pdf";
+            // Crear el archivo de salida
+            File outputFile = new File(outputPath);
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile));
+            document.open();
+
+            //FUENTES
+            Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 7, Font.BOLD);
+            Font fontTotales = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
+            Font fontFecha = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
+            Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 7);
+
+            // LOGO
+            Image logo = Image.getInstance("src/main/java/com/imagenes/logo.jpg");
+            logo.scaleToFit(450, 800);
+            logo.setAlignment(Element.ALIGN_CENTER);
+            document.add(logo);
+            // TITULO
+            Paragraph titulo = new Paragraph("DETALLE DE MOVIMIENTOS", FontFactory.getFont(FontFactory.TIMES_ROMAN, 16, Font.BOLD, BaseColor.BLACK));
+            titulo.setAlignment(Element.ALIGN_CENTER);
+            titulo.setSpacingAfter(10f); // Espacio después del título (en puntos)
+
+            // FECHAS
+            String fechaDesde = txtFechaDesde.getText();
+            String fechaHasta = txtFechaHasta.getText();
+
+            // Agregar fechas desde y hasta al título
+            Chunk chunkFechas = new Chunk("Desde " + fechaDesde + " \nHasta " + fechaHasta, fontFecha);
+            Paragraph fechas = new Paragraph(chunkFechas);
+            fechas.setAlignment(Element.ALIGN_CENTER);
+            fechas.setSpacingAfter(5f); // Espacio después de las fechas (en puntos)
+
+            document.add(titulo);
+            document.add(fechas);
+
+            //creacion de la TABLA
+            PdfPTable table = new PdfPTable(tablaConsultas.getColumnCount() - 7); // Excluir las 6 columnas A_CARGO_DE, CC, OBS, MOVIMIENTO, RENDIDO_1 y RENDIDO_2
+            table.setSpacingBefore(10f); // Espacio antes de la tabla (en puntos)
+            table.setSpacingAfter(10f);
+
+            // Ajustar espacio horizontal
+            float[] columnWidths = {0.9f, 1f, 1f, 0.8f, 0.8f, 1f, 0.8f, 1f, 0.8f, 1.5f}; // Anchos de las columnas (proporciones)
+            table.setWidths(columnWidths);
+
+            table.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
+
+            table.setWidths(columnWidths);
+
+            // Agregar las celdas a la tabla
+            for (int i = 0; i < tablaConsultas.getColumnCount(); i++) {
+                String col = tablaConsultas.getColumnName(i);
+                if (!col.equals("A_CARGO_DE") && !col.equals("CC") && !col.equals("OBS") && !col.equals("MOVIMIENTO")
+                        && !col.equals("RENDIDO") && !col.equals("RENDIDO") && !col.equals("HORA")) {
+                    PdfPCell cell = new PdfPCell(new Phrase(col, font));
+                    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
+                    table.addCell(cell);
+                }
+            }
+            for (int row = 0; row < tablaConsultas.getRowCount(); row++) {
+                for (int col = 0; col < tablaConsultas.getColumnCount(); col++) {
+                    String colName = tablaConsultas.getColumnName(col);
+                    if (!colName.equals("A_CARGO_DE") && !colName.equals("CC") && !colName.equals("OBS") && !colName.equals("MOVIMIENTO")
+                            && !colName.equals("RENDIDO") && !colName.equals("RENDIDO") && !colName.equals("HORA")) {
+                        Object value = tablaConsultas.getValueAt(row, col);
+                        if (value != null) {
+                            PdfPCell cell = new PdfPCell(new Phrase(value.toString(), fontFilas));
+                            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                            cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
+                            table.addCell(cell);
+                        }
+                    }
+                }
+            }
+
+            document.add(table);
+            // Crear una tabla para los montos totales
+            PdfPTable totalsTable = new PdfPTable(2);
+            totalsTable.setWidthPercentage(100);
+
+            // Monto total
+            // Establecer la fuente deseada
+            Phrase montoTotalPhrase = new Phrase("Monto total: $" + txtTotalMonto.getText(), fontTotales);
+            PdfPCell montoTotalCell = new PdfPCell(montoTotalPhrase);
+            montoTotalCell.setBorder(Rectangle.NO_BORDER);
+            montoTotalCell.setHorizontalAlignment(Element.ALIGN_CENTER); // Alinear la celda al centro
+            totalsTable.addCell(montoTotalCell);
+
+            // Flete total
+            Phrase fleteTotalPhrase = new Phrase("Flete total: $" + txtTotalFlete.getText(), fontTotales);
+            PdfPCell fleteTotalCell = new PdfPCell(fleteTotalPhrase);
+            fleteTotalCell.setBorder(Rectangle.NO_BORDER);
+            fleteTotalCell.setHorizontalAlignment(Element.ALIGN_CENTER); // Alinear la celda al centro
+            totalsTable.addCell(fleteTotalCell);
+
+            totalsTable.setSpacingBefore(10f);
+            document.add(totalsTable);
+            document.close();
+            writer.close();
+            // Imprimir el PDF automáticamente
+            // Imprimir el archivo PDF automáticamente
+            try {
+                // Cargar el archivo PDF generado previamente
+                PDDocument pdfDocument = PDDocument.load(new File(outputPath));
+
+                // Obtener la impresora predeterminada y crear un objeto PDFPageable
+                PrinterJob printerJob = PrinterJob.getPrinterJob();
+                PDFPageable pageable = new PDFPageable(pdfDocument);
+
+                // Establecer el objeto PDFPageable en el trabajo de impresión
+                printerJob.setPageable(pageable);
+
+                // Imprimir el documento
+                printerJob.print();
+
+                // Cerrar el documento PDF después de imprimir
+                pdfDocument.close();
+
+                JOptionPane.showMessageDialog(null, "La consulta se generó e imprimió correctamente.", "Información", JOptionPane.INFORMATION_MESSAGE);
+            } catch (Exception e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Error al generar o imprimir la consulta.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+        } catch (DocumentException | FileNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "Error al generar el archivo PDF.", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException ex) {
+            Logger.getLogger(Consultas.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    private void imprimir(String filePath) {
+        try {
+            // Crear un flujo de entrada para el archivo PDF
+            FileInputStream fis = new FileInputStream(filePath);
+
+            // Obtener la impresora por defecto del sistema
+            PrintService printService = PrintServiceLookup.lookupDefaultPrintService();
+
+            // Crear un trabajo de impresión
+            DocPrintJob printJob = printService.createPrintJob();
+            Doc doc = new SimpleDoc(fis, DocFlavor.INPUT_STREAM.AUTOSENSE, null);
+
+            // Establecer las opciones de impresión
+            PrintRequestAttributeSet printAttributes = new HashPrintRequestAttributeSet();
+            printAttributes.add(new PrinterName(printService.getName(), null));
+
+            // Enviar el trabajo de impresión a la impresora
+            printJob.print(doc, printAttributes);
+
+            fis.close();
+        } catch (IOException | PrintException e) {
+            JOptionPane.showMessageDialog(null, "Error al imprimir el archivo PDF.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }
