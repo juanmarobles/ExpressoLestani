@@ -70,7 +70,7 @@ public class EditarVehiculo extends javax.swing.JFrame {
         btnEditar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Editar Vehiculos");
+        setTitle("Expreso Lestani SRL - Editar Vehiculos");
 
         jPanel2.setBackground(new java.awt.Color(66, 66, 66));
 

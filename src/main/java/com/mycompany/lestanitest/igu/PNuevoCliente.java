@@ -51,6 +51,7 @@ public class PNuevoCliente extends javax.swing.JFrame {
         txtLocalidad = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Expreso Lestani SRL - Nuevo Cliente");
 
         jPanel2.setBackground(new java.awt.Color(66, 66, 66));
 

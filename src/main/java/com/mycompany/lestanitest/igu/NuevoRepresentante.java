@@ -46,6 +46,7 @@ public class NuevoRepresentante extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Expreso Lestani SRL - Nuevo Representante");
 
         jPanel1.setBackground(new java.awt.Color(66, 66, 66));
 

@@ -542,7 +542,7 @@ public class Recibos extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTable1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Recibos Expreso Lestani SRL");
+        setTitle("Expreso Lestani SRL - Recibos");
         setBackground(new java.awt.Color(66, 66, 66));
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowOpened(java.awt.event.WindowEvent evt) {

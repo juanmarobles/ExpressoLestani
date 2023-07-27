@@ -70,7 +70,9 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jCheckBoxMenuItem1.setText("jCheckBoxMenuItem1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Expreso Lestani S.R.L - Ventana Principal");
         setBackground(new java.awt.Color(51, 102, 255));
+        setIconImages(null);
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/Fondo de pantalla.png"))); // NOI18N
 

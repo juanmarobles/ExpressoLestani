@@ -45,7 +45,7 @@ public class NuevoServicio extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Expreso Lestani SRL");
+        setTitle("Expreso Lestani SRL - Crear Servicio");
 
         jPanel1.setBackground(new java.awt.Color(66, 66, 66));
 

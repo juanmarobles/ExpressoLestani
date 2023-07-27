@@ -61,7 +61,7 @@ dialog.setVisible(true);
         jLabel5 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Editar Servicio");
+        setTitle("Expreso Lestani SRL - Editar Servicio");
 
         jPanel2.setBackground(new java.awt.Color(66, 66, 66));
 

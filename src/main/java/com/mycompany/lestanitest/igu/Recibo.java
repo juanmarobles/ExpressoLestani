@@ -77,7 +77,7 @@ public class Recibo extends javax.swing.JFrame {
         btnCancelar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Recibo");
+        setTitle("Expreso Lestani SRL - Recibo");
         setBackground(new java.awt.Color(66, 66, 66));
 
         jPanel1.setBackground(new java.awt.Color(66, 66, 66));

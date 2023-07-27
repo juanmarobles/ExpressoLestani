@@ -63,7 +63,7 @@ dialog.setVisible(true);
         txtDireccion = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Editar Representante");
+        setTitle("Expreso Lestani SRL - Editar Representante");
 
         jPanel2.setBackground(new java.awt.Color(66, 66, 66));
 

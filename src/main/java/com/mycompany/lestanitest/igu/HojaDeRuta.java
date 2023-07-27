@@ -150,7 +150,7 @@ public class HojaDeRuta extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Expreso Lestani SRL-[Hoja de Ruta]");
+        setTitle("Expreso Lestani SRL- Hoja de Ruta");
         setExtendedState(6);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowOpened(java.awt.event.WindowEvent evt) {

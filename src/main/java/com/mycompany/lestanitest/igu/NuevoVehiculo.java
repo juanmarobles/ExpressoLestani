@@ -57,7 +57,7 @@ public class NuevoVehiculo extends javax.swing.JFrame {
         txtFechaRuta = new javax.swing.JFormattedTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Expreso Lestani S.R.L- Carga Vehiculos");
+        setTitle("Expreso Lestani S.R.L- Cargar Vehiculo");
 
         jPanel1.setBackground(new java.awt.Color(66, 66, 66));
 
