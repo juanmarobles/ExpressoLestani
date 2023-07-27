@@ -59,7 +59,9 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import java.text.DecimalFormatSymbols;
+import java.util.HashSet;
 import java.util.Scanner;
+import java.util.Set;
 import javax.print.Doc;
 import javax.print.DocFlavor;
 import javax.print.DocPrintJob;
@@ -94,6 +96,7 @@ public class Recibos extends javax.swing.JFrame {
     private String fechaHasta;
     private List<Movimientos> listaFiltrada;
     private int numeroRecibo = 0;
+    private Set<Integer> recibosEliminados = new HashSet<>();
 
     /**
      * Creates new form Recibos
@@ -111,75 +114,80 @@ public class Recibos extends javax.swing.JFrame {
         cargarNumeroRecibo();
         txtReciboNro.setText(String.format("%05d", numeroRecibo));
         cargarTablaMovimientos();
-        
-        
+
         //Por defecto
         cbReciboCon.setSelected(true);
 
-      ActionListener listener = new ActionListener() {
-    public void actionPerformed(ActionEvent e) {
-        
-        if (cbReciboCon.isSelected()) {
-            // Acciones para el radio button "Recibo con" seleccionado
-            TableColumn fleteColumn = tablaMovimientos.getColumnModel().getColumn(7);
-            TableColumn pagadoColumn = tablaMovimientos.getColumnModel().getColumn(8);
+        ActionListener listener = new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
 
-            // Mostrar las columnas "flete" y "pagado"
-            fleteColumn.setMinWidth(75);  // Ajusta los tamaños de columna según tus necesidades
-            fleteColumn.setMaxWidth(100);
-            fleteColumn.setWidth(100);
-            pagadoColumn.setMinWidth(75);
-            pagadoColumn.setMaxWidth(100);
-            pagadoColumn.setWidth(100);
+                if (cbReciboCon.isSelected()) {
+                    // Acciones para el radio button "Recibo con" seleccionado
+                    TableColumn pagadoColumn = tablaMovimientos.getColumnModel().getColumn(11);
+                    TableColumn rendidoColumn = tablaMovimientos.getColumnModel().getColumn(10);
+                    TableColumn fleteColumn = tablaMovimientos.getColumnModel().getColumn(9);
+                    // Mostrar las columnas "rendido" y "pagado"
+                    rendidoColumn.setMinWidth(75);  // Ajusta los tamaños de columna según tus necesidades
+                    rendidoColumn.setMaxWidth(100);
+                    rendidoColumn.setWidth(100);
+                    pagadoColumn.setMinWidth(75);
+                    pagadoColumn.setMaxWidth(100);
+                    pagadoColumn.setWidth(100);
+                    fleteColumn.setMinWidth(75);
+                    fleteColumn.setMaxWidth(100);
+                    fleteColumn.setWidth(100);
 
-        } else if (cbReciboSin.isSelected()) {
-            
-           TableColumn fleteColumn = tablaMovimientos.getColumnModel().getColumn(7);
-        TableColumn pagadoColumn = tablaMovimientos.getColumnModel().getColumn(8);
+                } else if (cbReciboSin.isSelected()) {
 
-        
-            // Ocultar las columnas "flete" y "pagado"
-            fleteColumn.setMinWidth(0);
-            fleteColumn.setMaxWidth(0);
-            fleteColumn.setWidth(0);
-            pagadoColumn.setMinWidth(0);
-            pagadoColumn.setMaxWidth(0);
-            pagadoColumn.setWidth(0);
-        
-            // Mostrar nuevamente las columnas "flete" y "pagado"
-            fleteColumn.setMinWidth(75);  // Ajusta los tamaños de columna según tus necesidades
-            fleteColumn.setMaxWidth(100);
-            fleteColumn.setWidth(100);
-            pagadoColumn.setMinWidth(75);
-            pagadoColumn.setMaxWidth(100);
-            pagadoColumn.setWidth(100);
-       
+                    TableColumn pagadoColumn = tablaMovimientos.getColumnModel().getColumn(11);
+                    TableColumn rendidoColumn = tablaMovimientos.getColumnModel().getColumn(10);
+                    TableColumn fleteColumn = tablaMovimientos.getColumnModel().getColumn(9);
 
-        // Actualizar el cálculo del flete total
-        if (!cbReciboSin.isSelected()) {
-            calcularTotales();
-        } else {
-            txtTotalFlete.setText("");
-        }
+                    // Ocultar las columnas "flete" y "pagado"
+                    fleteColumn.setMinWidth(0);
+                    fleteColumn.setMaxWidth(0);
+                    fleteColumn.setWidth(0);
+                    pagadoColumn.setMinWidth(0);
+                    pagadoColumn.setMaxWidth(0);
+                    pagadoColumn.setWidth(0);
+                    rendidoColumn.setMinWidth(0);
+                    rendidoColumn.setMaxWidth(0);
+                    rendidoColumn.setWidth(0);
+                    // Mostrar nuevamente las columnas "flete" y "pagado"
+                    fleteColumn.setMinWidth(75);  // Ajusta los tamaños de columna según tus necesidades
+                    fleteColumn.setMaxWidth(100);
+                    fleteColumn.setWidth(100);
+                    pagadoColumn.setMinWidth(75);
+                    pagadoColumn.setMaxWidth(100);
+                    pagadoColumn.setWidth(100);
+                    rendidoColumn.setMinWidth(75);
+                    rendidoColumn.setMaxWidth(100);
+                    rendidoColumn.setWidth(100);
 
-        // Actualizar la tabla para reflejar los cambios
-        tablaMovimientos.getTableHeader().resizeAndRepaint();
-        tablaMovimientos.repaint();
+                    // Actualizar el cálculo del flete total
+                    if (!cbReciboSin.isSelected()) {
+                        calcularTotales();
+                    } else {
+                        txtTotalFlete.setText("");
+                    }
 
-        }
+                    // Actualizar la tabla para reflejar los cambios
+                    tablaMovimientos.getTableHeader().resizeAndRepaint();
+                    tablaMovimientos.repaint();
 
-        // Actualizar la tabla para reflejar los cambios
-        tablaMovimientos.getTableHeader().resizeAndRepaint();
-        tablaMovimientos.repaint();
-    }
-};
+                }
 
-cbReciboCon.addActionListener(listener);
-cbReciboSin.addActionListener(listener);
+                // Actualizar la tabla para reflejar los cambios
+                tablaMovimientos.getTableHeader().resizeAndRepaint();
+                tablaMovimientos.repaint();
+            }
+        };
 
-    //Boton agregar
-    
-     btnAgregar.addActionListener(new ActionListener() {
+        cbReciboCon.addActionListener(listener);
+        cbReciboSin.addActionListener(listener);
+
+        //Boton agregar
+        btnAgregar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 int[] filasSeleccionadas = tablaMovimientos.getSelectedRows();
                 double sumaMontos = 0.0;
@@ -188,13 +196,13 @@ cbReciboSin.addActionListener(listener);
                 boolean reciboSinFlete = cbReciboSin.isSelected();
 
                 for (int fila : filasSeleccionadas) {
-                    String montoStr = tablaMovimientos.getValueAt(fila, 5).toString().substring(1).replace(".", "").replace(",", ".");
+                    String montoStr = tablaMovimientos.getValueAt(fila, 6).toString().substring(1).replace(".", "").replace(",", ".");
 
                     double monto = Double.parseDouble(montoStr);
                     sumaMontos += monto;
 
                     if (!reciboSinFlete) {
-                        String fleteStr = tablaMovimientos.getValueAt(fila, 8).toString().substring(1).replace(".", "").replace(",", ".");
+                        String fleteStr = tablaMovimientos.getValueAt(fila, 9).toString().substring(1).replace(".", "").replace(",", ".");
                         double flete = Double.parseDouble(fleteStr);
                         sumaFletes += flete;
                     }
@@ -222,11 +230,7 @@ cbReciboSin.addActionListener(listener);
             }
         });
 
-    
     }
-    
-     
-
 
     private void guardarNumeroRecibo() {
         try {
@@ -270,16 +274,16 @@ cbReciboSin.addActionListener(listener);
                 return false;
             }
         };
-        String titulos[] = {"FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "PAGADO", "RENDIDO", "FLETE", "PAGADO", "RENDIDO", "A_CARGO_DE", "REPRESENTANTE", "CC", "OBS"};
+        String titulos[] = {"HORA", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "PAGADO", "RENDIDO", "FLETE", "PAGADO", "RENDIDO", "A_CARGO_DE", "REPRESENTANTE", "CC", "OBS"};
         tabla.setColumnIdentifiers(titulos);
 
         for (Movimientos mov : listaFiltrada) {
-            Object[] objeto = {mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
+            Object[] objeto = {mov.getHora(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
             tabla.addRow(objeto);
         }
 
         tablaMovimientos.setModel(tabla);
-        int[] anchos = {60, 60, 100, 100, 40, 40, 100, 40, 100, 40, 70, 100, 5, 200}; // Anchos deseados para cada columna en píxeles
+        int[] anchos = {80, 100, 100, 100, 70, 80, 100, 80, 80, 100, 80, 80, 120, 120, 40, 200}; // Anchos deseados para cada columna en píxeles
 
         if (anchos.length == tabla.getColumnCount()) {
             TableColumnModel columnModel = tablaMovimientos.getColumnModel();
@@ -309,7 +313,7 @@ cbReciboSin.addActionListener(listener);
         };
 
         // Nombres de columnas
-        String titulos[] = {"FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "PAGADO", "RENDIDO", "FLETE", "PAGADO", "RENDIDO", "A_CARGO_DE", "REPRESENTANTE", "CC", "OBS"};
+        String titulos[] = {"HORA", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "PAGADO", "RENDIDO", "FLETE", "PAGADO", "RENDIDO", "A_CARGO_DE", "REPRESENTANTE", "CC", "OBS"};
         tabla.setColumnIdentifiers(titulos);
 
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tabla);
@@ -318,13 +322,13 @@ cbReciboSin.addActionListener(listener);
 
         // Carga de los datos desde la lista filtrada
         for (Movimientos mov : listaMovimientos) {
-            Object[] objeto = {mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
+            Object[] objeto = {mov.getHora(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
 
             tabla.addRow(objeto);
         }
 
         tablaMovimientos.setModel(tabla);
-        int[] anchos = {60, 60, 100, 100, 40, 40, 100, 40, 100, 40, 70, 100, 5, 200}; // Anchos deseados para cada columna en píxeles
+        int[] anchos = {80, 100, 100, 100, 70, 80, 100, 80, 80, 100, 80, 80, 120, 120, 40, 200}; // Anchos deseados para cada columna en píxeles
 
         if (anchos.length == tabla.getColumnCount()) {
             TableColumnModel columnModel = tablaMovimientos.getColumnModel();
@@ -697,11 +701,11 @@ cbReciboSin.addActionListener(listener);
     }//GEN-LAST:event_txtClienteActionPerformed
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
-       
+
     }//GEN-LAST:event_btnAgregarActionPerformed
 
     private void cbReciboSinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbReciboSinActionPerformed
-       /* boolean reciboSinFlete = cbReciboSin.isSelected();
+        /* boolean reciboSinFlete = cbReciboSin.isSelected();
 
         TableColumn fleteColumn = tablaMovimientos.getColumnModel().getColumn(7);
         TableColumn pagadoColumn = tablaMovimientos.getColumnModel().getColumn(8);
@@ -737,7 +741,7 @@ cbReciboSin.addActionListener(listener);
     }//GEN-LAST:event_cbReciboSinActionPerformed
 
     private void cbReciboConActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbReciboConActionPerformed
-     /*   boolean reciboConFlete = cbReciboCon.isSelected();
+        /*   boolean reciboConFlete = cbReciboCon.isSelected();
 
         TableColumn fleteColumn = tablaMovimientos.getColumnModel().getColumn(7);
         TableColumn pagadoColumn = tablaMovimientos.getColumnModel().getColumn(8);
@@ -767,38 +771,42 @@ cbReciboSin.addActionListener(listener);
 
     private void btnImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirActionPerformed
         btnImprimir.addActionListener(new ActionListener() {
-    public void actionPerformed(ActionEvent e) {
-        // Obtén el índice de la fila seleccionada en la tabla
-        int rowIndex = tablaMovimientos.getSelectedRow();
+            public void actionPerformed(ActionEvent e) {
+                // Obtiene los índices de las filas seleccionadas en la tabla
+                int[] selectedRows = tablaMovimientos.getSelectedRows();
 
-        // Obtén el modelo de tabla asociado a la tabla
-        DefaultTableModel model = (DefaultTableModel) tablaMovimientos.getModel();
+                // Verifica si hay filas seleccionadas
+                if (selectedRows.length > 0) {
+                    // Obtén el modelo de tabla asociado a la tabla
+                    DefaultTableModel model = (DefaultTableModel) tablaMovimientos.getModel();
 
-        // Verifica si hay una fila seleccionada
-        if (rowIndex != -1) {
-            // Elimina la fila del modelo de tabla
-            model.removeRow(rowIndex);
+                    // Recorre los índices de las filas seleccionadas en orden inverso
+                    // para evitar conflictos en los índices al eliminar
+                    for (int i = selectedRows.length - 1; i >= 0; i--) {
+                        int rowIndex = selectedRows[i];
 
-            // Actualiza la visualización de la tabla
-            tablaMovimientos.repaint();
-        } else {
-            // No se ha seleccionado ninguna fila, muestra un mensaje de error o realiza alguna otra acción
-            JOptionPane.showMessageDialog(null, "No se ha seleccionado ninguna fila.");
-        }
+                        // Obtiene el ID del elemento que se va a eliminar
+                        int id = (int) model.getValueAt(rowIndex, 0);
 
-        // Aquí puedes agregar el código adicional para generar el recibo o el PDF
-        // ...
-         imprimir();
-    }
-});
+                        // Agrega el ID a la lista recibosEliminados
+                        recibosEliminados.add(id);
+
+                        // Elimina la fila del modelo de tabla
+                        model.removeRow(rowIndex);
+                    }
+
+                    // Actualiza la visualización de la tabla
+                    tablaMovimientos.repaint();
+
+                    imprimir();
+                } else {
+                    // No se ha seleccionado ninguna fila, muestra un mensaje de error o realiza alguna otra acción
+                    JOptionPane.showMessageDialog(null, "No se ha seleccionado ninguna fila.");
+                }
+            }
+        });
 
 
-
-
-
-
-        
-       
     }//GEN-LAST:event_btnImprimirActionPerformed
 
     private void imprimir() {
@@ -1101,7 +1109,7 @@ cbReciboSin.addActionListener(listener);
                 senoresdomicilio.addCell(senoresLabelCell);
 
                 // Contenido de la columna "Señores"
-                Phrase senoresValue = new Phrase(txtCliente.getText(), font);
+                Phrase senoresValue = new Phrase(txtCliente.getText().toUpperCase(), font);
                 PdfPCell senoresValueCell = new PdfPCell(new Paragraph(senoresValue));
                 senoresValueCell.setBorder(Rectangle.BOX);
                 senoresValueCell.setPadding(5f);
@@ -1117,7 +1125,7 @@ cbReciboSin.addActionListener(listener);
                 senoresdomicilio.addCell(domicilioLabelCell);
 
                 // Contenido de la columna "Domicilio"
-                Phrase domicilioValue = new Phrase(txtDomicilio.getText(), font);
+                Phrase domicilioValue = new Phrase(txtDomicilio.getText().toUpperCase(), font);
                 PdfPCell domicilioValueCell = new PdfPCell(new Paragraph(domicilioValue));
                 domicilioValueCell.setBorder(Rectangle.BOX);
                 domicilioValueCell.setPadding(5f);
@@ -1131,13 +1139,13 @@ cbReciboSin.addActionListener(listener);
                 PdfPTable recibiconcepto = new PdfPTable(2);
                 recibiconcepto.setWidthPercentage(100);
                 // RECIBI LA SUMA D PESOS...
-                Phrase texto = new Phrase("\nRECIBÍ DE EXPRESO LESTANI LA SUMA DE PESOS: " + txtRecibi.getText(), font);
+                Phrase texto = new Phrase("\nRECIBÍ DE EXPRESO LESTANI LA SUMA DE PESOS: " + txtRecibi.getText().toUpperCase(), font);
                 Paragraph textoRecibi = new Paragraph(texto);
                 textoRecibi.setAlignment(Element.ALIGN_LEFT);
                 document.add(textoRecibi);
 
                 // CONCEPTO DE
-                Phrase textodos = new Phrase("\nEN CONCEPTO DE: " + txtConcepto.getText(), font);
+                Phrase textodos = new Phrase("\nEN CONCEPTO DE: " + txtConcepto.getText().toUpperCase(), font);
                 Paragraph textoConcepto = new Paragraph(textodos);
                 textoConcepto.setAlignment(Element.ALIGN_LEFT);
                 document.add(textoConcepto);
@@ -1163,7 +1171,7 @@ cbReciboSin.addActionListener(listener);
                     // Agregar las celdas de encabezado a la tabla
                     for (int i = 0; i < tablaMovimientos.getColumnCount(); i++) {
                         String col = tablaMovimientos.getColumnName(i);
-                        if (!col.equals("RENDIDO") && !col.equals("RENDIDO") && !col.equals("REPRESENTANTE") && !col.equals("FLETE") && !col.equals("PAGADO") && !col.equals("CLIENTE") && !col.equals("A_CARGO_DE") && !col.equals("CC") && !col.equals("MOVIMIENTO")) {
+                        if (!col.equals("HORA") && !col.equals("RENDIDO") && !col.equals("RENDIDO") && !col.equals("REPRESENTANTE") && !col.equals("FLETE") && !col.equals("PAGADO") && !col.equals("CLIENTE") && !col.equals("A_CARGO_DE") && !col.equals("CC") && !col.equals("MOVIMIENTO")) {
                             PdfPCell cell = new PdfPCell(new Phrase(col, fontColumnas));
                             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                             cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
@@ -1175,7 +1183,7 @@ cbReciboSin.addActionListener(listener);
                     for (int fila : filasSeleccionadas) {
                         for (int col = 0; col < tablaMovimientos.getColumnCount(); col++) {
                             String colName = tablaMovimientos.getColumnName(col);
-                            if (!colName.equals("RENDIDO") && !colName.equals("RENDIDO") && !colName.equals("REPRESENTANTE") && !colName.equals("FLETE") && !colName.equals("PAGADO") && !colName.equals("CLIENTE") && !colName.equals("A_CARGO_DE") && !colName.equals("CC") && !colName.equals("MOVIMIENTO")) {
+                            if (!colName.equals("HORA") && !colName.equals("RENDIDO") && !colName.equals("RENDIDO") && !colName.equals("REPRESENTANTE") && !colName.equals("FLETE") && !colName.equals("PAGADO") && !colName.equals("CLIENTE") && !colName.equals("A_CARGO_DE") && !colName.equals("CC") && !colName.equals("MOVIMIENTO")) {
                                 Object value = tablaMovimientos.getValueAt(fila, col);
                                 if (value != null) {
                                     PdfPCell cell = new PdfPCell(new Phrase(value.toString(), fontFilas));
@@ -1303,7 +1311,7 @@ cbReciboSin.addActionListener(listener);
                 senoresdomicilio.setWidths(colSenDom);
 
                 // Columna "Señores"
-                Phrase senoresLabel = new Phrase("SEÑORES", font);
+                Phrase senoresLabel = new Phrase("SEÑORES: ", font);
                 PdfPCell senoresLabelCell = new PdfPCell(new Paragraph(senoresLabel));
                 senoresLabelCell.setBorder(Rectangle.BOX);
                 senoresLabelCell.setHorizontalAlignment(Element.ALIGN_LEFT);
@@ -1311,7 +1319,7 @@ cbReciboSin.addActionListener(listener);
                 senoresdomicilio.addCell(senoresLabelCell);
 
                 // Contenido de la columna "Señores"
-                Phrase senoresValue = new Phrase(txtCliente.getText(), font);
+                Phrase senoresValue = new Phrase(txtCliente.getText().toUpperCase(), font);
                 PdfPCell senoresValueCell = new PdfPCell(new Paragraph(senoresValue));
                 senoresValueCell.setBorder(Rectangle.BOX);
                 senoresValueCell.setPadding(5f);
@@ -1319,7 +1327,7 @@ cbReciboSin.addActionListener(listener);
                 senoresdomicilio.addCell(senoresValueCell);
 
                 // Columna "Domicilio"
-                Phrase domicilioLabel = new Phrase("DOMICILIO", font);
+                Phrase domicilioLabel = new Phrase("DOMICILIO: ", font);
                 PdfPCell domicilioLabelCell = new PdfPCell(new Paragraph(domicilioLabel));
                 domicilioLabelCell.setBorder(Rectangle.BOX);
                 domicilioLabelCell.setHorizontalAlignment(Element.ALIGN_LEFT);
@@ -1327,7 +1335,7 @@ cbReciboSin.addActionListener(listener);
                 senoresdomicilio.addCell(domicilioLabelCell);
 
                 // Contenido de la columna "Domicilio"
-                Phrase domicilioValue = new Phrase(txtDomicilio.getText(), font);
+                Phrase domicilioValue = new Phrase(txtDomicilio.getText().toUpperCase(), font);
                 PdfPCell domicilioValueCell = new PdfPCell(new Paragraph(domicilioValue));
                 domicilioValueCell.setBorder(Rectangle.BOX);
                 domicilioValueCell.setPadding(5f);
@@ -1341,13 +1349,13 @@ cbReciboSin.addActionListener(listener);
                 PdfPTable recibiconcepto = new PdfPTable(2);
                 recibiconcepto.setWidthPercentage(100);
                 // RECIBI LA SUMA D PESOS...
-                Phrase texto = new Phrase("\nRECIBÍ DE EXPRESO LESTANI LA SUMA DE PESOS: " + txtRecibi.getText(), font);
+                Phrase texto = new Phrase("\nRECIBÍ DE EXPRESO LESTANI LA SUMA DE PESOS: " + txtRecibi.getText().toUpperCase(), font);
                 Paragraph textoRecibi = new Paragraph(texto);
                 textoRecibi.setAlignment(Element.ALIGN_LEFT);
                 document.add(textoRecibi);
 
                 // CONCEPTO DE
-                Phrase textodos = new Phrase("\nEN CONCEPTO DE: " + txtConcepto.getText(), font);
+                Phrase textodos = new Phrase("\nEN CONCEPTO DE: " + txtConcepto.getText().toUpperCase(), font);
                 Paragraph textoConcepto = new Paragraph(textodos);
                 textoConcepto.setAlignment(Element.ALIGN_LEFT);
                 document.add(textoConcepto);
@@ -1377,7 +1385,7 @@ cbReciboSin.addActionListener(listener);
                     // Agregar las celdas de encabezado a la tabla, excluyendo las columnas suprimidas
                     for (int i = 0; i < tablaMovimientos.getColumnCount(); i++) {
                         String col = tablaMovimientos.getColumnName(i);
-                        if (!col.equals("PAGADO") && !col.equals("REPRESENTANTE") && !col.equals("CLIENTE") && !col.equals("CC") && !col.equals("RENDIDO") && !col.equals("RENDIDO")) {
+                        if (!col.equals("HORA") && !col.equals("PAGADO") && !col.equals("REPRESENTANTE") && !col.equals("CLIENTE") && !col.equals("CC") && !col.equals("RENDIDO") && !col.equals("RENDIDO")) {
                             PdfPCell cell = new PdfPCell(new Phrase(col, fontColumnas));
                             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                             cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
@@ -1390,7 +1398,7 @@ cbReciboSin.addActionListener(listener);
                         // Agregar las celdas de datos excluyendo las columnas suprimidas
                         for (int col = 0; col < tablaMovimientos.getColumnCount(); col++) {
                             String colName = tablaMovimientos.getColumnName(col);
-                            if (!colName.equals("REPRESENTANTE") && !colName.equals("CLIENTE") && !colName.equals("PAGADO") && !colName.equals("CC") && !colName.equals("RENDIDO") && !colName.equals("RENDIDO")) {
+                            if (!colName.equals("HORA") && !colName.equals("REPRESENTANTE") && !colName.equals("CLIENTE") && !colName.equals("PAGADO") && !colName.equals("CC") && !colName.equals("RENDIDO") && !colName.equals("RENDIDO")) {
                                 Object value = tablaMovimientos.getValueAt(fila, col);
                                 if (value != null) {
                                     PdfPCell cell = new PdfPCell(new Phrase(value.toString(), fontFilas));
@@ -1451,8 +1459,8 @@ cbReciboSin.addActionListener(listener);
         double sumaFletes = 0.0;
 
         for (int fila = 0; fila < rowCount; fila++) {
-            String montoStr = tablaMovimientos.getValueAt(fila, 5).toString().substring(1).replace(".", "").replace(",", ".");
-            String fleteStr = tablaMovimientos.getValueAt(fila, 7).toString().substring(1).replace(".", "").replace(",", ".");
+            String montoStr = tablaMovimientos.getValueAt(fila, 6).toString().substring(1).replace(".", "").replace(",", ".");
+            String fleteStr = tablaMovimientos.getValueAt(fila, 9).toString().substring(1).replace(".", "").replace(",", ".");
 
             double monto = Double.parseDouble(montoStr);
             double flete = Double.parseDouble(fleteStr);
@@ -1567,7 +1575,7 @@ cbReciboSin.addActionListener(listener);
 
         };
         //nombres de columnas
-        String titulos[] = {"FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "PAGADO", "RENDIDO", "FLETE", "PAGADO", "RENDIDO", "A_CARGO_DE", "REPRESENTANTE", "CC", "OBS"};
+        String titulos[] = {"HORA", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "PAGADO", "RENDIDO", "FLETE", "PAGADO", "RENDIDO", "A_CARGO_DE", "REPRESENTANTE", "CC", "OBS"};
         tabla.setColumnIdentifiers(titulos);
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tabla);
         tablaMovimientos.setRowSorter(sorter);
@@ -1578,7 +1586,7 @@ cbReciboSin.addActionListener(listener);
         //recorrer lista y mostrar elementos en la tabla
         if (listaMovimientos != null) {
             for (Movimientos mov : listaMovimientos) {
-                Object[] objeto = {mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
+                Object[] objeto = {mov.getHora(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
 
                 tabla.addRow(objeto);
 
@@ -1586,7 +1594,7 @@ cbReciboSin.addActionListener(listener);
         }
         tablaMovimientos.setModel(tabla);
         // Establecer el ancho específico de las columnas
-        int[] anchos = {60, 60, 100, 100, 40, 40, 100, 40, 40, 100, 40, 40, 70, 100, 5, 200}; // Anchos deseados para cada columna en píxeles
+        int[] anchos = {80, 60, 60, 100, 100, 40, 40, 100, 40, 40, 100, 40, 40, 70, 100, 5, 200}; // Anchos deseados para cada columna en píxeles
         if (anchos.length == tabla.getColumnCount()) {
             TableColumnModel columnModel = tablaMovimientos.getColumnModel();
             for (int i = 0; i < anchos.length; i++) {
