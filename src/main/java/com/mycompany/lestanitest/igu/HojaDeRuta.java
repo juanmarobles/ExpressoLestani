@@ -29,6 +29,7 @@ import com.mycompany.lestanitest.logica.Vehiculo;
 import static java.awt.Frame.NORMAL;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.print.PrinterJob;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -46,11 +47,14 @@ import javax.swing.JOptionPane;
 import javax.swing.RowSorter;
 import javax.swing.SortOrder;
 import javax.swing.SwingConstants;
+import javax.swing.filechooser.FileSystemView;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableRowSorter;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.printing.PDFPageable;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 /**
@@ -134,7 +138,7 @@ public class HojaDeRuta extends javax.swing.JFrame {
         cbChofer = new javax.swing.JComboBox<>();
         cbVehiculo = new javax.swing.JComboBox<>();
         jLabel2 = new javax.swing.JLabel();
-        btnImprimir = new javax.swing.JButton();
+        btnImprimirHr = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tablaMovimientos = new javax.swing.JTable();
         btnGenerarPdf = new javax.swing.JButton();
@@ -242,13 +246,13 @@ public class HojaDeRuta extends javax.swing.JFrame {
                 .addContainerGap(31, Short.MAX_VALUE))
         );
 
-        btnImprimir.setBackground(new java.awt.Color(51, 51, 51));
-        btnImprimir.setForeground(new java.awt.Color(255, 255, 255));
-        btnImprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/imprimir_24px.png"))); // NOI18N
-        btnImprimir.setText("Imprimir");
-        btnImprimir.addActionListener(new java.awt.event.ActionListener() {
+        btnImprimirHr.setBackground(new java.awt.Color(51, 51, 51));
+        btnImprimirHr.setForeground(new java.awt.Color(255, 255, 255));
+        btnImprimirHr.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/imprimir_24px.png"))); // NOI18N
+        btnImprimirHr.setText("Imprimir");
+        btnImprimirHr.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnImprimirActionPerformed(evt);
+                btnImprimirHrActionPerformed(evt);
             }
         });
 
@@ -361,7 +365,7 @@ public class HojaDeRuta extends javax.swing.JFrame {
                 .addContainerGap())
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(71, 71, 71)
-                .addComponent(btnImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnImprimirHr, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(39, 39, 39)
                 .addComponent(btnGenerarPdf)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -386,7 +390,7 @@ public class HojaDeRuta extends javax.swing.JFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 383, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnImprimirHr, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnGenerarPdf, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(17, 17, 17))
         );
@@ -406,9 +410,9 @@ public class HojaDeRuta extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnImprimirActionPerformed
+    private void btnImprimirHrActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirHrActionPerformed
+        imprimirPDF();
+    }//GEN-LAST:event_btnImprimirHrActionPerformed
 
     private void btnGenerarPdfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarPdfActionPerformed
         generarPdf();
@@ -503,19 +507,19 @@ public class HojaDeRuta extends javax.swing.JFrame {
 
         };
         //nombres de columnas
-        String titulos[] = {"MOVIMIENTO", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "PAGADO", "RENDIDO", "FLETE", "PAGADO", "RENDIDO", "A_CARGO_DE", "REPRESENTANTE", "CC", "OBS"};
+        String titulos[] = {"MOV", "HORA", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "PAGADO", "RENDIDO", "FLETE", "PAGADO", "RENDIDO", "A_CARGO_DE", "REPRESENTANTE", "CC", "OBS"};
         tabla.setColumnIdentifiers(titulos);
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tabla);
         tablaMovimientos.setRowSorter(sorter);
         sorter.setSortKeys(java.util.Arrays.asList(new RowSorter.SortKey(1, SortOrder.DESCENDING)));
         //carga de los datos desde la lista filtrada
         for (Movimientos mov : listaMovimientos) {
-            Object[] objeto = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
+            Object[] objeto = {mov.getId_movimientos(),mov.getHora(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
             tabla.addRow(objeto);
         }
         tablaMovimientos.setModel(tabla);
         // Establecer el ancho específico de las columnas
-        int[] anchos = {60, 50, 100, 100, 40, 30, 100, 30, 30, 100, 30, 30, 60, 100, 5, 200}; // Anchos deseados para cada columna en píxeles
+        int[] anchos = {60 ,80, 100, 100, 100, 70, 80, 100, 80, 80, 100, 80, 80, 120, 120, 40, 200}; // Anchos deseados para cada columna en píxeles
 
         if (anchos.length == tabla.getColumnCount()) {
             TableColumnModel columnModel = tablaMovimientos.getColumnModel();
@@ -609,11 +613,11 @@ public class HojaDeRuta extends javax.swing.JFrame {
                 document.open();
 
                 //FUENTES
-                Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 8, Font.BOLD);
+                Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 7, Font.BOLD);
                 Font fontDatos = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, NORMAL);
                 Font fontTotales = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
                 Font fontFecha = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
-                Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 8);
+                Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 7);
 
                 // LOGO
                 Image logo = Image.getInstance("src/main/java/com/imagenes/logosolo.jpg");
@@ -667,12 +671,12 @@ public class HojaDeRuta extends javax.swing.JFrame {
                 document.add(datos);
 
                 //CREACION DE TABLA
-                PdfPTable table = new PdfPTable(tablaMovimientos.getColumnCount() - 6); // Excluir columnas FECHA, MOVIMIENTO, CC y OBS
+                PdfPTable table = new PdfPTable(tablaMovimientos.getColumnCount() - 7); // Excluir columnas FECHA, MOVIMIENTO, CC, hora, obs, rendido y rendido
                 table.setSpacingBefore(10f); // Espacio antes de la tabla (en puntos)
                 table.setSpacingAfter(10f);
 
                 // Ajustar espacio horizontal
-                float[] columnWidths = {1f, 0.8f, 0.7f, 0.7f, 1f, 0.7f, 1f, 0.8f, 0.7f, 0.8f}; // Anchos deseados para cada columna en píxeles
+                float[] columnWidths = {0.9f, 1f, 0.8f, 0.8f, 1f, 0.8f, 1f, 0.8f, 1f, 1f}; // Añadir un ancho para la nueva columna "observaciones"
                 table.setWidths(columnWidths);
 
                 table.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
@@ -680,7 +684,7 @@ public class HojaDeRuta extends javax.swing.JFrame {
                 // Agregar las celdas a la tabla
                 for (int i = 0; i < tablaMovimientos.getColumnCount(); i++) {
                     String col = tablaMovimientos.getColumnName(i);
-                    if (!col.equals("FECHA") && !col.equals("MOVIMIENTO") && !col.equals("CC") && !col.equals("OBS") && !col.equals("RENDIDO") && !col.equals("RENDIDO")) {
+                    if (!col.equals("FECHA") && !col.equals("HORA") && !col.equals("MOV") && !col.equals("CC") && !col.equals("OBS") && !col.equals("RENDIDO") && !col.equals("RENDIDO")) {
                         // Cambiar el nombre de la columna "REPRESENTANTE" a "Rep."
                         if (col.equals("REPRESENTANTE")) {
                             col = "REP";
@@ -699,7 +703,7 @@ public class HojaDeRuta extends javax.swing.JFrame {
                 for (int row = 0; row < tablaMovimientos.getRowCount(); row++) {
                     for (int col = 0; col < tablaMovimientos.getColumnCount(); col++) {
                         String colName = tablaMovimientos.getColumnName(col);
-                        if (!colName.equals("FECHA") && !colName.equals("CC") && !colName.equals("OBS") && !colName.equals("MOVIMIENTO")
+                        if (!colName.equals("FECHA") &&!colName.equals("HORA") && !colName.equals("CC") && !colName.equals("OBS") && !colName.equals("MOV")
                                 && !colName.equals("RENDIDO") && !colName.equals("RENDIDO")) {
                             Object value = tablaMovimientos.getValueAt(row, col);
                             if (value != null) {
@@ -726,7 +730,155 @@ public class HojaDeRuta extends javax.swing.JFrame {
         }
 
     }
+    private void imprimirPDF() {
+        Document document = new Document();
+        try {
+            String userHome = FileSystemView.getFileSystemView().getHomeDirectory().getAbsolutePath();
+            String outputPath = userHome + File.separator + "archivo.pdf";
+            // Crear el archivo de salida
+            File outputFile = new File(outputPath);
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile));
+                document.open();
 
+                //FUENTES
+                Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 7, Font.BOLD);
+                Font fontDatos = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, NORMAL);
+                Font fontTotales = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
+                Font fontFecha = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
+                Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 7);
+
+                // LOGO
+                Image logo = Image.getInstance("src/main/java/com/imagenes/logosolo.jpg");
+                logo.scaleToFit(450, 800);
+                logo.setAlignment(Element.ALIGN_CENTER);
+                document.add(logo);
+                // TITULO
+                Paragraph titulo = new Paragraph("HOJA DE RUTA", FontFactory.getFont(FontFactory.TIMES_ROMAN, 16, Font.BOLD, BaseColor.BLACK));
+                titulo.setAlignment(Element.ALIGN_CENTER);
+                titulo.setSpacingAfter(10f); // Espacio después del título (en puntos)
+                document.add(titulo);
+                // FECHAS
+                String fecha = txtFecha.getText();
+                // Agregar fechas desde y hasta al título
+                Chunk chunkFechas = new Chunk("Fecha: " + fecha, fontFecha);
+                Paragraph fechas = new Paragraph(chunkFechas);
+                fechas.setAlignment(Element.ALIGN_CENTER);
+                fechas.setSpacingAfter(5f); // Espacio después de las fechas (en puntos)
+                document.add(fechas);
+
+                // DATOS -> VEHICULO,PATENTE Y CHOFER
+                // Crear una tabla para los datos
+                PdfPTable datos = new PdfPTable(1);
+                datos.setWidthPercentage(100);
+
+                // Obtener el valor seleccionado del ComboBox VEHICULO
+                String vehiculoSeleccionado = cbVehiculo.getSelectedItem().toString();
+                Phrase vehiculo = new Phrase("Vehiculo: " + vehiculoSeleccionado, fontDatos);
+                PdfPCell vehiculoCell = new PdfPCell(vehiculo);
+                vehiculoCell.setBorder(Rectangle.NO_BORDER);
+                vehiculoCell.setHorizontalAlignment(Element.ALIGN_RIGHT); // Alinear la celda al centro
+                datos.addCell(vehiculoCell);
+
+                // Obtener el valor seleccionado del ComboBox PATENTE
+                String patenteSeleccionada = txtPatente.getText();
+                Phrase patente = new Phrase("Patente: " + patenteSeleccionada, fontDatos);
+                PdfPCell patenteCell = new PdfPCell(patente);
+                patenteCell.setBorder(Rectangle.NO_BORDER);
+                patenteCell.setHorizontalAlignment(Element.ALIGN_RIGHT); // Alinear la celda al centro
+                datos.addCell(patenteCell);
+
+                // Obtener el valor seleccionado del ComboBox CHOFER
+                String choferSeleccionado = cbChofer.getSelectedItem().toString();
+                Phrase chofer = new Phrase("Chofer: " + choferSeleccionado, fontDatos);
+                PdfPCell choferCell = new PdfPCell(chofer);
+                choferCell.setBorder(Rectangle.NO_BORDER);
+                choferCell.setHorizontalAlignment(Element.ALIGN_RIGHT); // Alinear la celda al centro
+                datos.addCell(choferCell);
+
+                // Agregar la tabla al documento PDF
+                document.add(datos);
+
+                //CREACION DE TABLA
+                PdfPTable table = new PdfPTable(tablaMovimientos.getColumnCount() - 7); // Excluir columnas FECHA, MOVIMIENTO, CC, hora, obs, rendido y rendido
+                table.setSpacingBefore(10f); // Espacio antes de la tabla (en puntos)
+                table.setSpacingAfter(10f);
+
+                // Ajustar espacio horizontal
+                float[] columnWidths = {0.9f, 1f, 0.8f, 0.8f, 1f, 0.8f, 1f, 0.8f, 1f, 1f}; // Añadir un ancho para la nueva columna "observaciones"
+                table.setWidths(columnWidths);
+
+                table.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
+
+                // Agregar las celdas a la tabla
+                for (int i = 0; i < tablaMovimientos.getColumnCount(); i++) {
+                    String col = tablaMovimientos.getColumnName(i);
+                    if (!col.equals("FECHA") && !col.equals("HORA") && !col.equals("MOV") && !col.equals("CC") && !col.equals("OBS") && !col.equals("RENDIDO") && !col.equals("RENDIDO")) {
+                        // Cambiar el nombre de la columna "REPRESENTANTE" a "Rep."
+                        if (col.equals("REPRESENTANTE")) {
+                            col = "REP";
+                        }
+                        if (col.equals("A_CARGO_DE")) {
+                            col = "FLETE A CARGO";
+                        }
+                        PdfPCell cell = new PdfPCell(new Phrase(col, font));
+                        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                        cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
+                        table.addCell(cell);
+
+                    }
+                }
+
+                for (int row = 0; row < tablaMovimientos.getRowCount(); row++) {
+                    for (int col = 0; col < tablaMovimientos.getColumnCount(); col++) {
+                        String colName = tablaMovimientos.getColumnName(col);
+                        if (!colName.equals("FECHA") &&!colName.equals("HORA") && !colName.equals("CC") && !colName.equals("OBS") && !colName.equals("MOV")
+                                && !colName.equals("RENDIDO") && !colName.equals("RENDIDO")) {
+                            Object value = tablaMovimientos.getValueAt(row, col);
+                            if (value != null) {
+                                PdfPCell cell = new PdfPCell(new Phrase(value.toString(), fontFilas));
+                                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                                cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
+                                table.addCell(cell);
+                            }
+                        }
+                    }
+                }
+
+                document.add(table);
+
+                document.close();
+                writer.close();
+
+               try {
+                // Cargar el archivo PDF generado previamente
+                PDDocument pdfDocument = PDDocument.load(new File(outputPath));
+
+                // Obtener la impresora predeterminada y crear un objeto PDFPageable
+                PrinterJob printerJob = PrinterJob.getPrinterJob();
+                PDFPageable pageable = new PDFPageable(pdfDocument);
+
+                // Establecer el objeto PDFPageable en el trabajo de impresión
+                printerJob.setPageable(pageable);
+
+                // Imprimir el documento
+                printerJob.print();
+
+                // Cerrar el documento PDF después de imprimir
+                pdfDocument.close();
+
+                JOptionPane.showMessageDialog(null, "La hoja de ruta se generó e imprimió correctamente.", "Información", JOptionPane.INFORMATION_MESSAGE);
+            } catch (Exception e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Error al generar o imprimir la hoja de ruta.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+        } catch (DocumentException | FileNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "Error al imprimir.", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException ex) {
+            Logger.getLogger(Consultas.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
     /**
      * @param args the command line arguments
      */
@@ -764,7 +916,7 @@ public class HojaDeRuta extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnGenerarPdf;
-    private javax.swing.JButton btnImprimir;
+    private javax.swing.JButton btnImprimirHr;
     private javax.swing.JButton btnMostrar;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JRadioButton cbCC;

@@ -31,6 +31,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.print.PrinterJob;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -51,11 +52,14 @@ import javax.swing.SortOrder;
 import javax.swing.SwingConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.filechooser.FileSystemView;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableRowSorter;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.printing.PDFPageable;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 /**
@@ -145,7 +149,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tablaMovimientos = new javax.swing.JTable();
         jLabel6 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        btnImprimirHRP = new javax.swing.JButton();
         btnGenerarPdf = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         cbCC = new javax.swing.JRadioButton();
@@ -274,12 +278,12 @@ public class HDDRepresentantes extends javax.swing.JFrame {
         jLabel6.setForeground(new java.awt.Color(255, 255, 255));
         jLabel6.setText("Hoja de Ruta Por Representantes");
 
-        jButton1.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/imprimir_24px.png"))); // NOI18N
-        jButton1.setText("Imprimir");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnImprimirHRP.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        btnImprimirHRP.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/imprimir_24px.png"))); // NOI18N
+        btnImprimirHRP.setText("Imprimir");
+        btnImprimirHRP.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnImprimirHRPActionPerformed(evt);
             }
         });
 
@@ -396,10 +400,10 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                                         .addGap(124, 124, 124)
                                         .addComponent(jLabel6))))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(139, 139, 139)
-                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(138, 138, 138)
+                                .addComponent(btnImprimirHRP)
                                 .addGap(43, 43, 43)
-                                .addComponent(btnGenerarPdf, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(btnGenerarPdf)))
                         .addGap(0, 445, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -430,7 +434,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 471, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnImprimirHRP, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnGenerarPdf, javax.swing.GroupLayout.DEFAULT_SIZE, 37, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -522,19 +526,19 @@ public class HDDRepresentantes extends javax.swing.JFrame {
 
         };
         //nombres de columnas
-        String titulos[] = {"MOVIMIENTO", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "PAGADO", "RENDIDO", "FLETE", "PAGADO", "RENDIDO", "A_CARGO_DE", "REPRESENTANTE", "CC", "OBS"};
+        String titulos[] = {"MOV","HORA", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "PAGADO", "RENDIDO", "FLETE", "PAGADO", "RENDIDO", "A_CARGO_DE", "REPRESENTANTE", "CC", "OBS"};
         tabla.setColumnIdentifiers(titulos);
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tabla);
         tablaMovimientos.setRowSorter(sorter);
         sorter.setSortKeys(java.util.Arrays.asList(new RowSorter.SortKey(1, SortOrder.DESCENDING)));
         //carga de los datos desde la lista filtrada
         for (Movimientos mov : listaMovimientos) {
-            Object[] objeto = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
+            Object[] objeto = {mov.getId_movimientos(),mov.getHora() , mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
             tabla.addRow(objeto);
         }
         tablaMovimientos.setModel(tabla);
         // Establecer el ancho específico de las columnas
-        int[] anchos = {60, 50, 100, 100, 40, 30, 100, 30, 30, 100, 30, 30, 60, 100, 5, 200}; // Anchos deseados para cada columna en píxeles
+        int[] anchos = {60 ,80, 100, 100, 100, 70, 80, 100, 80, 80, 100, 80, 80, 120, 120, 40, 200}; // Anchos deseados para cada columna en píxeles
 
         if (anchos.length == tabla.getColumnCount()) {
             TableColumnModel columnModel = tablaMovimientos.getColumnModel();
@@ -619,9 +623,9 @@ public class HDDRepresentantes extends javax.swing.JFrame {
         generarPDF();
     }//GEN-LAST:event_btnGenerarPdfActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void btnImprimirHRPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirHRPActionPerformed
+        imprimirPDF();
+    }//GEN-LAST:event_btnImprimirHRPActionPerformed
 
     /**
      * @param args the command line arguments
@@ -660,13 +664,13 @@ public class HDDRepresentantes extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnGenerarPdf;
+    private javax.swing.JButton btnImprimirHRP;
     private javax.swing.JButton btnMostrar;
     private javax.swing.JRadioButton cbCC;
     private javax.swing.JComboBox<String> cbChofer;
     private javax.swing.JRadioButton cbContado;
     private javax.swing.JRadioButton cbTodos;
     private javax.swing.JComboBox<Vehiculo> cbVehiculo;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -782,13 +786,13 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                 document.add(rep);
 
                 //CREACION DE TABLA
-                PdfPTable table = new PdfPTable(tablaMovimientos.getColumnCount() - 6 + 1); // Excluir columnas MOVIMIENTO,FECHA,REPRESENTANTE,Y OBS
+                PdfPTable table = new PdfPTable(tablaMovimientos.getColumnCount() - 7 + 1); // Excluir columnas MOVIMIENTO,FECHA,REPRESENTANTE,Y OBS
                 table.setSpacingBefore(10f); // Espacio antes de la tabla (en puntos)
                 table.setSpacingAfter(10f);
 
                 // Ajustar espacio horizontal
                 // Ajustar espacio horizontal
-                float[] columnWidths = {0.8f, 0.8f, 0.7f, 0.7f, 1f, 0.7f, 1f, 0.7f, 0.8f, 0.5f, 1f}; // Añadir un ancho para la nueva columna "observaciones"
+                float[] columnWidths = {0.9f, 1f, 1f, 0.8f, 0.8f, 1f, 0.8f, 1f, 0.8f,0.5f, 1.5f}; // Añadir un ancho para la nueva columna "observaciones"
                 table.setWidths(columnWidths);
 
                 table.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
@@ -796,7 +800,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                 // Agregar las celdas a la tabla
                 for (int i = 0; i < tablaMovimientos.getColumnCount(); i++) {
                     String col = tablaMovimientos.getColumnName(i);
-                    if (!col.equals("MOVIMIENTO") && !col.equals("FECHA") && !col.equals("REPRESENTANTE") && !col.equals("OBS") && !col.equals("RENDIDO")) {
+                    if (!col.equals("MOV") && !col.equals("HORA") && !col.equals("FECHA") && !col.equals("REPRESENTANTE") && !col.equals("OBS") && !col.equals("RENDIDO")) {
                         if (col.equals("CC")) { // Verificar si la columna es "CC"
                             col = "F.P"; // Cambiar el nombre de la columna a "F.P"
                         }
@@ -817,7 +821,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                 for (int row = 0; row < tablaMovimientos.getRowCount(); row++) {
                     for (int col = 0; col < tablaMovimientos.getColumnCount(); col++) {
                         String colName = tablaMovimientos.getColumnName(col);
-                        if (!colName.equals("MOVIMIENTO") && !colName.equals("FECHA") && !colName.equals("REPRESENTANTE") && !colName.equals("OBS") && !colName.equals("RENDIDO")) {
+                        if (!colName.equals("MOV") && !colName.equals("HORA") &&!colName.equals("FECHA") && !colName.equals("REPRESENTANTE") && !colName.equals("OBS") && !colName.equals("RENDIDO")) {
                             Object value = tablaMovimientos.getValueAt(row, col);
                             if (value != null) {
                                 if (colName.equals("CC")) {
@@ -858,7 +862,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                 document.close();
                 writer.close();
 
-                JOptionPane.showMessageDialog(null, "El archivo se generó correctamente.", "Información", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Hoja de ruta se generó correctamente.", "Información", JOptionPane.INFORMATION_MESSAGE);
             }
         } catch (DocumentException | FileNotFoundException e) {
             JOptionPane.showMessageDialog(null, "Error al generar el archivo PDF.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -867,4 +871,184 @@ public class HDDRepresentantes extends javax.swing.JFrame {
         }
 
     }
-}
+    private void imprimirPDF() {
+        Document document = new Document();
+        try {
+            String userHome = FileSystemView.getFileSystemView().getHomeDirectory().getAbsolutePath();
+            String outputPath = userHome + File.separator + "archivo.pdf";
+            // Crear el archivo de salida
+            File outputFile = new File(outputPath);
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile));
+                document.open();
+
+                //FUENTES
+                Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 8, Font.BOLD);
+                Font fontDatos = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, NORMAL);
+                Font fontTotales = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
+                Font fontFecha = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
+                Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 8);
+
+                // LOGO
+                Image logo = Image.getInstance("src/main/java/com/imagenes/logosolo.jpg");
+                logo.scaleToFit(450, 800);
+                logo.setAlignment(Element.ALIGN_CENTER);
+                document.add(logo);
+                // TITULO
+                Paragraph titulo = new Paragraph("HOJA DE RUTA", FontFactory.getFont(FontFactory.TIMES_ROMAN, 16, Font.BOLD, BaseColor.BLACK));
+                titulo.setAlignment(Element.ALIGN_CENTER);
+                titulo.setSpacingAfter(10f); // Espacio después del título (en puntos)
+                document.add(titulo);
+                // FECHAS
+                String fecha = txtFecha.getText();
+                // Agregar fechas desde y hasta al título
+                Chunk chunkFechas = new Chunk("Fecha: " + fecha, fontFecha);
+                Paragraph fechas = new Paragraph(chunkFechas);
+                fechas.setAlignment(Element.ALIGN_CENTER);
+                fechas.setSpacingAfter(5f); // Espacio después de las fechas (en puntos)
+                document.add(fechas);
+
+                // DATOS -> VEHICULO,PATENTE Y CHOFER
+                // Crear una tabla para los datos
+                PdfPTable datos = new PdfPTable(1);
+                datos.setWidthPercentage(100);
+
+                // Obtener el valor seleccionado del ComboBox VEHICULO
+                String vehiculoSeleccionado = cbVehiculo.getSelectedItem().toString();
+                Phrase vehiculo = new Phrase("Vehiculo: " + vehiculoSeleccionado, fontDatos);
+                PdfPCell vehiculoCell = new PdfPCell(vehiculo);
+                vehiculoCell.setBorder(Rectangle.NO_BORDER);
+                vehiculoCell.setHorizontalAlignment(Element.ALIGN_RIGHT); // Alinear la celda al centro
+                datos.addCell(vehiculoCell);
+
+                // Obtener el valor seleccionado del ComboBox PATENTE
+                String patenteSeleccionada = txtPatente.getText();
+                Phrase patente = new Phrase("Patente: " + patenteSeleccionada, fontDatos);
+                PdfPCell patenteCell = new PdfPCell(patente);
+                patenteCell.setBorder(Rectangle.NO_BORDER);
+                patenteCell.setHorizontalAlignment(Element.ALIGN_RIGHT); // Alinear la celda al centro
+                datos.addCell(patenteCell);
+
+                // Obtener el valor seleccionado del ComboBox CHOFER
+                String choferSeleccionado = cbChofer.getSelectedItem().toString();
+                Phrase chofer = new Phrase("Chofer: " + choferSeleccionado, fontDatos);
+                PdfPCell choferCell = new PdfPCell(chofer);
+                choferCell.setBorder(Rectangle.NO_BORDER);
+                choferCell.setHorizontalAlignment(Element.ALIGN_RIGHT); // Alinear la celda al centro
+                datos.addCell(choferCell);
+
+                // Agregar la tabla al documento PDF
+                document.add(datos);
+
+                // REPRESENTANTE
+                Paragraph rep = new Paragraph(txtRepresentante.getText(), FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK));
+                rep.setAlignment(Element.ALIGN_CENTER);
+                rep.setSpacingAfter(10f); // Espacio después del título (en puntos)
+                document.add(rep);
+
+                //CREACION DE TABLA
+                PdfPTable table = new PdfPTable(tablaMovimientos.getColumnCount() - 7 + 1); // Excluir columnas MOVIMIENTO,FECHA,REPRESENTANTE,Y OBS
+                table.setSpacingBefore(10f); // Espacio antes de la tabla (en puntos)
+                table.setSpacingAfter(10f);
+
+                // Ajustar espacio horizontal
+                // Ajustar espacio horizontal
+                float[] columnWidths = {0.9f, 1f, 1f, 0.8f, 0.8f, 1f, 0.8f, 1f, 0.8f,0.5f, 1.5f}; // Añadir un ancho para la nueva columna "observaciones"
+                table.setWidths(columnWidths);
+
+                table.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
+
+                // Agregar las celdas a la tabla
+                for (int i = 0; i < tablaMovimientos.getColumnCount(); i++) {
+                    String col = tablaMovimientos.getColumnName(i);
+                    if (!col.equals("MOV") && !col.equals("HORA") && !col.equals("FECHA") && !col.equals("REPRESENTANTE") && !col.equals("OBS") && !col.equals("RENDIDO")) {
+                        if (col.equals("CC")) { // Verificar si la columna es "CC"
+                            col = "F.P"; // Cambiar el nombre de la columna a "F.P"
+                        }
+                        if (col.equals("A_CARGO_DE")) { // Verificar si la columna es "CC"
+                            col = "Flet a Cargo"; // Cambiar el nombre de la columna a "F.P"
+                        }
+                        PdfPCell cell = new PdfPCell(new Phrase(col, font));
+                        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                        cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
+                        table.addCell(cell);
+                    }
+                }
+                // Agregar columna "Observaciones"
+                PdfPCell obsHeaderCell = new PdfPCell(new Phrase("Obs", font));
+                obsHeaderCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                obsHeaderCell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
+                table.addCell(obsHeaderCell);
+                for (int row = 0; row < tablaMovimientos.getRowCount(); row++) {
+                    for (int col = 0; col < tablaMovimientos.getColumnCount(); col++) {
+                        String colName = tablaMovimientos.getColumnName(col);
+                        if (!colName.equals("MOV") && !colName.equals("HORA") &&!colName.equals("FECHA") && !colName.equals("REPRESENTANTE") && !colName.equals("OBS") && !colName.equals("RENDIDO")) {
+                            Object value = tablaMovimientos.getValueAt(row, col);
+                            if (value != null) {
+                                if (colName.equals("CC")) {
+                                    if (value.toString().equals("Si")) {
+                                        // Obtener el valor de la columna "A_CARGO_DE"
+                                        Object aCargoDeValue = tablaMovimientos.getValueAt(row, tablaMovimientos.getColumn("A_CARGO_DE").getModelIndex());
+                                        if (aCargoDeValue != null) {
+                                            if (aCargoDeValue.toString().equals("Origen")) {
+                                                value = "CCO"; // Cambiar el valor de "F.P" a "CCO"
+                                            } else if (aCargoDeValue.toString().equals("Destino")) {
+                                                value = "CCD"; // Cambiar el valor de "F.P" a "CCD"
+                                            }
+                                        }
+                                    } else {
+                                        value = "CON"; // Cambiar el valor de "F.P" a "CON" si "CC" es "No" o está en blanco
+                                    }
+                                }
+                                if (colName.equals("CC")) {
+                                    colName = "F.P"; // Cambiar el nombre de la columna a "F.P"
+                                }
+                                PdfPCell cell = new PdfPCell(new Phrase(value.toString(), fontFilas));
+                                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                                cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
+                                table.addCell(cell);
+                            }
+                        }
+                    }
+                    // Agregar celda vacía para la columna "Observaciones"
+                    PdfPCell obsCell = new PdfPCell(new Phrase("", fontFilas));
+                    obsCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    obsCell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
+                    table.addCell(obsCell);
+
+                }
+
+                document.add(table);
+
+                document.close();
+                writer.close();
+
+              try {
+                // Cargar el archivo PDF generado previamente
+                PDDocument pdfDocument = PDDocument.load(new File(outputPath));
+
+                // Obtener la impresora predeterminada y crear un objeto PDFPageable
+                PrinterJob printerJob = PrinterJob.getPrinterJob();
+                PDFPageable pageable = new PDFPageable(pdfDocument);
+
+                // Establecer el objeto PDFPageable en el trabajo de impresión
+                printerJob.setPageable(pageable);
+
+                // Imprimir el documento
+                printerJob.print();
+
+                // Cerrar el documento PDF después de imprimir
+                pdfDocument.close();
+
+                JOptionPane.showMessageDialog(null, "La hoja de ruta se generó e imprimió correctamente.", "Información", JOptionPane.INFORMATION_MESSAGE);
+            } catch (Exception e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Error al generar o imprimir la hoja de ruta.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+        } catch (DocumentException | FileNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "Error al imprimir.", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException ex) {
+            Logger.getLogger(Consultas.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    }
