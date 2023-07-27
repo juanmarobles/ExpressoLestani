@@ -30,6 +30,8 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.io.BufferedReader;
@@ -40,6 +42,8 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -77,9 +81,12 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
+import javax.swing.filechooser.FileSystemView;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.printing.PDFPageable;
 
 /**
  *
@@ -97,6 +104,7 @@ public class Recibos extends javax.swing.JFrame {
     private List<Movimientos> listaFiltrada;
     private int numeroRecibo = 0;
     private Set<Integer> recibosEliminados = new HashSet<>();
+    private List<Movimientos> listaVisible;
 
     /**
      * Creates new form Recibos
@@ -113,8 +121,19 @@ public class Recibos extends javax.swing.JFrame {
         // Cargar el número de recibo desde el archivo (si existe)
         cargarNumeroRecibo();
         txtReciboNro.setText(String.format("%05d", numeroRecibo));
+        // Cargar los IDs eliminados desde el archivo (si existe)
+        cargarRecibosEliminados();
+        // Cargar datos en la tabla (suponiendo que carga los datos en la listaFiltrada)
         cargarTablaMovimientos();
-
+        // Agregar el WindowListener para guardar los IDs eliminados antes de cerrar la ventana
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                guardarRecibosEliminados();
+                // Luego cierra la ventana
+                dispose();
+            }
+        });
         //Por defecto
         cbReciboCon.setSelected(true);
 
@@ -123,9 +142,9 @@ public class Recibos extends javax.swing.JFrame {
 
                 if (cbReciboCon.isSelected()) {
                     // Acciones para el radio button "Recibo con" seleccionado
-                    TableColumn pagadoColumn = tablaMovimientos.getColumnModel().getColumn(11);
-                    TableColumn rendidoColumn = tablaMovimientos.getColumnModel().getColumn(10);
-                    TableColumn fleteColumn = tablaMovimientos.getColumnModel().getColumn(9);
+                    TableColumn pagadoColumn = tablaMovimientos.getColumnModel().getColumn(12);
+                    TableColumn rendidoColumn = tablaMovimientos.getColumnModel().getColumn(11);
+                    TableColumn fleteColumn = tablaMovimientos.getColumnModel().getColumn(10);
                     // Mostrar las columnas "rendido" y "pagado"
                     rendidoColumn.setMinWidth(75);  // Ajusta los tamaños de columna según tus necesidades
                     rendidoColumn.setMaxWidth(100);
@@ -139,9 +158,9 @@ public class Recibos extends javax.swing.JFrame {
 
                 } else if (cbReciboSin.isSelected()) {
 
-                    TableColumn pagadoColumn = tablaMovimientos.getColumnModel().getColumn(11);
-                    TableColumn rendidoColumn = tablaMovimientos.getColumnModel().getColumn(10);
-                    TableColumn fleteColumn = tablaMovimientos.getColumnModel().getColumn(9);
+                    TableColumn pagadoColumn = tablaMovimientos.getColumnModel().getColumn(12);
+                    TableColumn rendidoColumn = tablaMovimientos.getColumnModel().getColumn(11);
+                    TableColumn fleteColumn = tablaMovimientos.getColumnModel().getColumn(10);
 
                     // Ocultar las columnas "flete" y "pagado"
                     fleteColumn.setMinWidth(0);
@@ -196,13 +215,13 @@ public class Recibos extends javax.swing.JFrame {
                 boolean reciboSinFlete = cbReciboSin.isSelected();
 
                 for (int fila : filasSeleccionadas) {
-                    String montoStr = tablaMovimientos.getValueAt(fila, 6).toString().substring(1).replace(".", "").replace(",", ".");
+                    String montoStr = tablaMovimientos.getValueAt(fila, 7).toString().substring(1).replace(".", "").replace(",", ".");
 
                     double monto = Double.parseDouble(montoStr);
                     sumaMontos += monto;
 
                     if (!reciboSinFlete) {
-                        String fleteStr = tablaMovimientos.getValueAt(fila, 9).toString().substring(1).replace(".", "").replace(",", ".");
+                        String fleteStr = tablaMovimientos.getValueAt(fila, 10).toString().substring(1).replace(".", "").replace(",", ".");
                         double flete = Double.parseDouble(fleteStr);
                         sumaFletes += flete;
                     }
@@ -229,7 +248,98 @@ public class Recibos extends javax.swing.JFrame {
                 txtTotalFlete.setEditable(false);
             }
         });
+        // Ocultar las filas con ID presentes en recibosEliminados
+        ocultarFilasEliminadas();
+        //BOTON IMPRIMIR
+        btnImprimir.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (cbReciboSin.isSelected()) {
+                    imprimirPdfSinFlete();
+                } else if (cbReciboCon.isSelected()) {
+                    boolean incluirFlete = cbReciboCon.isSelected();
+                    imprimirPdfConFlete(incluirFlete);
+                }
+                // Obtiene los índices de las filas seleccionadas en la tabla
+                int[] selectedRows = tablaMovimientos.getSelectedRows();
 
+                // Verifica si hay filas seleccionadas
+                if (selectedRows.length > 0) {
+                    // Obtén el modelo de tabla asociado a la tabla
+                    DefaultTableModel model = (DefaultTableModel) tablaMovimientos.getModel();
+
+                    // Recorre los índices de las filas seleccionadas en orden inverso
+                    // para evitar conflictos en los índices al eliminar
+                    for (int i = selectedRows.length - 1; i >= 0; i--) {
+                        int rowIndex = selectedRows[i];
+
+                        // Obtiene el ID del elemento que se va a eliminar
+                        int id = (int) model.getValueAt(rowIndex, 0);
+
+                        // Agrega el ID a la lista recibosEliminados
+                        recibosEliminados.add(id);
+
+                        // Elimina la fila del modelo de tabla
+                        model.removeRow(rowIndex);
+                    }
+
+                    // Actualiza la visualización de la tabla
+                    tablaMovimientos.repaint();
+
+                    imprimir();
+                } else {
+                    // No se ha seleccionado ninguna fila, muestra un mensaje de error o realiza alguna otra acción
+                    JOptionPane.showMessageDialog(null, "No se ha seleccionado ninguna fila.");
+                }
+                // Oculta las filas eliminadas después de eliminar todas las filas seleccionadas
+                ocultarFilasEliminadas();
+            }
+        });
+        //BOTON GENERAR PDF
+        btnGenerarPdf.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (cbReciboSin.isSelected()) {
+                    generarPdfSinFlete();
+                } else if (cbReciboCon.isSelected()) {
+                    boolean incluirFlete = cbReciboCon.isSelected();
+                    generarPdfConFlete(incluirFlete);
+                }
+                // Obtiene los índices de las filas seleccionadas en la tabla
+                int[] selectedRows = tablaMovimientos.getSelectedRows();
+
+                // Verifica si hay filas seleccionadas
+                if (selectedRows.length > 0) {
+                    // Obtén el modelo de tabla asociado a la tabla
+                    DefaultTableModel model = (DefaultTableModel) tablaMovimientos.getModel();
+
+                    // Recorre los índices de las filas seleccionadas en orden inverso
+                    // para evitar conflictos en los índices al eliminar
+                    for (int i = selectedRows.length - 1; i >= 0; i--) {
+                        int rowIndex = selectedRows[i];
+
+                        // Obtiene el ID del elemento que se va a eliminar
+                        int id = (int) model.getValueAt(rowIndex, 0);
+
+                        // Agrega el ID a la lista recibosEliminados
+                        recibosEliminados.add(id);
+
+                        // Elimina la fila del modelo de tabla
+                        model.removeRow(rowIndex);
+                    }
+
+                    // Actualiza la visualización de la tabla
+                    tablaMovimientos.repaint();
+
+                    imprimir();
+                } else {
+                    // No se ha seleccionado ninguna fila, muestra un mensaje de error o realiza alguna otra acción
+                    JOptionPane.showMessageDialog(null, "No se ha seleccionado ninguna fila.");
+                }
+                // Oculta las filas eliminadas después de eliminar todas las filas seleccionadas
+                ocultarFilasEliminadas();
+            }
+
+        });
+        actualizarTabla();
     }
 
     private void guardarNumeroRecibo() {
@@ -268,22 +378,24 @@ public class Recibos extends javax.swing.JFrame {
     }
 
     public void cargarTablaMovimientos() {
+        // Crear una nueva lista visible basada en listaFiltrada
+        listaVisible = new ArrayList<>(listaFiltrada);
         DefaultTableModel tabla = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
         };
-        String titulos[] = {"HORA", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "PAGADO", "RENDIDO", "FLETE", "PAGADO", "RENDIDO", "A_CARGO_DE", "REPRESENTANTE", "CC", "OBS"};
+        String titulos[] = {"MOV", "HORA", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "PAGADO", "RENDIDO", "FLETE", "PAGADO", "RENDIDO", "A_CARGO_DE", "REPRESENTANTE", "CC", "OBS"};
         tabla.setColumnIdentifiers(titulos);
 
         for (Movimientos mov : listaFiltrada) {
-            Object[] objeto = {mov.getHora(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
+            Object[] objeto = {mov.getId_movimientos(), mov.getHora(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
             tabla.addRow(objeto);
         }
 
         tablaMovimientos.setModel(tabla);
-        int[] anchos = {80, 100, 100, 100, 70, 80, 100, 80, 80, 100, 80, 80, 120, 120, 40, 200}; // Anchos deseados para cada columna en píxeles
+        int[] anchos = {20, 80, 100, 100, 100, 70, 80, 100, 80, 80, 100, 80, 80, 120, 120, 40, 200}; // Anchos deseados para cada columna en píxeles
 
         if (anchos.length == tabla.getColumnCount()) {
             TableColumnModel columnModel = tablaMovimientos.getColumnModel();
@@ -313,7 +425,7 @@ public class Recibos extends javax.swing.JFrame {
         };
 
         // Nombres de columnas
-        String titulos[] = {"HORA", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "PAGADO", "RENDIDO", "FLETE", "PAGADO", "RENDIDO", "A_CARGO_DE", "REPRESENTANTE", "CC", "OBS"};
+        String titulos[] = {"ID", "HORA", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "PAGADO", "RENDIDO", "FLETE", "PAGADO", "RENDIDO", "A_CARGO_DE", "REPRESENTANTE", "CC", "OBS"};
         tabla.setColumnIdentifiers(titulos);
 
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tabla);
@@ -322,13 +434,13 @@ public class Recibos extends javax.swing.JFrame {
 
         // Carga de los datos desde la lista filtrada
         for (Movimientos mov : listaMovimientos) {
-            Object[] objeto = {mov.getHora(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
+            Object[] objeto = {mov.getId_movimientos(), mov.getHora(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
 
             tabla.addRow(objeto);
         }
 
         tablaMovimientos.setModel(tabla);
-        int[] anchos = {80, 100, 100, 100, 70, 80, 100, 80, 80, 100, 80, 80, 120, 120, 40, 200}; // Anchos deseados para cada columna en píxeles
+        int[] anchos = {20, 80, 100, 100, 100, 70, 80, 100, 80, 80, 100, 80, 80, 120, 120, 40, 200}; // Anchos deseados para cada columna en píxeles
 
         if (anchos.length == tabla.getColumnCount()) {
             TableColumnModel columnModel = tablaMovimientos.getColumnModel();
@@ -770,44 +882,70 @@ public class Recibos extends javax.swing.JFrame {
     }//GEN-LAST:event_cbReciboConActionPerformed
 
     private void btnImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirActionPerformed
-        btnImprimir.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                // Obtiene los índices de las filas seleccionadas en la tabla
-                int[] selectedRows = tablaMovimientos.getSelectedRows();
-
-                // Verifica si hay filas seleccionadas
-                if (selectedRows.length > 0) {
-                    // Obtén el modelo de tabla asociado a la tabla
-                    DefaultTableModel model = (DefaultTableModel) tablaMovimientos.getModel();
-
-                    // Recorre los índices de las filas seleccionadas en orden inverso
-                    // para evitar conflictos en los índices al eliminar
-                    for (int i = selectedRows.length - 1; i >= 0; i--) {
-                        int rowIndex = selectedRows[i];
-
-                        // Obtiene el ID del elemento que se va a eliminar
-                        int id = (int) model.getValueAt(rowIndex, 0);
-
-                        // Agrega el ID a la lista recibosEliminados
-                        recibosEliminados.add(id);
-
-                        // Elimina la fila del modelo de tabla
-                        model.removeRow(rowIndex);
-                    }
-
-                    // Actualiza la visualización de la tabla
-                    tablaMovimientos.repaint();
-
-                    imprimir();
-                } else {
-                    // No se ha seleccionado ninguna fila, muestra un mensaje de error o realiza alguna otra acción
-                    JOptionPane.showMessageDialog(null, "No se ha seleccionado ninguna fila.");
-                }
-            }
-        });
-
 
     }//GEN-LAST:event_btnImprimirActionPerformed
+    private void ocultarFilasEliminadas() {
+        DefaultTableModel model = (DefaultTableModel) tablaMovimientos.getModel();
+
+        List<Integer> filasAEliminar = new ArrayList<>();
+
+        for (int i = 0; i < model.getRowCount(); i++) {
+            int id = (int) model.getValueAt(i, 0);
+            if (recibosEliminados.contains(id)) {
+                filasAEliminar.add(i);
+            }
+        }
+
+        // Eliminar físicamente las filas eliminadas de la tabla
+        for (int i = filasAEliminar.size() - 1; i >= 0; i--) {
+            int rowIndex = filasAEliminar.get(i);
+            model.removeRow(rowIndex);
+        }
+    }
+
+    private void guardarRecibosEliminados() {
+        try {
+            FileOutputStream fileOut = new FileOutputStream("recibosEliminados.ser");
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(recibosEliminados);
+            out.close();
+            fileOut.close();
+            System.out.println("Lista recibosEliminados guardada en recibosEliminados.ser");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void cargarRecibosEliminados() {
+        try {
+            FileInputStream fileIn = new FileInputStream("recibosEliminados.ser");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            recibosEliminados = (Set<Integer>) in.readObject();
+            in.close();
+            fileIn.close();
+            System.out.println("Lista recibosEliminados cargada desde recibosEliminados.ser");
+        } catch (IOException | ClassNotFoundException e) {
+            // Si el archivo no existe o hay un error en la lectura, simplemente inicializamos recibosEliminados como un nuevo HashSet
+            recibosEliminados = new HashSet<>();
+        }
+    }
+
+    public void actualizarTabla() {
+        // Limpia el modelo de tabla
+        DefaultTableModel model = (DefaultTableModel) tablaMovimientos.getModel();
+        model.setRowCount(0);
+
+        // Carga nuevamente la tabla usando listaVisible
+        for (Movimientos mov : listaVisible) {
+            Object[] objeto = {mov.getId_movimientos(), mov.getHora(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
+            model.addRow(objeto);
+        }
+
+        // Oculta las filas eliminadas nuevamente
+        ocultarFilasEliminadas();
+        // Repinta la tabla para reflejar los cambios
+        tablaMovimientos.repaint();
+    }
 
     private void imprimir() {
         Document document = new Document();
@@ -1004,12 +1142,7 @@ public class Recibos extends javax.swing.JFrame {
 
 
     private void btnGenerarPdfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarPdfActionPerformed
-        if (cbReciboSin.isSelected()) {
-            generarPdfSinFlete();
-        } else if (cbReciboCon.isSelected()) {
-            boolean incluirFlete = cbReciboCon.isSelected();
-            generarPdfConFlete(incluirFlete);
-        }
+
     }//GEN-LAST:event_btnGenerarPdfActionPerformed
 
     private void btnQuitarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQuitarActionPerformed
@@ -1171,7 +1304,7 @@ public class Recibos extends javax.swing.JFrame {
                     // Agregar las celdas de encabezado a la tabla
                     for (int i = 0; i < tablaMovimientos.getColumnCount(); i++) {
                         String col = tablaMovimientos.getColumnName(i);
-                        if (!col.equals("HORA") && !col.equals("RENDIDO") && !col.equals("RENDIDO") && !col.equals("REPRESENTANTE") && !col.equals("FLETE") && !col.equals("PAGADO") && !col.equals("CLIENTE") && !col.equals("A_CARGO_DE") && !col.equals("CC") && !col.equals("MOVIMIENTO")) {
+                        if (!col.equals("MOV") && !col.equals("HORA") && !col.equals("RENDIDO") && !col.equals("RENDIDO") && !col.equals("REPRESENTANTE") && !col.equals("FLETE") && !col.equals("PAGADO") && !col.equals("CLIENTE") && !col.equals("A_CARGO_DE") && !col.equals("CC") && !col.equals("MOVIMIENTO")) {
                             PdfPCell cell = new PdfPCell(new Phrase(col, fontColumnas));
                             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                             cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
@@ -1183,7 +1316,7 @@ public class Recibos extends javax.swing.JFrame {
                     for (int fila : filasSeleccionadas) {
                         for (int col = 0; col < tablaMovimientos.getColumnCount(); col++) {
                             String colName = tablaMovimientos.getColumnName(col);
-                            if (!colName.equals("HORA") && !colName.equals("RENDIDO") && !colName.equals("RENDIDO") && !colName.equals("REPRESENTANTE") && !colName.equals("FLETE") && !colName.equals("PAGADO") && !colName.equals("CLIENTE") && !colName.equals("A_CARGO_DE") && !colName.equals("CC") && !colName.equals("MOVIMIENTO")) {
+                            if (!colName.equals("MOV") && !colName.equals("HORA") && !colName.equals("RENDIDO") && !colName.equals("RENDIDO") && !colName.equals("REPRESENTANTE") && !colName.equals("FLETE") && !colName.equals("PAGADO") && !colName.equals("CLIENTE") && !colName.equals("A_CARGO_DE") && !colName.equals("CC") && !colName.equals("MOVIMIENTO")) {
                                 Object value = tablaMovimientos.getValueAt(fila, col);
                                 if (value != null) {
                                     PdfPCell cell = new PdfPCell(new Phrase(value.toString(), fontFilas));
@@ -1385,7 +1518,7 @@ public class Recibos extends javax.swing.JFrame {
                     // Agregar las celdas de encabezado a la tabla, excluyendo las columnas suprimidas
                     for (int i = 0; i < tablaMovimientos.getColumnCount(); i++) {
                         String col = tablaMovimientos.getColumnName(i);
-                        if (!col.equals("HORA") && !col.equals("PAGADO") && !col.equals("REPRESENTANTE") && !col.equals("CLIENTE") && !col.equals("CC") && !col.equals("RENDIDO") && !col.equals("RENDIDO")) {
+                        if (!col.equals("MOV") && !col.equals("HORA") && !col.equals("PAGADO") && !col.equals("REPRESENTANTE") && !col.equals("CLIENTE") && !col.equals("CC") && !col.equals("RENDIDO") && !col.equals("RENDIDO")) {
                             PdfPCell cell = new PdfPCell(new Phrase(col, fontColumnas));
                             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                             cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
@@ -1398,7 +1531,7 @@ public class Recibos extends javax.swing.JFrame {
                         // Agregar las celdas de datos excluyendo las columnas suprimidas
                         for (int col = 0; col < tablaMovimientos.getColumnCount(); col++) {
                             String colName = tablaMovimientos.getColumnName(col);
-                            if (!colName.equals("HORA") && !colName.equals("REPRESENTANTE") && !colName.equals("CLIENTE") && !colName.equals("PAGADO") && !colName.equals("CC") && !colName.equals("RENDIDO") && !colName.equals("RENDIDO")) {
+                            if (!colName.equals("MOV") && !colName.equals("HORA") && !colName.equals("REPRESENTANTE") && !colName.equals("CLIENTE") && !colName.equals("PAGADO") && !colName.equals("CC") && !colName.equals("RENDIDO") && !colName.equals("RENDIDO")) {
                                 Object value = tablaMovimientos.getValueAt(fila, col);
                                 if (value != null) {
                                     PdfPCell cell = new PdfPCell(new Phrase(value.toString(), fontFilas));
@@ -1453,14 +1586,459 @@ public class Recibos extends javax.swing.JFrame {
         }
     }
 
+    private void imprimirPdfSinFlete() {
+        Document document = new Document();
+        // Incrementar el contador de recibo
+        numeroRecibo++;
+        // Generar el número de recibo en formato de 5 dígitos
+        String numeroReciboString = String.format("%05d", numeroRecibo);
+        try {
+            String userHome = FileSystemView.getFileSystemView().getHomeDirectory().getAbsolutePath();
+            String outputPath = userHome + File.separator + "archivo.pdf";
+            // Crear el archivo de salida
+            File outputFile = new File(outputPath);
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile));
+
+            document.open();
+
+            //FUENTES
+            Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.NORMAL);
+            Font fontColumnas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD);
+            Font fontTotales = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
+            Font fontFecha = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
+            Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 9, Font.NORMAL, BaseColor.BLACK);
+
+            //FECHAS
+            Chunk chunkFechas = new Chunk("Fecha: " + fechaActual(), fontFecha);
+            Paragraph fecha = new Paragraph(chunkFechas);
+            fecha.setAlignment(Element.ALIGN_RIGHT);
+            fecha.setSpacingAfter(5f); // Espacio después de las fechas (en puntos)
+            //RECIBO NRO
+            Paragraph nroRecibo = new Paragraph("RECIBO Nro: " + String.format("%05d", numeroRecibo), FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.NORMAL));
+            guardarNumeroRecibo();
+            nroRecibo.setAlignment(Element.ALIGN_RIGHT);
+            nroRecibo.setSpacingAfter(10f); // Espacio después del título (en puntos)
+            // TITULO RECIBO
+            Paragraph titulo = new Paragraph("RECIBO", FontFactory.getFont(FontFactory.TIMES_ROMAN, 14, Font.BOLD));
+            titulo.setAlignment(Element.ALIGN_CENTER);
+            titulo.setSpacingAfter(10f); // Espacio después del título (en puntos)
+
+            // LOGO
+            Image logo = Image.getInstance("src/main/java/com/imagenes/ivacuit.jpg");
+            logo.scaleToFit(530, 800);
+            logo.setAlignment(Element.ALIGN_LEFT);
+            // FIRMASELLO
+            Image firmasello = Image.getInstance("src/main/java/com/imagenes/firmasello.jpg");
+            firmasello.scaleToFit(150, 150);
+            firmasello.setAlignment(Element.ALIGN_RIGHT);
+
+            // DOC NO VALIDO COMO FACTURA
+            Paragraph subtitulo = new Paragraph("DOCUMENTO NO VALIDO COMO FACTURA", FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.NORMAL));
+            subtitulo.setAlignment(Element.ALIGN_CENTER);
+            subtitulo.setSpacingAfter(10f); // Espacio después del título (en puntos)
+
+            document.add(titulo);
+            document.add(fecha);
+            document.add(nroRecibo);
+            document.add(logo);
+            document.add(subtitulo);
+
+            // Crear una tabla para los senores y domicilio         
+            PdfPTable senoresdomicilio = new PdfPTable(2);
+            senoresdomicilio.setWidthPercentage(100);
+
+            // Ajustar los anchos de las columnas
+            float[] colSenDom = {0.2f, 1f}; // Ancho relativo de las columnas (proporciones)
+            senoresdomicilio.setWidths(colSenDom);
+
+            // Columna "Señores"
+            Phrase senoresLabel = new Phrase("SEÑORES", font);
+            PdfPCell senoresLabelCell = new PdfPCell(new Paragraph(senoresLabel));
+            senoresLabelCell.setBorder(Rectangle.BOX);
+            senoresLabelCell.setHorizontalAlignment(Element.ALIGN_LEFT);
+            senoresLabelCell.setPaddingBottom(5f); // Espacio después de la celda
+            senoresdomicilio.addCell(senoresLabelCell);
+
+            // Contenido de la columna "Señores"
+            Phrase senoresValue = new Phrase(txtCliente.getText().toUpperCase(), font);
+            PdfPCell senoresValueCell = new PdfPCell(new Paragraph(senoresValue));
+            senoresValueCell.setBorder(Rectangle.BOX);
+            senoresValueCell.setPadding(5f);
+            senoresValueCell.setPaddingBottom(5f); // Espacio después de la celda
+            senoresdomicilio.addCell(senoresValueCell);
+
+            // Columna "Domicilio"
+            Phrase domicilioLabel = new Phrase("DOMICILIO", font);
+            PdfPCell domicilioLabelCell = new PdfPCell(new Paragraph(domicilioLabel));
+            domicilioLabelCell.setBorder(Rectangle.BOX);
+            domicilioLabelCell.setHorizontalAlignment(Element.ALIGN_LEFT);
+            domicilioLabelCell.setPaddingBottom(5f); // Espacio después de la celda
+            senoresdomicilio.addCell(domicilioLabelCell);
+
+            // Contenido de la columna "Domicilio"
+            Phrase domicilioValue = new Phrase(txtDomicilio.getText().toUpperCase(), font);
+            PdfPCell domicilioValueCell = new PdfPCell(new Paragraph(domicilioValue));
+            domicilioValueCell.setBorder(Rectangle.BOX);
+            domicilioValueCell.setPadding(5f);
+            domicilioValueCell.setPaddingBottom(5f); // Espacio después de la celda
+            senoresdomicilio.addCell(domicilioValueCell);
+
+            senoresdomicilio.setSpacingBefore(0.1f);
+            document.add(senoresdomicilio);
+
+            // Crear una tabla para recibi y concepto        
+            PdfPTable recibiconcepto = new PdfPTable(2);
+            recibiconcepto.setWidthPercentage(100);
+            // RECIBI LA SUMA D PESOS...
+            Phrase texto = new Phrase("\nRECIBÍ DE EXPRESO LESTANI LA SUMA DE PESOS: " + txtRecibi.getText().toUpperCase(), font);
+            Paragraph textoRecibi = new Paragraph(texto);
+            textoRecibi.setAlignment(Element.ALIGN_LEFT);
+            document.add(textoRecibi);
+
+            // CONCEPTO DE
+            Phrase textodos = new Phrase("\nEN CONCEPTO DE: " + txtConcepto.getText().toUpperCase(), font);
+            Paragraph textoConcepto = new Paragraph(textodos);
+            textoConcepto.setAlignment(Element.ALIGN_LEFT);
+            document.add(textoConcepto);
+
+            recibiconcepto.setSpacingBefore(8f);
+
+            document.add(recibiconcepto);
+
+            //TABLA
+            // Obtener las filas seleccionadas de la tabla
+            int[] filasSeleccionadas = tablaMovimientos.getSelectedRows();
+
+            if (filasSeleccionadas.length > 0) { // Verificar que se hayan seleccionado filas
+                PdfPTable table = new PdfPTable(6); // Número de columnas de la tabla
+                table.setSpacingBefore(10f); // Espacio antes de la tabla (en puntos)
+                table.setSpacingAfter(10f);
+
+                // Ajustar espacio horizontal
+                float[] columnWidths = {0.8f, 1f, 0.6f, 0.6f, 1f, 0.6f}; // Anchos de las columnas (proporciones)
+                table.setWidths(columnWidths);
+                table.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
+
+                // Agregar las celdas de encabezado a la tabla
+                for (int i = 0; i < tablaMovimientos.getColumnCount(); i++) {
+                    String col = tablaMovimientos.getColumnName(i);
+                    if (!col.equals("MOV") && !col.equals("HORA") && !col.equals("RENDIDO") && !col.equals("RENDIDO") && !col.equals("REPRESENTANTE") && !col.equals("FLETE") && !col.equals("PAGADO") && !col.equals("CLIENTE") && !col.equals("A_CARGO_DE") && !col.equals("CC") && !col.equals("MOVIMIENTO")) {
+                        PdfPCell cell = new PdfPCell(new Phrase(col, fontColumnas));
+                        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                        cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
+                        table.addCell(cell);
+                    }
+                }
+
+                // Obtener los datos de las filas seleccionadas y agregar las celdas de datos a la tabla
+                for (int fila : filasSeleccionadas) {
+                    for (int col = 0; col < tablaMovimientos.getColumnCount(); col++) {
+                        String colName = tablaMovimientos.getColumnName(col);
+                        if (!colName.equals("MOV") && !colName.equals("HORA") && !colName.equals("RENDIDO") && !colName.equals("RENDIDO") && !colName.equals("REPRESENTANTE") && !colName.equals("FLETE") && !colName.equals("PAGADO") && !colName.equals("CLIENTE") && !colName.equals("A_CARGO_DE") && !colName.equals("CC") && !colName.equals("MOVIMIENTO")) {
+                            Object value = tablaMovimientos.getValueAt(fila, col);
+                            if (value != null) {
+                                PdfPCell cell = new PdfPCell(new Phrase(value.toString(), fontFilas));
+                                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                                cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
+                                table.addCell(cell);
+                            }
+                        }
+                    }
+                }
+
+                document.add(table);
+            } else {
+                // Si no se ha seleccionado ninguna fila, mostrar un mensaje de error o realizar alguna acción adecuada.
+            }
+
+            // Crear una tabla para los montos totales
+            PdfPTable totalsTable = new PdfPTable(1);
+            totalsTable.setWidthPercentage(100);
+
+            // Monto total
+            // Establecer la fuente deseada
+            Phrase montoTotalPhrase = new Phrase("TOTAL MONTO: $" + txtTotalMonto.getText(), fontTotales);
+            PdfPCell montoTotalCell = new PdfPCell(montoTotalPhrase);
+            montoTotalCell.setBorder(Rectangle.NO_BORDER);
+            montoTotalCell.setHorizontalAlignment(Element.ALIGN_LEFT); // Alinear la celda a la izq
+            totalsTable.addCell(montoTotalCell);
+
+            totalsTable.setSpacingBefore(10f);
+            document.add(totalsTable);
+            document.add(firmasello);
+
+            document.close();
+
+            try {
+                // Cargar el archivo PDF generado previamente
+                PDDocument pdfDocument = PDDocument.load(new File(outputPath));
+
+                // Obtener la impresora predeterminada y crear un objeto PDFPageable
+                PrinterJob printerJob = PrinterJob.getPrinterJob();
+                PDFPageable pageable = new PDFPageable(pdfDocument);
+
+                // Establecer el objeto PDFPageable en el trabajo de impresión
+                printerJob.setPageable(pageable);
+
+                // Imprimir el documento
+                printerJob.print();
+
+                // Cerrar el documento PDF después de imprimir
+                pdfDocument.close();
+
+                JOptionPane.showMessageDialog(null, "La hoja de ruta se generó e imprimió correctamente.", "Información", JOptionPane.INFORMATION_MESSAGE);
+            } catch (Exception e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Error al generar o imprimir la hoja de ruta.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+        } catch (DocumentException | FileNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "Error al imprimir.", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException ex) {
+            Logger.getLogger(Consultas.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    public void imprimirPdfConFlete(boolean incluirFlete) {
+        Document document = new Document();
+        // Incrementar el contador de recibo
+        numeroRecibo++;
+        // Generar el número de recibo en formato de 5 dígitos
+        String numeroReciboString = String.format("%05d", numeroRecibo);
+
+        try {
+
+            String userHome = FileSystemView.getFileSystemView().getHomeDirectory().getAbsolutePath();
+            String outputPath = userHome + File.separator + "archivo.pdf";
+            // Crear el archivo de salida
+            File outputFile = new File(outputPath);
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile));
+            document.open();
+
+            //FUENTES
+            Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.NORMAL);
+            Font fontColumnas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD);
+            Font fontTotales = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
+            Font fontFecha = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
+            Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 9, Font.NORMAL, BaseColor.BLACK);
+
+            //FECHAS
+            Chunk chunkFechas = new Chunk("Fecha: " + fechaActual(), fontFecha);
+            Paragraph fecha = new Paragraph(chunkFechas);
+            fecha.setAlignment(Element.ALIGN_RIGHT);
+            fecha.setSpacingAfter(5f); // Espacio después de las fechas (en puntos)
+            //RECIBO NRO
+            Paragraph nroRecibo = new Paragraph("RECIBO Nro: " + String.format("%05d", numeroRecibo), FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.NORMAL));
+            guardarNumeroRecibo();
+            nroRecibo.setAlignment(Element.ALIGN_RIGHT);
+            nroRecibo.setSpacingAfter(10f); // Espacio después del título (en puntos)
+            // TITULO RECIBO
+            Paragraph titulo = new Paragraph("RECIBO", FontFactory.getFont(FontFactory.TIMES_ROMAN, 14, Font.BOLD));
+            titulo.setAlignment(Element.ALIGN_CENTER);
+            titulo.setSpacingAfter(10f); // Espacio después del título (en puntos)
+
+            // LOGO
+            Image logo = Image.getInstance("src/main/java/com/imagenes/ivacuit.jpg");
+            logo.scaleToFit(530, 800);
+            logo.setAlignment(Element.ALIGN_LEFT);
+            // FIRMASELLO
+            Image firmasello = Image.getInstance("src/main/java/com/imagenes/firmasello.jpg");
+            firmasello.scaleToFit(150, 150);
+            firmasello.setAlignment(Element.ALIGN_RIGHT);
+
+            // DOC NO VALIDO COMO FACTURA
+            Paragraph subtitulo = new Paragraph("DOCUMENTO NO VALIDO COMO FACTURA", FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.NORMAL));
+            subtitulo.setAlignment(Element.ALIGN_CENTER);
+            subtitulo.setSpacingAfter(10f); // Espacio después del título (en puntos)
+
+            document.add(titulo);
+            document.add(fecha);
+            document.add(nroRecibo);
+            document.add(logo);
+            document.add(subtitulo);
+
+            // Crear una tabla para los senores y domicilio         
+            PdfPTable senoresdomicilio = new PdfPTable(2);
+            senoresdomicilio.setWidthPercentage(100);
+
+            // Ajustar los anchos de las columnas
+            float[] colSenDom = {0.2f, 1f}; // Ancho relativo de las columnas (proporciones)
+            senoresdomicilio.setWidths(colSenDom);
+
+            // Columna "Señores"
+            Phrase senoresLabel = new Phrase("SEÑORES: ", font);
+            PdfPCell senoresLabelCell = new PdfPCell(new Paragraph(senoresLabel));
+            senoresLabelCell.setBorder(Rectangle.BOX);
+            senoresLabelCell.setHorizontalAlignment(Element.ALIGN_LEFT);
+            senoresLabelCell.setPaddingBottom(5f); // Espacio después de la celda
+            senoresdomicilio.addCell(senoresLabelCell);
+
+            // Contenido de la columna "Señores"
+            Phrase senoresValue = new Phrase(txtCliente.getText().toUpperCase(), font);
+            PdfPCell senoresValueCell = new PdfPCell(new Paragraph(senoresValue));
+            senoresValueCell.setBorder(Rectangle.BOX);
+            senoresValueCell.setPadding(5f);
+            senoresValueCell.setPaddingBottom(5f); // Espacio después de la celda
+            senoresdomicilio.addCell(senoresValueCell);
+
+            // Columna "Domicilio"
+            Phrase domicilioLabel = new Phrase("DOMICILIO: ", font);
+            PdfPCell domicilioLabelCell = new PdfPCell(new Paragraph(domicilioLabel));
+            domicilioLabelCell.setBorder(Rectangle.BOX);
+            domicilioLabelCell.setHorizontalAlignment(Element.ALIGN_LEFT);
+            domicilioLabelCell.setPaddingBottom(5f); // Espacio después de la celda
+            senoresdomicilio.addCell(domicilioLabelCell);
+
+            // Contenido de la columna "Domicilio"
+            Phrase domicilioValue = new Phrase(txtDomicilio.getText().toUpperCase(), font);
+            PdfPCell domicilioValueCell = new PdfPCell(new Paragraph(domicilioValue));
+            domicilioValueCell.setBorder(Rectangle.BOX);
+            domicilioValueCell.setPadding(5f);
+            domicilioValueCell.setPaddingBottom(5f); // Espacio después de la celda
+            senoresdomicilio.addCell(domicilioValueCell);
+
+            senoresdomicilio.setSpacingBefore(0.1f);
+            document.add(senoresdomicilio);
+
+            // Crear una tabla para recibi y concepto        
+            PdfPTable recibiconcepto = new PdfPTable(2);
+            recibiconcepto.setWidthPercentage(100);
+            // RECIBI LA SUMA D PESOS...
+            Phrase texto = new Phrase("\nRECIBÍ DE EXPRESO LESTANI LA SUMA DE PESOS: " + txtRecibi.getText().toUpperCase(), font);
+            Paragraph textoRecibi = new Paragraph(texto);
+            textoRecibi.setAlignment(Element.ALIGN_LEFT);
+            document.add(textoRecibi);
+
+            // CONCEPTO DE
+            Phrase textodos = new Phrase("\nEN CONCEPTO DE: " + txtConcepto.getText().toUpperCase(), font);
+            Paragraph textoConcepto = new Paragraph(textodos);
+            textoConcepto.setAlignment(Element.ALIGN_LEFT);
+            document.add(textoConcepto);
+
+            recibiconcepto.setSpacingBefore(8f);
+
+            document.add(recibiconcepto);
+
+            //TABLA
+            // Obtener las filas seleccionadas de la tabla
+            int[] filasSeleccionadas = tablaMovimientos.getSelectedRows();
+
+            if (filasSeleccionadas.length > 0) { // Verificar que se hayan seleccionado filas
+                // Calcular el número de columnas en la tabla
+                int numColumnasTabla = 8;
+
+                // Crear la tabla con el número correcto de columnas
+                PdfPTable table = new PdfPTable(numColumnasTabla);
+                table.setSpacingBefore(10f); // Espacio antes de la tabla (en puntos)
+                table.setSpacingAfter(10f);
+
+                // Ajustar espacio horizontal
+                float[] columnWidths = {0.8f, 1f, 0.7f, 0.7f, 1f, 1f, 1f, 1f}; // Anchos de las columnas (proporciones)
+                table.setWidths(columnWidths);
+                table.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
+
+                // Agregar las celdas de encabezado a la tabla, excluyendo las columnas suprimidas
+                for (int i = 0; i < tablaMovimientos.getColumnCount(); i++) {
+                    String col = tablaMovimientos.getColumnName(i);
+                    if (!col.equals("MOV") && !col.equals("HORA") && !col.equals("PAGADO") && !col.equals("REPRESENTANTE") && !col.equals("CLIENTE") && !col.equals("CC") && !col.equals("RENDIDO") && !col.equals("RENDIDO")) {
+                        PdfPCell cell = new PdfPCell(new Phrase(col, fontColumnas));
+                        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                        cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
+                        table.addCell(cell);
+                    }
+                }
+
+                // Obtener los datos de las filas seleccionadas y agregar las celdas de datos a la tabla
+                for (int fila : filasSeleccionadas) {
+                    // Agregar las celdas de datos excluyendo las columnas suprimidas
+                    for (int col = 0; col < tablaMovimientos.getColumnCount(); col++) {
+                        String colName = tablaMovimientos.getColumnName(col);
+                        if (!colName.equals("MOV") && !colName.equals("HORA") && !colName.equals("REPRESENTANTE") && !colName.equals("CLIENTE") && !colName.equals("PAGADO") && !colName.equals("CC") && !colName.equals("RENDIDO") && !colName.equals("RENDIDO")) {
+                            Object value = tablaMovimientos.getValueAt(fila, col);
+                            if (value != null) {
+                                PdfPCell cell = new PdfPCell(new Phrase(value.toString(), fontFilas));
+                                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                                cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
+                                table.addCell(cell);
+                            }
+                        }
+                    }
+
+                }
+
+                document.add(table);
+            } else {
+                // Si no se ha seleccionado ninguna fila, mostrar un mensaje de error o realizar alguna acción adecuada.
+            }
+
+            // Crear una tabla para los montos totales
+            PdfPTable totalsTable = new PdfPTable(2);
+            totalsTable.setWidthPercentage(100);
+
+            // Monto total
+            // Establecer la fuente deseada
+            Phrase montoTotalPhrase = new Phrase("TOTAL MONTO: $" + txtTotalMonto.getText(), fontTotales);
+            PdfPCell montoTotalCell = new PdfPCell(montoTotalPhrase);
+            montoTotalCell.setBorder(Rectangle.NO_BORDER);
+            montoTotalCell.setHorizontalAlignment(Element.ALIGN_LEFT); // Alinear la celda al centro
+            totalsTable.addCell(montoTotalCell);
+
+            // Flete total
+            Phrase fleteTotalPhrase = new Phrase("TOTAL FLETE: $" + txtTotalFlete.getText(), fontTotales);
+            PdfPCell fleteTotalCell = new PdfPCell(fleteTotalPhrase);
+            fleteTotalCell.setBorder(Rectangle.NO_BORDER);
+            fleteTotalCell.setHorizontalAlignment(Element.ALIGN_RIGHT); // Alinear la celda al centro
+            totalsTable.addCell(fleteTotalCell);
+
+            totalsTable.setSpacingBefore(10f);
+            document.add(totalsTable);
+            document.add(firmasello);
+
+            document.close();
+            txtReciboNro.setText(String.valueOf(numeroRecibo));
+
+            writer.close();
+
+            try {
+                // Cargar el archivo PDF generado previamente
+                PDDocument pdfDocument = PDDocument.load(new File(outputPath));
+
+                // Obtener la impresora predeterminada y crear un objeto PDFPageable
+                PrinterJob printerJob = PrinterJob.getPrinterJob();
+                PDFPageable pageable = new PDFPageable(pdfDocument);
+
+                // Establecer el objeto PDFPageable en el trabajo de impresión
+                printerJob.setPageable(pageable);
+
+                // Imprimir el documento
+                printerJob.print();
+
+                // Cerrar el documento PDF después de imprimir
+                pdfDocument.close();
+
+                JOptionPane.showMessageDialog(null, "La hoja de ruta se generó e imprimió correctamente.", "Información", JOptionPane.INFORMATION_MESSAGE);
+            } catch (Exception e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Error al generar o imprimir la hoja de ruta.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+        } catch (DocumentException | FileNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "Error al imprimir.", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException ex) {
+            Logger.getLogger(Consultas.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
     private void calcularTotales() {
         int rowCount = tablaMovimientos.getRowCount();
         double sumaMontos = 0.0;
         double sumaFletes = 0.0;
 
         for (int fila = 0; fila < rowCount; fila++) {
-            String montoStr = tablaMovimientos.getValueAt(fila, 6).toString().substring(1).replace(".", "").replace(",", ".");
-            String fleteStr = tablaMovimientos.getValueAt(fila, 9).toString().substring(1).replace(".", "").replace(",", ".");
+            String montoStr = tablaMovimientos.getValueAt(fila, 7).toString().substring(1).replace(".", "").replace(",", ".");
+            String fleteStr = tablaMovimientos.getValueAt(fila, 10).toString().substring(1).replace(".", "").replace(",", ".");
 
             double monto = Double.parseDouble(montoStr);
             double flete = Double.parseDouble(fleteStr);
@@ -1575,7 +2153,7 @@ public class Recibos extends javax.swing.JFrame {
 
         };
         //nombres de columnas
-        String titulos[] = {"HORA", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "PAGADO", "RENDIDO", "FLETE", "PAGADO", "RENDIDO", "A_CARGO_DE", "REPRESENTANTE", "CC", "OBS"};
+        String titulos[] = {"MOV", "HORA", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "PAGADO", "RENDIDO", "FLETE", "PAGADO", "RENDIDO", "A_CARGO_DE", "REPRESENTANTE", "CC", "OBS"};
         tabla.setColumnIdentifiers(titulos);
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tabla);
         tablaMovimientos.setRowSorter(sorter);
@@ -1586,7 +2164,7 @@ public class Recibos extends javax.swing.JFrame {
         //recorrer lista y mostrar elementos en la tabla
         if (listaMovimientos != null) {
             for (Movimientos mov : listaMovimientos) {
-                Object[] objeto = {mov.getHora(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
+                Object[] objeto = {mov.getId_movimientos(), mov.getHora(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
 
                 tabla.addRow(objeto);
 
@@ -1594,7 +2172,7 @@ public class Recibos extends javax.swing.JFrame {
         }
         tablaMovimientos.setModel(tabla);
         // Establecer el ancho específico de las columnas
-        int[] anchos = {80, 60, 60, 100, 100, 40, 40, 100, 40, 40, 100, 40, 40, 70, 100, 5, 200}; // Anchos deseados para cada columna en píxeles
+        int[] anchos = {20, 80, 60, 60, 100, 100, 40, 40, 100, 40, 40, 100, 40, 40, 70, 100, 5, 200}; // Anchos deseados para cada columna en píxeles
         if (anchos.length == tabla.getColumnCount()) {
             TableColumnModel columnModel = tablaMovimientos.getColumnModel();
             for (int i = 0; i < anchos.length; i++) {
@@ -1604,7 +2182,9 @@ public class Recibos extends javax.swing.JFrame {
                 // Renderizador personalizado para centrar el contenido de las celdas
                 DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
                 renderer.setHorizontalAlignment(SwingConstants.CENTER);
-                tablaMovimientos.setDefaultRenderer(Object.class, renderer);
+                tablaMovimientos
+                        .setDefaultRenderer(Object.class,
+                                 renderer);
 
                 // Renderizador personalizado para centrar el título de las columnas
                 DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) tablaMovimientos.getTableHeader().getDefaultRenderer();
