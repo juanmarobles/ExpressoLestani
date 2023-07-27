@@ -152,7 +152,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         jMenuBar1.add(HojaDRuta);
 
-        jMenu3.setText("      Datos Cargados   ");
+        jMenu3.setText("      Carga de Datos   ");
         jMenu3.add(jSeparator1);
 
         MenuClientes.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N

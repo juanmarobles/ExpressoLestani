@@ -140,7 +140,7 @@
         </Menu>
         <Menu class="javax.swing.JMenu" name="jMenu3">
           <Properties>
-            <Property name="text" type="java.lang.String" value="      Datos Cargados   "/>
+            <Property name="text" type="java.lang.String" value="      Carga de Datos   "/>
           </Properties>
           <SubComponents>
             <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator1">

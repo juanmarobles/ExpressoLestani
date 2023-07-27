@@ -278,18 +278,24 @@ public class HDDRepresentantes extends javax.swing.JFrame {
         jLabel6.setForeground(new java.awt.Color(255, 255, 255));
         jLabel6.setText("Hoja de Ruta Por Representantes");
 
+        btnImprimirHRP.setBackground(new java.awt.Color(51, 51, 51));
         btnImprimirHRP.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        btnImprimirHRP.setForeground(new java.awt.Color(255, 255, 255));
         btnImprimirHRP.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/imprimir_24px.png"))); // NOI18N
         btnImprimirHRP.setText("Imprimir");
+        btnImprimirHRP.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnImprimirHRP.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnImprimirHRPActionPerformed(evt);
             }
         });
 
+        btnGenerarPdf.setBackground(new java.awt.Color(51, 51, 51));
         btnGenerarPdf.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        btnGenerarPdf.setForeground(new java.awt.Color(255, 255, 255));
         btnGenerarPdf.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/pdf_24px-pdf.png"))); // NOI18N
         btnGenerarPdf.setText("Generar PDF");
+        btnGenerarPdf.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnGenerarPdf.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnGenerarPdfActionPerformed(evt);
@@ -299,6 +305,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
         jPanel3.setBackground(new java.awt.Color(66, 66, 66));
         jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
+        cbCC.setBackground(new java.awt.Color(66, 66, 66));
         cbCC.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         cbCC.setForeground(new java.awt.Color(255, 255, 255));
         cbCC.setText("Cuenta Corriente");
@@ -308,6 +315,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
             }
         });
 
+        cbContado.setBackground(new java.awt.Color(66, 66, 66));
         cbContado.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         cbContado.setForeground(new java.awt.Color(255, 255, 255));
         cbContado.setText("Contado");
@@ -317,6 +325,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
             }
         });
 
+        cbTodos.setBackground(new java.awt.Color(66, 66, 66));
         cbTodos.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         cbTodos.setForeground(new java.awt.Color(255, 255, 255));
         cbTodos.setText("Todos");
@@ -365,6 +374,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
         btnMostrar.setForeground(new java.awt.Color(255, 255, 255));
         btnMostrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/Mostrar_24px.png"))); // NOI18N
         btnMostrar.setText("Mostrar");
+        btnMostrar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnMostrar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnMostrarActionPerformed(evt);
@@ -390,20 +400,19 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                                 .addGap(47, 47, 47)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(txtRepresentante, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGap(38, 38, 38)
+                                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(59, 59, 59)
                                         .addComponent(btnMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(124, 124, 124)
-                                        .addComponent(jLabel6))))
+                                        .addComponent(jLabel6))
+                                    .addComponent(txtRepresentante, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(138, 138, 138)
-                                .addComponent(btnImprimirHRP)
+                                .addGap(117, 117, 117)
+                                .addComponent(btnImprimirHRP, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(43, 43, 43)
-                                .addComponent(btnGenerarPdf)))
+                                .addComponent(btnGenerarPdf, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 445, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -421,14 +430,14 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel5)
                             .addComponent(jLabel6))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtRepresentante, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(20, 20, 20)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtRepresentante, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(26, 26, 26)
                                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(109, 109, 109)
+                                .addGap(139, 139, 139)
                                 .addComponent(btnMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 471, javax.swing.GroupLayout.PREFERRED_SIZE)
