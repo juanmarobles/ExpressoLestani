@@ -251,9 +251,11 @@ public class HojaDeRuta extends javax.swing.JFrame {
         );
 
         btnImprimirHr.setBackground(new java.awt.Color(51, 51, 51));
+        btnImprimirHr.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         btnImprimirHr.setForeground(new java.awt.Color(255, 255, 255));
         btnImprimirHr.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/imprimir_24px.png"))); // NOI18N
         btnImprimirHr.setText("Imprimir");
+        btnImprimirHr.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnImprimirHr.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnImprimirHrActionPerformed(evt);
@@ -274,9 +276,11 @@ public class HojaDeRuta extends javax.swing.JFrame {
         jScrollPane1.setViewportView(tablaMovimientos);
 
         btnGenerarPdf.setBackground(new java.awt.Color(51, 51, 51));
+        btnGenerarPdf.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         btnGenerarPdf.setForeground(new java.awt.Color(255, 255, 255));
         btnGenerarPdf.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/pdf_24px-pdf.png"))); // NOI18N
         btnGenerarPdf.setText("Generar PDF");
+        btnGenerarPdf.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnGenerarPdf.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnGenerarPdfActionPerformed(evt);
@@ -294,19 +298,22 @@ public class HojaDeRuta extends javax.swing.JFrame {
             }
         });
 
-        jPanel3.setBackground(new java.awt.Color(61, 61, 61));
+        jPanel3.setBackground(new java.awt.Color(66, 66, 66));
         jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
+        cbCC.setBackground(new java.awt.Color(66, 66, 66));
         buttonGroup1.add(cbCC);
         cbCC.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         cbCC.setForeground(new java.awt.Color(255, 255, 255));
         cbCC.setText("Cuenta Corriente");
 
+        cbContado.setBackground(new java.awt.Color(66, 66, 66));
         buttonGroup1.add(cbContado);
         cbContado.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         cbContado.setForeground(new java.awt.Color(255, 255, 255));
         cbContado.setText("Contado");
 
+        cbTodos.setBackground(new java.awt.Color(66, 66, 66));
         buttonGroup1.add(cbTodos);
         cbTodos.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         cbTodos.setForeground(new java.awt.Color(255, 255, 255));
@@ -382,7 +389,7 @@ public class HojaDeRuta extends javax.swing.JFrame {
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(0, 4, Short.MAX_VALUE)
+                        .addGap(0, 5, Short.MAX_VALUE)
                         .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -392,7 +399,7 @@ public class HojaDeRuta extends javax.swing.JFrame {
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 383, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnImprimirHr, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnGenerarPdf, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
