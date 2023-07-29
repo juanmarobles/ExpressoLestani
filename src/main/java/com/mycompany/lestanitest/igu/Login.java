@@ -8,6 +8,7 @@ import com.mycompany.lestanitest.logica.Controladora;
 import com.mycompany.lestanitest.logica.TextPrompt;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 /**
@@ -17,6 +18,8 @@ import javax.swing.JOptionPane;
 public class Login extends javax.swing.JFrame {
 
     Controladora control = new Controladora();
+    private static VentanaPrincipal instancia;
+    private static DateAlertApp dateAlertApp;
 
     public Login() {
         initComponents();
@@ -24,18 +27,15 @@ public class Login extends javax.swing.JFrame {
         TextPrompt filtroCon = new TextPrompt("Contraseña", txtPassword);
         setLocationRelativeTo(null); // Centrar la ventana en la pantalla
         setResizable(false); // Evitar que el usuario pueda redimensionar la ventana
-        
-        
-        
-            //Listenes para el password cuando se aprete el ENTER se apreta el boton "Ingresar"
-          txtPassword.addActionListener(new ActionListener() {
+
+        //Listenes para el password cuando se aprete el ENTER se apreta el boton "Ingresar"
+        txtPassword.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 btnIngresar.doClick(); // Simular el clic del botón de ingreso
             }
         });
-          
-          
+
     }
 
     /**
@@ -158,16 +158,30 @@ public class Login extends javax.swing.JFrame {
         if (usuario.isEmpty() || password.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Por favor ingresa el usuario y la contraseña.", "Datos incompletos", JOptionPane.WARNING_MESSAGE);
         } else {
-            String mensaje = control.validarUsuario(usuario, password);
+            boolean inicioSesionExitoso = control.validarUsuario(usuario, password);
 
-            if (mensaje.equals("Bienvenido")) {
-                this.dispose();
+            if (inicioSesionExitoso) {
+                this.dispose(); // Cierra la ventana de inicio de sesión
+
+                VentanaPrincipal pr = new VentanaPrincipal();
+                pr.setVisible(true);
+                pr.setLocationRelativeTo(null);
+
+                // Instancia y ejecuta DateAlertApp después de verificar el inicio de sesión
+                javax.swing.SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        DateAlertApp dateAlertApp = new DateAlertApp();
+                        dateAlertApp.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                        dateAlertApp.pack();
+                        dateAlertApp.setVisible(true);
+                    }
+                });
             } else {
-                JOptionPane.showMessageDialog(null, mensaje, "Error de inicio de sesión", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos", "Error de inicio de sesión", JOptionPane.ERROR_MESSAGE);
             }
+
         }
-
-
     }//GEN-LAST:event_btnIngresarActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed

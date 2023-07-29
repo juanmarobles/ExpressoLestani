@@ -1,5 +1,6 @@
 package com.mycompany.lestanitest.logica;
 
+import com.mycompany.lestanitest.igu.DateAlertApp;
 import com.mycompany.lestanitest.igu.VentanaPrincipal;
 import com.mycompany.lestanitest.persistencia.ControladoraPersistencia;
 import java.math.BigDecimal;
@@ -21,8 +22,7 @@ public class Controladora {
      * Usuario-------------------------------------------------
      *
      */
-    public String validarUsuario(String usuario, String password) {
-        String mensaje = "";
+    public boolean validarUsuario(String usuario, String password) {
         List<Usuario> listaUsuarios = ctrl.traerUsuarios();
         boolean usuarioValido = false;
 
@@ -33,17 +33,7 @@ public class Controladora {
             }
         }
 
-        if (usuarioValido) {
-            mensaje = "Bienvenido";
-            VentanaPrincipal pr = new VentanaPrincipal();
-            pr.setVisible(true);
-            pr.setLocationRelativeTo(null);
-        } else if (!usuarioValido && !listaUsuarios.isEmpty()) {
-            mensaje = "Usuario o contraseña incorrectos";
-        } else {
-            mensaje = "No hay usuarios registrados";
-        }
-        return mensaje;
+        return usuarioValido;
     }
 
     /**
@@ -279,6 +269,7 @@ public class Controladora {
         m.setTipoFleteP(tFlete);
         ctrl.modificarMovimiento(m);
     }
+
     public void actualizarFleteR(Movimientos m, String tFlete) {
         m.setTipoFleteR(tFlete);
         ctrl.modificarMovimiento(m);
@@ -364,10 +355,6 @@ public class Controladora {
 }
 
 //control fechas rev tecnica y ruta
-
-
-
-
 /**
  * ----------------------------------------------EDITAR-----------------------------------------------------------------
  * public Vehiculo traerVehiculo(int idVehiculo) { return

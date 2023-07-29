@@ -30,7 +30,9 @@ public class DateAlertApp extends javax.swing.JFrame {
     private Set<Integer> vehiculosAlertadosRuta = new HashSet<>();
     private Set<Integer> vehiculosAlertadosTecnica = new HashSet<>();
     Controladora control;
+    private static DateAlertApp instance;
 
+    
     public DateAlertApp() {
         control = new Controladora();
         // Simulamos una fecha actual (puedes obtenerla realmente usando new Date() u otras fuentes)
@@ -44,6 +46,7 @@ public class DateAlertApp extends javax.swing.JFrame {
             }
         });
         timer.start();
+        instance = this;
     }
 
     private void mostrarTablaVehiculos() {
@@ -66,7 +69,7 @@ public class DateAlertApp extends javax.swing.JFrame {
             for (Vehiculo v : listaVehiculos) {
                 // Verificar si la fecha de Ruta está cerca (por ejemplo, dentro de 31 días)
                 if (isDateNear(v.getFechaRutaFormateada(), 31) && !vehiculosAlertadosRuta.contains(v.getId_Vehiculo())) {
-                    String mensaje = "El vehículo: " + v.getVehiculo().toUpperCase()+ " dominio: " + v.getPatente().toUpperCase()+ " tiene una Ruta por vencer el: " + v.getFechaRutaFormateada();
+                    String mensaje = "El vehículo: " + v.getVehiculo().toUpperCase() + " dominio: " + v.getPatente().toUpperCase() + " tiene una Ruta por vencer el: " + v.getFechaRutaFormateada();
                     mostrarAlerta(mensaje);
                     // Agregar el ID del vehículo al conjunto de vehículos alertados por ruta
                     vehiculosAlertadosRuta.add(v.getId_Vehiculo());
@@ -97,8 +100,10 @@ public class DateAlertApp extends javax.swing.JFrame {
         }
     }
 
-    public void mostrarAlertaPublico(String mensaje) {
-        mostrarAlerta(mensaje);
+    public static void mostrarAlertaPublico(String mensaje) {
+        if (instance != null) {
+            instance.mostrarAlerta(mensaje);
+        }
     }
 
     private void mostrarAlerta(String mensaje) {

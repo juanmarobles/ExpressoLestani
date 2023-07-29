@@ -1,5 +1,3 @@
-
-
 package com.mycompany.lestanitest;
 
 import com.mycompany.lestanitest.igu.Login;
@@ -8,10 +6,13 @@ import com.mycompany.lestanitest.igu.Login;
 public class LestaniTest {
 
     public static void main(String[] args) {
-         
-        Login lg = new Login();
-        lg.setVisible(true);
-        
-               
+
+        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                Login lg = new Login();
+                lg.setVisible(true);
+            }
+        });
     }
 }
