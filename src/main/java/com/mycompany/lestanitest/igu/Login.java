@@ -168,6 +168,7 @@ public class Login extends javax.swing.JFrame {
                 pr.setLocationRelativeTo(null);
 
                 // Instancia y ejecuta DateAlertApp después de verificar el inicio de sesión
+                // Instancia y ejecuta DateAlertApp después de verificar el inicio de sesión
                 javax.swing.SwingUtilities.invokeLater(new Runnable() {
                     @Override
                     public void run() {
