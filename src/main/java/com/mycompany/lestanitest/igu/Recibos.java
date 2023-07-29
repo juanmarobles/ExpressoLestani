@@ -42,6 +42,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.text.DecimalFormat;
@@ -66,6 +67,7 @@ import java.text.DecimalFormatSymbols;
 import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
+import javax.imageio.ImageIO;
 import javax.print.Doc;
 import javax.print.DocFlavor;
 import javax.print.DocPrintJob;
@@ -1194,31 +1196,28 @@ public class Recibos extends javax.swing.JFrame {
                 Chunk chunkFechas = new Chunk("Fecha: " + fechaActual(), fontFecha);
                 Paragraph fecha = new Paragraph(chunkFechas);
                 fecha.setAlignment(Element.ALIGN_RIGHT);
-                fecha.setSpacingAfter(5f); // Espacio después de las fechas (en puntos)
                 //RECIBO NRO
                 Paragraph nroRecibo = new Paragraph("RECIBO Nro: " + String.format("%05d", numeroRecibo), FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.NORMAL));
                 guardarNumeroRecibo();
                 nroRecibo.setAlignment(Element.ALIGN_RIGHT);
-                nroRecibo.setSpacingAfter(10f); // Espacio después del título (en puntos)
                 // TITULO RECIBO
                 Paragraph titulo = new Paragraph("RECIBO", FontFactory.getFont(FontFactory.TIMES_ROMAN, 14, Font.BOLD));
                 titulo.setAlignment(Element.ALIGN_CENTER);
-                titulo.setSpacingAfter(10f); // Espacio después del título (en puntos)
-
                 // LOGO
-                Image logo = Image.getInstance("src/main/java/com/imagenes/ivacuit.jpg");
+                InputStream logoStream = getClass().getClassLoader().getResourceAsStream("imagenes/ivacuit.jpg");
+                Image logo = Image.getInstance(ImageIO.read(logoStream), null);
                 logo.scaleToFit(530, 800);
                 logo.setAlignment(Element.ALIGN_LEFT);
                 // FIRMASELLO
-                Image firmasello = Image.getInstance("src/main/java/com/imagenes/firmasello.jpg");
+                InputStream firmaselloStream = getClass().getClassLoader().getResourceAsStream("imagenes/firmasello.jpg");
+                Image firmasello = Image.getInstance(ImageIO.read(firmaselloStream), null);
                 firmasello.scaleToFit(150, 150);
                 firmasello.setAlignment(Element.ALIGN_RIGHT);
 
                 // DOC NO VALIDO COMO FACTURA
                 Paragraph subtitulo = new Paragraph("DOCUMENTO NO VALIDO COMO FACTURA", FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.NORMAL));
                 subtitulo.setAlignment(Element.ALIGN_CENTER);
-                subtitulo.setSpacingAfter(10f); // Espacio después del título (en puntos)
-
+                subtitulo.setSpacingAfter(5f); // Espacio después del título (en puntos)
                 document.add(titulo);
                 document.add(fecha);
                 document.add(nroRecibo);
@@ -1265,7 +1264,6 @@ public class Recibos extends javax.swing.JFrame {
                 domicilioValueCell.setPaddingBottom(5f); // Espacio después de la celda
                 senoresdomicilio.addCell(domicilioValueCell);
 
-                senoresdomicilio.setSpacingBefore(0.1f);
                 document.add(senoresdomicilio);
 
                 // Crear una tabla para recibi y concepto        
@@ -1276,14 +1274,11 @@ public class Recibos extends javax.swing.JFrame {
                 Paragraph textoRecibi = new Paragraph(texto);
                 textoRecibi.setAlignment(Element.ALIGN_LEFT);
                 document.add(textoRecibi);
-
                 // CONCEPTO DE
                 Phrase textodos = new Phrase("\nEN CONCEPTO DE: " + txtConcepto.getText().toUpperCase(), font);
                 Paragraph textoConcepto = new Paragraph(textodos);
                 textoConcepto.setAlignment(Element.ALIGN_LEFT);
                 document.add(textoConcepto);
-
-                recibiconcepto.setSpacingBefore(8f);
 
                 document.add(recibiconcepto);
 
@@ -1345,7 +1340,7 @@ public class Recibos extends javax.swing.JFrame {
                 montoTotalCell.setHorizontalAlignment(Element.ALIGN_LEFT); // Alinear la celda a la izq
                 totalsTable.addCell(montoTotalCell);
 
-                totalsTable.setSpacingBefore(10f);
+                totalsTable.setSpacingBefore(5f);
                 document.add(totalsTable);
                 document.add(firmasello);
 
@@ -1416,11 +1411,14 @@ public class Recibos extends javax.swing.JFrame {
                 titulo.setSpacingAfter(10f); // Espacio después del título (en puntos)
 
                 // LOGO
-                Image logo = Image.getInstance("src/main/java/com/imagenes/ivacuit.jpg");
+                InputStream logoStream = getClass().getClassLoader().getResourceAsStream("imagenes/ivacuit.jpg");
+                Image logo = Image.getInstance(ImageIO.read(logoStream), null);
                 logo.scaleToFit(530, 800);
                 logo.setAlignment(Element.ALIGN_LEFT);
+
                 // FIRMASELLO
-                Image firmasello = Image.getInstance("src/main/java/com/imagenes/firmasello.jpg");
+                InputStream firmaselloStream = getClass().getClassLoader().getResourceAsStream("imagenes/firmasello.jpg");
+                Image firmasello = Image.getInstance(ImageIO.read(firmaselloStream), null);
                 firmasello.scaleToFit(150, 150);
                 firmasello.setAlignment(Element.ALIGN_RIGHT);
 
@@ -1624,11 +1622,14 @@ public class Recibos extends javax.swing.JFrame {
             titulo.setSpacingAfter(10f); // Espacio después del título (en puntos)
 
             // LOGO
-            Image logo = Image.getInstance("src/main/java/com/imagenes/ivacuit.jpg");
+            InputStream logoStream = getClass().getClassLoader().getResourceAsStream("imagenes/ivacuit.jpg");
+            Image logo = Image.getInstance(ImageIO.read(logoStream), null);
             logo.scaleToFit(530, 800);
             logo.setAlignment(Element.ALIGN_LEFT);
+
             // FIRMASELLO
-            Image firmasello = Image.getInstance("src/main/java/com/imagenes/firmasello.jpg");
+            InputStream firmaselloStream = getClass().getClassLoader().getResourceAsStream("imagenes/firmasello.jpg");
+            Image firmasello = Image.getInstance(ImageIO.read(firmaselloStream), null);
             firmasello.scaleToFit(150, 150);
             firmasello.setAlignment(Element.ALIGN_RIGHT);
 
@@ -1839,11 +1840,14 @@ public class Recibos extends javax.swing.JFrame {
             titulo.setSpacingAfter(10f); // Espacio después del título (en puntos)
 
             // LOGO
-            Image logo = Image.getInstance("src/main/java/com/imagenes/ivacuit.jpg");
+            InputStream logoStream = getClass().getClassLoader().getResourceAsStream("imagenes/ivacuit.jpg");
+            Image logo = Image.getInstance(ImageIO.read(logoStream), null);
             logo.scaleToFit(530, 800);
             logo.setAlignment(Element.ALIGN_LEFT);
+
             // FIRMASELLO
-            Image firmasello = Image.getInstance("src/main/java/com/imagenes/firmasello.jpg");
+            InputStream firmaselloStream = getClass().getClassLoader().getResourceAsStream("imagenes/firmasello.jpg");
+            Image firmasello = Image.getInstance(ImageIO.read(firmaselloStream), null);
             firmasello.scaleToFit(150, 150);
             firmasello.setAlignment(Element.ALIGN_RIGHT);
 
@@ -2184,7 +2188,7 @@ public class Recibos extends javax.swing.JFrame {
                 renderer.setHorizontalAlignment(SwingConstants.CENTER);
                 tablaMovimientos
                         .setDefaultRenderer(Object.class,
-                                 renderer);
+                                renderer);
 
                 // Renderizador personalizado para centrar el título de las columnas
                 DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) tablaMovimientos.getTableHeader().getDefaultRenderer();

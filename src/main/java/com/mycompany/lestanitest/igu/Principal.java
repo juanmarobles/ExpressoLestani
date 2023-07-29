@@ -69,8 +69,10 @@ import com.itextpdf.text.pdf.SimpleBookmark;
 import com.mycompany.lestanitest.logica.GenerarPDFDuplicado;
 import java.awt.Desktop;
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.awt.print.Pageable;
 import java.awt.print.Paper;
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -124,6 +126,8 @@ import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import org.jdesktop.swingx.autocomplete.ObjectToStringConverter;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import javax.imageio.ImageIO;
 import javax.swing.JComboBox;
 import javax.swing.KeyStroke;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -1799,22 +1803,34 @@ public class Principal extends javax.swing.JFrame {
             PdfPTable table = new PdfPTable(3); // 2 columnas
             table.setWidthPercentage(100); // Ancho de la tabla en porcentaje del ancho de página
 
-            // LOGO 
-            Image logo = Image.getInstance("src\\main\\resources\\imagenes\\logoreportes.jpg");
-            logo.scaleAbsolute(220, 133); // Ajusta los valores de ancho y alto según tus necesidades
+            // LOGO
+            InputStream logoStream = getClass().getClassLoader().getResourceAsStream("imagenes/logoreportes.jpg");
+            BufferedImage bufferedImage = ImageIO.read(logoStream);
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(bufferedImage, "jpg", baos);
+            byte[] logoBytes = baos.toByteArray();
+
+            Image logo = Image.getInstance(logoBytes);
+            logo.scaleAbsolute(220, 133);
             logo.setAlignment(Element.ALIGN_LEFT);
+
             // TEXTO
-            Image texto = Image.getInstance("src\\main\\resources\\imagenes\\texto.png");
+            InputStream textoStream = getClass().getClassLoader().getResourceAsStream("imagenes/texto.png");
+            Image texto = Image.getInstance(ImageIO.read(textoStream), null);
             texto.scaleToFit(220, 200);
             texto.setAlignment(Element.ALIGN_LEFT);
             texto.setSpacingBefore(5f);
+
             // REMITO NO VALIDO
-            Image rem = Image.getInstance("src\\main\\resources\\imagenes\\Remito.jpg");
+            InputStream remStream = getClass().getClassLoader().getResourceAsStream("imagenes/Remito.jpg");
+            Image rem = Image.getInstance(ImageIO.read(remStream), null);
             rem.scaleToFit(80, 80);
             rem.setAlignment(Element.ALIGN_CENTER);
 
             // REMITO
-            Image remito = Image.getInstance("src\\main\\resources\\imagenes\\remito_cuit.jpg");
+            InputStream remitoStream = getClass().getClassLoader().getResourceAsStream("imagenes/remito_cuit.jpg");
+            Image remito = Image.getInstance(ImageIO.read(remitoStream), null);
             remito.scaleToFit(200, 200);
             remito.setAlignment(Element.ALIGN_RIGHT);
 
@@ -2005,7 +2021,8 @@ public class Principal extends javax.swing.JFrame {
 
             // Agregar la imagen a la primera celda
             PdfPCell imagenCell = new PdfPCell();
-            Image firmasello = Image.getInstance("src\\main\\resources\\imagenes\\firma_aclaracion.png");
+            InputStream firmaStream = getClass().getClassLoader().getResourceAsStream("imagenes/firma_aclaracion.png");
+            Image firmasello = Image.getInstance(ImageIO.read(firmaStream), null);
             firmasello.scaleToFit(300, 200);
             firmasello.setAlignment(Element.ALIGN_LEFT);
             imagenCell.addElement(firmasello);
@@ -2143,22 +2160,34 @@ public class Principal extends javax.swing.JFrame {
             PdfPTable table = new PdfPTable(3); // 2 columnas
             table.setWidthPercentage(100); // Ancho de la tabla en porcentaje del ancho de página
 
-            // LOGO 
-            Image logo = Image.getInstance("src\\main\\resources\\imagenes\\logoreportes.jpg");
-            logo.scaleAbsolute(220, 133); // Ajusta los valores de ancho y alto según tus necesidades
+            // LOGO
+            InputStream logoStream = getClass().getClassLoader().getResourceAsStream("imagenes/logoreportes.jpg");
+            BufferedImage bufferedImage = ImageIO.read(logoStream);
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(bufferedImage, "jpg", baos);
+            byte[] logoBytes = baos.toByteArray();
+
+            Image logo = Image.getInstance(logoBytes);
+            logo.scaleAbsolute(220, 133);
             logo.setAlignment(Element.ALIGN_LEFT);
+
             // TEXTO
-            Image texto = Image.getInstance("src\\main\\resources\\imagenes\\imagenes\\texto.png");
+            InputStream textoStream = getClass().getClassLoader().getResourceAsStream("imagenes/texto.png");
+            Image texto = Image.getInstance(ImageIO.read(textoStream), null);
             texto.scaleToFit(220, 200);
             texto.setAlignment(Element.ALIGN_LEFT);
             texto.setSpacingBefore(5f);
+
             // REMITO NO VALIDO
-            Image rem = Image.getInstance("src\\main\\resources\\imagenes\\imagenes\\Remito.jpg");
+            InputStream remStream = getClass().getClassLoader().getResourceAsStream("imagenes/Remito.jpg");
+            Image rem = Image.getInstance(ImageIO.read(remStream), null);
             rem.scaleToFit(80, 80);
             rem.setAlignment(Element.ALIGN_CENTER);
 
             // REMITO
-            Image remito = Image.getInstance("src\\main\\resources\\imagenes\\imagenes\\remito_cuit.jpg");
+            InputStream remitoStream = getClass().getClassLoader().getResourceAsStream("imagenes/remito_cuit.jpg");
+            Image remito = Image.getInstance(ImageIO.read(remitoStream), null);
             remito.scaleToFit(200, 200);
             remito.setAlignment(Element.ALIGN_RIGHT);
 
@@ -2349,7 +2378,8 @@ public class Principal extends javax.swing.JFrame {
 
             // Agregar la imagen a la primera celda
             PdfPCell imagenCell = new PdfPCell();
-            Image firmasello = Image.getInstance("src\\main\\resources\\imagenes\\imagenes\\firma_aclaracion.png");
+            InputStream firmaStream = getClass().getClassLoader().getResourceAsStream("imagenes/firma_aclaracion.png");
+            Image firmasello = Image.getInstance(ImageIO.read(firmaStream), null);
             firmasello.scaleToFit(300, 200);
             firmasello.setAlignment(Element.ALIGN_LEFT);
             imagenCell.addElement(firmasello);
