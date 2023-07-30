@@ -20,6 +20,7 @@ public class Login extends javax.swing.JFrame {
     Controladora control = new Controladora();
     private static VentanaPrincipal instancia;
     private static DateAlertApp dateAlertApp;
+    private DateAlertApp dateAlertAp;
 
     public Login() {
         initComponents();
@@ -35,7 +36,7 @@ public class Login extends javax.swing.JFrame {
                 btnIngresar.doClick(); // Simular el clic del botón de ingreso
             }
         });
-
+        
     }
 
     /**
@@ -159,28 +160,16 @@ public class Login extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Por favor ingresa el usuario y la contraseña.", "Datos incompletos", JOptionPane.WARNING_MESSAGE);
         } else {
             boolean inicioSesionExitoso = control.validarUsuario(usuario, password);
-
             if (inicioSesionExitoso) {
                 this.dispose(); // Cierra la ventana de inicio de sesión
 
                 VentanaPrincipal pr = new VentanaPrincipal();
                 pr.setVisible(true);
                 pr.setLocationRelativeTo(null);
-
-                // Instancia y ejecuta DateAlertApp después de verificar el inicio de sesión
-                javax.swing.SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        DateAlertApp dateAlertApp = new DateAlertApp();
-                        dateAlertApp.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                        dateAlertApp.pack();
-                        dateAlertApp.setVisible(true);
-                    }
-                });
+            
             } else {
                 JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos", "Error de inicio de sesión", JOptionPane.ERROR_MESSAGE);
             }
-
         }
     }//GEN-LAST:event_btnIngresarActionPerformed
 

@@ -245,8 +245,8 @@ public class NuevoVehiculo extends javax.swing.JFrame {
         Date fechaRuta = fechas.get(1);
 
         control.cargarVehiculo(vehiculo, chofer, patente, fechaTecnica, fechaRuta);
-
-        mostrarMensaje("Vehiculo agregado correctamente", "Info", "Agregado con exito!");
+        //mostrarMensaje("Vehiculo agregado correctamente", "Info", "Agregado con exito!");
+        
         txtMarca.setText("");
         txtChofer.setText("");
         txtFechaRuta.setText("");
@@ -258,6 +258,7 @@ public class NuevoVehiculo extends javax.swing.JFrame {
         verAnterior.setLocationRelativeTo(null);
 
         this.dispose();
+        
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed

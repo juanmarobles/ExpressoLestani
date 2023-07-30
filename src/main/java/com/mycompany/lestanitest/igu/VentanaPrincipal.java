@@ -21,6 +21,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
     private static VentanaPrincipal instancia;
     private static DateAlertApp dateAlertApp;
+    private DateAlertApp dateAlertAp;
+    private boolean alertaMostrada = false;
 
     /**
      * Creates new form VentanaPrincipal
@@ -29,7 +31,15 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         initComponents();
         this.setExtendedState(MAXIMIZED_BOTH);
         instancia = this;
+        dateAlertAp = new DateAlertApp();
+    }
 
+    public void mostrarAlertaFechaVencimiento(String mensaje) {
+        // Verificar si la alerta ya ha sido mostrada
+        if (alertaMostrada) {
+            DateAlertApp.mostrarAlertaPublico(mensaje);
+            alertaMostrada = true; // Marcar la alerta como mostrada
+        }
     }
 
     // Función para mostrar la ventana de alerta personalizada

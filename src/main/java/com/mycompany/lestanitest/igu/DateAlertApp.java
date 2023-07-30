@@ -31,7 +31,7 @@ public class DateAlertApp extends javax.swing.JFrame {
     private Set<Integer> vehiculosAlertadosTecnica = new HashSet<>();
     Controladora control;
     private static DateAlertApp instance;
-
+    
     
     public DateAlertApp() {
         control = new Controladora();
@@ -49,7 +49,7 @@ public class DateAlertApp extends javax.swing.JFrame {
         instance = this;
     }
 
-    private void mostrarTablaVehiculos() {
+    public void mostrarTablaVehiculos() {
         //filas y columnas no editables
         DefaultTableModel tabla = new DefaultTableModel() {
             @Override
@@ -107,7 +107,7 @@ public class DateAlertApp extends javax.swing.JFrame {
     }
 
     private void mostrarAlerta(String mensaje) {
-        JDialog dialog = new JDialog(this, "Alerta de Vencimiento", true); // El tercer argumento (true) hace que el diálogo sea modal
+        JDialog dialog = new JDialog(this, "Alerta de Vencimiento",true); // El tercer argumento (true) hace que el diálogo sea modal
         JLabel label = new JLabel(mensaje);
         JButton okButton = new JButton("OK");
 
