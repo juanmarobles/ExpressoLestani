@@ -1,7 +1,7 @@
 package com.mycompany.lestanitest.igu;
 
 import java.awt.print.PrinterException;
-import com.google.protobuf.TextFormat.Printer;
+//import com.google.protobuf.TextFormat.Printer;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.io.File;

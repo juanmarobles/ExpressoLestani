@@ -778,7 +778,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                 Font fontDatos = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, NORMAL);
                 Font fontTotales = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
                 Font fontFecha = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
-                Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 8);
+                Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 7);
                 // LOGO
                 InputStream logoStream = getClass().getClassLoader().getResourceAsStream("imagenes/logosolo.jpg");
                 Image logo = Image.getInstance(ImageIO.read(logoStream), null);
@@ -838,16 +838,18 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                 rep.setSpacingAfter(10f); // Espacio después del título (en puntos)
                 document.add(rep);
 
+                // Obtener las filas seleccionadas o todas las filas si no hay ninguna seleccionada
+                int[] filasSeleccionadas = tablaMovimientos.getSelectedRows();
+                boolean todasFilasSeleccionadas = filasSeleccionadas.length == 0;
+
                 //CREACION DE TABLA
                 PdfPTable table = new PdfPTable(tablaMovimientos.getColumnCount() - 7 + 1); // Excluir columnas MOVIMIENTO,FECHA,REPRESENTANTE,Y OBS
                 table.setSpacingBefore(10f); // Espacio antes de la tabla (en puntos)
                 table.setSpacingAfter(10f);
 
                 // Ajustar espacio horizontal
-                // Ajustar espacio horizontal
                 float[] columnWidths = {0.9f, 1f, 1f, 0.8f, 0.8f, 1f, 0.8f, 1f, 0.8f, 0.5f, 1.5f}; // Añadir un ancho para la nueva columna "observaciones"
                 table.setWidths(columnWidths);
-
                 table.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
 
                 // Agregar las celdas a la tabla
@@ -871,43 +873,45 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                 obsHeaderCell.setHorizontalAlignment(Element.ALIGN_CENTER);
                 obsHeaderCell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
                 table.addCell(obsHeaderCell);
+                // Agregar filas a la tabla
                 for (int row = 0; row < tablaMovimientos.getRowCount(); row++) {
-                    for (int col = 0; col < tablaMovimientos.getColumnCount(); col++) {
-                        String colName = tablaMovimientos.getColumnName(col);
-                        if (!colName.equals("MOV") && !colName.equals("HORA") && !colName.equals("FECHA") && !colName.equals("REPRESENTANTE") && !colName.equals("OBS") && !colName.equals("RENDIDO")) {
-                            Object value = tablaMovimientos.getValueAt(row, col);
-                            if (value != null) {
-                                if (colName.equals("CC")) {
-                                    if (value.toString().equals("Si")) {
-                                        // Obtener el valor de la columna "A_CARGO_DE"
-                                        Object aCargoDeValue = tablaMovimientos.getValueAt(row, tablaMovimientos.getColumn("A_CARGO_DE").getModelIndex());
-                                        if (aCargoDeValue != null) {
-                                            if (aCargoDeValue.toString().equals("Origen")) {
-                                                value = "CCO"; // Cambiar el valor de "F.P" a "CCO"
-                                            } else if (aCargoDeValue.toString().equals("Destino")) {
-                                                value = "CCD"; // Cambiar el valor de "F.P" a "CCD"
+                    if (todasFilasSeleccionadas || contains(filasSeleccionadas, row)) {
+                        for (int col = 0; col < tablaMovimientos.getColumnCount(); col++) {
+                            String colName = tablaMovimientos.getColumnName(col);
+                            if (!colName.equals("MOV") && !colName.equals("HORA") && !colName.equals("FECHA") && !colName.equals("REPRESENTANTE") && !colName.equals("OBS") && !colName.equals("RENDIDO")) {
+                                Object value = tablaMovimientos.getValueAt(row, col);
+                                if (value != null) {
+                                    if (colName.equals("CC")) {
+                                        if (value.toString().equals("Si")) {
+                                            // Obtener el valor de la columna "A_CARGO_DE"
+                                            Object aCargoDeValue = tablaMovimientos.getValueAt(row, tablaMovimientos.getColumn("A_CARGO_DE").getModelIndex());
+                                            if (aCargoDeValue != null) {
+                                                if (aCargoDeValue.toString().equals("Origen")) {
+                                                    value = "CCO"; // Cambiar el valor de "F.P" a "CCO"
+                                                } else if (aCargoDeValue.toString().equals("Destino")) {
+                                                    value = "CCD"; // Cambiar el valor de "F.P" a "CCD"
+                                                }
                                             }
+                                        } else {
+                                            value = "CON"; // Cambiar el valor de "F.P" a "CON" si "CC" es "No" o está en blanco
                                         }
-                                    } else {
-                                        value = "CON"; // Cambiar el valor de "F.P" a "CON" si "CC" es "No" o está en blanco
                                     }
+                                    if (colName.equals("CC")) {
+                                        colName = "F.P"; // Cambiar el nombre de la columna a "F.P"
+                                    }
+                                    PdfPCell cell = new PdfPCell(new Phrase(value.toString(), fontFilas));
+                                    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                                    cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
+                                    table.addCell(cell);
                                 }
-                                if (colName.equals("CC")) {
-                                    colName = "F.P"; // Cambiar el nombre de la columna a "F.P"
-                                }
-                                PdfPCell cell = new PdfPCell(new Phrase(value.toString(), fontFilas));
-                                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                                cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
-                                table.addCell(cell);
                             }
                         }
+                        // Agregar celda vacía para la columna "Observaciones"
+                        PdfPCell obsCell = new PdfPCell(new Phrase("", fontFilas));
+                        obsCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                        obsCell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
+                        table.addCell(obsCell);
                     }
-                    // Agregar celda vacía para la columna "Observaciones"
-                    PdfPCell obsCell = new PdfPCell(new Phrase("", fontFilas));
-                    obsCell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                    obsCell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
-                    table.addCell(obsCell);
-
                 }
 
                 document.add(table);
@@ -923,6 +927,15 @@ public class HDDRepresentantes extends javax.swing.JFrame {
             Logger.getLogger(Consultas.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+    }
+
+    private boolean contains(int[] arr, int target) {
+        for (int num : arr) {
+            if (num == target) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void imprimirPDF() {
@@ -1001,16 +1014,18 @@ public class HDDRepresentantes extends javax.swing.JFrame {
             rep.setSpacingAfter(10f); // Espacio después del título (en puntos)
             document.add(rep);
 
+            // Obtener las filas seleccionadas o todas las filas si no hay ninguna seleccionada
+            int[] filasSeleccionadas = tablaMovimientos.getSelectedRows();
+            boolean todasFilasSeleccionadas = filasSeleccionadas.length == 0;
+
             //CREACION DE TABLA
             PdfPTable table = new PdfPTable(tablaMovimientos.getColumnCount() - 7 + 1); // Excluir columnas MOVIMIENTO,FECHA,REPRESENTANTE,Y OBS
             table.setSpacingBefore(10f); // Espacio antes de la tabla (en puntos)
             table.setSpacingAfter(10f);
 
             // Ajustar espacio horizontal
-            // Ajustar espacio horizontal
             float[] columnWidths = {0.9f, 1f, 1f, 0.8f, 0.8f, 1f, 0.8f, 1f, 0.8f, 0.5f, 1.5f}; // Añadir un ancho para la nueva columna "observaciones"
             table.setWidths(columnWidths);
-
             table.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
 
             // Agregar las celdas a la tabla
@@ -1034,43 +1049,45 @@ public class HDDRepresentantes extends javax.swing.JFrame {
             obsHeaderCell.setHorizontalAlignment(Element.ALIGN_CENTER);
             obsHeaderCell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
             table.addCell(obsHeaderCell);
+            // Agregar filas a la tabla
             for (int row = 0; row < tablaMovimientos.getRowCount(); row++) {
-                for (int col = 0; col < tablaMovimientos.getColumnCount(); col++) {
-                    String colName = tablaMovimientos.getColumnName(col);
-                    if (!colName.equals("MOV") && !colName.equals("HORA") && !colName.equals("FECHA") && !colName.equals("REPRESENTANTE") && !colName.equals("OBS") && !colName.equals("RENDIDO")) {
-                        Object value = tablaMovimientos.getValueAt(row, col);
-                        if (value != null) {
-                            if (colName.equals("CC")) {
-                                if (value.toString().equals("Si")) {
-                                    // Obtener el valor de la columna "A_CARGO_DE"
-                                    Object aCargoDeValue = tablaMovimientos.getValueAt(row, tablaMovimientos.getColumn("A_CARGO_DE").getModelIndex());
-                                    if (aCargoDeValue != null) {
-                                        if (aCargoDeValue.toString().equals("Origen")) {
-                                            value = "CCO"; // Cambiar el valor de "F.P" a "CCO"
-                                        } else if (aCargoDeValue.toString().equals("Destino")) {
-                                            value = "CCD"; // Cambiar el valor de "F.P" a "CCD"
+                if (todasFilasSeleccionadas || contains(filasSeleccionadas, row)) {
+                    for (int col = 0; col < tablaMovimientos.getColumnCount(); col++) {
+                        String colName = tablaMovimientos.getColumnName(col);
+                        if (!colName.equals("MOV") && !colName.equals("HORA") && !colName.equals("FECHA") && !colName.equals("REPRESENTANTE") && !colName.equals("OBS") && !colName.equals("RENDIDO")) {
+                            Object value = tablaMovimientos.getValueAt(row, col);
+                            if (value != null) {
+                                if (colName.equals("CC")) {
+                                    if (value.toString().equals("Si")) {
+                                        // Obtener el valor de la columna "A_CARGO_DE"
+                                        Object aCargoDeValue = tablaMovimientos.getValueAt(row, tablaMovimientos.getColumn("A_CARGO_DE").getModelIndex());
+                                        if (aCargoDeValue != null) {
+                                            if (aCargoDeValue.toString().equals("Origen")) {
+                                                value = "CCO"; // Cambiar el valor de "F.P" a "CCO"
+                                            } else if (aCargoDeValue.toString().equals("Destino")) {
+                                                value = "CCD"; // Cambiar el valor de "F.P" a "CCD"
+                                            }
                                         }
+                                    } else {
+                                        value = "CON"; // Cambiar el valor de "F.P" a "CON" si "CC" es "No" o está en blanco
                                     }
-                                } else {
-                                    value = "CON"; // Cambiar el valor de "F.P" a "CON" si "CC" es "No" o está en blanco
                                 }
+                                if (colName.equals("CC")) {
+                                    colName = "F.P"; // Cambiar el nombre de la columna a "F.P"
+                                }
+                                PdfPCell cell = new PdfPCell(new Phrase(value.toString(), fontFilas));
+                                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                                cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
+                                table.addCell(cell);
                             }
-                            if (colName.equals("CC")) {
-                                colName = "F.P"; // Cambiar el nombre de la columna a "F.P"
-                            }
-                            PdfPCell cell = new PdfPCell(new Phrase(value.toString(), fontFilas));
-                            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                            cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
-                            table.addCell(cell);
                         }
                     }
+                    // Agregar celda vacía para la columna "Observaciones"
+                    PdfPCell obsCell = new PdfPCell(new Phrase("", fontFilas));
+                    obsCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    obsCell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
+                    table.addCell(obsCell);
                 }
-                // Agregar celda vacía para la columna "Observaciones"
-                PdfPCell obsCell = new PdfPCell(new Phrase("", fontFilas));
-                obsCell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                obsCell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
-                table.addCell(obsCell);
-
             }
 
             document.add(table);

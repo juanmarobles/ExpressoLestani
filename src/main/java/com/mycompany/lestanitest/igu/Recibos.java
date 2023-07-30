@@ -1351,7 +1351,7 @@ public class Recibos extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, "El archivo se generó correctamente.", "Información", JOptionPane.INFORMATION_MESSAGE);
             }
         } catch (DocumentException | FileNotFoundException e) {
-            JOptionPane.showMessageDialog(null, "Error al generar el archivo PDF.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "", "Información", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException ex) {
             Logger.getLogger(Consultas.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -1575,10 +1575,10 @@ public class Recibos extends javax.swing.JFrame {
 
                 writer.close();
 
-                JOptionPane.showMessageDialog(null, "El archivo se generó correctamente.", "Información", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "El recibo se generó correctamente.", "Información", JOptionPane.INFORMATION_MESSAGE);
             }
         } catch (DocumentException | FileNotFoundException e) {
-            JOptionPane.showMessageDialog(null, "Error al generar el archivo PDF.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "", "Información", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException ex) {
             Logger.getLogger(Consultas.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -1787,10 +1787,10 @@ public class Recibos extends javax.swing.JFrame {
                 // Cerrar el documento PDF después de imprimir
                 pdfDocument.close();
 
-                JOptionPane.showMessageDialog(null, "La hoja de ruta se generó e imprimió correctamente.", "Información", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "El recibo se generó e imprimió correctamente.", "Información", JOptionPane.INFORMATION_MESSAGE);
             } catch (Exception e) {
                 e.printStackTrace();
-                JOptionPane.showMessageDialog(null, "Error al generar o imprimir la hoja de ruta.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "", "Información", JOptionPane.INFORMATION_MESSAGE);
             }
 
         } catch (DocumentException | FileNotFoundException e) {
@@ -2024,7 +2024,7 @@ public class Recibos extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, "La hoja de ruta se generó e imprimió correctamente.", "Información", JOptionPane.INFORMATION_MESSAGE);
             } catch (Exception e) {
                 e.printStackTrace();
-                JOptionPane.showMessageDialog(null, "Error al generar o imprimir la hoja de ruta.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "", "Informacion", JOptionPane.INFORMATION_MESSAGE);
             }
 
         } catch (DocumentException | FileNotFoundException e) {
