@@ -79,6 +79,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
+import java.util.Comparator;
 import javax.imageio.ImageIO;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -1393,6 +1395,9 @@ private void calcularTotalFlete(List<Movimientos> movimientosFiltrados,int[] sel
         
         tablaConsultas.setRowSorter(sorter);
         sorter.setSortKeys(java.util.Arrays.asList(new RowSorter.SortKey(1, SortOrder.DESCENDING)));
+        
+        // Ordenar los datos por el ID en forma descendente
+        Collections.sort(listaMovimientos, Comparator.comparingInt(Movimientos::getId_movimientos).reversed());
         //carga de los datos desde la lista filtrada
         if (listaMovimientos != null) {
             for (Movimientos mov : listaMovimientos) {
@@ -1420,27 +1425,7 @@ private void calcularTotalFlete(List<Movimientos> movimientosFiltrados,int[] sel
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
         tablaConsultas.setDefaultRenderer(Object.class, centerRenderer);
 
-        // Establecer el ancho específico de las columnas
-        int[] anchos = {30,50, 50, 150, 150, 40, 30, 40, 30, 100, 30, 30, 100, 30, 30, 50, 150,100}; // Anchos deseados para cada columna en píxeles
-
-        /*
-        if (anchos.length == tabla.getColumnCount()) {
-            TableColumnModel columnModel = tablaConsultas.getColumnModel();
-            for (int i = 0; i < anchos.length; i++) {
-                TableColumn columna = columnModel.getColumn(i);
-                columna.setPreferredWidth(anchos[i]);
-
-                // Renderizador personalizado para centrar el contenido de las celdas
-                DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
-                renderer.setHorizontalAlignment(SwingConstants.CENTER);
-                tablaConsultas.setDefaultRenderer(Object.class, renderer);
-
-                // Renderizador personalizado para centrar el título de las columnas
-                DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) tablaConsultas.getTableHeader().getDefaultRenderer();
-                headerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-            }
-        }*/
-
+ 
     }
 
 
@@ -1701,7 +1686,7 @@ private void calcularTotalFlete(List<Movimientos> movimientosFiltrados,int[] sel
             for (int filaSeleccionada : filasSeleccionadas) {
                 int idMovimientos = (int) modeloTabla.getValueAt(filaSeleccionada, 0);
 
-                Movimientos movimiento = control.traerMovimiento(idMovimientos); // Reemplaza el método traerMovimiento() según corresponda
+                Movimientos movimiento = control.traerMovimiento(idMovimientos); 
 
                 if (movimiento != null) {
                     String tipoFlete = (String) modeloTabla.getValueAt(filaSeleccionada, 11);
