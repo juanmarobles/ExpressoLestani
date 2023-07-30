@@ -164,18 +164,25 @@ tablaConsultas.getSelectionModel().addListSelectionListener(new ListSelectionLis
     ModeloCliente modClientes = new ModeloCliente();
     ArrayList<Cliente> listaClientes = modClientes.getClientes();
 
-    private static void mostrarResultadosBusqueda(JComboBox<String> cbDestinos, String textoBusqueda) {
-
-        // Buscar el resultado de búsqueda
-        for (int i = 0; i < cbDestinos.getItemCount(); i++) {
-            String item = cbDestinos.getItemAt(i).toString();
-            if (item.toLowerCase().contains(textoBusqueda.toLowerCase())) {
-                cbDestinos.setSelectedItem(item);
-                cbDestinos.getEditor().setItem(item);
-                return; // Terminar la búsqueda después de seleccionar el primer resultado
-            }
+   private static void mostrarResultadosBusqueda(JComboBox<String> combobox, String textoBusqueda) {
+       
+    // Buscar el resultado de búsqueda
+    boolean encontrado = false;
+    for (int i = 0; i < combobox.getItemCount(); i++) {
+        String item = combobox.getItemAt(i).toString();
+        if (item.toLowerCase().contains(textoBusqueda.toLowerCase())) {
+  
+            combobox.setSelectedItem(item);
+            combobox.getEditor().setItem(item);
+            encontrado = true;
+            break; // Terminar la búsqueda después de seleccionar el primer resultado
         }
     }
+    if (!encontrado) {
+        // Si no se encontró ningún resultado, mostrar el menú emergente
+        combobox.setPopupVisible(true);
+    }
+}
 
      private void cargarClientes() {
         cbClientes.setEditable(true);
@@ -333,6 +340,7 @@ tablaConsultas.getSelectionModel().addListSelectionListener(new ListSelectionLis
         cbmTodos.setBackground(new java.awt.Color(66, 66, 66));
         Grupo1.add(cbmTodos);
         cbmTodos.setForeground(new java.awt.Color(236, 240, 241));
+        cbmTodos.setSelected(true);
         cbmTodos.setText("Todos");
         cbmTodos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -401,6 +409,7 @@ tablaConsultas.getSelectionModel().addListSelectionListener(new ListSelectionLis
         cbfTodos.setBackground(new java.awt.Color(66, 66, 66));
         Grupo2.add(cbfTodos);
         cbfTodos.setForeground(new java.awt.Color(236, 240, 241));
+        cbfTodos.setSelected(true);
         cbfTodos.setText("Todos");
         cbfTodos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -559,12 +568,14 @@ tablaConsultas.getSelectionModel().addListSelectionListener(new ListSelectionLis
         } catch (java.text.ParseException ex) {
             ex.printStackTrace();
         }
+        txtFechaDesde.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
 
         try {
             txtFechaHasta.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("##/##/####")));
         } catch (java.text.ParseException ex) {
             ex.printStackTrace();
         }
+        txtFechaHasta.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -589,14 +600,14 @@ tablaConsultas.getSelectionModel().addListSelectionListener(new ListSelectionLis
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
                 .addContainerGap(14, Short.MAX_VALUE)
                 .addComponent(jLabel2)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(txtFechaHasta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel9)
                             .addComponent(txtFechaDesde, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(21, 21, 21)
                         .addComponent(jLabel8)))
                 .addGap(19, 19, 19))
         );
@@ -816,7 +827,7 @@ tablaConsultas.getSelectionModel().addListSelectionListener(new ListSelectionLis
                                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(CuentaCorriente, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addComponent(cbClientes, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
                                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                                         .addGap(18, 18, 18)
@@ -875,11 +886,11 @@ tablaConsultas.getSelectionModel().addListSelectionListener(new ListSelectionLis
                                     .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(36, 36, 36)
+                        .addGap(24, 24, 24)
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cbClientes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(16, 16, 16)
+                        .addGap(22, 22, 22)
                         .addComponent(CuentaCorriente)
                         .addGap(24, 24, 24)
                         .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)

@@ -55,7 +55,6 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jSeparator6 = new javax.swing.JPopupMenu.Separator();
         HDD = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
-        jSeparator1 = new javax.swing.JPopupMenu.Separator();
         MenuClientes = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
         jMenuItem3 = new javax.swing.JMenuItem();
@@ -154,7 +153,6 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jMenuBar1.add(HojaDRuta);
 
         jMenu3.setText("      Carga de Datos   ");
-        jMenu3.add(jSeparator1);
 
         MenuClientes.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         MenuClientes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/cliente.png"))); // NOI18N
@@ -184,7 +182,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         MenuVehiculos.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         MenuVehiculos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/camiones.png"))); // NOI18N
-        MenuVehiculos.setText("Vechiculos");
+        MenuVehiculos.setText("Vehiculos");
         MenuVehiculos.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         MenuVehiculos.setPreferredSize(new java.awt.Dimension(112, 36));
         MenuVehiculos.addActionListener(new java.awt.event.ActionListener() {
@@ -402,7 +400,6 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem3;
-    private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
     private javax.swing.JPopupMenu.Separator jSeparator4;

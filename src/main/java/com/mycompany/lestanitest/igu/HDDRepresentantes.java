@@ -48,6 +48,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.RowFilter;
@@ -86,11 +87,61 @@ public class HDDRepresentantes extends javax.swing.JFrame {
         txtFecha.setText(fechaActual());
     }
 //LLENAR TEXTFIELD REPRESENTANTES
+    private static void mostrarResultadosBusqueda(JComboBox<String> combobox, String textoBusqueda) {
+       
+    // Buscar el resultado de búsqueda
+    boolean encontrado = false;
+    for (int i = 0; i < combobox.getItemCount(); i++) {
+        String item = combobox.getItemAt(i).toString();
+        if (item.toLowerCase().contains(textoBusqueda.toLowerCase())) {
+  
+            combobox.setSelectedItem(item);
+            combobox.getEditor().setItem(item);
+            encontrado = true;
+            break; // Terminar la búsqueda después de seleccionar el primer resultado
+        }
+    }
+    if (!encontrado) {
+        // Si no se encontró ningún resultado, mostrar el menú emergente
+        combobox.setPopupVisible(true);
+    }
+}
 
     private void cargarRepresentantes() {
-        ModeloRepresentante modRep = new ModeloRepresentante();
-        ArrayList<Representantes> listaRep = modRep.getRepresentantes();
-        AutoCompleteDecorator.decorate(txtRepresentante, listaRep, false);
+           ModeloRepresentante modRepre = new ModeloRepresentante();
+        ArrayList<Representantes> listaRepresentantes = modRepre.getRepresentantes();
+        cbRepresentantes.setEditable(true);
+
+        // Agregar los clientes al combobox
+        for (Representantes Repre : listaRepresentantes) {
+            cbRepresentantes.addItem(Repre.getNombre());
+        }
+
+// Eliminar la opción en blanco después de configurar el decorador
+        cbRepresentantes.removeItem("");
+
+        // Establecer el índice seleccionado a -1 para no mostrar ninguna selección
+        cbRepresentantes.setSelectedIndex(-1);
+
+        // Agregar ActionListener para capturar el evento "Enter"
+        cbRepresentantes.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String textoBusqueda = cbRepresentantes.getEditor().getItem().toString();
+                mostrarResultadosBusqueda(cbRepresentantes, textoBusqueda);
+            }
+        });
+
+        // Agregar KeyListener para capturar el evento "Enter"
+        cbRepresentantes.getEditor().getEditorComponent().addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    String textoBusqueda = cbRepresentantes.getEditor().getItem().toString();
+                    mostrarResultadosBusqueda(cbRepresentantes, textoBusqueda);
+                }
+            }
+        });
 
     }
 
@@ -149,7 +200,6 @@ public class HDDRepresentantes extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         txtFecha = new javax.swing.JFormattedTextField();
         jLabel5 = new javax.swing.JLabel();
-        txtRepresentante = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         tablaMovimientos = new javax.swing.JTable();
         jLabel6 = new javax.swing.JLabel();
@@ -161,6 +211,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
         cbTodos = new javax.swing.JRadioButton();
         jLabel7 = new javax.swing.JLabel();
         btnMostrar = new javax.swing.JButton();
+        cbRepresentantes = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Expreso Lestani SRL - Hoja de Ruta Por Representantes");
@@ -186,6 +237,8 @@ public class HDDRepresentantes extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setText("Patente:");
+
+        txtPatente.setEditable(false);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -232,6 +285,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
         } catch (java.text.ParseException ex) {
             ex.printStackTrace();
         }
+        txtFecha.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -254,15 +308,9 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                 .addGap(17, 17, 17))
         );
 
-        jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setText("Representante:");
-
-        txtRepresentante.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtRepresentanteKeyTyped(evt);
-            }
-        });
 
         tablaMovimientos.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         tablaMovimientos.setModel(new javax.swing.table.DefaultTableModel(
@@ -332,6 +380,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
         cbTodos.setBackground(new java.awt.Color(66, 66, 66));
         cbTodos.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         cbTodos.setForeground(new java.awt.Color(255, 255, 255));
+        cbTodos.setSelected(true);
         cbTodos.setText("Todos");
         cbTodos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -348,12 +397,12 @@ public class HDDRepresentantes extends javax.swing.JFrame {
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(14, Short.MAX_VALUE)
+                .addContainerGap(17, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(cbContado)
                     .addComponent(cbCC)
                     .addComponent(cbTodos))
-                .addContainerGap())
+                .addGap(15, 15, 15))
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(30, 30, 30)
                 .addComponent(jLabel7)
@@ -364,13 +413,13 @@ public class HDDRepresentantes extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel7)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(cbCC)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cbContado)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cbTodos)
-                .addContainerGap())
+                .addGap(12, 12, 12))
         );
 
         btnMostrar.setBackground(new java.awt.Color(51, 51, 51));
@@ -384,6 +433,8 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                 btnMostrarActionPerformed(evt);
             }
         });
+
+        cbRepresentantes.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -411,13 +462,13 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                                         .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(124, 124, 124)
                                         .addComponent(jLabel6))
-                                    .addComponent(txtRepresentante, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(cbRepresentantes, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(117, 117, 117)
                                 .addComponent(btnImprimirHRP, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(43, 43, 43)
                                 .addComponent(btnGenerarPdf, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 445, Short.MAX_VALUE)))
+                        .addGap(0, 467, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -436,9 +487,9 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                             .addComponent(jLabel6))
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtRepresentante, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(26, 26, 26)
+                                .addGap(5, 5, 5)
+                                .addComponent(cbRepresentantes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(25, 25, 25)
                                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(139, 139, 139)
@@ -448,7 +499,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnImprimirHRP, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnGenerarPdf, javax.swing.GroupLayout.DEFAULT_SIZE, 37, Short.MAX_VALUE))
+                    .addComponent(btnGenerarPdf, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -456,7 +507,9 @@ public class HDDRepresentantes extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -473,7 +526,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
 
     private void btnMostrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarActionPerformed
         String fecha = txtFecha.getText();
-        String representante = txtRepresentante.getText();
+        String representante = cbRepresentantes.getSelectedItem().toString();
         boolean mostrarCuentaCorriente = cbCC.isSelected();
         boolean mostrarContado = cbContado.isSelected();
         boolean mostrarTodos = cbTodos.isSelected();
@@ -620,18 +673,6 @@ public class HDDRepresentantes extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_cbTodosActionPerformed
 
-    private void txtRepresentanteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtRepresentanteKeyTyped
-        txtRepresentante.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyReleased(KeyEvent e) {
-                trs.setRowFilter(RowFilter.regexFilter("(?i)" + txtRepresentante.getText(), 11));
-            }
-
-        });
-        trs = new TableRowSorter(tablaMovimientos.getModel());
-        tablaMovimientos.setRowSorter(trs);
-    }//GEN-LAST:event_txtRepresentanteKeyTyped
-
     private void btnGenerarPdfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarPdfActionPerformed
         generarPDF();
     }//GEN-LAST:event_btnGenerarPdfActionPerformed
@@ -682,6 +723,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
     private javax.swing.JRadioButton cbCC;
     private javax.swing.JComboBox<String> cbChofer;
     private javax.swing.JRadioButton cbContado;
+    private javax.swing.JComboBox<String> cbRepresentantes;
     private javax.swing.JRadioButton cbTodos;
     private javax.swing.JComboBox<Vehiculo> cbVehiculo;
     private javax.swing.JLabel jLabel1;
@@ -699,7 +741,6 @@ public class HDDRepresentantes extends javax.swing.JFrame {
     private javax.swing.JTable tablaMovimientos;
     private javax.swing.JFormattedTextField txtFecha;
     private javax.swing.JTextField txtPatente;
-    private javax.swing.JTextField txtRepresentante;
     // End of variables declaration//GEN-END:variables
 
     public static String fechaActual() {
@@ -794,7 +835,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                 document.add(datos);
 
                 // REPRESENTANTE
-                Paragraph rep = new Paragraph(txtRepresentante.getText(), FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK));
+                Paragraph rep = new Paragraph(cbRepresentantes.getSelectedItem().toString(), FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK));
                 rep.setAlignment(Element.ALIGN_CENTER);
                 rep.setSpacingAfter(10f); // Espacio después del título (en puntos)
                 document.add(rep);
@@ -957,7 +998,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
             document.add(datos);
 
             // REPRESENTANTE
-            Paragraph rep = new Paragraph(txtRepresentante.getText(), FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK));
+            Paragraph rep = new Paragraph(cbRepresentantes.getSelectedItem().toString(), FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK));
             rep.setAlignment(Element.ALIGN_CENTER);
             rep.setSpacingAfter(10f); // Espacio después del título (en puntos)
             document.add(rep);
