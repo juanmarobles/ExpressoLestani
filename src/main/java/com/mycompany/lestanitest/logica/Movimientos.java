@@ -84,6 +84,7 @@ public class Movimientos implements Serializable {
         this.observaciones = observaciones;
         this.hora = hora;
     }
+    
 
     public Time getHora() {
         return hora;
