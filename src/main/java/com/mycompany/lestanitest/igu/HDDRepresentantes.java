@@ -594,7 +594,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
 
         };
         //nombres de columnas
-        String titulos[] = {"MOV", "HORA", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "PAGADO", "RENDIDO", "FLETE", "PAGADO", "RENDIDO", "A_CARGO_DE", "REPRESENTANTE", "CC", "OBS"};
+        String titulos[] = {"ID", "HORA", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "PAGADO", "RENDIDO", "FLETE", "PAGADO", "RENDIDO", "A_CARGO_DE", "REPRESENTANTE", "CC", "OBS"};
         tabla.setColumnIdentifiers(titulos);
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tabla);
         tablaMovimientos.setRowSorter(sorter);
@@ -863,7 +863,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                 // Agregar las celdas a la tabla
                 for (int i = 0; i < tablaMovimientos.getColumnCount(); i++) {
                     String col = tablaMovimientos.getColumnName(i);
-                    if (!col.equals("MOV") && !col.equals("HORA") && !col.equals("FECHA") && !col.equals("REPRESENTANTE") && !col.equals("OBS") && !col.equals("RENDIDO")) {
+                    if (!col.equals("ID") && !col.equals("HORA") && !col.equals("FECHA") && !col.equals("REPRESENTANTE") && !col.equals("OBS") && !col.equals("RENDIDO")) {
                         if (col.equals("CC")) { // Verificar si la columna es "CC"
                             col = "F.P"; // Cambiar el nombre de la columna a "F.P"
                         }
@@ -886,7 +886,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                     if (todasFilasSeleccionadas || contains(filasSeleccionadas, row)) {
                         for (int col = 0; col < tablaMovimientos.getColumnCount(); col++) {
                             String colName = tablaMovimientos.getColumnName(col);
-                            if (!colName.equals("MOV") && !colName.equals("HORA") && !colName.equals("FECHA") && !colName.equals("REPRESENTANTE") && !colName.equals("OBS") && !colName.equals("RENDIDO")) {
+                            if (!colName.equals("ID") && !colName.equals("HORA") && !colName.equals("FECHA") && !colName.equals("REPRESENTANTE") && !colName.equals("OBS") && !colName.equals("RENDIDO")) {
                                 Object value = tablaMovimientos.getValueAt(row, col);
                                 if (value != null) {
                                     if (colName.equals("CC")) {
@@ -1039,7 +1039,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
             // Agregar las celdas a la tabla
             for (int i = 0; i < tablaMovimientos.getColumnCount(); i++) {
                 String col = tablaMovimientos.getColumnName(i);
-                if (!col.equals("MOV") && !col.equals("HORA") && !col.equals("FECHA") && !col.equals("REPRESENTANTE") && !col.equals("OBS") && !col.equals("RENDIDO")) {
+                if (!col.equals("ID") && !col.equals("HORA") && !col.equals("FECHA") && !col.equals("REPRESENTANTE") && !col.equals("OBS") && !col.equals("RENDIDO")) {
                     if (col.equals("CC")) { // Verificar si la columna es "CC"
                         col = "F.P"; // Cambiar el nombre de la columna a "F.P"
                     }
@@ -1062,7 +1062,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                 if (todasFilasSeleccionadas || contains(filasSeleccionadas, row)) {
                     for (int col = 0; col < tablaMovimientos.getColumnCount(); col++) {
                         String colName = tablaMovimientos.getColumnName(col);
-                        if (!colName.equals("MOV") && !colName.equals("HORA") && !colName.equals("FECHA") && !colName.equals("REPRESENTANTE") && !colName.equals("OBS") && !colName.equals("RENDIDO")) {
+                        if (!colName.equals("ID") && !colName.equals("HORA") && !colName.equals("FECHA") && !colName.equals("REPRESENTANTE") && !colName.equals("OBS") && !colName.equals("RENDIDO")) {
                             Object value = tablaMovimientos.getValueAt(row, col);
                             if (value != null) {
                                 if (colName.equals("CC")) {

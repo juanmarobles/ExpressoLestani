@@ -542,10 +542,7 @@ public class HojaDeRuta extends javax.swing.JFrame {
             tabla.addRow(objeto);
         }
         tablaMovimientos.setModel(tabla);
-        
-        
-        
-        
+
         // Personalizar el tamaño de las celdas
         int cellHeight = 25; // Altura de las celdas
         tablaMovimientos.setRowHeight(cellHeight);
@@ -554,9 +551,9 @@ public class HojaDeRuta extends javax.swing.JFrame {
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
         tablaMovimientos.setDefaultRenderer(Object.class, centerRenderer);
-        
+
         // Establecer el ancho específico de las columnas
-        int[] anchos = {15,    50,     50,      120,   120,       40,      25,     80,      30,       30,     80,     30,       30,     50,     100,    30,    120}; // Anchos deseados para cada columna en píxeles
+        int[] anchos = {15, 50, 50, 120, 120, 40, 25, 80, 30, 30, 80, 30, 30, 50, 100, 30, 120}; // Anchos deseados para cada columna en píxeles
 
         if (anchos.length == tabla.getColumnCount()) {
             TableColumnModel columnModel = tablaMovimientos.getColumnModel();
@@ -731,7 +728,7 @@ public class HojaDeRuta extends javax.swing.JFrame {
                 // Agregar las celdas a la tabla
                 for (int i = 0; i < tablaMovimientos.getColumnCount(); i++) {
                     String col = tablaMovimientos.getColumnName(i);
-                    if (!col.equals("FECHA") && !col.equals("HORA") && !col.equals("MOV") && !col.equals("CC") && !col.equals("OBS") && !col.equals("RENDIDO") && !col.equals("RENDIDO")) {
+                    if (!col.equals("FECHA") && !col.equals("HORA") && !col.equals("ID") && !col.equals("CC") && !col.equals("OBS") && !col.equals("RENDIDO") && !col.equals("RENDIDO")) {
                         // Cambiar el nombre de la columna "REPRESENTANTE" a "Rep."
                         if (col.equals("REPRESENTANTE")) {
                             col = "REP";
@@ -749,7 +746,7 @@ public class HojaDeRuta extends javax.swing.JFrame {
                 for (int row : filasSeleccionadas) {
                     for (int col = 0; col < tablaMovimientos.getColumnCount(); col++) {
                         String colName = tablaMovimientos.getColumnName(col);
-                        if (!colName.equals("FECHA") && !colName.equals("HORA") && !colName.equals("CC") && !colName.equals("OBS") && !colName.equals("MOV")
+                        if (!colName.equals("FECHA") && !colName.equals("HORA") && !colName.equals("CC") && !colName.equals("OBS") && !colName.equals("ID")
                                 && !colName.equals("RENDIDO") && !colName.equals("RENDIDO")) {
                             Object value = tablaMovimientos.getValueAt(row, col);
                             if (value != null) {
@@ -848,59 +845,59 @@ public class HojaDeRuta extends javax.swing.JFrame {
             document.add(datos);
 
             // Obtener las filas seleccionadas o todas las filas si no hay ninguna seleccionada
-                int[] filasSeleccionadas = tablaMovimientos.getSelectedRows();
-                if (filasSeleccionadas.length == 0) {
-                    filasSeleccionadas = new int[tablaMovimientos.getRowCount()];
-                    for (int i = 0; i < tablaMovimientos.getRowCount(); i++) {
-                        filasSeleccionadas[i] = i;
+            int[] filasSeleccionadas = tablaMovimientos.getSelectedRows();
+            if (filasSeleccionadas.length == 0) {
+                filasSeleccionadas = new int[tablaMovimientos.getRowCount()];
+                for (int i = 0; i < tablaMovimientos.getRowCount(); i++) {
+                    filasSeleccionadas[i] = i;
+                }
+            }
+
+            // CREACION DE TABLA
+            PdfPTable table = new PdfPTable(tablaMovimientos.getColumnCount() - 7);
+            table.setSpacingBefore(10f); // Espacio antes de la tabla (en puntos)
+            table.setSpacingAfter(10f);
+
+            // Ajustar espacio horizontal
+            float[] columnWidths = {0.9f, 1f, 0.8f, 0.8f, 1f, 0.8f, 1f, 0.8f, 1f, 1f}; // Añadir un ancho para la nueva columna "observaciones"
+            table.setWidths(columnWidths);
+            table.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
+
+            // Agregar las celdas a la tabla
+            for (int i = 0; i < tablaMovimientos.getColumnCount(); i++) {
+                String col = tablaMovimientos.getColumnName(i);
+                if (!col.equals("FECHA") && !col.equals("HORA") && !col.equals("ID") && !col.equals("CC") && !col.equals("OBS") && !col.equals("RENDIDO") && !col.equals("RENDIDO")) {
+                    // Cambiar el nombre de la columna "REPRESENTANTE" a "Rep."
+                    if (col.equals("REPRESENTANTE")) {
+                        col = "REP";
+                    }
+                    if (col.equals("A_CARGO_DE")) {
+                        col = "FLETE A CARGO";
+                    }
+                    PdfPCell cell = new PdfPCell(new Phrase(col, font));
+                    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
+                    table.addCell(cell);
+                }
+            }
+
+            for (int row : filasSeleccionadas) {
+                for (int col = 0; col < tablaMovimientos.getColumnCount(); col++) {
+                    String colName = tablaMovimientos.getColumnName(col);
+                    if (!colName.equals("FECHA") && !colName.equals("HORA") && !colName.equals("CC") && !colName.equals("OBS") && !colName.equals("ID")
+                            && !colName.equals("RENDIDO") && !colName.equals("RENDIDO")) {
+                        Object value = tablaMovimientos.getValueAt(row, col);
+                        if (value != null) {
+                            PdfPCell cell = new PdfPCell(new Phrase(value.toString(), fontFilas));
+                            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                            cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
+                            table.addCell(cell);
+                        }
                     }
                 }
+            }
 
-                // CREACION DE TABLA
-                PdfPTable table = new PdfPTable(tablaMovimientos.getColumnCount() - 7);
-                table.setSpacingBefore(10f); // Espacio antes de la tabla (en puntos)
-                table.setSpacingAfter(10f);
-
-                // Ajustar espacio horizontal
-                float[] columnWidths = {0.9f, 1f, 0.8f, 0.8f, 1f, 0.8f, 1f, 0.8f, 1f, 1f}; // Añadir un ancho para la nueva columna "observaciones"
-                table.setWidths(columnWidths);
-                table.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
-
-                // Agregar las celdas a la tabla
-                for (int i = 0; i < tablaMovimientos.getColumnCount(); i++) {
-                    String col = tablaMovimientos.getColumnName(i);
-                    if (!col.equals("FECHA") && !col.equals("HORA") && !col.equals("MOV") && !col.equals("CC") && !col.equals("OBS") && !col.equals("RENDIDO") && !col.equals("RENDIDO")) {
-                        // Cambiar el nombre de la columna "REPRESENTANTE" a "Rep."
-                        if (col.equals("REPRESENTANTE")) {
-                            col = "REP";
-                        }
-                        if (col.equals("A_CARGO_DE")) {
-                            col = "FLETE A CARGO";
-                        }
-                        PdfPCell cell = new PdfPCell(new Phrase(col, font));
-                        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                        cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
-                        table.addCell(cell);
-                    }
-                }
-
-                for (int row : filasSeleccionadas) {
-                    for (int col = 0; col < tablaMovimientos.getColumnCount(); col++) {
-                        String colName = tablaMovimientos.getColumnName(col);
-                        if (!colName.equals("FECHA") && !colName.equals("HORA") && !colName.equals("CC") && !colName.equals("OBS") && !colName.equals("MOV")
-                                && !colName.equals("RENDIDO") && !colName.equals("RENDIDO")) {
-                            Object value = tablaMovimientos.getValueAt(row, col);
-                            if (value != null) {
-                                PdfPCell cell = new PdfPCell(new Phrase(value.toString(), fontFilas));
-                                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                                cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
-                                table.addCell(cell);
-                            }
-                        }
-                    }
-                }
-
-                document.add(table);
+            document.add(table);
 
             document.close();
             writer.close();
