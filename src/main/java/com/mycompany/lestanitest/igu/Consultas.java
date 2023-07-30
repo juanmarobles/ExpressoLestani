@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
+
 package com.mycompany.lestanitest.igu;
 
 import com.itextpdf.text.BadElementException;
@@ -147,51 +144,51 @@ public class Consultas extends javax.swing.JFrame {
         };
 
         txtFleteCambio.addKeyListener(keyListener);
-        
-        
- // Agregar evento de selección a la tabla
-tablaConsultas.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-    @Override
-    public void valueChanged(ListSelectionEvent e) {
-        if (!e.getValueIsAdjusting()) {
-            // Obtener los índices de las filas seleccionadas
-            int[] selectedRows = tablaConsultas.getSelectedRows();
-            List<Movimientos> movimientosFiltrados = control.traerMovimientos();
 
-            // Calcular y actualizar el total de montos de los elementos seleccionados
-            calcularTotalMonto(movimientosFiltrados,selectedRows);
-            calcularTotalFlete(movimientosFiltrados,selectedRows);
-            calcularTotalBultos(movimientosFiltrados,selectedRows);
-            
-        }
+        // Agregar evento de selección a la tabla
+        tablaConsultas.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) {
+                    // Obtener los índices de las filas seleccionadas
+                    int[] selectedRows = tablaConsultas.getSelectedRows();
+                    List<Movimientos> movimientosFiltrados = control.traerMovimientos();
+
+                    // Calcular y actualizar el total de montos de los elementos seleccionados
+                    calcularTotalMonto(movimientosFiltrados, selectedRows);
+                    calcularTotalFlete(movimientosFiltrados, selectedRows);
+                    calcularTotalBultos(movimientosFiltrados, selectedRows);
+
+                }
+            }
+        });
+
     }
-});
-        
-    }
-    
+
     ModeloCliente modClientes = new ModeloCliente();
     ArrayList<Cliente> listaClientes = modClientes.getClientes();
 
-   private static void mostrarResultadosBusqueda(JComboBox<String> combobox, String textoBusqueda) {
-       
-    // Buscar el resultado de búsqueda
-    boolean encontrado = false;
-    for (int i = 0; i < combobox.getItemCount(); i++) {
-        String item = combobox.getItemAt(i).toString();
-        if (item.toLowerCase().contains(textoBusqueda.toLowerCase())) {
-  
-            combobox.setSelectedItem(item);
-            combobox.getEditor().setItem(item);
-            encontrado = true;
-            break; // Terminar la búsqueda después de seleccionar el primer resultado
+    private static void mostrarResultadosBusqueda(JComboBox<String> combobox, String textoBusqueda) {
+
+        // Buscar el resultado de búsqueda
+        boolean encontrado = false;
+        for (int i = 0; i < combobox.getItemCount(); i++) {
+            String item = combobox.getItemAt(i).toString();
+            if (item.toLowerCase().contains(textoBusqueda.toLowerCase())) {
+
+                combobox.setSelectedItem(item);
+                combobox.getEditor().setItem(item);
+                encontrado = true;
+                break; // Terminar la búsqueda después de seleccionar el primer resultado
+            }
+        }
+        if (!encontrado) {
+            // Si no se encontró ningún resultado, mostrar el menú emergente
+            combobox.setPopupVisible(true);
         }
     }
-    if (!encontrado) {
-        // Si no se encontró ningún resultado, mostrar el menú emergente
-        combobox.setPopupVisible(true);
-    }
-}
-   private void cargarClientes() {
+
+    private void cargarClientes() {
         cbClientes.setEditable(true);
 
         // Agregar los clientes al combobox
@@ -212,7 +209,7 @@ tablaConsultas.getSelectionModel().addListSelectionListener(new ListSelectionLis
 
                 String textoBusqueda = cbClientes.getEditor().getItem().toString();
                 mostrarResultadosBusqueda(cbClientes, textoBusqueda);
-             
+
             }
         });
 
@@ -227,8 +224,8 @@ tablaConsultas.getSelectionModel().addListSelectionListener(new ListSelectionLis
             }
         });
     }
-     
-   private void cargarDestino() {
+
+    private void cargarDestino() {
         cbDestino.setEditable(true);
 
         // Agregar los clientes al combobox
@@ -249,7 +246,7 @@ tablaConsultas.getSelectionModel().addListSelectionListener(new ListSelectionLis
 
                 String textoBusqueda = cbDestino.getEditor().getItem().toString();
                 mostrarResultadosBusqueda(cbDestino, textoBusqueda);
-             
+
             }
         });
 
@@ -264,10 +261,8 @@ tablaConsultas.getSelectionModel().addListSelectionListener(new ListSelectionLis
             }
         });
     }
-     
-   
 
-     private void cargarOrigen() {
+    private void cargarOrigen() {
         cbOrigen.setEditable(true);
 
         // Agregar los clientes al combobox
@@ -288,7 +283,7 @@ tablaConsultas.getSelectionModel().addListSelectionListener(new ListSelectionLis
 
                 String textoBusqueda = cbOrigen.getEditor().getItem().toString();
                 mostrarResultadosBusqueda(cbOrigen, textoBusqueda);
-             
+
             }
         });
 
@@ -303,9 +298,9 @@ tablaConsultas.getSelectionModel().addListSelectionListener(new ListSelectionLis
             }
         });
     }
-     
-       private void cargarRepresentantes() {
-           ModeloRepresentante modRepre = new ModeloRepresentante();
+
+    private void cargarRepresentantes() {
+        ModeloRepresentante modRepre = new ModeloRepresentante();
         ArrayList<Representantes> listaRepresentantes = modRepre.getRepresentantes();
         cbRepresentantes.setEditable(true);
 
@@ -1133,48 +1128,48 @@ tablaConsultas.getSelectionModel().addListSelectionListener(new ListSelectionLis
         List<Movimientos> movimientosFiltrados = control.traerMovimientos();
 
         // Obtener el cliente seleccionado
-    Object clienteSeleccionado = cbClientes.getSelectedItem();
-    String clienteFiltrado = clienteSeleccionado != null ? clienteSeleccionado.toString() : "";
+        Object clienteSeleccionado = cbClientes.getSelectedItem();
+        String clienteFiltrado = clienteSeleccionado != null ? clienteSeleccionado.toString() : "";
 
-    // Obtener los otros filtros seleccionados
-    boolean cuentaCorrienteFiltrada = CuentaCorriente.isSelected();
-    // ... otros filtros ...
+        // Obtener los otros filtros seleccionados
+        boolean cuentaCorrienteFiltrada = CuentaCorriente.isSelected();
+        // ... otros filtros ...
 
-    // Filtrar por cliente (solo si se ha seleccionado un cliente)
-    if (!clienteFiltrado.isEmpty()) {
-        movimientosFiltrados = movimientosFiltrados.stream()
-                .filter(mov -> mov.getCliente().equals(clienteFiltrado))
-                .collect(Collectors.toList());
-    }
+        // Filtrar por cliente (solo si se ha seleccionado un cliente)
+        if (!clienteFiltrado.isEmpty()) {
+            movimientosFiltrados = movimientosFiltrados.stream()
+                    .filter(mov -> mov.getCliente().equals(clienteFiltrado))
+                    .collect(Collectors.toList());
+        }
 
-    // Filtrar por cuenta corriente
-    if (cuentaCorrienteFiltrada) {
-        movimientosFiltrados = movimientosFiltrados.stream()
-                .filter(mov -> mov.getCuentaCorriente().equals("Si"))
-                .collect(Collectors.toList());
-    }
-    
-     // Obtener el cliente seleccionado en el ComboBox cbOrigen
-    Object origenSeleccionado = cbOrigen.getSelectedItem();
-    String origenFiltrado = origenSeleccionado != null ? origenSeleccionado.toString() : "";
+        // Filtrar por cuenta corriente
+        if (cuentaCorrienteFiltrada) {
+            movimientosFiltrados = movimientosFiltrados.stream()
+                    .filter(mov -> mov.getCuentaCorriente().equals("Si"))
+                    .collect(Collectors.toList());
+        }
 
-    // Obtener el cliente seleccionado en el ComboBox cbDestino
-    Object destinoSeleccionado = cbDestino.getSelectedItem();
-    String destinoFiltrado = destinoSeleccionado != null ? destinoSeleccionado.toString() : "";
+        // Obtener el cliente seleccionado en el ComboBox cbOrigen
+        Object origenSeleccionado = cbOrigen.getSelectedItem();
+        String origenFiltrado = origenSeleccionado != null ? origenSeleccionado.toString() : "";
 
-    // Filtrar por origen (solo si se ha seleccionado un cliente)
-    if (!origenFiltrado.isEmpty()) {
-        movimientosFiltrados = movimientosFiltrados.stream()
-                .filter(mov -> mov.getCliente().equals(origenFiltrado))
-                .collect(Collectors.toList());
-    }
+        // Obtener el cliente seleccionado en el ComboBox cbDestino
+        Object destinoSeleccionado = cbDestino.getSelectedItem();
+        String destinoFiltrado = destinoSeleccionado != null ? destinoSeleccionado.toString() : "";
 
-    // Filtrar por destino (solo si se ha seleccionado un cliente)
-    if (!destinoFiltrado.isEmpty()) {
-        movimientosFiltrados = movimientosFiltrados.stream()
-                .filter(mov -> mov.getDestino().equals(destinoFiltrado))
-                .collect(Collectors.toList());
-    }
+        // Filtrar por origen (solo si se ha seleccionado un cliente)
+        if (!origenFiltrado.isEmpty()) {
+            movimientosFiltrados = movimientosFiltrados.stream()
+                    .filter(mov -> mov.getCliente().equals(origenFiltrado))
+                    .collect(Collectors.toList());
+        }
+
+        // Filtrar por destino (solo si se ha seleccionado un cliente)
+        if (!destinoFiltrado.isEmpty()) {
+            movimientosFiltrados = movimientosFiltrados.stream()
+                    .filter(mov -> mov.getDestino().equals(destinoFiltrado))
+                    .collect(Collectors.toList());
+        }
 
         // Filtrar por fechas
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -1226,163 +1221,160 @@ tablaConsultas.getSelectionModel().addListSelectionListener(new ListSelectionLis
                     return estadoPagoCumple && fletesCumple;
                 })
                 .collect(Collectors.toList());
-        
-    // Obtener el representante seleccionado
-    Object representanteSeleccionado = cbRepresentantes.getSelectedItem();
-    String representanteFiltrado = representanteSeleccionado != null ? representanteSeleccionado.toString() : "";
 
-    // Filtrar por representante
-    if (!representanteFiltrado.isEmpty()) {
-        movimientosFiltrados = movimientosFiltrados.stream()
-                .filter(mov -> mov.getRepresentante().equals(representanteFiltrado))
-                .collect(Collectors.toList());
-    }
+        // Obtener el representante seleccionado
+        Object representanteSeleccionado = cbRepresentantes.getSelectedItem();
+        String representanteFiltrado = representanteSeleccionado != null ? representanteSeleccionado.toString() : "";
 
-        
-         mostrarTablaMovimientos(movimientosFiltrados);
-         //Total Monto
-         int[] selectedRows = tablaConsultas.getSelectedRows();
-        calcularTotalMonto(movimientosFiltrados,selectedRows);       
-        calcularTotalFlete(movimientosFiltrados,selectedRows);
-        calcularTotalBultos(movimientosFiltrados,selectedRows);
-                
-    }
-    
-    // Método para calcular el total de montos de los elementos seleccionados en la tabla
-private void calcularTotalMonto(List<Movimientos> movimientosFiltrados,int[] selectedRows) {
-    
-    if (selectedRows.length > 0) {
-        // Si hay elementos seleccionados, calcular y mostrar el total de montos seleccionados
-        double totalMonto = 0.0;
-
-        // Supongamos que "Movimientos" tiene un método "getMonto()" para obtener el monto de cada movimiento.
-        for (int rowIndex : selectedRows) {
-            String monto = tablaConsultas.getValueAt(rowIndex, 7).toString();
-            monto = monto.replace("$", "").replace(".", "").replace(",", "."); // Eliminar símbolos y reemplazar la coma por el punto decimal
-            try {
-                totalMonto += Double.parseDouble(monto);
-            } catch (NumberFormatException e) {
-                // Manejar la excepción en caso de que no se pueda convertir el monto a número
-                e.printStackTrace();
-            }
+        // Filtrar por representante
+        if (!representanteFiltrado.isEmpty()) {
+            movimientosFiltrados = movimientosFiltrados.stream()
+                    .filter(mov -> mov.getRepresentante().equals(representanteFiltrado))
+                    .collect(Collectors.toList());
         }
 
-        //Formato de Monto
-        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
-        symbols.setDecimalSeparator(',');
-        symbols.setGroupingSeparator('.');
-        DecimalFormat decimalFormat = new DecimalFormat("###,###.00", symbols);
-        String totalFormateado = decimalFormat.format(totalMonto);
+        mostrarTablaMovimientos(movimientosFiltrados);
+        //Total Monto
+        int[] selectedRows = tablaConsultas.getSelectedRows();
+        calcularTotalMonto(movimientosFiltrados, selectedRows);
+        calcularTotalFlete(movimientosFiltrados, selectedRows);
+        calcularTotalBultos(movimientosFiltrados, selectedRows);
 
-        txtTotalMonto.setText(totalFormateado);
-    } else {
-        // Calcular el total de los montos
-        double totalMonto = movimientosFiltrados.stream()
-                .mapToDouble(mov -> {
-                    String monto = mov.getMonto().replace(".", ""); // Eliminar el separador de miles (punto)
-                    monto = monto.replace(",", "."); // Reemplazar la coma por punto decimal
-                    monto = monto.replace("$", ""); // Eliminar el signo de dólar
-                    try {
-                        return Double.parseDouble(monto);
-                    } catch (NumberFormatException e) {
-                        return 0.0;
-                    }
-                })
-                .sum();
-
-        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
-        symbols.setDecimalSeparator(',');
-        symbols.setGroupingSeparator('.');
-        DecimalFormat decimalFormat = new DecimalFormat("###,###.00", symbols);
-        String totalFormateado = decimalFormat.format(totalMonto);
-
-        txtTotalMonto.setText(totalFormateado);
     }
-}
 
     // Método para calcular el total de montos de los elementos seleccionados en la tabla
-private void calcularTotalFlete(List<Movimientos> movimientosFiltrados,int[] selectedRows) {
-    
-    if (selectedRows.length > 0) {
-        // Si hay elementos seleccionados, calcular y mostrar el total de montos seleccionados
-        double totalFlete = 0.0;
+    private void calcularTotalMonto(List<Movimientos> movimientosFiltrados, int[] selectedRows) {
 
-        // Supongamos que "Movimientos" tiene un método "getFlete()" para obtener el monto de cada movimiento.
-        for (int rowIndex : selectedRows) {
-            String flete = tablaConsultas.getValueAt(rowIndex, 10).toString();
-            flete = flete.replace("$", "").replace(".", "").replace(",", "."); // Eliminar símbolos y reemplazar la coma por el punto decimal
-            try {
-                totalFlete += Double.parseDouble(flete);
-            } catch (NumberFormatException e) {
-                // Manejar la excepción en caso de que no se pueda convertir el monto a número
-                e.printStackTrace();
-            }
-        }
-
-        //Formato de Monto
-        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
-        symbols.setDecimalSeparator(',');
-        symbols.setGroupingSeparator('.');
-        DecimalFormat decimalFormat = new DecimalFormat("###,###.00", symbols);
-        String totalFormateado = decimalFormat.format(totalFlete);
-
-        txtTotalFlete.setText(totalFormateado);
-    } else {
-        // Calcular el total de los Fletes
-        double totalflete = movimientosFiltrados.stream()
-                .mapToDouble(mov -> {
-                    String flete = mov.getFlete().replace(".", ""); // Eliminar el separador de miles (punto)
-                    flete = flete.replace(",", "."); // Reemplazar la coma por punto decimal
-                    flete = flete.replace("$", ""); // Eliminar el signo de dólar
-                    try {
-                        return Double.parseDouble(flete);
-                    } catch (NumberFormatException e) {
-                        return 0.0;
-                    }
-                })
-                .sum();
-
-        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
-        symbols.setDecimalSeparator(',');
-        symbols.setGroupingSeparator('.');
-        DecimalFormat decimalFormat = new DecimalFormat("###,###.00", symbols);
-        String totalFormateado = decimalFormat.format(totalflete);
-
-        txtTotalFlete.setText(totalFormateado);
-    }
-}
-
-    private void calcularTotalBultos(List<Movimientos> movimientosFiltrados,int[] selectedRows) {
-        
-         
         if (selectedRows.length > 0) {
-            
-        // Si hay elementos seleccionados, calcular y mostrar el total de montos seleccionados
-         int totalbulto = 0;
+            // Si hay elementos seleccionados, calcular y mostrar el total de montos seleccionados
+            double totalMonto = 0.0;
 
-        // Supongamos que "Movimientos" tiene un método "getFlete()" para obtener el monto de cada movimiento.
-        for (int rowIndex : selectedRows) {
-            String bulto = tablaConsultas.getValueAt(rowIndex, 6).toString();
-            try {
-                totalbulto += Double.parseDouble(bulto);
-            } catch (NumberFormatException e) {
-                // Manejar la excepción en caso de que no se pueda convertir el monto a número
-                e.printStackTrace();
+            // Supongamos que "Movimientos" tiene un método "getMonto()" para obtener el monto de cada movimiento.
+            for (int rowIndex : selectedRows) {
+                String monto = tablaConsultas.getValueAt(rowIndex, 7).toString();
+                monto = monto.replace("$", "").replace(".", "").replace(",", "."); // Eliminar símbolos y reemplazar la coma por el punto decimal
+                try {
+                    totalMonto += Double.parseDouble(monto);
+                } catch (NumberFormatException e) {
+                    // Manejar la excepción en caso de que no se pueda convertir el monto a número
+                    e.printStackTrace();
+                }
             }
-            txtCantBultos.setText(String.format("%,d", totalbulto));
-        }
-        }else{
-        
-        int sumaBultos = movimientosFiltrados.stream()
-                .mapToInt(Movimientos::getBultos)
-                .sum();
 
-        txtCantBultos.setText(String.format("%,d", sumaBultos));
-                
+            //Formato de Monto
+            DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+            symbols.setDecimalSeparator(',');
+            symbols.setGroupingSeparator('.');
+            DecimalFormat decimalFormat = new DecimalFormat("###,###.00", symbols);
+            String totalFormateado = decimalFormat.format(totalMonto);
+
+            txtTotalMonto.setText(totalFormateado);
+        } else {
+            // Calcular el total de los montos
+            double totalMonto = movimientosFiltrados.stream()
+                    .mapToDouble(mov -> {
+                        String monto = mov.getMonto().replace(".", ""); // Eliminar el separador de miles (punto)
+                        monto = monto.replace(",", "."); // Reemplazar la coma por punto decimal
+                        monto = monto.replace("$", ""); // Eliminar el signo de dólar
+                        try {
+                            return Double.parseDouble(monto);
+                        } catch (NumberFormatException e) {
+                            return 0.0;
+                        }
+                    })
+                    .sum();
+
+            DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+            symbols.setDecimalSeparator(',');
+            symbols.setGroupingSeparator('.');
+            DecimalFormat decimalFormat = new DecimalFormat("###,###.00", symbols);
+            String totalFormateado = decimalFormat.format(totalMonto);
+
+            txtTotalMonto.setText(totalFormateado);
         }
     }
 
-    
+    // Método para calcular el total de montos de los elementos seleccionados en la tabla
+    private void calcularTotalFlete(List<Movimientos> movimientosFiltrados, int[] selectedRows) {
+
+        if (selectedRows.length > 0) {
+            // Si hay elementos seleccionados, calcular y mostrar el total de montos seleccionados
+            double totalFlete = 0.0;
+
+            // Supongamos que "Movimientos" tiene un método "getFlete()" para obtener el monto de cada movimiento.
+            for (int rowIndex : selectedRows) {
+                String flete = tablaConsultas.getValueAt(rowIndex, 10).toString();
+                flete = flete.replace("$", "").replace(".", "").replace(",", "."); // Eliminar símbolos y reemplazar la coma por el punto decimal
+                try {
+                    totalFlete += Double.parseDouble(flete);
+                } catch (NumberFormatException e) {
+                    // Manejar la excepción en caso de que no se pueda convertir el monto a número
+                    e.printStackTrace();
+                }
+            }
+
+            //Formato de Monto
+            DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+            symbols.setDecimalSeparator(',');
+            symbols.setGroupingSeparator('.');
+            DecimalFormat decimalFormat = new DecimalFormat("###,###.00", symbols);
+            String totalFormateado = decimalFormat.format(totalFlete);
+
+            txtTotalFlete.setText(totalFormateado);
+        } else {
+            // Calcular el total de los Fletes
+            double totalflete = movimientosFiltrados.stream()
+                    .mapToDouble(mov -> {
+                        String flete = mov.getFlete().replace(".", ""); // Eliminar el separador de miles (punto)
+                        flete = flete.replace(",", "."); // Reemplazar la coma por punto decimal
+                        flete = flete.replace("$", ""); // Eliminar el signo de dólar
+                        try {
+                            return Double.parseDouble(flete);
+                        } catch (NumberFormatException e) {
+                            return 0.0;
+                        }
+                    })
+                    .sum();
+
+            DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+            symbols.setDecimalSeparator(',');
+            symbols.setGroupingSeparator('.');
+            DecimalFormat decimalFormat = new DecimalFormat("###,###.00", symbols);
+            String totalFormateado = decimalFormat.format(totalflete);
+
+            txtTotalFlete.setText(totalFormateado);
+        }
+    }
+
+    private void calcularTotalBultos(List<Movimientos> movimientosFiltrados, int[] selectedRows) {
+
+        if (selectedRows.length > 0) {
+
+            // Si hay elementos seleccionados, calcular y mostrar el total de montos seleccionados
+            int totalbulto = 0;
+
+            // Supongamos que "Movimientos" tiene un método "getFlete()" para obtener el monto de cada movimiento.
+            for (int rowIndex : selectedRows) {
+                String bulto = tablaConsultas.getValueAt(rowIndex, 6).toString();
+                try {
+                    totalbulto += Double.parseDouble(bulto);
+                } catch (NumberFormatException e) {
+                    // Manejar la excepción en caso de que no se pueda convertir el monto a número
+                    e.printStackTrace();
+                }
+                txtCantBultos.setText(String.format("%,d", totalbulto));
+            }
+        } else {
+
+            int sumaBultos = movimientosFiltrados.stream()
+                    .mapToInt(Movimientos::getBultos)
+                    .sum();
+
+            txtCantBultos.setText(String.format("%,d", sumaBultos));
+
+        }
+    }
+
     private void mostrarTablaMovimientos(List<Movimientos> listaMovimientos) {
         //filas y columnas no editables
         DefaultTableModel tabla = new DefaultTableModel() {
@@ -1399,10 +1391,10 @@ private void calcularTotalFlete(List<Movimientos> movimientosFiltrados,int[] sel
         // Centrar los títulos en el encabezado de la tabla
         DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) tablaConsultas.getTableHeader().getDefaultRenderer();
         headerRenderer.setHorizontalAlignment(JLabel.CENTER);
-        
+
         tablaConsultas.setRowSorter(sorter);
         sorter.setSortKeys(java.util.Arrays.asList(new RowSorter.SortKey(1, SortOrder.DESCENDING)));
-        
+
         // Ordenar los datos por el ID en forma descendente
         Collections.sort(listaMovimientos, Comparator.comparingInt(Movimientos::getId_movimientos).reversed());
         //carga de los datos desde la lista filtrada
@@ -1413,11 +1405,11 @@ private void calcularTotalFlete(List<Movimientos> movimientosFiltrados,int[] sel
             }
         }
         tablaConsultas.setModel(tabla);
-        
-       // Personalizar el ancho de las columnas
-                          // "ID","HORA","FECHA","CLIENTE","DESTINO","REMITO","BULTOS","MONTO","PAGADO","RENDIDO","FLETE","PAGADO","RENDIDO","A_CARGO_DE","REPRESENTANTE","CC","OBS"
-        int[] columnWidths = {15,    50,     50,      120,   120,       40,      25,     80,      30,       30,     80,     30,       30,     50,     100,    30,    120}; // Ancho de las columnas en píxeles
-        
+
+        // Personalizar el ancho de las columnas
+        // "ID","HORA","FECHA","CLIENTE","DESTINO","REMITO","BULTOS","MONTO","PAGADO","RENDIDO","FLETE","PAGADO","RENDIDO","A_CARGO_DE","REPRESENTANTE","CC","OBS"
+        int[] columnWidths = {15, 50, 50, 120, 120, 40, 25, 80, 30, 30, 80, 30, 30, 50, 100, 30, 120}; // Ancho de las columnas en píxeles
+
         for (int i = 0; i < tablaConsultas.getColumnCount(); i++) {
             TableColumn column = tablaConsultas.getColumnModel().getColumn(i);
             column.setPreferredWidth(columnWidths[i]);
@@ -1432,7 +1424,6 @@ private void calcularTotalFlete(List<Movimientos> movimientosFiltrados,int[] sel
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
         tablaConsultas.setDefaultRenderer(Object.class, centerRenderer);
 
- 
     }
 
 
@@ -1693,7 +1684,7 @@ private void calcularTotalFlete(List<Movimientos> movimientosFiltrados,int[] sel
             for (int filaSeleccionada : filasSeleccionadas) {
                 int idMovimientos = (int) modeloTabla.getValueAt(filaSeleccionada, 0);
 
-                Movimientos movimiento = control.traerMovimiento(idMovimientos); 
+                Movimientos movimiento = control.traerMovimiento(idMovimientos);
 
                 if (movimiento != null) {
                     String tipoFlete = (String) modeloTabla.getValueAt(filaSeleccionada, 11);
@@ -1812,7 +1803,7 @@ private void calcularTotalFlete(List<Movimientos> movimientosFiltrados,int[] sel
                 // Agregar las celdas a la tabla
                 for (int i = 0; i < tablaConsultas.getColumnCount(); i++) {
                     String col = tablaConsultas.getColumnName(i);
-                    if (!col.equals("A_CARGO_DE") && !col.equals("CC") && !col.equals("OBS") && !col.equals("MOVIMIENTO")
+                    if (!col.equals("A_CARGO_DE") && !col.equals("CC") && !col.equals("OBS") && !col.equals("ID")
                             && !col.equals("RENDIDO") && !col.equals("RENDIDO") && !col.equals("HORA")) {
                         PdfPCell cell = new PdfPCell(new Phrase(col, font));
                         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -1823,7 +1814,7 @@ private void calcularTotalFlete(List<Movimientos> movimientosFiltrados,int[] sel
                 for (int row : filasSeleccionadas) {
                     for (int col = 0; col < tablaConsultas.getColumnCount(); col++) {
                         String colName = tablaConsultas.getColumnName(col);
-                        if (!colName.equals("A_CARGO_DE") && !colName.equals("CC") && !colName.equals("OBS") && !colName.equals("MOVIMIENTO")
+                        if (!colName.equals("A_CARGO_DE") && !colName.equals("CC") && !colName.equals("OBS") && !colName.equals("ID")
                                 && !colName.equals("RENDIDO") && !colName.equals("RENDIDO") && !colName.equals("HORA")) {
                             Object value = tablaConsultas.getValueAt(row, col);
                             if (value != null) {
@@ -1927,7 +1918,7 @@ private void calcularTotalFlete(List<Movimientos> movimientosFiltrados,int[] sel
             // Agregar las celdas a la tabla
             for (int i = 0; i < tablaConsultas.getColumnCount(); i++) {
                 String col = tablaConsultas.getColumnName(i);
-                if (!col.equals("A_CARGO_DE") && !col.equals("CC") && !col.equals("OBS") && !col.equals("MOVIMIENTO")
+                if (!col.equals("A_CARGO_DE") && !col.equals("CC") && !col.equals("OBS") && !col.equals("ID")
                         && !col.equals("RENDIDO") && !col.equals("RENDIDO") && !col.equals("HORA")) {
                     PdfPCell cell = new PdfPCell(new Phrase(col, font));
                     cell.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -1938,7 +1929,7 @@ private void calcularTotalFlete(List<Movimientos> movimientosFiltrados,int[] sel
             for (int row = 0; row < tablaConsultas.getRowCount(); row++) {
                 for (int col = 0; col < tablaConsultas.getColumnCount(); col++) {
                     String colName = tablaConsultas.getColumnName(col);
-                    if (!colName.equals("A_CARGO_DE") && !colName.equals("CC") && !colName.equals("OBS") && !colName.equals("MOVIMIENTO")
+                    if (!colName.equals("A_CARGO_DE") && !colName.equals("CC") && !colName.equals("OBS") && !colName.equals("ID")
                             && !colName.equals("RENDIDO") && !colName.equals("RENDIDO") && !colName.equals("HORA")) {
                         Object value = tablaConsultas.getValueAt(row, col);
                         if (value != null) {

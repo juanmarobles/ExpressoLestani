@@ -388,7 +388,7 @@ public class Recibos extends javax.swing.JFrame {
                 return false;
             }
         };
-        String titulos[] = {"MOV", "HORA", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "PAGADO", "RENDIDO", "FLETE", "PAGADO", "RENDIDO", "A_CARGO_DE", "REPRESENTANTE", "CC", "OBS"};
+        String titulos[] = {"ID", "HORA", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "PAGADO", "RENDIDO", "FLETE", "PAGADO", "RENDIDO", "A_CARGO_DE", "REPRESENTANTE", "CC", "OBS"};
         tabla.setColumnIdentifiers(titulos);
 
         for (Movimientos mov : listaFiltrada) {
@@ -1048,7 +1048,7 @@ public class Recibos extends javax.swing.JFrame {
                 // Agregar las celdas de encabezado a la tabla
                 for (int i = 0; i < tablaMovimientos.getColumnCount(); i++) {
                     String col = tablaMovimientos.getColumnName(i);
-                    if (!col.equals("RENDIDO") && !col.equals("RENDIDO") && !col.equals("REPRESENTANTE") && !col.equals("FLETE") && !col.equals("PAGADO") && !col.equals("CLIENTE") && !col.equals("A_CARGO_DE") && !col.equals("CC") && !col.equals("MOVIMIENTO")) {
+                    if (!col.equals("RENDIDO") && !col.equals("RENDIDO") && !col.equals("REPRESENTANTE") && !col.equals("FLETE") && !col.equals("PAGADO") && !col.equals("CLIENTE") && !col.equals("A_CARGO_DE") && !col.equals("CC") && !col.equals("ID")) {
                         PdfPCell cell = new PdfPCell(new Phrase(col, fontColumnas));
                         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                         cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
@@ -1060,7 +1060,7 @@ public class Recibos extends javax.swing.JFrame {
                 for (int fila : filasSeleccionadas) {
                     for (int col = 0; col < tablaMovimientos.getColumnCount(); col++) {
                         String colName = tablaMovimientos.getColumnName(col);
-                        if (!colName.equals("RENDIDO") && !colName.equals("RENDIDO") && !colName.equals("REPRESENTANTE") && !colName.equals("FLETE") && !colName.equals("PAGADO") && !colName.equals("CLIENTE") && !colName.equals("A_CARGO_DE") && !colName.equals("CC") && !colName.equals("MOVIMIENTO")) {
+                        if (!colName.equals("RENDIDO") && !colName.equals("RENDIDO") && !colName.equals("REPRESENTANTE") && !colName.equals("FLETE") && !colName.equals("PAGADO") && !colName.equals("CLIENTE") && !colName.equals("A_CARGO_DE") && !colName.equals("CC") && !colName.equals("ID")) {
                             Object value = tablaMovimientos.getValueAt(fila, col);
                             if (value != null) {
                                 PdfPCell cell = new PdfPCell(new Phrase(value.toString(), fontFilas));
@@ -1299,7 +1299,7 @@ public class Recibos extends javax.swing.JFrame {
                     // Agregar las celdas de encabezado a la tabla
                     for (int i = 0; i < tablaMovimientos.getColumnCount(); i++) {
                         String col = tablaMovimientos.getColumnName(i);
-                        if (!col.equals("MOV") && !col.equals("HORA") && !col.equals("RENDIDO") && !col.equals("RENDIDO") && !col.equals("REPRESENTANTE") && !col.equals("FLETE") && !col.equals("PAGADO") && !col.equals("CLIENTE") && !col.equals("A_CARGO_DE") && !col.equals("CC") && !col.equals("MOVIMIENTO")) {
+                        if (!col.equals("ID") && !col.equals("HORA") && !col.equals("RENDIDO") && !col.equals("RENDIDO") && !col.equals("REPRESENTANTE") && !col.equals("FLETE") && !col.equals("PAGADO") && !col.equals("CLIENTE") && !col.equals("A_CARGO_DE") && !col.equals("CC") && !col.equals("MOVIMIENTO")) {
                             PdfPCell cell = new PdfPCell(new Phrase(col, fontColumnas));
                             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                             cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
@@ -1311,7 +1311,7 @@ public class Recibos extends javax.swing.JFrame {
                     for (int fila : filasSeleccionadas) {
                         for (int col = 0; col < tablaMovimientos.getColumnCount(); col++) {
                             String colName = tablaMovimientos.getColumnName(col);
-                            if (!colName.equals("MOV") && !colName.equals("HORA") && !colName.equals("RENDIDO") && !colName.equals("RENDIDO") && !colName.equals("REPRESENTANTE") && !colName.equals("FLETE") && !colName.equals("PAGADO") && !colName.equals("CLIENTE") && !colName.equals("A_CARGO_DE") && !colName.equals("CC") && !colName.equals("MOVIMIENTO")) {
+                            if (!colName.equals("ID") && !colName.equals("HORA") && !colName.equals("RENDIDO") && !colName.equals("RENDIDO") && !colName.equals("REPRESENTANTE") && !colName.equals("FLETE") && !colName.equals("PAGADO") && !colName.equals("CLIENTE") && !colName.equals("A_CARGO_DE") && !colName.equals("CC") && !colName.equals("MOVIMIENTO")) {
                                 Object value = tablaMovimientos.getValueAt(fila, col);
                                 if (value != null) {
                                     PdfPCell cell = new PdfPCell(new Phrase(value.toString(), fontFilas));
@@ -1516,7 +1516,7 @@ public class Recibos extends javax.swing.JFrame {
                     // Agregar las celdas de encabezado a la tabla, excluyendo las columnas suprimidas
                     for (int i = 0; i < tablaMovimientos.getColumnCount(); i++) {
                         String col = tablaMovimientos.getColumnName(i);
-                        if (!col.equals("MOV") && !col.equals("HORA") && !col.equals("PAGADO") && !col.equals("REPRESENTANTE") && !col.equals("CLIENTE") && !col.equals("CC") && !col.equals("RENDIDO") && !col.equals("RENDIDO")) {
+                        if (!col.equals("ID") && !col.equals("HORA") && !col.equals("PAGADO") && !col.equals("REPRESENTANTE") && !col.equals("CLIENTE") && !col.equals("CC") && !col.equals("RENDIDO") && !col.equals("RENDIDO")) {
                             PdfPCell cell = new PdfPCell(new Phrase(col, fontColumnas));
                             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                             cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
@@ -1529,7 +1529,7 @@ public class Recibos extends javax.swing.JFrame {
                         // Agregar las celdas de datos excluyendo las columnas suprimidas
                         for (int col = 0; col < tablaMovimientos.getColumnCount(); col++) {
                             String colName = tablaMovimientos.getColumnName(col);
-                            if (!colName.equals("MOV") && !colName.equals("HORA") && !colName.equals("REPRESENTANTE") && !colName.equals("CLIENTE") && !colName.equals("PAGADO") && !colName.equals("CC") && !colName.equals("RENDIDO") && !colName.equals("RENDIDO")) {
+                            if (!colName.equals("ID") && !colName.equals("HORA") && !colName.equals("REPRESENTANTE") && !colName.equals("CLIENTE") && !colName.equals("PAGADO") && !colName.equals("CC") && !colName.equals("RENDIDO") && !colName.equals("RENDIDO")) {
                                 Object value = tablaMovimientos.getValueAt(fila, col);
                                 if (value != null) {
                                     PdfPCell cell = new PdfPCell(new Phrase(value.toString(), fontFilas));
@@ -1723,7 +1723,7 @@ public class Recibos extends javax.swing.JFrame {
                 // Agregar las celdas de encabezado a la tabla
                 for (int i = 0; i < tablaMovimientos.getColumnCount(); i++) {
                     String col = tablaMovimientos.getColumnName(i);
-                    if (!col.equals("MOV") && !col.equals("HORA") && !col.equals("RENDIDO") && !col.equals("RENDIDO") && !col.equals("REPRESENTANTE") && !col.equals("FLETE") && !col.equals("PAGADO") && !col.equals("CLIENTE") && !col.equals("A_CARGO_DE") && !col.equals("CC") && !col.equals("MOVIMIENTO")) {
+                    if (!col.equals("ID") && !col.equals("HORA") && !col.equals("RENDIDO") && !col.equals("RENDIDO") && !col.equals("REPRESENTANTE") && !col.equals("FLETE") && !col.equals("PAGADO") && !col.equals("CLIENTE") && !col.equals("A_CARGO_DE") && !col.equals("CC") && !col.equals("MOVIMIENTO")) {
                         PdfPCell cell = new PdfPCell(new Phrase(col, fontColumnas));
                         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                         cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
@@ -1735,7 +1735,7 @@ public class Recibos extends javax.swing.JFrame {
                 for (int fila : filasSeleccionadas) {
                     for (int col = 0; col < tablaMovimientos.getColumnCount(); col++) {
                         String colName = tablaMovimientos.getColumnName(col);
-                        if (!colName.equals("MOV") && !colName.equals("HORA") && !colName.equals("RENDIDO") && !colName.equals("RENDIDO") && !colName.equals("REPRESENTANTE") && !colName.equals("FLETE") && !colName.equals("PAGADO") && !colName.equals("CLIENTE") && !colName.equals("A_CARGO_DE") && !colName.equals("CC") && !colName.equals("MOVIMIENTO")) {
+                        if (!colName.equals("ID") && !colName.equals("HORA") && !colName.equals("RENDIDO") && !colName.equals("RENDIDO") && !colName.equals("REPRESENTANTE") && !colName.equals("FLETE") && !colName.equals("PAGADO") && !colName.equals("CLIENTE") && !colName.equals("A_CARGO_DE") && !colName.equals("CC") && !colName.equals("MOVIMIENTO")) {
                             Object value = tablaMovimientos.getValueAt(fila, col);
                             if (value != null) {
                                 PdfPCell cell = new PdfPCell(new Phrase(value.toString(), fontFilas));
@@ -1945,7 +1945,7 @@ public class Recibos extends javax.swing.JFrame {
                 // Agregar las celdas de encabezado a la tabla, excluyendo las columnas suprimidas
                 for (int i = 0; i < tablaMovimientos.getColumnCount(); i++) {
                     String col = tablaMovimientos.getColumnName(i);
-                    if (!col.equals("MOV") && !col.equals("HORA") && !col.equals("PAGADO") && !col.equals("REPRESENTANTE") && !col.equals("CLIENTE") && !col.equals("CC") && !col.equals("RENDIDO") && !col.equals("RENDIDO")) {
+                    if (!col.equals("ID") && !col.equals("HORA") && !col.equals("PAGADO") && !col.equals("REPRESENTANTE") && !col.equals("CLIENTE") && !col.equals("CC") && !col.equals("RENDIDO") && !col.equals("RENDIDO")) {
                         PdfPCell cell = new PdfPCell(new Phrase(col, fontColumnas));
                         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                         cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
@@ -1958,7 +1958,7 @@ public class Recibos extends javax.swing.JFrame {
                     // Agregar las celdas de datos excluyendo las columnas suprimidas
                     for (int col = 0; col < tablaMovimientos.getColumnCount(); col++) {
                         String colName = tablaMovimientos.getColumnName(col);
-                        if (!colName.equals("MOV") && !colName.equals("HORA") && !colName.equals("REPRESENTANTE") && !colName.equals("CLIENTE") && !colName.equals("PAGADO") && !colName.equals("CC") && !colName.equals("RENDIDO") && !colName.equals("RENDIDO")) {
+                        if (!colName.equals("ID") && !colName.equals("HORA") && !colName.equals("REPRESENTANTE") && !colName.equals("CLIENTE") && !colName.equals("PAGADO") && !colName.equals("CC") && !colName.equals("RENDIDO") && !colName.equals("RENDIDO")) {
                             Object value = tablaMovimientos.getValueAt(fila, col);
                             if (value != null) {
                                 PdfPCell cell = new PdfPCell(new Phrase(value.toString(), fontFilas));
@@ -2157,7 +2157,7 @@ public class Recibos extends javax.swing.JFrame {
 
         };
         //nombres de columnas
-        String titulos[] = {"MOV", "HORA", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "PAGADO", "RENDIDO", "FLETE", "PAGADO", "RENDIDO", "A_CARGO_DE", "REPRESENTANTE", "CC", "OBS"};
+        String titulos[] = {"ID", "HORA", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "PAGADO", "RENDIDO", "FLETE", "PAGADO", "RENDIDO", "A_CARGO_DE", "REPRESENTANTE", "CC", "OBS"};
         tabla.setColumnIdentifiers(titulos);
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tabla);
         tablaMovimientos.setRowSorter(sorter);
