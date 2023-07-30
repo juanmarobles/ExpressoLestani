@@ -601,7 +601,9 @@ tablaConsultas.getSelectionModel().addListSelectionListener(new ListSelectionLis
         jPanel4.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
         jPanel4.setForeground(new java.awt.Color(236, 240, 241));
 
+        txtTotalMonto.setBackground(new java.awt.Color(51, 51, 51));
         txtTotalMonto.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        txtTotalMonto.setForeground(new java.awt.Color(0, 153, 51));
         txtTotalMonto.setText("0");
         txtTotalMonto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -613,7 +615,9 @@ tablaConsultas.getSelectionModel().addListSelectionListener(new ListSelectionLis
         jLabel11.setForeground(new java.awt.Color(236, 240, 241));
         jLabel11.setText("Total Monto   $:");
 
+        txtTotalFlete.setBackground(new java.awt.Color(51, 51, 51));
         txtTotalFlete.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        txtTotalFlete.setForeground(new java.awt.Color(0, 153, 51));
         txtTotalFlete.setText("0");
         txtTotalFlete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -659,7 +663,9 @@ tablaConsultas.getSelectionModel().addListSelectionListener(new ListSelectionLis
         jLabel13.setForeground(new java.awt.Color(236, 240, 241));
         jLabel13.setText("Cant. Bultos");
 
+        txtCantBultos.setBackground(new java.awt.Color(51, 51, 51));
         txtCantBultos.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        txtCantBultos.setForeground(new java.awt.Color(0, 153, 51));
         txtCantBultos.setText("0");
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
@@ -959,6 +965,7 @@ tablaConsultas.getSelectionModel().addListSelectionListener(new ListSelectionLis
 
         cbOrigen.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
 
+        cbDestino.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         cbDestino.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbDestinoActionPerformed(evt);
@@ -982,7 +989,7 @@ tablaConsultas.getSelectionModel().addListSelectionListener(new ListSelectionLis
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(cbOrigen, 0, 214, Short.MAX_VALUE)
                     .addComponent(cbDestino, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(21, 21, 21))
+                .addGap(24, 24, 24))
         );
         jPanel10Layout.setVerticalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
