@@ -312,19 +312,25 @@ public class Principal extends javax.swing.JFrame {
     ModeloCliente modClientes = new ModeloCliente();
     ArrayList<Cliente> listaClientes = modClientes.getClientes();
 
-    private static void mostrarResultadosBusqueda(JComboBox<String> cbDestinos, String textoBusqueda) {
-
-        // Buscar el resultado de búsqueda
-        for (int i = 0; i < cbDestinos.getItemCount(); i++) {
-            String item = cbDestinos.getItemAt(i).toString();
-            if (item.toLowerCase().contains(textoBusqueda.toLowerCase())) {
-                cbDestinos.setSelectedItem(item);
-                cbDestinos.getEditor().setItem(item);
-                return; // Terminar la búsqueda después de seleccionar el primer resultado
-            }
+   private static void mostrarResultadosBusqueda(JComboBox<String> combobox, String textoBusqueda) {
+       
+    // Buscar el resultado de búsqueda
+    boolean encontrado = false;
+    for (int i = 0; i < combobox.getItemCount(); i++) {
+        String item = combobox.getItemAt(i).toString();
+        if (item.toLowerCase().contains(textoBusqueda.toLowerCase())) {
+  
+            combobox.setSelectedItem(item);
+            combobox.getEditor().setItem(item);
+            encontrado = true;
+            break; // Terminar la búsqueda después de seleccionar el primer resultado
         }
     }
-
+    if (!encontrado) {
+        // Si no se encontró ningún resultado, mostrar el menú emergente
+        combobox.setPopupVisible(true);
+    }
+}
     private void cargarDestinos() {
         cbDestinos.setEditable(true);
 
@@ -424,8 +430,8 @@ public class Principal extends javax.swing.JFrame {
         cbRepresentantes.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String textoBusqueda = cbClientes.getEditor().getItem().toString();
-                mostrarResultadosBusqueda(cbClientes, textoBusqueda);
+                String textoBusqueda = cbRepresentantes.getEditor().getItem().toString();
+                mostrarResultadosBusqueda(cbRepresentantes, textoBusqueda);
             }
         });
 
@@ -655,6 +661,7 @@ public class Principal extends javax.swing.JFrame {
         } catch (java.text.ParseException ex) {
             ex.printStackTrace();
         }
+        txtFecha.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         txtFecha.setPreferredSize(new java.awt.Dimension(30, 20));
         txtFecha.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1144,7 +1151,7 @@ public class Principal extends javax.swing.JFrame {
                         .addComponent(PanelBusquedas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(panelCargaMovimientos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 636, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 632, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
