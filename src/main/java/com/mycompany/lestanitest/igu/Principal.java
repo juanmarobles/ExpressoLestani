@@ -129,6 +129,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import javax.imageio.ImageIO;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.KeyStroke;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -1189,7 +1190,7 @@ public class Principal extends javax.swing.JFrame {
 
         };
         //nombres de columnas
-        String titulos[] = {"MOVIMIENTO", "HORA", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "PAGADO", "RENDIDO", "FLETE", "PAGADO", "RENDIDO", "A_CARGO_DE", "REPRESENTANTE", "CC", "OBS"};
+        String titulos[] = {"ID", "HORA", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "PAGADO", "RENDIDO", "FLETE", "PAGADO", "RENDIDO", "A_CARGO_DE", "REPRESENTANTE", "CC", "OBS"};
         tabla.setColumnIdentifiers(titulos);
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tabla);
         tablaMovimientos.setRowSorter(sorter);
@@ -1207,8 +1208,18 @@ public class Principal extends javax.swing.JFrame {
             }
         }
         tablaMovimientos.setModel(tabla);
+        
+        // Personalizar el tamaño de las celdas
+        int cellHeight = 25; // Altura de las celdas
+        tablaMovimientos.setRowHeight(cellHeight);
+
+        // Personalizar la alineación del contenido en las celdas (opcional)
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        tablaMovimientos.setDefaultRenderer(Object.class, centerRenderer);
+        
         // Establecer el ancho específico de las columnas
-        int[] anchos = {60, 34, 50, 100, 100, 40, 30, 100, 30, 30, 100, 30, 30, 60, 100, 5, 200}; // Anchos deseados para cada columna en píxeles
+        int[] anchos = {15,    50,     50,      120,   120,       40,      25,     80,      30,       30,     80,     30,       30,     50,     100,    30,    120}; // Anchos deseados para cada columna en píxeles
 
         if (anchos.length == tabla.getColumnCount()) {
             TableColumnModel columnModel = tablaMovimientos.getColumnModel();
