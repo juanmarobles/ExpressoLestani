@@ -283,8 +283,8 @@ public class Recibos extends javax.swing.JFrame {
 
                         // Agrega el índice de la fila a la lista de filas a eliminar
                         filasAEliminar.add(rowIndex);
-                        
-                          // Obtiene el ID del elemento que se va a eliminar
+
+                        // Obtiene el ID del elemento que se va a eliminar
                         int id = (int) model.getValueAt(rowIndex, 0);
 
                         // Agrega el ID a la lista recibosEliminados
@@ -298,9 +298,9 @@ public class Recibos extends javax.swing.JFrame {
 
                     // Actualiza la visualización de la tabla
                     tablaMovimientos.repaint();
-                    
-                     imprimir();
-                    
+
+                    imprimir();
+
                 } else {
                     // No se ha seleccionado ninguna fila, muestra un mensaje de error o realiza alguna otra acción
                     JOptionPane.showMessageDialog(null, "No se ha seleccionado ninguna fila.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -342,8 +342,8 @@ public class Recibos extends javax.swing.JFrame {
 
                         // Agrega el índice de la fila a la lista de filas a eliminar
                         filasAEliminar.add(rowIndex);
-                        
-                          // Obtiene el ID del elemento que se va a eliminar
+
+                        // Obtiene el ID del elemento que se va a eliminar
                         int id = (int) model.getValueAt(rowIndex, 0);
 
                         // Agrega el ID a la lista recibosEliminados
@@ -357,9 +357,9 @@ public class Recibos extends javax.swing.JFrame {
 
                     // Actualiza la visualización de la tabla
                     tablaMovimientos.repaint();
-                    
+
                     imprimir();
-                
+
                 } else {
                     // No se ha seleccionado ninguna fila, muestra un mensaje de error o realiza alguna otra acción
                     JOptionPane.showMessageDialog(null, "No se ha seleccionado ninguna fila.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -371,6 +371,19 @@ public class Recibos extends javax.swing.JFrame {
         });
 
         actualizarTabla();
+    }
+
+    private List<Movimientos> filtrarMovimientos(List<Movimientos> movimientos) {
+        List<Movimientos> resultados = new ArrayList<>();
+
+        for (Movimientos mov : movimientos) {
+            String rendido = mov.getTipoMontoR();
+            if (!recibosEliminados.contains(mov.getId_movimientos()) && !"Si".equalsIgnoreCase(rendido)) {
+                resultados.add(mov);
+            }
+        }
+
+        return resultados;
     }
     // Método para cambiar el valor de "Rendido" en el modelo de tabla y en la base de datos
 
@@ -424,7 +437,7 @@ public class Recibos extends javax.swing.JFrame {
     public void cargarTablaMovimientos() {
 
         // Crear una nueva lista visible basada en listaFiltrada
-        listaVisible = new ArrayList<>(listaFiltrada);
+        listaVisible = filtrarMovimientos(listaFiltrada);
         DefaultTableModel tabla = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -435,8 +448,10 @@ public class Recibos extends javax.swing.JFrame {
         tabla.setColumnIdentifiers(titulos);
 
         for (Movimientos mov : listaFiltrada) {
+            String rendido = mov.getTipoMontoR();
             // Verificar si el movimiento no está en la lista de recibosEliminados
-            if (!recibosEliminados.contains(mov.getId_movimientos())) {
+            // y si la columna "Rendido" no tiene el valor "Si"
+            if (!recibosEliminados.contains(mov.getId_movimientos()) && !"Si".equalsIgnoreCase(rendido)) {
                 Object[] objeto = {mov.getId_movimientos(), mov.getHora(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
                 tabla.addRow(objeto);
             }

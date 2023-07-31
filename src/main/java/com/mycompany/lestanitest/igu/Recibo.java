@@ -276,10 +276,10 @@ public class Recibo extends javax.swing.JFrame {
         for (Movimientos objeto : objetos) {
             Date fecha = objeto.getFecha();
             String clienteMovimiento = objeto.getCliente();
-            String pagado = objeto.getTipoMontoP(); // Agregar esta línea para obtener el valor de la columna "PAGADO" (pagado1)
-
+            String pagado = objeto.getTipoMontoP();
+            String rendido = objeto.getTipoMontoR();
             if (fecha != null && clienteMovimiento != null && clienteMovimiento.equals(cliente)) {
-                if (fecha.compareTo(fechaDesde) >= 0 && fecha.compareTo(fechaHasta) <= 0 && "Si".equalsIgnoreCase(pagado)) {
+                if (fecha.compareTo(fechaDesde) >= 0 && fecha.compareTo(fechaHasta) <= 0 && "Si".equalsIgnoreCase(pagado) && !"Si".equalsIgnoreCase(rendido)) {
                     resultados.add(objeto);
                     System.out.println("Agregado movimiento con ID: " + objeto.getId_movimientos());
                 }
