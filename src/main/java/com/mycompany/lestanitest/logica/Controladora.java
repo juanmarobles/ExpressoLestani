@@ -264,6 +264,10 @@ public class Controladora {
         m.setTipoMontoP(tMonto);
         ctrl.modificarMovimiento(m);
     }
+     public void actualizarMontoR(Movimientos m, String tMonto) {
+        m.setTipoMontoR(tMonto);
+        ctrl.modificarMovimiento(m);
+    }
 
     public void actualizarFlete(Movimientos m, String tFlete) {
         m.setTipoFleteP(tFlete);

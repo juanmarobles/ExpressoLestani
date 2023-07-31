@@ -261,6 +261,7 @@ public class Recibos extends javax.swing.JFrame {
                     boolean incluirFlete = cbReciboCon.isSelected();
                     imprimirPdfConFlete(incluirFlete);
                 }
+
                 // Obtiene los índices de las filas seleccionadas en la tabla
                 int[] selectedRows = tablaMovimientos.getSelectedRows();
 
@@ -269,18 +270,29 @@ public class Recibos extends javax.swing.JFrame {
                     // Obtén el modelo de tabla asociado a la tabla
                     DefaultTableModel model = (DefaultTableModel) tablaMovimientos.getModel();
 
+                    // Lista para almacenar los índices de las filas seleccionadas que serán eliminadas
+                    List<Integer> filasAEliminar = new ArrayList<>();
+
                     // Recorre los índices de las filas seleccionadas en orden inverso
                     // para evitar conflictos en los índices al eliminar
                     for (int i = selectedRows.length - 1; i >= 0; i--) {
                         int rowIndex = selectedRows[i];
+
+                        // Cambiar el valor "Rendido" y actualizar en la base de datos
+                        cambiarValorRendido(model, rowIndex);
+
+                        // Agrega el índice de la fila a la lista de filas a eliminar
+                        filasAEliminar.add(rowIndex);
 
                         // Obtiene el ID del elemento que se va a eliminar
                         int id = (int) model.getValueAt(rowIndex, 0);
 
                         // Agrega el ID a la lista recibosEliminados
                         recibosEliminados.add(id);
+                    }
 
-                        // Elimina la fila del modelo de tabla
+                    // Eliminar las filas del modelo de tabla
+                    for (int rowIndex : filasAEliminar) {
                         model.removeRow(rowIndex);
                     }
 
@@ -288,23 +300,27 @@ public class Recibos extends javax.swing.JFrame {
                     tablaMovimientos.repaint();
 
                     imprimir();
+
                 } else {
                     // No se ha seleccionado ninguna fila, muestra un mensaje de error o realiza alguna otra acción
-                    JOptionPane.showMessageDialog(null, "No se ha seleccionado ninguna fila.");
+                    JOptionPane.showMessageDialog(null, "No se ha seleccionado ninguna fila.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
+
                 // Oculta las filas eliminadas después de eliminar todas las filas seleccionadas
                 ocultarFilasEliminadas();
             }
         });
+
         //BOTON GENERAR PDF
         btnGenerarPdf.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (cbReciboSin.isSelected()) {
-                    generarPdfSinFlete();
+                    imprimirPdfSinFlete();
                 } else if (cbReciboCon.isSelected()) {
                     boolean incluirFlete = cbReciboCon.isSelected();
-                    generarPdfConFlete(incluirFlete);
+                    imprimirPdfConFlete(incluirFlete);
                 }
+
                 // Obtiene los índices de las filas seleccionadas en la tabla
                 int[] selectedRows = tablaMovimientos.getSelectedRows();
 
@@ -313,18 +329,29 @@ public class Recibos extends javax.swing.JFrame {
                     // Obtén el modelo de tabla asociado a la tabla
                     DefaultTableModel model = (DefaultTableModel) tablaMovimientos.getModel();
 
+                    // Lista para almacenar los índices de las filas seleccionadas que serán eliminadas
+                    List<Integer> filasAEliminar = new ArrayList<>();
+
                     // Recorre los índices de las filas seleccionadas en orden inverso
                     // para evitar conflictos en los índices al eliminar
                     for (int i = selectedRows.length - 1; i >= 0; i--) {
                         int rowIndex = selectedRows[i];
+
+                        // Cambiar el valor "Rendido" y actualizar en la base de datos
+                        cambiarValorRendido(model, rowIndex);
+
+                        // Agrega el índice de la fila a la lista de filas a eliminar
+                        filasAEliminar.add(rowIndex);
 
                         // Obtiene el ID del elemento que se va a eliminar
                         int id = (int) model.getValueAt(rowIndex, 0);
 
                         // Agrega el ID a la lista recibosEliminados
                         recibosEliminados.add(id);
+                    }
 
-                        // Elimina la fila del modelo de tabla
+                    // Eliminar las filas del modelo de tabla
+                    for (int rowIndex : filasAEliminar) {
                         model.removeRow(rowIndex);
                     }
 
@@ -332,16 +359,44 @@ public class Recibos extends javax.swing.JFrame {
                     tablaMovimientos.repaint();
 
                     imprimir();
+
                 } else {
                     // No se ha seleccionado ninguna fila, muestra un mensaje de error o realiza alguna otra acción
-                    JOptionPane.showMessageDialog(null, "No se ha seleccionado ninguna fila.");
+                    JOptionPane.showMessageDialog(null, "No se ha seleccionado ninguna fila.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
+
                 // Oculta las filas eliminadas después de eliminar todas las filas seleccionadas
                 ocultarFilasEliminadas();
             }
-
         });
+
         actualizarTabla();
+    }
+
+    private List<Movimientos> filtrarMovimientos(List<Movimientos> movimientos) {
+        List<Movimientos> resultados = new ArrayList<>();
+
+        for (Movimientos mov : movimientos) {
+            String rendido = mov.getTipoMontoR();
+            if (!recibosEliminados.contains(mov.getId_movimientos()) && !"Si".equalsIgnoreCase(rendido)) {
+                resultados.add(mov);
+            }
+        }
+
+        return resultados;
+    }
+    // Método para cambiar el valor de "Rendido" en el modelo de tabla y en la base de datos
+
+    private void cambiarValorRendido(DefaultTableModel model, int rowIndex) {
+        model.setValueAt("Si", rowIndex, 8); // Establecer "Si" en la columna de "Rendido"
+
+        int idMovimientos = (int) model.getValueAt(rowIndex, 0);
+        Movimientos movimiento = control.traerMovimiento(idMovimientos);
+
+        if (movimiento != null) {
+            movimiento.setTipoMontoR("Si"); // Guardar el valor "Si" en la base de datos
+            control.actualizarMontoR(movimiento, "Si"); // Utilizar el método actualizarMontoR() de la controladora
+        }
     }
 
     private void guardarNumeroRecibo() {
@@ -380,8 +435,9 @@ public class Recibos extends javax.swing.JFrame {
     }
 
     public void cargarTablaMovimientos() {
+
         // Crear una nueva lista visible basada en listaFiltrada
-        listaVisible = new ArrayList<>(listaFiltrada);
+        listaVisible = filtrarMovimientos(listaFiltrada);
         DefaultTableModel tabla = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -392,53 +448,13 @@ public class Recibos extends javax.swing.JFrame {
         tabla.setColumnIdentifiers(titulos);
 
         for (Movimientos mov : listaFiltrada) {
-            Object[] objeto = {mov.getId_movimientos(), mov.getHora(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
-            tabla.addRow(objeto);
-        }
-
-        tablaMovimientos.setModel(tabla);
-        int[] anchos = {20, 80, 100, 100, 100, 70, 80, 100, 80, 80, 100, 80, 80, 120, 120, 40, 200}; // Anchos deseados para cada columna en píxeles
-
-        if (anchos.length == tabla.getColumnCount()) {
-            TableColumnModel columnModel = tablaMovimientos.getColumnModel();
-            for (int i = 0; i < anchos.length; i++) {
-                TableColumn columna = columnModel.getColumn(i);
-                columna.setPreferredWidth(anchos[i]);
-
-                // Renderizador personalizado para centrar el contenido de las celdas
-                DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
-                renderer.setHorizontalAlignment(SwingConstants.CENTER);
-                tablaMovimientos.setDefaultRenderer(Object.class, renderer);
-
-                // Renderizador personalizado para centrar el título de las columnas
-                DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) tablaMovimientos.getTableHeader().getDefaultRenderer();
-                headerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+            String rendido = mov.getTipoMontoR();
+            // Verificar si el movimiento no está en la lista de recibosEliminados
+            // y si la columna "Rendido" no tiene el valor "Si"
+            if (!recibosEliminados.contains(mov.getId_movimientos()) && !"Si".equalsIgnoreCase(rendido)) {
+                Object[] objeto = {mov.getId_movimientos(), mov.getHora(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
+                tabla.addRow(objeto);
             }
-        }
-    }
-
-    private void mostrarTablaMovimientos(List<Movimientos> listaMovimientos) {
-        // Filas y columnas no editables
-        DefaultTableModel tabla = new DefaultTableModel() {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
-
-        // Nombres de columnas
-        String titulos[] = {"ID", "HORA", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "PAGADO", "RENDIDO", "FLETE", "PAGADO", "RENDIDO", "A_CARGO_DE", "REPRESENTANTE", "CC", "OBS"};
-        tabla.setColumnIdentifiers(titulos);
-
-        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tabla);
-        tablaMovimientos.setRowSorter(sorter);
-        sorter.setSortKeys(java.util.Arrays.asList(new RowSorter.SortKey(1, SortOrder.DESCENDING)));
-
-        // Carga de los datos desde la lista filtrada
-        for (Movimientos mov : listaMovimientos) {
-            Object[] objeto = {mov.getId_movimientos(), mov.getHora(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
-
-            tabla.addRow(objeto);
         }
 
         tablaMovimientos.setModel(tabla);
@@ -494,11 +510,6 @@ public class Recibos extends javax.swing.JFrame {
         txtDomicilio.setText("");
     }
 
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -819,68 +830,11 @@ public class Recibos extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAgregarActionPerformed
 
     private void cbReciboSinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbReciboSinActionPerformed
-        /* boolean reciboSinFlete = cbReciboSin.isSelected();
 
-        TableColumn fleteColumn = tablaMovimientos.getColumnModel().getColumn(7);
-        TableColumn pagadoColumn = tablaMovimientos.getColumnModel().getColumn(8);
-
-        if (reciboSinFlete) {
-            // Ocultar las columnas "flete" y "pagado"
-            fleteColumn.setMinWidth(0);
-            fleteColumn.setMaxWidth(0);
-            fleteColumn.setWidth(0);
-            pagadoColumn.setMinWidth(0);
-            pagadoColumn.setMaxWidth(0);
-            pagadoColumn.setWidth(0);
-        } else {
-            // Mostrar nuevamente las columnas "flete" y "pagado"
-            fleteColumn.setMinWidth(75);  // Ajusta los tamaños de columna según tus necesidades
-            fleteColumn.setMaxWidth(100);
-            fleteColumn.setWidth(100);
-            pagadoColumn.setMinWidth(75);
-            pagadoColumn.setMaxWidth(100);
-            pagadoColumn.setWidth(100);
-        }
-
-        // Actualizar el cálculo del flete total
-        if (!reciboSinFlete) {
-            calcularTotales();
-        } else {
-            txtTotalFlete.setText("");
-        }
-
-        // Actualizar la tabla para reflejar los cambios
-        tablaMovimientos.getTableHeader().resizeAndRepaint();
-        tablaMovimientos.repaint();*/
     }//GEN-LAST:event_cbReciboSinActionPerformed
 
     private void cbReciboConActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbReciboConActionPerformed
-        /*   boolean reciboConFlete = cbReciboCon.isSelected();
 
-        TableColumn fleteColumn = tablaMovimientos.getColumnModel().getColumn(7);
-        TableColumn pagadoColumn = tablaMovimientos.getColumnModel().getColumn(8);
-
-        if (reciboConFlete) {
-            // Mostrar las columnas "flete" y "pagado"
-            fleteColumn.setMinWidth(75);  // Ajusta los tamaños de columna según tus necesidades
-            fleteColumn.setMaxWidth(100);
-            fleteColumn.setWidth(100);
-            pagadoColumn.setMinWidth(75);
-            pagadoColumn.setMaxWidth(100);
-            pagadoColumn.setWidth(100);
-        } else {
-            // Ocultar las columnas "flete" y "pagado"
-            fleteColumn.setMinWidth(0);
-            fleteColumn.setMaxWidth(75);
-            fleteColumn.setWidth(75);
-            pagadoColumn.setMinWidth(0);
-            pagadoColumn.setMaxWidth(75);
-            pagadoColumn.setWidth(75);
-        }
-
-        // Actualizar la tabla para reflejar los cambios
-        tablaMovimientos.getTableHeader().resizeAndRepaint();
-        tablaMovimientos.repaint();*/
     }//GEN-LAST:event_cbReciboConActionPerformed
 
     private void btnImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirActionPerformed
@@ -888,21 +842,22 @@ public class Recibos extends javax.swing.JFrame {
     }//GEN-LAST:event_btnImprimirActionPerformed
     private void ocultarFilasEliminadas() {
         DefaultTableModel model = (DefaultTableModel) tablaMovimientos.getModel();
+        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
 
-        List<Integer> filasAEliminar = new ArrayList<>();
-
-        for (int i = 0; i < model.getRowCount(); i++) {
-            int id = (int) model.getValueAt(i, 0);
-            if (recibosEliminados.contains(id)) {
-                filasAEliminar.add(i);
+        // Crear un filtro para ocultar las filas eliminadas
+        RowFilter<DefaultTableModel, Integer> filter = new RowFilter<DefaultTableModel, Integer>() {
+            @Override
+            public boolean include(Entry<? extends DefaultTableModel, ? extends Integer> entry) {
+                int id = (int) entry.getValue(0); // Obtener el valor del ID en la columna 0
+                return !recibosEliminados.contains(id);
             }
-        }
+        };
 
-        // Eliminar físicamente las filas eliminadas de la tabla
-        for (int i = filasAEliminar.size() - 1; i >= 0; i--) {
-            int rowIndex = filasAEliminar.get(i);
-            model.removeRow(rowIndex);
-        }
+        // Establecer el filtro en el TableRowSorter
+        sorter.setRowFilter(filter);
+
+        // Asignar el TableRowSorter a la tabla para que se aplique el filtro
+        tablaMovimientos.setRowSorter(sorter);
     }
 
     private void guardarRecibosEliminados() {
@@ -937,7 +892,15 @@ public class Recibos extends javax.swing.JFrame {
         DefaultTableModel model = (DefaultTableModel) tablaMovimientos.getModel();
         model.setRowCount(0);
 
-        // Carga nuevamente la tabla usando listaVisible
+        // Filtrar los movimientos excluyendo aquellos que estén presentes en recibosEliminados
+        listaVisible.clear();
+        for (Movimientos mov : listaFiltrada) {
+            if (!recibosEliminados.contains(mov.getId_movimientos())) {
+                listaVisible.add(mov);
+            }
+        }
+
+        // Carga nuevamente la tabla usando la lista de movimientos filtrados (listaVisible)
         for (Movimientos mov : listaVisible) {
             Object[] objeto = {mov.getId_movimientos(), mov.getHora(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
             model.addRow(objeto);
@@ -945,6 +908,7 @@ public class Recibos extends javax.swing.JFrame {
 
         // Oculta las filas eliminadas nuevamente
         ocultarFilasEliminadas();
+
         // Repinta la tabla para reflejar los cambios
         tablaMovimientos.repaint();
     }
@@ -2021,7 +1985,7 @@ public class Recibos extends javax.swing.JFrame {
                 // Cerrar el documento PDF después de imprimir
                 pdfDocument.close();
 
-                JOptionPane.showMessageDialog(null, "La hoja de ruta se generó e imprimió correctamente.", "Información", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "El recibo se generó e imprimió correctamente.", "Información", JOptionPane.INFORMATION_MESSAGE);
             } catch (Exception e) {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(null, "", "Informacion", JOptionPane.INFORMATION_MESSAGE);
@@ -2147,6 +2111,7 @@ public class Recibos extends javax.swing.JFrame {
     private javax.swing.JTextField txtTotalMonto;
     // End of variables declaration//GEN-END:variables
 //TABLA CONSULTAS
+    /*
     private JTable mostrarTablaMovimientos() {
         //filas y columnas no editables
         DefaultTableModel tabla = new DefaultTableModel() {
@@ -2199,7 +2164,7 @@ public class Recibos extends javax.swing.JFrame {
         JTable tab = new JTable(tabla);
         return tab;
     }
-
+     */
     //FECHA ACTUAL
     public static String fechaActual() {
         Date fecha = new Date();
