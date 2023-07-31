@@ -8,6 +8,7 @@ import com.mycompany.lestanitest.logica.Controladora;
 import com.mycompany.lestanitest.logica.TextPrompt;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -28,17 +29,23 @@ public class Login extends javax.swing.JFrame {
         TextPrompt filtroCon = new TextPrompt("Contraseña", txtPassword);
         setLocationRelativeTo(null); // Centrar la ventana en la pantalla
         setResizable(false); // Evitar que el usuario pueda redimensionar la ventana
+        
+        txtUsuario.addActionListener(createActionListener(btnIngresar));
+        txtPassword.addActionListener(createActionListener(btnIngresar));
 
-        //Listenes para el password cuando se aprete el ENTER se apreta el boton "Ingresar"
-        txtPassword.addActionListener(new ActionListener() {
+
+    
+    
+    }
+       // Método para crear un ActionListener reutilizable
+    private static ActionListener createActionListener(final JButton buttonToClick) {
+        return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                btnIngresar.doClick(); // Simular el clic del botón de ingreso
+                buttonToClick.doClick(); // Simular el clic del botón de ingreso
             }
-        });
-        
+        };
     }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

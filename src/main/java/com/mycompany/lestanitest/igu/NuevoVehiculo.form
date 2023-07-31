@@ -74,7 +74,7 @@
                           </Group>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="txtMarca" min="-2" pref="192" max="-2" attributes="0"/>
+                              <Component id="txtVehiculo" min="-2" pref="192" max="-2" attributes="0"/>
                               <Component id="txtFechaTecnica" alignment="0" min="-2" pref="117" max="-2" attributes="0"/>
                               <Component id="txtFechaRuta" min="-2" pref="117" max="-2" attributes="0"/>
                               <Component id="txtPatente" alignment="0" min="-2" pref="190" max="-2" attributes="0"/>
@@ -98,7 +98,7 @@
                   <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="35" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="txtMarca" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="txtVehiculo" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
@@ -143,7 +143,7 @@
             <Property name="text" type="java.lang.String" value="Vehiculo"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="txtMarca">
+        <Component class="javax.swing.JTextField" name="txtVehiculo">
         </Component>
         <Component class="javax.swing.JTextField" name="txtPatente">
           <Events>

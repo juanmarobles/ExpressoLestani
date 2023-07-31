@@ -39,6 +39,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -49,6 +51,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
@@ -59,6 +62,8 @@ import javax.swing.SortOrder;
 import javax.swing.SwingConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -87,6 +92,24 @@ public class HDDRepresentantes extends javax.swing.JFrame {
         llenarChofer();
         cargarRepresentantes();
         txtFecha.setText(fechaActual());
+        
+        // Agregar evento de selección a la tabla
+        tablaMovimientos.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) {
+                    // Obtener los índices de las filas seleccionadas
+                    int[] selectedRows = tablaMovimientos.getSelectedRows();
+                    List<Movimientos> movimientosFiltrados = control.traerMovimientos();
+
+                    // Calcular y actualizar el total de montos de los elementos seleccionados
+                    calcularTotalMonto(movimientosFiltrados, selectedRows);
+                    calcularTotalFlete(movimientosFiltrados, selectedRows);
+                    calcularTotalBultos(movimientosFiltrados, selectedRows);
+
+                }
+            }
+        });
     }
 //LLENAR TEXTFIELD REPRESENTANTES
     private static void mostrarResultadosBusqueda(JComboBox<String> combobox, String textoBusqueda) {
@@ -168,19 +191,38 @@ public class HDDRepresentantes extends javax.swing.JFrame {
             }
         });
     }
+   
+
+ 
     //llenar chofer
 
     private void llenarChofer() {
-        ModeloVehiculo modVehiculo = new ModeloVehiculo();
-        ArrayList<Vehiculo> listaVehiculo = modVehiculo.getVehiculos();
-        cbChofer.removeAllItems(); // Limpiar los elementos existentes en el ComboBox
+        ModeloRepresentante modRepre = new ModeloRepresentante();
+        ArrayList<Representantes> listaRepresentantes = modRepre.getRepresentantes();
+        cbChofer.setEditable(true);
 
-        // Agregar los nombres de los choferes al ComboBox
-        for (int i = 0; i < listaVehiculo.size(); i++) {
-            cbChofer.addItem(listaVehiculo.get(i).getChofer());
+        // Agregar los clientes al combobox
+        for (Representantes Repre : listaRepresentantes) {
+            cbChofer.addItem(Repre.getNombre());
         }
-    }
 
+// Eliminar la opción en blanco después de configurar el decorador
+        cbChofer.removeItem("");
+
+        // Establecer el índice seleccionado a -1 para no mostrar ninguna selección
+        cbChofer.setSelectedIndex(-1);
+
+        // Agregar ActionListener para capturar el evento "Enter"
+        cbChofer.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String textoBusqueda = cbChofer.getEditor().getItem().toString();
+                mostrarResultadosBusqueda(cbChofer, textoBusqueda);
+            }
+        });
+    }
+    
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -214,6 +256,14 @@ public class HDDRepresentantes extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         btnMostrar = new javax.swing.JButton();
         cbRepresentantes = new javax.swing.JComboBox<>();
+        jPanel7 = new javax.swing.JPanel();
+        jLabel23 = new javax.swing.JLabel();
+        jLabel24 = new javax.swing.JLabel();
+        txtTotalMont = new javax.swing.JTextField();
+        txtTotalFlet = new javax.swing.JTextField();
+        jPanel12 = new javax.swing.JPanel();
+        jLabel25 = new javax.swing.JLabel();
+        txtCantBultos = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Expreso Lestani SRL - Hoja de Ruta Por Representantes");
@@ -252,9 +302,9 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                     .addComponent(jLabel2)
                     .addComponent(jLabel1)
                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cbVehiculo, 0, 150, Short.MAX_VALUE)
-                    .addComponent(cbChofer, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(txtPatente))
+                    .addComponent(txtPatente, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cbChofer, 0, 170, Short.MAX_VALUE)
+                    .addComponent(cbVehiculo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -440,6 +490,99 @@ public class HDDRepresentantes extends javax.swing.JFrame {
 
         cbRepresentantes.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
 
+        jPanel7.setBackground(new java.awt.Color(66, 66, 66));
+        jPanel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        jLabel23.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel23.setForeground(new java.awt.Color(236, 240, 241));
+        jLabel23.setText("Total Monto $:");
+
+        jLabel24.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel24.setForeground(new java.awt.Color(236, 240, 241));
+        jLabel24.setText("Total Flete    $:");
+
+        txtTotalMont.setBackground(new java.awt.Color(51, 51, 51));
+        txtTotalMont.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        txtTotalMont.setForeground(new java.awt.Color(0, 153, 51));
+        txtTotalMont.setText("0");
+        txtTotalMont.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtTotalMontActionPerformed(evt);
+            }
+        });
+
+        txtTotalFlet.setBackground(new java.awt.Color(51, 51, 51));
+        txtTotalFlet.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        txtTotalFlet.setForeground(new java.awt.Color(0, 153, 51));
+        txtTotalFlet.setText("0");
+        txtTotalFlet.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtTotalFletActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addGap(30, 30, 30)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addComponent(jLabel23)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtTotalMont, javax.swing.GroupLayout.DEFAULT_SIZE, 146, Short.MAX_VALUE))
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addComponent(jLabel24)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtTotalFlet)))
+                .addGap(28, 28, 28))
+        );
+        jPanel7Layout.setVerticalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addGap(24, 24, 24)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel23, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtTotalMont, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel24, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtTotalFlet, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(18, Short.MAX_VALUE))
+        );
+
+        jPanel12.setBackground(new java.awt.Color(66, 66, 66));
+
+        jLabel25.setForeground(new java.awt.Color(236, 240, 241));
+        jLabel25.setText("Cant. Bultos");
+
+        txtCantBultos.setBackground(new java.awt.Color(51, 51, 51));
+        txtCantBultos.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        txtCantBultos.setForeground(new java.awt.Color(0, 153, 51));
+        txtCantBultos.setText("0");
+
+        javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
+        jPanel12.setLayout(jPanel12Layout);
+        jPanel12Layout.setHorizontalGroup(
+            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel12Layout.createSequentialGroup()
+                .addGap(11, 11, 11)
+                .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel25, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtCantBultos, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel12Layout.setVerticalGroup(
+            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel12Layout.createSequentialGroup()
+                .addGap(14, 14, 14)
+                .addComponent(jLabel25)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(txtCantBultos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(10, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -447,62 +590,65 @@ public class HDDRepresentantes extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(16, 16, 16)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(47, 47, 47)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(59, 59, 59)
-                                .addComponent(btnMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(124, 124, 124)
-                                .addComponent(jLabel6))
-                            .addComponent(cbRepresentantes, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(117, 117, 117)
                         .addComponent(btnImprimirHRP, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(39, 39, 39)
-                        .addComponent(btnGenerarPdf, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(0, 22, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1563, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(17, 17, 17))
+                        .addComponent(btnGenerarPdf, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(16, 16, 16)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1866, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(47, 47, 47)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(43, 43, 43)
+                                        .addComponent(btnMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(44, 44, 44)
+                                        .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(124, 124, 124)
+                                        .addComponent(jLabel6))
+                                    .addComponent(cbRepresentantes, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(21, 21, 21)
-                        .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(23, 23, 23)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel5)
                             .addComponent(jLabel6))
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(5, 5, 5)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(btnMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(5, 5, 5)
                                 .addComponent(cbRepresentantes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(25, 25, 25)
                                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(139, 139, 139)
-                                .addComponent(btnMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                            .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 569, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 471, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnImprimirHRP, javax.swing.GroupLayout.DEFAULT_SIZE, 43, Short.MAX_VALUE)
                     .addComponent(btnGenerarPdf, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -523,29 +669,185 @@ public class HDDRepresentantes extends javax.swing.JFrame {
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
 
     }//GEN-LAST:event_formWindowOpened
-
+        boolean botonMostrarPresionado;
     private void btnMostrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarActionPerformed
-        String fecha = txtFecha.getText();
-        String representante = cbRepresentantes.getSelectedItem().toString();
-        boolean mostrarCuentaCorriente = cbCC.isSelected();
-        boolean mostrarContado = cbContado.isSelected();
-        boolean mostrarTodos = cbTodos.isSelected();
+        botonMostrarPresionado = true;
+        aplicarFiltros();
+    }//GEN-LAST:event_btnMostrarActionPerformed
+    
+    private void aplicarFiltros() {
+    // Verificar si se ha presionado el botón "Mostrar"
+    if (!botonMostrarPresionado) {
+        return;
+    }
 
-        List<Movimientos> listaMovimientos = control.traerMovimientos();
-        // Ordenar los datos por el ID en forma descendente
-        Collections.sort(listaMovimientos, Comparator.comparingInt(Movimientos::getId_movimientos).reversed());
-        List<Movimientos> listaFiltrada;
+    String fecha = txtFecha.getText();
+    boolean mostrarCuentaCorriente = cbCC.isSelected();
+    boolean mostrarContado = cbContado.isSelected();
+    boolean mostrarTodos = cbTodos.isSelected();
 
-        if (mostrarTodos) {
-            listaFiltrada = filtrarPorFechayRep(listaMovimientos, fecha, representante);
-        } else {
-            listaFiltrada = filtrarMovimientos(listaMovimientos, fecha, representante, mostrarCuentaCorriente, mostrarContado);
+    List<Movimientos> listaMovimientos = control.traerMovimientos();
+    List<Movimientos> listaFiltrada;
+
+    if (mostrarTodos) {
+        listaFiltrada = filtrarPorFecha(listaMovimientos, fecha);
+    } else {
+        listaFiltrada = filtrarMovimientos(listaMovimientos, fecha, mostrarCuentaCorriente, mostrarContado);
+    }
+    
+    // Obtener el representante seleccionado
+        Object representanteSeleccionado = cbRepresentantes.getSelectedItem();
+        String representanteFiltrado = representanteSeleccionado != null ? representanteSeleccionado.toString() : "";
+
+        // Filtrar por representante
+        if (!representanteFiltrado.isEmpty()) {
+            listaFiltrada = listaFiltrada.stream()
+                    .filter(mov -> mov.getRepresentante().equals(representanteFiltrado))
+                    .collect(Collectors.toList());
         }
 
-        mostrarTablaMovimientos(listaFiltrada);
-    }//GEN-LAST:event_btnMostrarActionPerformed
+    mostrarTablaMovimientos(listaFiltrada);
+    //Total Monto
+    int[] selectedRows = tablaMovimientos.getSelectedRows();
+    calcularTotalMonto(listaFiltrada, selectedRows);
+    calcularTotalFlete(listaFiltrada, selectedRows);
+    calcularTotalBultos(listaFiltrada, selectedRows);
+}
+    
+     // Método para calcular el total de montos de los elementos seleccionados en la tabla
+    private void calcularTotalMonto(List<Movimientos> movimientosFiltrados, int[] selectedRows) {
 
-    public List<Movimientos> filtrarMovimientos(List<Movimientos> objetos, String fechaSeleccionada, String representante, boolean mostrarCuentaCorriente, boolean mostrarContado) {
+        if (selectedRows.length > 0) {
+            // Si hay elementos seleccionados, calcular y mostrar el total de montos seleccionados
+            double totalMonto = 0.0;
+
+            // Supongamos que "Movimientos" tiene un método "getMonto()" para obtener el monto de cada movimiento.
+            for (int rowIndex : selectedRows) {
+                String monto = tablaMovimientos.getValueAt(rowIndex, 7).toString();
+                monto = monto.replace("$", "").replace(".", "").replace(",", "."); // Eliminar símbolos y reemplazar la coma por el punto decimal
+                try {
+                    totalMonto += Double.parseDouble(monto);
+                } catch (NumberFormatException e) {
+                    // Manejar la excepción en caso de que no se pueda convertir el monto a número
+                    e.printStackTrace();
+                }
+            }
+
+            //Formato de Monto
+            DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+            symbols.setDecimalSeparator(',');
+            symbols.setGroupingSeparator('.');
+            DecimalFormat decimalFormat = new DecimalFormat("###,###.00", symbols);
+            String totalFormateado = decimalFormat.format(totalMonto);
+
+            txtTotalMont.setText(totalFormateado);
+        } else {
+            // Calcular el total de los montos
+            double totalMonto = movimientosFiltrados.stream()
+                    .mapToDouble(mov -> {
+                        String monto = mov.getMonto().replace(".", ""); // Eliminar el separador de miles (punto)
+                        monto = monto.replace(",", "."); // Reemplazar la coma por punto decimal
+                        monto = monto.replace("$", ""); // Eliminar el signo de dólar
+                        try {
+                            return Double.parseDouble(monto);
+                        } catch (NumberFormatException e) {
+                            return 0.0;
+                        }
+                    })
+                    .sum();
+
+            DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+            symbols.setDecimalSeparator(',');
+            symbols.setGroupingSeparator('.');
+            DecimalFormat decimalFormat = new DecimalFormat("###,###.00", symbols);
+            String totalFormateado = decimalFormat.format(totalMonto);
+
+            txtTotalMont.setText(totalFormateado);
+        }
+    }
+
+    // Método para calcular el total de montos de los elementos seleccionados en la tabla
+    private void calcularTotalFlete(List<Movimientos> movimientosFiltrados, int[] selectedRows) {
+
+        if (selectedRows.length > 0) {
+            // Si hay elementos seleccionados, calcular y mostrar el total de montos seleccionados
+            double totalFlete = 0.0;
+
+            // Supongamos que "Movimientos" tiene un método "getFlete()" para obtener el monto de cada movimiento.
+            for (int rowIndex : selectedRows) {
+                String flete = tablaMovimientos.getValueAt(rowIndex, 10).toString();
+                flete = flete.replace("$", "").replace(".", "").replace(",", "."); // Eliminar símbolos y reemplazar la coma por el punto decimal
+                try {
+                    totalFlete += Double.parseDouble(flete);
+                } catch (NumberFormatException e) {
+                    // Manejar la excepción en caso de que no se pueda convertir el monto a número
+                    e.printStackTrace();
+                }
+            }
+
+            //Formato de Monto
+            DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+            symbols.setDecimalSeparator(',');
+            symbols.setGroupingSeparator('.');
+            DecimalFormat decimalFormat = new DecimalFormat("###,###.00", symbols);
+            String totalFormateado = decimalFormat.format(totalFlete);
+
+            txtTotalFlet.setText(totalFormateado);
+        } else {
+            // Calcular el total de los Fletes
+            double totalflete = movimientosFiltrados.stream()
+                    .mapToDouble(mov -> {
+                        String flete = mov.getFlete().replace(".", ""); // Eliminar el separador de miles (punto)
+                        flete = flete.replace(",", "."); // Reemplazar la coma por punto decimal
+                        flete = flete.replace("$", ""); // Eliminar el signo de dólar
+                        try {
+                            return Double.parseDouble(flete);
+                        } catch (NumberFormatException e) {
+                            return 0.0;
+                        }
+                    })
+                    .sum();
+
+            DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+            symbols.setDecimalSeparator(',');
+            symbols.setGroupingSeparator('.');
+            DecimalFormat decimalFormat = new DecimalFormat("###,###.00", symbols);
+            String totalFormateado = decimalFormat.format(totalflete);
+
+            txtTotalFlet.setText(totalFormateado);
+        }
+    }
+
+    private void calcularTotalBultos(List<Movimientos> movimientosFiltrados, int[] selectedRows) {
+
+        if (selectedRows.length > 0) {
+
+            // Si hay elementos seleccionados, calcular y mostrar el total de montos seleccionados
+            int totalbulto = 0;
+
+            // Supongamos que "Movimientos" tiene un método "getFlete()" para obtener el monto de cada movimiento.
+            for (int rowIndex : selectedRows) {
+                String bulto = tablaMovimientos.getValueAt(rowIndex, 6).toString();
+                try {
+                    totalbulto += Double.parseDouble(bulto);
+                } catch (NumberFormatException e) {
+                    // Manejar la excepción en caso de que no se pueda convertir el monto a número
+                    e.printStackTrace();
+                }
+                txtCantBultos.setText(String.format("%,d", totalbulto));
+            }
+        } else {
+
+            int sumaBultos = movimientosFiltrados.stream()
+                    .mapToInt(Movimientos::getBultos)
+                    .sum();
+
+            txtCantBultos.setText(String.format("%,d", sumaBultos));
+
+        }
+    }
+    
+     public List<Movimientos> filtrarPorFecha(List<Movimientos> objetos, String fechaSeleccionada) {
         List<Movimientos> resultados = new ArrayList<>();
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -555,6 +857,28 @@ public class HDDRepresentantes extends javax.swing.JFrame {
             for (Movimientos objeto : objetos) {
                 Date fechaMovimiento = objeto.getFecha();
                 String representanteMovimiento = objeto.getRepresentante();
+
+                if (fechaMovimiento != null && formato.format(fechaMovimiento).equals(fechaSeleccionada)) {
+                    resultados.add(objeto);
+                }
+            }
+        } catch (ParseException ex) {
+            Logger.getLogger(Consultas.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return resultados;
+    }
+    
+    
+    public List<Movimientos> filtrarMovimientos(List<Movimientos> objetos, String fechaSeleccionada, boolean mostrarCuentaCorriente, boolean mostrarContado) {
+        List<Movimientos> resultados = new ArrayList<>();
+        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+
+        try {
+            Date fecha = formato.parse(fechaSeleccionada);
+
+            for (Movimientos objeto : objetos) {
+                Date fechaMovimiento = objeto.getFecha();
                 String cuentaCorriente = objeto.getCuentaCorriente();
                 boolean esCuentaCorriente = cuentaCorriente.equalsIgnoreCase("si");
 
@@ -563,9 +887,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                 if (fechaMovimiento != null && !formato.format(fechaMovimiento).equals(fechaSeleccionada)) {
                     mostrarMovimiento = false; // No coincide con la fecha seleccionada
                 }
-                if (representante != null && !representante.isEmpty() && !representanteMovimiento.equals(representante)) {
-                    mostrarMovimiento = false; // No coincide con el representante seleccionado
-                }
+
                 if (!mostrarCuentaCorriente && esCuentaCorriente) {
                     mostrarMovimiento = false; // Se debe mostrar solo movimientos no cuenta corriente
                 }
@@ -583,7 +905,6 @@ public class HDDRepresentantes extends javax.swing.JFrame {
 
         return resultados;
     }
-
     private void mostrarTablaMovimientos(List<Movimientos> listaMovimientos) {
         //filas y columnas no editables
         DefaultTableModel tabla = new DefaultTableModel() {
@@ -687,6 +1008,14 @@ public class HDDRepresentantes extends javax.swing.JFrame {
         imprimirPDF();
     }//GEN-LAST:event_btnImprimirHRPActionPerformed
 
+    private void txtTotalMontActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTotalMontActionPerformed
+
+    }//GEN-LAST:event_txtTotalMontActionPerformed
+
+    private void txtTotalFletActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTotalFletActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtTotalFletActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -734,19 +1063,27 @@ public class HDDRepresentantes extends javax.swing.JFrame {
     private javax.swing.JComboBox<Vehiculo> cbVehiculo;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel23;
+    private javax.swing.JLabel jLabel24;
+    private javax.swing.JLabel jLabel25;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tablaMovimientos;
+    private javax.swing.JTextField txtCantBultos;
     private javax.swing.JFormattedTextField txtFecha;
     private javax.swing.JTextField txtPatente;
+    private javax.swing.JTextField txtTotalFlet;
+    private javax.swing.JTextField txtTotalMont;
     // End of variables declaration//GEN-END:variables
 
     public static String fechaActual() {

@@ -6,6 +6,9 @@ package com.mycompany.lestanitest.igu;
 
 import com.mycompany.lestanitest.logica.Controladora;
 import com.mycompany.lestanitest.logica.Representantes;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
@@ -21,9 +24,23 @@ public class EditarRepresentante extends javax.swing.JFrame {
     public EditarRepresentante(int idRepresentante) {
         control = new Controladora();
         initComponents();
+        txtNombre.addActionListener(createActionListener(btnEditar));
+        txtDireccion.addActionListener(createActionListener(btnEditar));
+        txtTelefono.addActionListener(createActionListener(btnEditar));
+        txtLocalidad.addActionListener(createActionListener(btnEditar));
         
         cargarDatosRepresentante(idRepresentante);            
 
+    }
+    
+    // Método para crear un ActionListener reutilizable
+    private static ActionListener createActionListener(final JButton buttonToClick) {
+        return new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                buttonToClick.doClick(); // Simular el clic del botón de ingreso
+            }
+        };
     }
     
 public void mostrarMensaje (String mensaje, String tipo, String titulo){

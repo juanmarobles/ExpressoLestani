@@ -1,6 +1,9 @@
 package com.mycompany.lestanitest.igu;
 
 import com.mycompany.lestanitest.logica.Controladora;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
@@ -10,6 +13,26 @@ public class NuevoCliente extends javax.swing.JFrame {
     
     public NuevoCliente() {
         initComponents();
+        
+        
+        txtNombre.addActionListener(createActionListener(btnCargar));
+        txtDireccion.addActionListener(createActionListener(btnCargar));
+        txtEmail.addActionListener(createActionListener(btnCargar));
+        txtLocalidad.addActionListener(createActionListener(btnCargar));
+        txtTel.addActionListener(createActionListener(btnCargar));
+        txtCuit.addActionListener(createActionListener(btnCargar));
+        
+        
+    }
+    
+     // Método para crear un ActionListener reutilizable
+    private static ActionListener createActionListener(final JButton buttonToClick) {
+        return new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                buttonToClick.doClick(); // Simular el clic del botón de ingreso
+            }
+        };
     }
 
     @SuppressWarnings("unchecked")

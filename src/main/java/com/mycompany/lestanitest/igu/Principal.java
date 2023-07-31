@@ -183,7 +183,7 @@ public class Principal extends javax.swing.JFrame {
         JTextField textRepre = (JTextField) cbRepresentantes.getEditor().getEditorComponent();
         textRepre.setNextFocusableComponent(txtMonto);
         txtMonto.setNextFocusableComponent(txtFlete);
-        txtFlete.setNextFocusableComponent(txtObservaciones);
+        txtFlete.setNextFocusableComponent(cbClientes);
 
         // Listener al mause para editar con doble click el movimiento.
         tablaMovimientos.addMouseListener(new MouseAdapter() {

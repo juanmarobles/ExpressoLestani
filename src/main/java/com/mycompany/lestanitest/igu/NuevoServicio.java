@@ -5,6 +5,9 @@
 package com.mycompany.lestanitest.igu;
 
 import com.mycompany.lestanitest.logica.Controladora;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
@@ -22,6 +25,19 @@ public class NuevoServicio extends javax.swing.JFrame {
      */
     public NuevoServicio() {
         initComponents();
+        txtServicio.addActionListener(createActionListener(btnCargar));
+        txtPrecio.addActionListener(createActionListener(btnCargar));
+        txtDescripcion.addActionListener(createActionListener(btnCargar));
+    }
+    
+      // Método para crear un ActionListener reutilizable
+    private static ActionListener createActionListener(final JButton buttonToClick) {
+        return new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                buttonToClick.doClick(); // Simular el clic del botón de ingreso
+            }
+        };
     }
 
     /**

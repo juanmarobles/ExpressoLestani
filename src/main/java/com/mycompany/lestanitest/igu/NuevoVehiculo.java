@@ -5,6 +5,8 @@
 package com.mycompany.lestanitest.igu;
 
 import com.mycompany.lestanitest.logica.Controladora;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -14,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
@@ -30,6 +33,22 @@ public class NuevoVehiculo extends javax.swing.JFrame {
      */
     public NuevoVehiculo() {
         initComponents();
+        
+        txtVehiculo.addActionListener(createActionListener(btnGuardar));
+        txtChofer.addActionListener(createActionListener(btnGuardar));
+        txtFechaRuta.addActionListener(createActionListener(btnGuardar));
+        txtFechaTecnica.addActionListener(createActionListener(btnGuardar));
+        txtPatente.addActionListener(createActionListener(btnGuardar));
+    
+    }
+      // Método para crear un ActionListener reutilizable
+    private static ActionListener createActionListener(final JButton buttonToClick) {
+        return new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                buttonToClick.doClick(); // Simular el clic del botón de ingreso
+            }
+        };
     }
 
     /**
@@ -43,7 +62,7 @@ public class NuevoVehiculo extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        txtMarca = new javax.swing.JTextField();
+        txtVehiculo = new javax.swing.JTextField();
         txtPatente = new javax.swing.JTextField();
         txtChofer = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
@@ -154,8 +173,7 @@ public class NuevoVehiculo extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                                 .addGap(20, 20, 20)
-                                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
+                                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                                 .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(54, 54, 54)
@@ -171,7 +189,7 @@ public class NuevoVehiculo extends javax.swing.JFrame {
                             .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtMarca, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtVehiculo, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtFechaTecnica, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtFechaRuta, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtPatente, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -189,7 +207,7 @@ public class NuevoVehiculo extends javax.swing.JFrame {
                 .addComponent(jLabel2)
                 .addGap(35, 35, 35)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtMarca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtVehiculo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -237,7 +255,7 @@ public class NuevoVehiculo extends javax.swing.JFrame {
     }//GEN-LAST:event_txtPatenteActionPerformed
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        String vehiculo = txtMarca.getText();
+        String vehiculo = txtVehiculo.getText();
         String chofer = txtChofer.getText();
         String patente = txtPatente.getText();
         List<Date> fechas = getFechas();
@@ -247,7 +265,7 @@ public class NuevoVehiculo extends javax.swing.JFrame {
         control.cargarVehiculo(vehiculo, chofer, patente, fechaTecnica, fechaRuta);
         //mostrarMensaje("Vehiculo agregado correctamente", "Info", "Agregado con exito!");
         
-        txtMarca.setText("");
+        txtVehiculo.setText("");
         txtChofer.setText("");
         txtFechaRuta.setText("");
         txtFechaTecnica.setText("");
@@ -338,8 +356,8 @@ public class NuevoVehiculo extends javax.swing.JFrame {
     private javax.swing.JTextField txtChofer;
     private javax.swing.JFormattedTextField txtFechaRuta;
     private javax.swing.JFormattedTextField txtFechaTecnica;
-    private javax.swing.JTextField txtMarca;
     private javax.swing.JTextField txtPatente;
+    private javax.swing.JTextField txtVehiculo;
     // End of variables declaration//GEN-END:variables
 
     public List<Date> getFechas() {
