@@ -256,8 +256,8 @@ public class Recibo extends javax.swing.JFrame {
 
             // Crear una instancia de la ventana de movimientos
             Recibos rc = new Recibos(cliente, listaFiltrada, fechaDesde, fechaHasta);
-            
-            // Mostrar la ventana de movimientos
+
+            // Mostrar la ventana de movimientos en recibos
             rc.setVisible(true);
 
             dispose();
@@ -276,10 +276,12 @@ public class Recibo extends javax.swing.JFrame {
         for (Movimientos objeto : objetos) {
             Date fecha = objeto.getFecha();
             String clienteMovimiento = objeto.getCliente();
+            String pagado = objeto.getTipoMontoP(); // Agregar esta línea para obtener el valor de la columna "PAGADO" (pagado1)
 
             if (fecha != null && clienteMovimiento != null && clienteMovimiento.equals(cliente)) {
-                if (fecha.compareTo(fechaDesde) >= 0 && fecha.compareTo(fechaHasta) <= 0) {
+                if (fecha.compareTo(fechaDesde) >= 0 && fecha.compareTo(fechaHasta) <= 0 && "Si".equalsIgnoreCase(pagado)) {
                     resultados.add(objeto);
+                    System.out.println("Agregado movimiento con ID: " + objeto.getId_movimientos());
                 }
             }
         }
