@@ -1,4 +1,3 @@
-
 package com.mycompany.lestanitest.igu;
 
 import com.itextpdf.text.BadElementException;
@@ -1514,10 +1513,11 @@ public class Consultas extends javax.swing.JFrame {
         String nuevoValorFleteTexto = txtFleteCambio.getText().trim(); // Obtener el nuevo valor del campo de texto
         double nuevoValorFlete = Double.parseDouble(nuevoValorFleteTexto); // Convertir a tipo numérico
 
-        if (filasSeleccionadas.length > 0) {
-            DefaultTableModel modeloTabla = (DefaultTableModel) tablaConsultas.getModel();
-            int columnaFlete = 9; // Índice de la columna "Flete" en el modelo de tabla
+        DefaultTableModel modeloTabla = (DefaultTableModel) tablaConsultas.getModel();
+        int columnaFlete = 10; // Índice de la columna "Flete" en el modelo de tabla
+        int totalFilas = modeloTabla.getRowCount();
 
+        if (filasSeleccionadas.length > 0) {
             for (int filaSeleccionada : filasSeleccionadas) {
                 int fila = filaSeleccionada; // Declarar y asignar el valor de filaSeleccionada a fila
                 modeloTabla.setValueAt(nuevoMontoFlete, fila, columnaFlete);
@@ -1536,7 +1536,23 @@ public class Consultas extends javax.swing.JFrame {
             modeloTabla.fireTableDataChanged();
             JOptionPane.showMessageDialog(null, "Se cambió el monto de los fletes seleccionados con éxito", "Éxito", JOptionPane.INFORMATION_MESSAGE);
         } else {
-            JOptionPane.showMessageDialog(null, "No se pudo cambiar el monto cargado", "Error", JOptionPane.ERROR_MESSAGE);
+            // Si no hay filas seleccionadas, recorrer todas las filas
+            for (int fila = 0; fila < totalFilas; fila++) {
+                modeloTabla.setValueAt(nuevoMontoFlete, fila, columnaFlete);
+
+                int idMovimientos = (int) modeloTabla.getValueAt(fila, 0);
+                Movimientos movimiento = control.traerMovimiento(idMovimientos);
+
+                if (movimiento != null) {
+                    movimiento.setFlete(nuevoValorFleteTexto); // Guardar el valor sin el signo "$"
+                    control.actualizarPrecioFlete(movimiento, nuevoValorFleteTexto); // Utilizar el método actualizarPrecioFlete() de la controladora
+                    String nuevoValorFleteConSigno = "$" + nuevoValorFleteTexto; // Agregar el signo "$"
+                    modeloTabla.setValueAt(nuevoValorFleteConSigno, fila, columnaFlete); // Actualizar el valor en la columna "FLETE"
+                }
+            }
+
+            modeloTabla.fireTableDataChanged();
+            JOptionPane.showMessageDialog(null, "Se cambió el monto de todos los fletes con éxito", "Éxito", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
@@ -1652,38 +1668,53 @@ public class Consultas extends javax.swing.JFrame {
 
     //Nueva funcion de marcar como pagados Monto
     private void cambiarTipoMonto() {
+        DefaultTableModel modeloTabla = (DefaultTableModel) tablaConsultas.getModel();
+        int totalFilas = modeloTabla.getRowCount();
         int[] filasSeleccionadas = tablaConsultas.getSelectedRows();
-        if (filasSeleccionadas.length > 0) {
-            DefaultTableModel modeloTabla = (DefaultTableModel) tablaConsultas.getModel();
 
+        // Si hay filas seleccionadas, recorrer solo las filas seleccionadas
+        if (filasSeleccionadas.length > 0) {
             for (int filaSeleccionada : filasSeleccionadas) {
                 int idMovimientos = (int) modeloTabla.getValueAt(filaSeleccionada, 0);
-
-                Movimientos movimiento = control.traerMovimiento(idMovimientos); // Reemplaza el método traerMovimiento() según corresponda
+                Movimientos movimiento = control.traerMovimiento(idMovimientos);
 
                 if (movimiento != null) {
                     String tipoMonto = (String) modeloTabla.getValueAt(filaSeleccionada, 8);
-
                     if (tipoMonto.equals("No")) {
                         control.actualizarMonto(movimiento, "Si");
                         modeloTabla.setValueAt("Si", filaSeleccionada, 8);
                     }
                 }
             }
+        } else {
+            // Si no hay filas seleccionadas, recorrer todas las filas
+            for (int fila = 0; fila < totalFilas; fila++) {
+                int idMovimientos = (int) modeloTabla.getValueAt(fila, 0);
+                Movimientos movimiento = control.traerMovimiento(idMovimientos);
 
-            modeloTabla.fireTableDataChanged();
+                if (movimiento != null) {
+                    String tipoMonto = (String) modeloTabla.getValueAt(fila, 8);
+                    if (tipoMonto.equals("No")) {
+                        control.actualizarMonto(movimiento, "Si");
+                        modeloTabla.setValueAt("Si", fila, 8);
+                    }
+                }
+            }
         }
+
+        modeloTabla.fireTableDataChanged();
     }
 
     //Nuevo metodo para marcar como pagados fletes
     private void cambiarTipoFlete() {
+        DefaultTableModel modeloTabla = (DefaultTableModel) tablaConsultas.getModel();
+        int totalFilas = modeloTabla.getRowCount();
         int[] filasSeleccionadas = tablaConsultas.getSelectedRows();
-        if (filasSeleccionadas.length > 0) {
-            DefaultTableModel modeloTabla = (DefaultTableModel) tablaConsultas.getModel();
 
+        // Si hay filas seleccionadas, recorrer solo las filas seleccionadas
+        if (filasSeleccionadas.length > 0) {
             for (int filaSeleccionada : filasSeleccionadas) {
                 int idMovimientos = (int) modeloTabla.getValueAt(filaSeleccionada, 0);
-
                 Movimientos movimiento = control.traerMovimiento(idMovimientos);
 
                 if (movimiento != null) {
@@ -1694,33 +1725,62 @@ public class Consultas extends javax.swing.JFrame {
                     }
                 }
             }
+        } else {
+            // Si no hay filas seleccionadas, recorrer todas las filas
+            for (int fila = 0; fila < totalFilas; fila++) {
+                int idMovimientos = (int) modeloTabla.getValueAt(fila, 0);
+                Movimientos movimiento = control.traerMovimiento(idMovimientos);
 
-            modeloTabla.fireTableDataChanged();
+                if (movimiento != null) {
+                    String tipoFlete = (String) modeloTabla.getValueAt(fila, 11);
+                    if (tipoFlete.equals("No")) {
+                        control.actualizarFlete(movimiento, "Si");
+                        modeloTabla.setValueAt("Si", fila, 11);
+                    }
+                }
+            }
         }
+
+        modeloTabla.fireTableDataChanged();
     }
 
     //Nuevo metodo para marcar como rendidos fletes
     private void cambiarTipoFleteRendido() {
+        DefaultTableModel modeloTabla = (DefaultTableModel) tablaConsultas.getModel();
+        int totalFilas = modeloTabla.getRowCount();
         int[] filasSeleccionadas = tablaConsultas.getSelectedRows();
-        if (filasSeleccionadas.length > 0) {
-            DefaultTableModel modeloTabla = (DefaultTableModel) tablaConsultas.getModel();
 
+        // Si hay filas seleccionadas, recorrer solo las filas seleccionadas
+        if (filasSeleccionadas.length > 0) {
             for (int filaSeleccionada : filasSeleccionadas) {
                 int idMovimientos = (int) modeloTabla.getValueAt(filaSeleccionada, 0);
-
-                Movimientos movimiento = control.traerMovimiento(idMovimientos); // Reemplaza el método traerMovimiento() según corresponda
+                Movimientos movimiento = control.traerMovimiento(idMovimientos);
 
                 if (movimiento != null) {
-                    String tipoFlete = (String) modeloTabla.getValueAt(filaSeleccionada, 12);
-                    if (tipoFlete.equals("No")) {
+                    String tipoFleteRendido = (String) modeloTabla.getValueAt(filaSeleccionada, 12);
+                    if (tipoFleteRendido.equals("No")) {
                         control.actualizarFleteR(movimiento, "Si");
                         modeloTabla.setValueAt("Si", filaSeleccionada, 12);
                     }
                 }
             }
+        } else {
+            // Si no hay filas seleccionadas, recorrer todas las filas
+            for (int fila = 0; fila < totalFilas; fila++) {
+                int idMovimientos = (int) modeloTabla.getValueAt(fila, 0);
+                Movimientos movimiento = control.traerMovimiento(idMovimientos);
 
-            modeloTabla.fireTableDataChanged();
+                if (movimiento != null) {
+                    String tipoFleteRendido = (String) modeloTabla.getValueAt(fila, 12);
+                    if (tipoFleteRendido.equals("No")) {
+                        control.actualizarFleteR(movimiento, "Si");
+                        modeloTabla.setValueAt("Si", fila, 12);
+                    }
+                }
+            }
         }
+
+        modeloTabla.fireTableDataChanged();
     }
 
     //IMPRIMIR CONSULTAS
@@ -1902,6 +1962,15 @@ public class Consultas extends javax.swing.JFrame {
             document.add(titulo);
             document.add(fechas);
 
+            // Obtener las filas seleccionadas o todas las filas si no hay ninguna seleccionada
+            int[] filasSeleccionadas = tablaConsultas.getSelectedRows();
+            if (filasSeleccionadas.length == 0) {
+                filasSeleccionadas = new int[tablaConsultas.getRowCount()];
+                for (int i = 0; i < tablaConsultas.getRowCount(); i++) {
+                    filasSeleccionadas[i] = i;
+                }
+            }
+
             //creacion de la TABLA
             PdfPTable table = new PdfPTable(tablaConsultas.getColumnCount() - 7); // Excluir las 6 columnas A_CARGO_DE, CC, OBS, MOVIMIENTO, RENDIDO_1 y RENDIDO_2
             table.setSpacingBefore(10f); // Espacio antes de la tabla (en puntos)
@@ -1910,7 +1979,6 @@ public class Consultas extends javax.swing.JFrame {
             // Ajustar espacio horizontal
             float[] columnWidths = {0.9f, 1f, 1f, 0.8f, 0.8f, 1f, 0.8f, 1f, 0.8f, 1.5f}; // Anchos de las columnas (proporciones)
             table.setWidths(columnWidths);
-
             table.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
 
             table.setWidths(columnWidths);
@@ -1926,7 +1994,7 @@ public class Consultas extends javax.swing.JFrame {
                     table.addCell(cell);
                 }
             }
-            for (int row = 0; row < tablaConsultas.getRowCount(); row++) {
+            for (int row : filasSeleccionadas) {
                 for (int col = 0; col < tablaConsultas.getColumnCount(); col++) {
                     String colName = tablaConsultas.getColumnName(col);
                     if (!colName.equals("A_CARGO_DE") && !colName.equals("CC") && !colName.equals("OBS") && !colName.equals("ID")
