@@ -52,6 +52,11 @@
             <type>jar</type>
         </dependency>
         <dependency>
+            <groupId>itext</groupId>
+            <artifactId>itext.pdf</artifactId>
+            <version>5.5.12</version>
+        </dependency>
+        <dependency>
             <groupId>com.itextpdf</groupId>
             <artifactId>itextpdf</artifactId>
             <version>5.5.13.2</version> <!-- Actualiza la versión si es necesario -->
@@ -65,7 +70,6 @@
             <groupId>org.apache.pdfbox</groupId>
             <artifactId>pdfbox</artifactId>
             <version>2.0.29</version>
-            <type>jar</type>
         </dependency>
     </dependencies>
     <properties>
