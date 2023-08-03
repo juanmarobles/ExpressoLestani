@@ -1396,10 +1396,6 @@ public class Principal extends javax.swing.JFrame {
         if (txtBulto.getText().isEmpty()) {
             camposFaltantes.add("Bulto");
         }
-        // Verificar el resto de campos obligatorios que desees
-        if (txtMonto.getText().isEmpty()) {
-            camposFaltantes.add("Monto");
-        }
         if (txtFlete.getText().isEmpty()) {
             camposFaltantes.add("Flete");
         }
@@ -2690,8 +2686,6 @@ public class Principal extends javax.swing.JFrame {
         }
 
     }
-
-   
 
     private void imprimirPDF(String rutaArchivoPDF) {
         try {

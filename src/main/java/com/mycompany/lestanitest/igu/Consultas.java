@@ -31,6 +31,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.awt.print.PrinterJob;
 import java.io.ByteArrayOutputStream;
@@ -120,7 +122,25 @@ public class Consultas extends javax.swing.JFrame {
         txtTotalMonto.setEditable(false);
         txtTotalFlete.setEditable(false);
         txtCantBultos.setEditable(false);
+        
+        // Listener al mause para editar con doble click el movimiento.
+        tablaConsultas.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    // Acción a realizar cuando se haga doble clic en un elemento de la tabla
+                    int filaSeleccionada = tablaConsultas.getSelectedRow();
+                    int id = (int) tablaConsultas.getValueAt(filaSeleccionada, 0);
+                    // Realizar la acción deseada con el ID obtenido
+                    System.out.println("ID seleccionado: " + id);
+                    EditarMovimientos editar = new EditarMovimientos(id);
+                    editar.setVisible(true);
+                    editar.setLocationRelativeTo(null);
 
+                }
+            }
+        });
+        
         //Listener para evitar que pongan letras en Fletes
         KeyListener keyListener = new KeyAdapter() {
             @Override
