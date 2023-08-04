@@ -300,7 +300,7 @@ public class Recibos extends javax.swing.JFrame {
                     // Actualiza la visualización de la tabla
                     tablaMovimientos.repaint();
 
-                    imprimir();
+                   //imprimir();
 
                 } else {
                     // No se ha seleccionado ninguna fila, muestra un mensaje de error o realiza alguna otra acción
@@ -359,7 +359,7 @@ public class Recibos extends javax.swing.JFrame {
                     // Actualiza la visualización de la tabla
                     tablaMovimientos.repaint();
 
-                    imprimir();
+                    //imprimir();
 
                 } else {
                     // No se ha seleccionado ninguna fila, muestra un mensaje de error o realiza alguna otra acción
@@ -1074,7 +1074,7 @@ public class Recibos extends javax.swing.JFrame {
 
             JOptionPane.showMessageDialog(null, "El archivo se generó correctamente.", "Información", JOptionPane.INFORMATION_MESSAGE);
         } catch (DocumentException | FileNotFoundException e) {
-            JOptionPane.showMessageDialog(null, "Error al generar el archivo PDF.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "", "", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException ex) {
             Logger.getLogger(Consultas.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -1103,7 +1103,7 @@ public class Recibos extends javax.swing.JFrame {
             System.out.println("El archivo PDF se ha enviado a imprimir correctamente.");
         } catch (PrintException | FileNotFoundException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Error al imprimir el archivo PDF.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "", "", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
@@ -1815,6 +1815,9 @@ public class Recibos extends javax.swing.JFrame {
             document.add(totalFirmaTable);
 
             document.close();
+            txtReciboNro.setText(String.valueOf(numeroRecibo));
+            guardarNumeroRecibo();
+            writer.close();
 
             try {
                 // Cargar el archivo PDF generado previamente
@@ -1840,7 +1843,7 @@ public class Recibos extends javax.swing.JFrame {
             }
 
         } catch (DocumentException | FileNotFoundException e) {
-            JOptionPane.showMessageDialog(null, "Error al imprimir.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Impreso con exito", "Información", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException ex) {
             Logger.getLogger(Consultas.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -2077,6 +2080,7 @@ public class Recibos extends javax.swing.JFrame {
 
             document.close();
             txtReciboNro.setText(String.valueOf(numeroRecibo));
+            guardarNumeroRecibo();
 
             writer.close();
 
@@ -2104,7 +2108,7 @@ public class Recibos extends javax.swing.JFrame {
             }
 
         } catch (DocumentException | FileNotFoundException e) {
-            JOptionPane.showMessageDialog(null, "Error al imprimir.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Impreso con exito", "Informacion", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException ex) {
             Logger.getLogger(Consultas.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -27,6 +27,10 @@ import javax.swing.JOptionPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  *
@@ -44,6 +48,7 @@ public class Recibo extends javax.swing.JFrame {
         cargarClientes();
         txtFechaHasta.setText(fechaActual());
     }
+
     //LLENAR TEXTFIELD CLIENTES
     private static void mostrarResultadosBusqueda(JComboBox<String> combobox, String textoBusqueda) {
 
@@ -67,7 +72,7 @@ public class Recibo extends javax.swing.JFrame {
     ModeloCliente modClientes = new ModeloCliente();
     ArrayList<Cliente> listaClientes = modClientes.getClientes();
 
-   private void cargarClientes() {
+    private void cargarClientes() {
         cbClientes.setEditable(true);
 
         // Agregar los clientes al combobox
@@ -104,11 +109,21 @@ public class Recibo extends javax.swing.JFrame {
         });
     }
 
-    //FECHA ACTUAL
     public static String fechaActual() {
-        Date fecha = new Date();
-        SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/YYYY");
-        return formatoFecha.format(fecha);
+        // Obtener la fecha y hora actual del sistema
+        LocalDateTime fechaHoraActual = LocalDateTime.now();
+
+        // Si la hora actual es después de las 18:00, se adelanta un día
+        if (fechaHoraActual.getHour() >= 18) {
+            fechaHoraActual = fechaHoraActual.plusDays(1);
+        }
+
+        // Obtener solo la fecha (sin la hora)
+        LocalDate fechaActual = fechaHoraActual.toLocalDate();
+
+        // Formatear la fecha en el formato deseado (dd/MM/yyyy)
+        DateTimeFormatter formatoFecha = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        return fechaActual.format(formatoFecha);
     }
 
     /**
@@ -288,7 +303,7 @@ public class Recibo extends javax.swing.JFrame {
         }
         // Obtener las fechas "desde" y "hasta"
         String fechaDesde = txtFechaDesde.getText().trim();
-        String fechaHasta = fechaActual(); // Fecha actual
+        String fechaHasta = txtFechaHasta.getText().trim(); // Fecha actual
 
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
         try {
@@ -321,7 +336,9 @@ public class Recibo extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCancelarActionPerformed
     public List<Movimientos> filtrarPorFechasCliente(List<Movimientos> objetos, Date fechaDesde, Date fechaHasta, String cliente) {
         List<Movimientos> resultados = new ArrayList<>();
-
+        System.out.println("Cliente seleccionado: " + cliente);
+        System.out.println("Fecha desde: " + fechaDesde);
+        System.out.println("Fecha hasta: " + fechaHasta);
         for (Movimientos objeto : objetos) {
             Date fecha = objeto.getFecha();
             String clienteMovimiento = objeto.getCliente();
