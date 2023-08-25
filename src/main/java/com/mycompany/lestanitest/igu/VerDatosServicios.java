@@ -5,6 +5,8 @@
 package com.mycompany.lestanitest.igu;
 
 import com.mycompany.lestanitest.logica.Controladora;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -22,6 +24,27 @@ Controladora control;
     public VerDatosServicios() {
         control = new Controladora();
         initComponents();
+        
+        // Listener al mause para editar con doble click.
+        tablaServicios.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    // Acción a realizar cuando se haga doble clic en un elemento de la tabla
+                    int filaSeleccionada = tablaServicios.getSelectedRow();
+                    int id = (int) tablaServicios.getValueAt(filaSeleccionada, 0);
+                    // Realizar la acción deseada con el ID obtenido
+                    System.out.println("ID seleccionado: " + id);
+                    EditarServicio editar = new EditarServicio(id);
+                    editar.setVisible(true);
+                    editar.setLocationRelativeTo(null);
+                    dispose();
+                }
+            }
+        });
+    
+        
+        
     }
 
     /**
