@@ -1939,7 +1939,7 @@ public class Principal extends javax.swing.JFrame {
             Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.NORMAL);
             Font fontColumnas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD);
             Font fontTotales = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
-            Font fontFecha = FontFactory.getFont(FontFactory.TIMES_ROMAN, 15, Font.BOLD, BaseColor.BLACK);
+            Font fontFecha = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD, BaseColor.BLACK);
             Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 9, Font.NORMAL, BaseColor.BLACK);
             Font fontR = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD, BaseColor.BLACK);
             // Crear una tabla para organizar los elementos
@@ -1955,38 +1955,35 @@ public class Principal extends javax.swing.JFrame {
             byte[] logoBytes = baos.toByteArray();
 
             Image logo = Image.getInstance(logoBytes);
-            logo.scaleAbsolute(220, 133);
+            logo.scaleAbsolute(150, 120);
             logo.setAlignment(Element.ALIGN_LEFT);
 
             // TEXTO
             InputStream textoStream = getClass().getClassLoader().getResourceAsStream("imagenes/texto.png");
             Image texto = Image.getInstance(ImageIO.read(textoStream), null);
-            texto.scaleToFit(220, 200);
+            texto.scaleToFit(150, 120);
             texto.setAlignment(Element.ALIGN_LEFT);
-            texto.setSpacingBefore(5f);
 
             // REMITO NO VALIDO
             InputStream remStream = getClass().getClassLoader().getResourceAsStream("imagenes/Remito.jpg");
             Image rem = Image.getInstance(ImageIO.read(remStream), null);
-            rem.scaleToFit(80, 80);
+            rem.scaleToFit(50, 50);
             rem.setAlignment(Element.ALIGN_CENTER);
 
             // REMITO
             InputStream remitoStream = getClass().getClassLoader().getResourceAsStream("imagenes/remito_cuit.jpg");
             Image remito = Image.getInstance(ImageIO.read(remitoStream), null);
-            remito.scaleToFit(200, 200);
+            remito.scaleToFit(150, 180);
             remito.setAlignment(Element.ALIGN_RIGHT);
 
             // FECHAS
             Chunk chunkFechas = new Chunk("Fecha: " + fechaActual(), fontFecha);
             Paragraph fecha = new Paragraph(chunkFechas);
             fecha.setAlignment(Element.ALIGN_RIGHT);
-            fecha.setSpacingAfter(5f); // Espacio después de las fechas (en puntos)
             //REMITO NRO
-            Paragraph nroRemito = new Paragraph("REMITO N° " + String.format("%08d", numeroRemito), FontFactory.getFont(FontFactory.TIMES_ROMAN, 15, Font.BOLD));
+            Paragraph nroRemito = new Paragraph("REMITO N° " + String.format("%08d", numeroRemito), FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD));
             guardarNumeroRemito();
             nroRemito.setAlignment(Element.ALIGN_RIGHT);
-            nroRemito.setSpacingAfter(10f); // Espacio después del título (en puntos)
 
             // Celda 1: Logo + Texto relacionado al logo + Fecha
             PdfPCell cell1 = new PdfPCell();
@@ -2115,7 +2112,7 @@ public class Principal extends javax.swing.JFrame {
             document.add(tablaContenedora);
 
             // Agregar espacio arriba de la tabla
-            Paragraph espacio = new Paragraph(10f, " "); // 20f es el tamaño del espacio
+            Paragraph espacio = new Paragraph(1f, " "); // tamaño del espacio
             document.add(espacio);
 
             // Crear la tabla con 6 columnas
@@ -2150,13 +2147,9 @@ public class Principal extends javax.swing.JFrame {
 
             // Agregar la tabla al documento
             document.add(tablaa);
-
-            document.add(espacio);
             Paragraph recibenB = new Paragraph("SE RECIBEN LOS BULTOS SIN ESPECIFICAR SU CONTENIDO", fontR);
             recibenB.setAlignment(Element.ALIGN_CENTER);
             document.add(recibenB);
-
-            document.add(espacio);
             // Crear la tabla con 2 columnas
             PdfPTable tabla = new PdfPTable(2);
             tabla.setWidthPercentage(100);
@@ -2329,7 +2322,7 @@ public class Principal extends javax.swing.JFrame {
             Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.NORMAL);
             Font fontColumnas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD);
             Font fontTotales = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
-            Font fontFecha = FontFactory.getFont(FontFactory.TIMES_ROMAN, 15, Font.BOLD, BaseColor.BLACK);
+            Font fontFecha = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD, BaseColor.BLACK);
             Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 9, Font.NORMAL, BaseColor.BLACK);
             Font fontR = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD, BaseColor.BLACK);
             // Crear una tabla para organizar los elementos
@@ -2345,38 +2338,34 @@ public class Principal extends javax.swing.JFrame {
             byte[] logoBytes = baos.toByteArray();
 
             Image logo = Image.getInstance(logoBytes);
-            logo.scaleAbsolute(220, 133);
+            logo.scaleAbsolute(150, 120);
             logo.setAlignment(Element.ALIGN_LEFT);
 
             // TEXTO
             InputStream textoStream = getClass().getClassLoader().getResourceAsStream("imagenes/texto.png");
             Image texto = Image.getInstance(ImageIO.read(textoStream), null);
-            texto.scaleToFit(220, 200);
+            texto.scaleToFit(150, 120);
             texto.setAlignment(Element.ALIGN_LEFT);
-            texto.setSpacingBefore(5f);
 
             // REMITO NO VALIDO
             InputStream remStream = getClass().getClassLoader().getResourceAsStream("imagenes/Remito.jpg");
             Image rem = Image.getInstance(ImageIO.read(remStream), null);
-            rem.scaleToFit(80, 80);
+            rem.scaleToFit(50, 50);
             rem.setAlignment(Element.ALIGN_CENTER);
 
             // REMITO
             InputStream remitoStream = getClass().getClassLoader().getResourceAsStream("imagenes/remito_cuit.jpg");
             Image remito = Image.getInstance(ImageIO.read(remitoStream), null);
-            remito.scaleToFit(200, 200);
+            remito.scaleToFit(150, 180);
             remito.setAlignment(Element.ALIGN_RIGHT);
-
             // FECHAS
             Chunk chunkFechas = new Chunk("Fecha: " + fechaActual(), fontFecha);
             Paragraph fecha = new Paragraph(chunkFechas);
             fecha.setAlignment(Element.ALIGN_RIGHT);
-            fecha.setSpacingAfter(5f); // Espacio después de las fechas (en puntos)
             //REMITO NRO
-            Paragraph nroRemito = new Paragraph("REMITO N° " + String.format("%08d", numeroRemito), FontFactory.getFont(FontFactory.TIMES_ROMAN, 15, Font.BOLD));
+            Paragraph nroRemito = new Paragraph("REMITO N° " + String.format("%08d", numeroRemito), FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD));
             guardarNumeroRemito();
             nroRemito.setAlignment(Element.ALIGN_RIGHT);
-            nroRemito.setSpacingAfter(10f); // Espacio después del título (en puntos)
 
             // Celda 1: Logo + Texto relacionado al logo + Fecha
             PdfPCell cell1 = new PdfPCell();
@@ -2505,7 +2494,7 @@ public class Principal extends javax.swing.JFrame {
             document.add(tablaContenedora);
 
             // Agregar espacio arriba de la tabla
-            Paragraph espacio = new Paragraph(10f, " "); // 20f es el tamaño del espacio
+            Paragraph espacio = new Paragraph(1f, " "); // 20f es el tamaño del espacio
             document.add(espacio);
 
             // Crear la tabla con 6 columnas
@@ -2540,13 +2529,9 @@ public class Principal extends javax.swing.JFrame {
 
             // Agregar la tabla al documento
             document.add(tablaa);
-
-            document.add(espacio);
             Paragraph recibenB = new Paragraph("SE RECIBEN LOS BULTOS SIN ESPECIFICAR SU CONTENIDO", fontR);
             recibenB.setAlignment(Element.ALIGN_CENTER);
             document.add(recibenB);
-
-            document.add(espacio);
             // Crear la tabla con 2 columnas
             PdfPTable tabla = new PdfPTable(2);
             tabla.setWidthPercentage(100);
@@ -2678,6 +2663,7 @@ public class Principal extends javax.swing.JFrame {
             printerJob.print();
 
             pdfDocument.close();
+            
             JOptionPane.showMessageDialog(null, "El remito se generó e imprimió correctamente.", "Información", JOptionPane.INFORMATION_MESSAGE);
 
         } catch (Exception e) {

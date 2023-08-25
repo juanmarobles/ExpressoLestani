@@ -1,4 +1,4 @@
- /*
+/*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
@@ -89,8 +89,7 @@ public class HojaDeRuta extends javax.swing.JFrame {
         llenarVehiculo();
         llenarChofer();
         txtFecha.setText(fechaActual());
-        
-        
+
         // Agregar evento de selección a la tabla
         tablaMovimientos.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -109,36 +108,36 @@ public class HojaDeRuta extends javax.swing.JFrame {
             }
         });
     }
-    
+
     private void aplicarFiltros() {
-    // Verificar si se ha presionado el botón "Mostrar"
-    if (!botonMostrarPresionado) {
-        return;
+        // Verificar si se ha presionado el botón "Mostrar"
+        if (!botonMostrarPresionado) {
+            return;
+        }
+
+        String fecha = txtFecha.getText();
+        boolean mostrarCuentaCorriente = cbCC.isSelected();
+        boolean mostrarContado = cbContado.isSelected();
+        boolean mostrarTodos = cbTodos.isSelected();
+
+        List<Movimientos> listaMovimientos = control.traerMovimientos();
+        List<Movimientos> listaFiltrada;
+
+        if (mostrarTodos) {
+            listaFiltrada = filtrarPorFecha(listaMovimientos, fecha);
+        } else {
+            listaFiltrada = filtrarMovimientos(listaMovimientos, fecha, mostrarCuentaCorriente, mostrarContado);
+        }
+
+        mostrarTablaMovimientos(listaFiltrada);
+        //Total Monto
+        int[] selectedRows = tablaMovimientos.getSelectedRows();
+        calcularTotalMonto(listaFiltrada, selectedRows);
+        calcularTotalFlete(listaFiltrada, selectedRows);
+        calcularTotalBultos(listaFiltrada, selectedRows);
     }
 
-    String fecha = txtFecha.getText();
-    boolean mostrarCuentaCorriente = cbCC.isSelected();
-    boolean mostrarContado = cbContado.isSelected();
-    boolean mostrarTodos = cbTodos.isSelected();
-
-    List<Movimientos> listaMovimientos = control.traerMovimientos();
-    List<Movimientos> listaFiltrada;
-
-    if (mostrarTodos) {
-        listaFiltrada = filtrarPorFecha(listaMovimientos, fecha);
-    } else {
-        listaFiltrada = filtrarMovimientos(listaMovimientos, fecha, mostrarCuentaCorriente, mostrarContado);
-    }
-
-    mostrarTablaMovimientos(listaFiltrada);
-    //Total Monto
-    int[] selectedRows = tablaMovimientos.getSelectedRows();
-    calcularTotalMonto(listaFiltrada, selectedRows);
-    calcularTotalFlete(listaFiltrada, selectedRows);
-    calcularTotalBultos(listaFiltrada, selectedRows);
-}
-    
-     // Método para calcular el total de montos de los elementos seleccionados en la tabla
+    // Método para calcular el total de montos de los elementos seleccionados en la tabla
     private void calcularTotalMonto(List<Movimientos> movimientosFiltrados, int[] selectedRows) {
 
         if (selectedRows.length > 0) {
@@ -276,8 +275,6 @@ public class HojaDeRuta extends javax.swing.JFrame {
         SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/YYYY");
         return formatoFecha.format(fecha);
     }
-    
-    
 
     //llenar vehiculo
     private void llenarVehiculo() {
@@ -300,8 +297,8 @@ public class HojaDeRuta extends javax.swing.JFrame {
             }
         });
     }
-    
-      private static void mostrarResultadosBusqueda(JComboBox<String> combobox, String textoBusqueda) {
+
+    private static void mostrarResultadosBusqueda(JComboBox<String> combobox, String textoBusqueda) {
 
         // Buscar el resultado de búsqueda
         boolean encontrado = false;
@@ -359,8 +356,6 @@ public class HojaDeRuta extends javax.swing.JFrame {
             }
         });
     }
-                
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -796,12 +791,12 @@ public class HojaDeRuta extends javax.swing.JFrame {
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
 
     }//GEN-LAST:event_formWindowOpened
-   boolean botonMostrarPresionado; 
+    boolean botonMostrarPresionado;
     private void btnMostrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarActionPerformed
-     
+
         botonMostrarPresionado = true;
         aplicarFiltros();
-        
+
     }//GEN-LAST:event_btnMostrarActionPerformed
 
     private void txtTotalMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTotalMActionPerformed
@@ -811,12 +806,7 @@ public class HojaDeRuta extends javax.swing.JFrame {
     private void txtTotalFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTotalFActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtTotalFActionPerformed
-   
-    
-    
-    
-    
-    
+
     public List<Movimientos> filtrarPorFecha(List<Movimientos> objetos, String fechaSeleccionada) {
         List<Movimientos> resultados = new ArrayList<>();
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
@@ -955,8 +945,6 @@ public class HojaDeRuta extends javax.swing.JFrame {
             }
         }
     }
-
-   
 
     private void generarPdf() {
         Document document = new Document();
@@ -1122,64 +1110,92 @@ public class HojaDeRuta extends javax.swing.JFrame {
             document.open();
 
             //FUENTES
-            Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 7, Font.BOLD);
+            Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 8, Font.BOLD);
             Font fontDatos = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, NORMAL);
             Font fontTotales = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
             Font fontFecha = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
-            Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 7);
-
+            Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 9, Font.BOLD);
             // LOGO
             InputStream logoStream = getClass().getClassLoader().getResourceAsStream("imagenes/logosolo.jpg");
             Image logo = Image.getInstance(ImageIO.read(logoStream), null);
-            logo.scaleToFit(450, 800);
+            logo.scaleToFit(250, 650);
             logo.setAlignment(Element.ALIGN_CENTER);
             document.add(logo);
 
-            // TITULO
-            Paragraph titulo = new Paragraph("HOJA DE RUTA", FontFactory.getFont(FontFactory.TIMES_ROMAN, 16, Font.BOLD, BaseColor.BLACK));
-            titulo.setAlignment(Element.ALIGN_CENTER);
-            titulo.setSpacingAfter(10f); // Espacio después del título (en puntos)
-            document.add(titulo);
-            // FECHAS
+            // Crea una tabla con 2 columnas
+            float[] anchos = {1f, 0.25f};
+            PdfPTable tablaPrincipal = new PdfPTable(anchos);
+            tablaPrincipal.setWidthPercentage(100);
+
+            // Celda 1: Título y Fecha (alineado al centro)
+            PdfPCell celdaTituloFecha = new PdfPCell();
+            celdaTituloFecha.setBorder(Rectangle.NO_BORDER);
+            celdaTituloFecha.setHorizontalAlignment(Element.ALIGN_RIGHT);
+            // Ajustar el padding horizontal de la celda
+            celdaTituloFecha.setPaddingLeft(100f);
+            Paragraph tituloFechaParagraph = new Paragraph();
+            Chunk chunkTitulo = new Chunk("HOJA DE RUTA", FontFactory.getFont(FontFactory.TIMES_ROMAN, 16, Font.BOLD, BaseColor.BLACK));
+            tituloFechaParagraph.add(chunkTitulo);
+            tituloFechaParagraph.add(Chunk.NEWLINE); // Agregar una nueva línea
+
             String fecha = txtFecha.getText();
-            // Agregar fechas desde y hasta al título
             Chunk chunkFechas = new Chunk("Fecha: " + fecha, fontFecha);
-            Paragraph fechas = new Paragraph(chunkFechas);
-            fechas.setAlignment(Element.ALIGN_CENTER);
-            fechas.setSpacingAfter(5f); // Espacio después de las fechas (en puntos)
-            document.add(fechas);
+            tituloFechaParagraph.add(chunkFechas);
+            tituloFechaParagraph.setAlignment(Element.ALIGN_CENTER);
+            celdaTituloFecha.addElement(tituloFechaParagraph);
+            tablaPrincipal.addCell(celdaTituloFecha);
 
-            // DATOS -> VEHICULO,PATENTE Y CHOFER
-            // Crear una tabla para los datos
-            PdfPTable datos = new PdfPTable(1);
-            datos.setWidthPercentage(100);
+            // Celda 2: Datos del Vehículo, Patente y Chofer (alineado a la derecha)
+            PdfPCell celdaDatos = new PdfPCell();
+            celdaDatos.setBorder(Rectangle.NO_BORDER);
+            celdaDatos.setHorizontalAlignment(Element.ALIGN_RIGHT);
 
-            // Obtener el valor seleccionado del ComboBox VEHICULO
+            Paragraph datosParagraph = new Paragraph();
+            datosParagraph.setAlignment(Element.ALIGN_RIGHT);
+
             String vehiculoSeleccionado = cbVehiculo.getSelectedItem().toString();
-            Phrase vehiculo = new Phrase("Vehiculo: " + vehiculoSeleccionado, fontDatos);
-            PdfPCell vehiculoCell = new PdfPCell(vehiculo);
-            vehiculoCell.setBorder(Rectangle.NO_BORDER);
-            vehiculoCell.setHorizontalAlignment(Element.ALIGN_RIGHT); // Alinear la celda al centro
-            datos.addCell(vehiculoCell);
 
-            // Obtener el valor seleccionado del ComboBox PATENTE
+            // Crear el Chunk para "Vehiculo: " en negrita
+            Chunk chunkVehiculoLabel = new Chunk("Vehiculo: ", FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD));
+
+            // Crear el Chunk para el valor del vehículo
+            Chunk chunkVehiculoValue = new Chunk(vehiculoSeleccionado.toUpperCase(), fontDatos);
+
+            // Agregar los Chunks al párrafo
+            datosParagraph.add(chunkVehiculoLabel);
+            datosParagraph.add(chunkVehiculoValue);
+            datosParagraph.add(Chunk.NEWLINE); // Agregar una nueva línea
+
             String patenteSeleccionada = txtPatente.getText();
-            Phrase patente = new Phrase("Patente: " + patenteSeleccionada, fontDatos);
-            PdfPCell patenteCell = new PdfPCell(patente);
-            patenteCell.setBorder(Rectangle.NO_BORDER);
-            patenteCell.setHorizontalAlignment(Element.ALIGN_RIGHT); // Alinear la celda al centro
-            datos.addCell(patenteCell);
 
-            // Obtener el valor seleccionado del ComboBox CHOFER
+            // Crear el Chunk para "Patente: " en negrita
+            Chunk chunkPatenteLabel = new Chunk("Patente: ", FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD));
+
+            // Crear el Chunk para el valor de la patente
+            Chunk chunkPatenteValue = new Chunk(patenteSeleccionada.toUpperCase(), fontDatos);
+
+            // Agregar los Chunks al párrafo
+            datosParagraph.add(chunkPatenteLabel);
+            datosParagraph.add(chunkPatenteValue);
+            datosParagraph.add(Chunk.NEWLINE); // Agregar una nueva línea
+
             String choferSeleccionado = cbChofer.getSelectedItem().toString();
-            Phrase chofer = new Phrase("Chofer: " + choferSeleccionado, fontDatos);
-            PdfPCell choferCell = new PdfPCell(chofer);
-            choferCell.setBorder(Rectangle.NO_BORDER);
-            choferCell.setHorizontalAlignment(Element.ALIGN_RIGHT); // Alinear la celda al centro
-            datos.addCell(choferCell);
 
-            // Agregar la tabla al documento PDF
-            document.add(datos);
+            // Crear el Chunk para "Chofer: " en negrita
+            Chunk chunkChoferLabel = new Chunk("Chofer: ", FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD));
+
+            // Crear el Chunk para el valor del chofer
+            Chunk chunkChoferValue = new Chunk(choferSeleccionado.toUpperCase(), fontDatos);
+
+            // Agregar los Chunks al párrafo
+            datosParagraph.add(chunkChoferLabel);
+            datosParagraph.add(chunkChoferValue);
+
+            celdaDatos.addElement(datosParagraph);
+            tablaPrincipal.addCell(celdaDatos);
+
+            // Agregar la tabla al documento
+            document.add(tablaPrincipal);
 
             // Obtener las filas seleccionadas o todas las filas si no hay ninguna seleccionada
             int[] filasSeleccionadas = tablaMovimientos.getSelectedRows();
@@ -1196,7 +1212,7 @@ public class HojaDeRuta extends javax.swing.JFrame {
             table.setSpacingAfter(10f);
 
             // Ajustar espacio horizontal
-            float[] columnWidths = {0.9f, 1f, 0.8f, 0.8f, 1f, 0.8f, 1f, 0.8f, 1f, 1f}; // Añadir un ancho para la nueva columna "observaciones"
+            float[] columnWidths = {1.5f, 1.5f, 1f, 0.9f, 1f, 0.9f, 1f, 0.9f, 1f, 1f};
             table.setWidths(columnWidths);
             table.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
 
@@ -1209,7 +1225,7 @@ public class HojaDeRuta extends javax.swing.JFrame {
                         col = "REP";
                     }
                     if (col.equals("A_CARGO_DE")) {
-                        col = "FLETE A CARGO";
+                        col = "Flet a Cargo";
                     }
                     PdfPCell cell = new PdfPCell(new Phrase(col, font));
                     cell.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -1228,6 +1244,10 @@ public class HojaDeRuta extends javax.swing.JFrame {
                             PdfPCell cell = new PdfPCell(new Phrase(value.toString(), fontFilas));
                             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                             cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
+                            // Verificar si la columna es "CLIENTE" o "DESTINO" y alinear a la izquierda
+                            if (colName.equals("CLIENTE") || colName.equals("DESTINO")) {
+                                cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+                            }
                             table.addCell(cell);
                         }
                     }

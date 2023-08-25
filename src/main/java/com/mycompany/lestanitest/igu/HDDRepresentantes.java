@@ -15,8 +15,10 @@ import com.itextpdf.text.Image;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfTemplate;
 import com.itextpdf.text.pdf.PdfWriter;
 import static com.mycompany.lestanitest.igu.Principal.fechaActual;
 import com.mycompany.lestanitest.logica.Cliente;
@@ -92,7 +94,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
         llenarChofer();
         cargarRepresentantes();
         txtFecha.setText(fechaActual());
-        
+
         // Agregar evento de selección a la tabla
         tablaMovimientos.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -112,28 +114,29 @@ public class HDDRepresentantes extends javax.swing.JFrame {
         });
     }
 //LLENAR TEXTFIELD REPRESENTANTES
+
     private static void mostrarResultadosBusqueda(JComboBox<String> combobox, String textoBusqueda) {
-       
-    // Buscar el resultado de búsqueda
-    boolean encontrado = false;
-    for (int i = 0; i < combobox.getItemCount(); i++) {
-        String item = combobox.getItemAt(i).toString();
-        if (item.toLowerCase().contains(textoBusqueda.toLowerCase())) {
-  
-            combobox.setSelectedItem(item);
-            combobox.getEditor().setItem(item);
-            encontrado = true;
-            break; // Terminar la búsqueda después de seleccionar el primer resultado
+
+        // Buscar el resultado de búsqueda
+        boolean encontrado = false;
+        for (int i = 0; i < combobox.getItemCount(); i++) {
+            String item = combobox.getItemAt(i).toString();
+            if (item.toLowerCase().contains(textoBusqueda.toLowerCase())) {
+
+                combobox.setSelectedItem(item);
+                combobox.getEditor().setItem(item);
+                encontrado = true;
+                break; // Terminar la búsqueda después de seleccionar el primer resultado
+            }
+        }
+        if (!encontrado) {
+            // Si no se encontró ningún resultado, mostrar el menú emergente
+            combobox.setPopupVisible(true);
         }
     }
-    if (!encontrado) {
-        // Si no se encontró ningún resultado, mostrar el menú emergente
-        combobox.setPopupVisible(true);
-    }
-}
 
     private void cargarRepresentantes() {
-           ModeloRepresentante modRepre = new ModeloRepresentante();
+        ModeloRepresentante modRepre = new ModeloRepresentante();
         ArrayList<Representantes> listaRepresentantes = modRepre.getRepresentantes();
         cbRepresentantes.setEditable(true);
 
@@ -191,11 +194,8 @@ public class HDDRepresentantes extends javax.swing.JFrame {
             }
         });
     }
-   
 
- 
     //llenar chofer
-
     private void llenarChofer() {
         ModeloRepresentante modRepre = new ModeloRepresentante();
         ArrayList<Representantes> listaRepresentantes = modRepre.getRepresentantes();
@@ -221,8 +221,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
             }
         });
     }
-    
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -669,33 +668,33 @@ public class HDDRepresentantes extends javax.swing.JFrame {
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
 
     }//GEN-LAST:event_formWindowOpened
-        boolean botonMostrarPresionado;
+    boolean botonMostrarPresionado;
     private void btnMostrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarActionPerformed
         botonMostrarPresionado = true;
         aplicarFiltros();
     }//GEN-LAST:event_btnMostrarActionPerformed
-    
+
     private void aplicarFiltros() {
-    // Verificar si se ha presionado el botón "Mostrar"
-    if (!botonMostrarPresionado) {
-        return;
-    }
+        // Verificar si se ha presionado el botón "Mostrar"
+        if (!botonMostrarPresionado) {
+            return;
+        }
 
-    String fecha = txtFecha.getText();
-    boolean mostrarCuentaCorriente = cbCC.isSelected();
-    boolean mostrarContado = cbContado.isSelected();
-    boolean mostrarTodos = cbTodos.isSelected();
+        String fecha = txtFecha.getText();
+        boolean mostrarCuentaCorriente = cbCC.isSelected();
+        boolean mostrarContado = cbContado.isSelected();
+        boolean mostrarTodos = cbTodos.isSelected();
 
-    List<Movimientos> listaMovimientos = control.traerMovimientos();
-    List<Movimientos> listaFiltrada;
+        List<Movimientos> listaMovimientos = control.traerMovimientos();
+        List<Movimientos> listaFiltrada;
 
-    if (mostrarTodos) {
-        listaFiltrada = filtrarPorFecha(listaMovimientos, fecha);
-    } else {
-        listaFiltrada = filtrarMovimientos(listaMovimientos, fecha, mostrarCuentaCorriente, mostrarContado);
-    }
-    
-    // Obtener el representante seleccionado
+        if (mostrarTodos) {
+            listaFiltrada = filtrarPorFecha(listaMovimientos, fecha);
+        } else {
+            listaFiltrada = filtrarMovimientos(listaMovimientos, fecha, mostrarCuentaCorriente, mostrarContado);
+        }
+
+        // Obtener el representante seleccionado
         Object representanteSeleccionado = cbRepresentantes.getSelectedItem();
         String representanteFiltrado = representanteSeleccionado != null ? representanteSeleccionado.toString() : "";
 
@@ -706,15 +705,15 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                     .collect(Collectors.toList());
         }
 
-    mostrarTablaMovimientos(listaFiltrada);
-    //Total Monto
-    int[] selectedRows = tablaMovimientos.getSelectedRows();
-    calcularTotalMonto(listaFiltrada, selectedRows);
-    calcularTotalFlete(listaFiltrada, selectedRows);
-    calcularTotalBultos(listaFiltrada, selectedRows);
-}
-    
-     // Método para calcular el total de montos de los elementos seleccionados en la tabla
+        mostrarTablaMovimientos(listaFiltrada);
+        //Total Monto
+        int[] selectedRows = tablaMovimientos.getSelectedRows();
+        calcularTotalMonto(listaFiltrada, selectedRows);
+        calcularTotalFlete(listaFiltrada, selectedRows);
+        calcularTotalBultos(listaFiltrada, selectedRows);
+    }
+
+    // Método para calcular el total de montos de los elementos seleccionados en la tabla
     private void calcularTotalMonto(List<Movimientos> movimientosFiltrados, int[] selectedRows) {
 
         if (selectedRows.length > 0) {
@@ -846,8 +845,8 @@ public class HDDRepresentantes extends javax.swing.JFrame {
 
         }
     }
-    
-     public List<Movimientos> filtrarPorFecha(List<Movimientos> objetos, String fechaSeleccionada) {
+
+    public List<Movimientos> filtrarPorFecha(List<Movimientos> objetos, String fechaSeleccionada) {
         List<Movimientos> resultados = new ArrayList<>();
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -868,8 +867,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
 
         return resultados;
     }
-    
-    
+
     public List<Movimientos> filtrarMovimientos(List<Movimientos> objetos, String fechaSeleccionada, boolean mostrarCuentaCorriente, boolean mostrarContado) {
         List<Movimientos> resultados = new ArrayList<>();
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
@@ -905,6 +903,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
 
         return resultados;
     }
+
     private void mostrarTablaMovimientos(List<Movimientos> listaMovimientos) {
         //filas y columnas no editables
         DefaultTableModel tabla = new DefaultTableModel() {
@@ -920,10 +919,10 @@ public class HDDRepresentantes extends javax.swing.JFrame {
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tabla);
         tablaMovimientos.setRowSorter(sorter);
         sorter.setSortKeys(java.util.Arrays.asList(new RowSorter.SortKey(1, SortOrder.DESCENDING)));
-        
+
         // Ordenar los datos por el ID en forma descendente
         Collections.sort(listaMovimientos, Comparator.comparingInt(Movimientos::getId_movimientos).reversed());
-        
+
         //carga de los datos desde la lista filtrada
         for (Movimientos mov : listaMovimientos) {
             Object[] objeto = {mov.getId_movimientos(), mov.getHora(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
@@ -1123,64 +1122,92 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                 Font fontDatos = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, NORMAL);
                 Font fontTotales = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
                 Font fontFecha = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
-                Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 7);
+                Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 9, Font.BOLD);
                 // LOGO
                 InputStream logoStream = getClass().getClassLoader().getResourceAsStream("imagenes/logosolo.jpg");
                 Image logo = Image.getInstance(ImageIO.read(logoStream), null);
-                logo.scaleToFit(450, 800);
+                logo.scaleToFit(250, 650);
                 logo.setAlignment(Element.ALIGN_CENTER);
                 document.add(logo);
 
-                // TITULO
-                Paragraph titulo = new Paragraph("HOJA DE RUTA", FontFactory.getFont(FontFactory.TIMES_ROMAN, 16, Font.BOLD, BaseColor.BLACK));
-                titulo.setAlignment(Element.ALIGN_CENTER);
-                titulo.setSpacingAfter(10f); // Espacio después del título (en puntos)
-                document.add(titulo);
-                // FECHAS
+                // Crea una tabla con 2 columnas
+                float[] anchos = {1f, 0.25f};
+                PdfPTable tablaPrincipal = new PdfPTable(anchos);
+                tablaPrincipal.setWidthPercentage(100);
+
+                // Celda 1: Título y Fecha (alineado al centro)
+                PdfPCell celdaTituloFecha = new PdfPCell();
+                celdaTituloFecha.setBorder(Rectangle.NO_BORDER);
+                celdaTituloFecha.setHorizontalAlignment(Element.ALIGN_RIGHT);
+                // Ajustar el padding horizontal de la celda
+                celdaTituloFecha.setPaddingLeft(100f);
+                Paragraph tituloFechaParagraph = new Paragraph();
+                Chunk chunkTitulo = new Chunk("HOJA DE RUTA", FontFactory.getFont(FontFactory.TIMES_ROMAN, 16, Font.BOLD, BaseColor.BLACK));
+                tituloFechaParagraph.add(chunkTitulo);
+                tituloFechaParagraph.add(Chunk.NEWLINE); // Agregar una nueva línea
+
                 String fecha = txtFecha.getText();
-                // Agregar fechas desde y hasta al título
                 Chunk chunkFechas = new Chunk("Fecha: " + fecha, fontFecha);
-                Paragraph fechas = new Paragraph(chunkFechas);
-                fechas.setAlignment(Element.ALIGN_CENTER);
-                fechas.setSpacingAfter(5f); // Espacio después de las fechas (en puntos)
-                document.add(fechas);
+                tituloFechaParagraph.add(chunkFechas);
+                tituloFechaParagraph.setAlignment(Element.ALIGN_CENTER);
+                celdaTituloFecha.addElement(tituloFechaParagraph);
+                tablaPrincipal.addCell(celdaTituloFecha);
 
-                // DATOS -> VEHICULO,PATENTE Y CHOFER
-                // Crear una tabla para los datos
-                PdfPTable datos = new PdfPTable(1);
-                datos.setWidthPercentage(100);
+                // Celda 2: Datos del Vehículo, Patente y Chofer (alineado a la derecha)
+                PdfPCell celdaDatos = new PdfPCell();
+                celdaDatos.setBorder(Rectangle.NO_BORDER);
+                celdaDatos.setHorizontalAlignment(Element.ALIGN_RIGHT);
 
-                // Obtener el valor seleccionado del ComboBox VEHICULO
+                Paragraph datosParagraph = new Paragraph();
+                datosParagraph.setAlignment(Element.ALIGN_RIGHT);
+
                 String vehiculoSeleccionado = cbVehiculo.getSelectedItem().toString();
-                Phrase vehiculo = new Phrase("Vehiculo: " + vehiculoSeleccionado, fontDatos);
-                PdfPCell vehiculoCell = new PdfPCell(vehiculo);
-                vehiculoCell.setBorder(Rectangle.NO_BORDER);
-                vehiculoCell.setHorizontalAlignment(Element.ALIGN_RIGHT); // Alinear la celda al centro
-                datos.addCell(vehiculoCell);
 
-                // Obtener el valor seleccionado del ComboBox PATENTE
+                // Crear el Chunk para "Vehiculo: " en negrita
+                Chunk chunkVehiculoLabel = new Chunk("Vehiculo: ", FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD));
+
+                // Crear el Chunk para el valor del vehículo
+                Chunk chunkVehiculoValue = new Chunk(vehiculoSeleccionado.toUpperCase(), fontDatos);
+
+                // Agregar los Chunks al párrafo
+                datosParagraph.add(chunkVehiculoLabel);
+                datosParagraph.add(chunkVehiculoValue);
+                datosParagraph.add(Chunk.NEWLINE); // Agregar una nueva línea
+
                 String patenteSeleccionada = txtPatente.getText();
-                Phrase patente = new Phrase("Patente: " + patenteSeleccionada, fontDatos);
-                PdfPCell patenteCell = new PdfPCell(patente);
-                patenteCell.setBorder(Rectangle.NO_BORDER);
-                patenteCell.setHorizontalAlignment(Element.ALIGN_RIGHT); // Alinear la celda al centro
-                datos.addCell(patenteCell);
 
-                // Obtener el valor seleccionado del ComboBox CHOFER
+                // Crear el Chunk para "Patente: " en negrita
+                Chunk chunkPatenteLabel = new Chunk("Patente: ", FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD));
+
+                // Crear el Chunk para el valor de la patente
+                Chunk chunkPatenteValue = new Chunk(patenteSeleccionada.toUpperCase(), fontDatos);
+
+                // Agregar los Chunks al párrafo
+                datosParagraph.add(chunkPatenteLabel);
+                datosParagraph.add(chunkPatenteValue);
+                datosParagraph.add(Chunk.NEWLINE); // Agregar una nueva línea
+
                 String choferSeleccionado = cbChofer.getSelectedItem().toString();
-                Phrase chofer = new Phrase("Chofer: " + choferSeleccionado, fontDatos);
-                PdfPCell choferCell = new PdfPCell(chofer);
-                choferCell.setBorder(Rectangle.NO_BORDER);
-                choferCell.setHorizontalAlignment(Element.ALIGN_RIGHT); // Alinear la celda al centro
-                datos.addCell(choferCell);
 
-                // Agregar la tabla al documento PDF
-                document.add(datos);
+                // Crear el Chunk para "Chofer: " en negrita
+                Chunk chunkChoferLabel = new Chunk("Chofer: ", FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD));
+
+                // Crear el Chunk para el valor del chofer
+                Chunk chunkChoferValue = new Chunk(choferSeleccionado.toUpperCase(), fontDatos);
+
+                // Agregar los Chunks al párrafo
+                datosParagraph.add(chunkChoferLabel);
+                datosParagraph.add(chunkChoferValue);
+
+                celdaDatos.addElement(datosParagraph);
+                tablaPrincipal.addCell(celdaDatos);
+
+                // Agregar la tabla al documento
+                document.add(tablaPrincipal);
 
                 // REPRESENTANTE
                 Paragraph rep = new Paragraph(cbRepresentantes.getSelectedItem().toString(), FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK));
                 rep.setAlignment(Element.ALIGN_CENTER);
-                rep.setSpacingAfter(10f); // Espacio después del título (en puntos)
                 document.add(rep);
 
                 // Obtener las filas seleccionadas o todas las filas si no hay ninguna seleccionada
@@ -1193,7 +1220,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                 table.setSpacingAfter(10f);
 
                 // Ajustar espacio horizontal
-                float[] columnWidths = {0.9f, 1f, 1f, 0.8f, 0.8f, 1f, 0.8f, 1f, 0.8f, 0.5f, 1.5f}; // Añadir un ancho para la nueva columna "observaciones"
+                float[] columnWidths = {1.5f, 1.5f, 1f, 0.9f, 1f, 0.9f, 1f, 0.9f, 0.8f, 0.6f, 1.5f}; // Añadir un ancho para la nueva columna "observaciones"
                 table.setWidths(columnWidths);
                 table.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
 
@@ -1247,6 +1274,11 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                                     PdfPCell cell = new PdfPCell(new Phrase(value.toString(), fontFilas));
                                     cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                                     cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
+
+                                    // Verificar si la columna es "CLIENTE" o "DESTINO" y alinear a la izquierda
+                                    if (colName.equals("CLIENTE") || colName.equals("DESTINO")) {
+                                        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+                                    }
                                     table.addCell(cell);
                                 }
                             }
@@ -1291,72 +1323,103 @@ public class HDDRepresentantes extends javax.swing.JFrame {
             // Crear el archivo de salida
             File outputFile = new File(outputPath);
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile));
-            document.open();
 
+            document.open();
+            // Crear un PdfTemplate para agregar el contenido dentro del marco
+            PdfContentByte canvas = writer.getDirectContent();
+            PdfTemplate template = canvas.createTemplate(document.getPageSize().getWidth() - 40, document.getPageSize().getHeight() - 40);
             //FUENTES
             Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 8, Font.BOLD);
             Font fontDatos = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, NORMAL);
             Font fontTotales = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
             Font fontFecha = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
-            Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 8);
-
+            Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 9, Font.BOLD);
             // LOGO
             InputStream logoStream = getClass().getClassLoader().getResourceAsStream("imagenes/logosolo.jpg");
             Image logo = Image.getInstance(ImageIO.read(logoStream), null);
-            logo.scaleToFit(450, 800);
+            logo.scaleToFit(250, 650);
             logo.setAlignment(Element.ALIGN_CENTER);
             document.add(logo);
 
-            // TITULO
-            Paragraph titulo = new Paragraph("HOJA DE RUTA", FontFactory.getFont(FontFactory.TIMES_ROMAN, 16, Font.BOLD, BaseColor.BLACK));
-            titulo.setAlignment(Element.ALIGN_CENTER);
-            titulo.setSpacingAfter(10f); // Espacio después del título (en puntos)
-            document.add(titulo);
-            // FECHAS
+            // Crea una tabla con 2 columnas
+            float[] anchos = {1f, 0.25f};
+            PdfPTable tablaPrincipal = new PdfPTable(anchos);
+            tablaPrincipal.setWidthPercentage(100);
+
+            // Celda 1: Título y Fecha (alineado al centro)
+            PdfPCell celdaTituloFecha = new PdfPCell();
+            celdaTituloFecha.setBorder(Rectangle.NO_BORDER);
+            celdaTituloFecha.setHorizontalAlignment(Element.ALIGN_RIGHT);
+            // Ajustar el padding horizontal de la celda
+            celdaTituloFecha.setPaddingLeft(100f);
+            Paragraph tituloFechaParagraph = new Paragraph();
+            Chunk chunkTitulo = new Chunk("HOJA DE RUTA", FontFactory.getFont(FontFactory.TIMES_ROMAN, 16, Font.BOLD, BaseColor.BLACK));
+            tituloFechaParagraph.add(chunkTitulo);
+            tituloFechaParagraph.add(Chunk.NEWLINE); // Agregar una nueva línea
+
             String fecha = txtFecha.getText();
-            // Agregar fechas desde y hasta al título
             Chunk chunkFechas = new Chunk("Fecha: " + fecha, fontFecha);
-            Paragraph fechas = new Paragraph(chunkFechas);
-            fechas.setAlignment(Element.ALIGN_CENTER);
-            fechas.setSpacingAfter(5f); // Espacio después de las fechas (en puntos)
-            document.add(fechas);
+            tituloFechaParagraph.add(chunkFechas);
+            tituloFechaParagraph.setAlignment(Element.ALIGN_CENTER);
+            celdaTituloFecha.addElement(tituloFechaParagraph);
+            tablaPrincipal.addCell(celdaTituloFecha);
 
-            // DATOS -> VEHICULO,PATENTE Y CHOFER
-            // Crear una tabla para los datos
-            PdfPTable datos = new PdfPTable(1);
-            datos.setWidthPercentage(100);
+            // Celda 2: Datos del Vehículo, Patente y Chofer (alineado a la derecha)
+            PdfPCell celdaDatos = new PdfPCell();
+            celdaDatos.setBorder(Rectangle.NO_BORDER);
+            celdaDatos.setHorizontalAlignment(Element.ALIGN_RIGHT);
 
-            // Obtener el valor seleccionado del ComboBox VEHICULO
+            Paragraph datosParagraph = new Paragraph();
+            datosParagraph.setAlignment(Element.ALIGN_RIGHT);
+
             String vehiculoSeleccionado = cbVehiculo.getSelectedItem().toString();
-            Phrase vehiculo = new Phrase("Vehiculo: " + vehiculoSeleccionado, fontDatos);
-            PdfPCell vehiculoCell = new PdfPCell(vehiculo);
-            vehiculoCell.setBorder(Rectangle.NO_BORDER);
-            vehiculoCell.setHorizontalAlignment(Element.ALIGN_RIGHT); // Alinear la celda al centro
-            datos.addCell(vehiculoCell);
 
-            // Obtener el valor seleccionado del ComboBox PATENTE
+            // Crear el Chunk para "Vehiculo: " en negrita
+            Chunk chunkVehiculoLabel = new Chunk("Vehiculo: ", FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD));
+
+            // Crear el Chunk para el valor del vehículo
+            Chunk chunkVehiculoValue = new Chunk(vehiculoSeleccionado.toUpperCase(), fontDatos);
+
+            // Agregar los Chunks al párrafo
+            datosParagraph.add(chunkVehiculoLabel);
+            datosParagraph.add(chunkVehiculoValue);
+            datosParagraph.add(Chunk.NEWLINE); // Agregar una nueva línea
+
             String patenteSeleccionada = txtPatente.getText();
-            Phrase patente = new Phrase("Patente: " + patenteSeleccionada, fontDatos);
-            PdfPCell patenteCell = new PdfPCell(patente);
-            patenteCell.setBorder(Rectangle.NO_BORDER);
-            patenteCell.setHorizontalAlignment(Element.ALIGN_RIGHT); // Alinear la celda al centro
-            datos.addCell(patenteCell);
 
-            // Obtener el valor seleccionado del ComboBox CHOFER
+            // Crear el Chunk para "Patente: " en negrita
+            Chunk chunkPatenteLabel = new Chunk("Patente: ", FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD));
+
+            // Crear el Chunk para el valor de la patente
+            Chunk chunkPatenteValue = new Chunk(patenteSeleccionada.toUpperCase(), fontDatos);
+
+            // Agregar los Chunks al párrafo
+            datosParagraph.add(chunkPatenteLabel);
+            datosParagraph.add(chunkPatenteValue);
+            datosParagraph.add(Chunk.NEWLINE); // Agregar una nueva línea
+
             String choferSeleccionado = cbChofer.getSelectedItem().toString();
-            Phrase chofer = new Phrase("Chofer: " + choferSeleccionado, fontDatos);
-            PdfPCell choferCell = new PdfPCell(chofer);
-            choferCell.setBorder(Rectangle.NO_BORDER);
-            choferCell.setHorizontalAlignment(Element.ALIGN_RIGHT); // Alinear la celda al centro
-            datos.addCell(choferCell);
 
-            // Agregar la tabla al documento PDF
-            document.add(datos);
+            // Crear el Chunk para "Chofer: " en negrita
+            Chunk chunkChoferLabel = new Chunk("Chofer: ", FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD));
+
+            // Crear el Chunk para el valor del chofer
+            Chunk chunkChoferValue = new Chunk(choferSeleccionado.toUpperCase(), fontDatos);
+
+            // Agregar los Chunks al párrafo
+            datosParagraph.add(chunkChoferLabel);
+            datosParagraph.add(chunkChoferValue);
+
+            celdaDatos.addElement(datosParagraph);
+            tablaPrincipal.addCell(celdaDatos);
+
+            // Agregar la tabla al documento
+            document.add(tablaPrincipal);
 
             // REPRESENTANTE
             Paragraph rep = new Paragraph(cbRepresentantes.getSelectedItem().toString(), FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK));
             rep.setAlignment(Element.ALIGN_CENTER);
-            rep.setSpacingAfter(10f); // Espacio después del título (en puntos)
+            rep.setSpacingAfter(1f); // Espacio después del título (en puntos)
             document.add(rep);
 
             // Obtener las filas seleccionadas o todas las filas si no hay ninguna seleccionada
@@ -1369,7 +1432,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
             table.setSpacingAfter(10f);
 
             // Ajustar espacio horizontal
-            float[] columnWidths = {0.9f, 1f, 1f, 0.8f, 0.8f, 1f, 0.8f, 1f, 0.8f, 0.5f, 1.5f}; // Añadir un ancho para la nueva columna "observaciones"
+            float[] columnWidths = {1.5f, 1.5f, 1f, 0.9f, 1f, 0.9f, 1f, 0.9f, 0.8f, 0.6f, 1.5f}; // Añadir un ancho para la nueva columna "observaciones"
             table.setWidths(columnWidths);
             table.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
 
@@ -1423,6 +1486,10 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                                 PdfPCell cell = new PdfPCell(new Phrase(value.toString(), fontFilas));
                                 cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                                 cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
+                                // Verificar si la columna es "CLIENTE" o "DESTINO" y alinear a la izquierda
+                                if (colName.equals("CLIENTE") || colName.equals("DESTINO")) {
+                                    cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+                                }
                                 table.addCell(cell);
                             }
                         }
@@ -1436,6 +1503,21 @@ public class HDDRepresentantes extends javax.swing.JFrame {
             }
 
             document.add(table);
+            // Cerrar el template y añadirlo al contenido del documento
+            template.closePathFillStroke();
+            canvas.addTemplate(template, 20, 20);
+
+            // Obtener el tamaño exacto del contenido
+            float contentWidth = template.getWidth();
+            float contentHeight = template.getHeight();
+
+            // Crear un rectángulo que servirá como marco alrededor del contenido
+            PdfContentByte canvasForBorders = writer.getDirectContentUnder();
+            Rectangle marco = new Rectangle(20, 20, 20 + contentWidth, 20 + contentHeight);
+            marco.setBorder(Rectangle.BOX); // Establecer el tipo de borde
+            marco.setBorderWidth(1); // Establecer el ancho del borde
+            marco.setBorderColor(BaseColor.BLACK); // Establecer el color del borde
+            canvasForBorders.rectangle(marco);
 
             document.close();
             writer.close();

@@ -4,7 +4,6 @@
  */
 package com.mycompany.lestanitest.igu;
 
-
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
@@ -300,8 +299,7 @@ public class Recibos extends javax.swing.JFrame {
                     // Actualiza la visualización de la tabla
                     tablaMovimientos.repaint();
 
-                   //imprimir();
-
+                    //imprimir();
                 } else {
                     // No se ha seleccionado ninguna fila, muestra un mensaje de error o realiza alguna otra acción
                     JOptionPane.showMessageDialog(null, "No se ha seleccionado ninguna fila.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -360,7 +358,6 @@ public class Recibos extends javax.swing.JFrame {
                     tablaMovimientos.repaint();
 
                     //imprimir();
-
                 } else {
                     // No se ha seleccionado ninguna fila, muestra un mensaje de error o realiza alguna otra acción
                     JOptionPane.showMessageDialog(null, "No se ha seleccionado ninguna fila.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -1396,6 +1393,7 @@ public class Recibos extends javax.swing.JFrame {
                 File outputFile = new File(outputPath);
                 PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile));
                 document.open();
+                
 
                 //FUENTES
                 Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.NORMAL);
@@ -1613,52 +1611,84 @@ public class Recibos extends javax.swing.JFrame {
             Font fontColumnas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD);
             Font fontTotales = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
             Font fontFecha = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
-            Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 9, Font.NORMAL, BaseColor.BLACK);
+            Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 9, Font.BOLD, BaseColor.BLACK);
 
-            // Crea una tabla con 2 columnas
-            float[] anchos = {1f, 1f};
+            // Crea una tabla con 4 columnas
+            float[] anchos = {1f, 1f, 1f};
             PdfPTable tablaTitulos = new PdfPTable(anchos);
             tablaTitulos.setWidthPercentage(100);
 
-            // TITULO RECIBO (primera columna)
+            // LOGO (primera columna)
+            InputStream logoStream = getClass().getClassLoader().getResourceAsStream("imagenes/logosolo.jpg");
+            Image logo = Image.getInstance(ImageIO.read(logoStream), null);
+            logo.scaleToFit(220, 150);
+            PdfPCell logoCell = new PdfPCell();
+            logoCell.addElement(logo);
+            logoCell.setBorder(PdfPCell.NO_BORDER);
+            tablaTitulos.addCell(logoCell);
+
+// TITULO RECIBO (segunda columna)
             Paragraph titulo = new Paragraph("RECIBO", FontFactory.getFont(FontFactory.TIMES_ROMAN, 14, Font.BOLD));
-            titulo.setAlignment(Element.ALIGN_RIGHT);
+            titulo.setAlignment(Element.ALIGN_CENTER);
             PdfPCell tituloCell = new PdfPCell();
             tituloCell.addElement(titulo);
             tituloCell.setBorder(PdfPCell.NO_BORDER);
             tablaTitulos.addCell(tituloCell);
 
-            // FECHAS y RECIBO NRO (segunda columna)
+// FECHA y RECIBO NRO (terca columna)
             Paragraph fechaRecibo = new Paragraph();
             Chunk chunkFechas = new Chunk("Fecha: " + fechaActual(), fontFecha);
             fechaRecibo.add(chunkFechas);
             fechaRecibo.add(Chunk.NEWLINE); // Agrega una nueva línea entre "Fecha" y "Recibo Nro"
             Chunk chunkNroRecibo = new Chunk("RECIBO Nro: " + String.format("%05d", numeroRecibo), FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.NORMAL));
             fechaRecibo.add(chunkNroRecibo);
+            Paragraph parrafoo = new Paragraph("CUIT: 30-70728895-3"
+                    + "\nIng. Brutos: 30-70728895-3"
+                    + "\nInic. Activ: Agosto 2000"
+                    + "\nIVA RESPONSABLE INSCRIPTO", FontFactory.getFont(FontFactory.TIMES_ROMAN, 7, Font.BOLD));
+            parrafoo.setAlignment(Element.ALIGN_RIGHT);
+            fechaRecibo.add(parrafoo);
             fechaRecibo.setAlignment(Element.ALIGN_RIGHT);
-
             PdfPCell fechaReciboCell = new PdfPCell();
             fechaReciboCell.addElement(fechaRecibo);
             fechaReciboCell.setBorder(PdfPCell.NO_BORDER);
             tablaTitulos.addCell(fechaReciboCell);
+            // Crea una tabla con 3 columnas
+            float[] anchoss = {0.4f, 1f};
+            PdfPTable tablasegundop = new PdfPTable(anchoss);
+            tablasegundop.setWidthPercentage(100);
 
-            // LOGO
-            InputStream logoStream = getClass().getClassLoader().getResourceAsStream("imagenes/ivacuit.jpg");
-            Image logo = Image.getInstance(ImageIO.read(logoStream), null);
-            logo.scaleToFit(530, 800);
-            logo.setAlignment(Element.ALIGN_LEFT);
+            // celda 1 espacio (segunda columna)
+            Paragraph t = new Paragraph("");
+            t.setAlignment(Element.ALIGN_CENTER);
+            PdfPCell tc = new PdfPCell();
+            tc.setBorder(PdfPCell.NO_BORDER);
+            tablasegundop.addCell(tc);
 
-            // DOC NO VALIDO COMO FACTURA
+            // Celda 2: Documento no válido como factura (centrado)
             Paragraph subtitulo = new Paragraph("DOCUMENTO NO VALIDO COMO FACTURA", FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.NORMAL));
             subtitulo.setAlignment(Element.ALIGN_CENTER);
-            subtitulo.setSpacingAfter(10f); // Espacio después del título (en puntos)
-
+            PdfPCell subtituloCell = new PdfPCell(subtitulo);
+            subtituloCell.setBorder(PdfPCell.NO_BORDER);
+            tablasegundop.addCell(subtituloCell);
+            /*
+            // Celda 3: Párrafo en el margen derecho
+            Paragraph parrafo = new Paragraph("CUIT: 30-70728895-3"
+                    + "\nIng. Brutos: 30-70728895-3"
+                    + "\nInic. Activ: Agosto 2000"
+                    + "\nIVA RESPONSABLE INSCRIPTO", FontFactory.getFont(FontFactory.TIMES_ROMAN, 7, Font.BOLD));
+            parrafo.setAlignment(Element.ALIGN_RIGHT);
+            PdfPCell parrafoCell = new PdfPCell(parrafo);
+            parrafoCell.setBorder(PdfPCell.NO_BORDER);
+            tablasegundop.addCell(parrafoCell);
+             */
             //document.add(titulo);
             document.add(tablaTitulos);
+            // Agregar la tabla al documento
+            document.add(tablasegundop);
             //document.add(fecha);
             //document.add(nroRecibo);
-            document.add(logo);
-            document.add(subtitulo);
+            //document.add(subtitulo);
 
             // Crear una tabla para los senores y domicilio         
             PdfPTable senoresdomicilio = new PdfPTable(2);
@@ -1797,9 +1827,9 @@ public class Recibos extends javax.swing.JFrame {
             firmaSelloTable.setWidthPercentage(100);
 
             // Agregar la imagen firmasello a la tabla anidada
-            InputStream firmaselloStream = getClass().getClassLoader().getResourceAsStream("imagenes/firmasello.jpg");
+            InputStream firmaselloStream = getClass().getClassLoader().getResourceAsStream("imagenes/firma_aclaracion_recibo.png");
             Image firmasello = Image.getInstance(ImageIO.read(firmaselloStream), null);
-            firmasello.scaleToFit(150, 150);
+            firmasello.scaleToFit(250, 100);
             PdfPCell firmaSelloImageCell = new PdfPCell(firmasello);
             firmaSelloImageCell.setBorder(Rectangle.NO_BORDER);
             firmaSelloImageCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
@@ -1871,52 +1901,84 @@ public class Recibos extends javax.swing.JFrame {
             Font fontColumnas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD);
             Font fontTotales = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
             Font fontFecha = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
-            Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 9, Font.NORMAL, BaseColor.BLACK);
+            Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 9, Font.BOLD, BaseColor.BLACK);
 
-            // Crea una tabla con 2 columnas
-            float[] anchos = {1f, 1f};
+            // Crea una tabla con 4 columnas
+            float[] anchos = {1f, 1f, 1f};
             PdfPTable tablaTitulos = new PdfPTable(anchos);
             tablaTitulos.setWidthPercentage(100);
 
-            // TITULO RECIBO (primera columna)
+            // LOGO (primera columna)
+            InputStream logoStream = getClass().getClassLoader().getResourceAsStream("imagenes/logosolo.jpg");
+            Image logo = Image.getInstance(ImageIO.read(logoStream), null);
+            logo.scaleToFit(220, 150);
+            PdfPCell logoCell = new PdfPCell();
+            logoCell.addElement(logo);
+            logoCell.setBorder(PdfPCell.NO_BORDER);
+            tablaTitulos.addCell(logoCell);
+
+// TITULO RECIBO (segunda columna)
             Paragraph titulo = new Paragraph("RECIBO", FontFactory.getFont(FontFactory.TIMES_ROMAN, 14, Font.BOLD));
-            titulo.setAlignment(Element.ALIGN_RIGHT);
+            titulo.setAlignment(Element.ALIGN_CENTER);
             PdfPCell tituloCell = new PdfPCell();
             tituloCell.addElement(titulo);
             tituloCell.setBorder(PdfPCell.NO_BORDER);
             tablaTitulos.addCell(tituloCell);
 
-            // FECHAS y RECIBO NRO (segunda columna)
+// FECHA y RECIBO NRO (terca columna)
             Paragraph fechaRecibo = new Paragraph();
             Chunk chunkFechas = new Chunk("Fecha: " + fechaActual(), fontFecha);
             fechaRecibo.add(chunkFechas);
             fechaRecibo.add(Chunk.NEWLINE); // Agrega una nueva línea entre "Fecha" y "Recibo Nro"
             Chunk chunkNroRecibo = new Chunk("RECIBO Nro: " + String.format("%05d", numeroRecibo), FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.NORMAL));
             fechaRecibo.add(chunkNroRecibo);
+            Paragraph parrafoo = new Paragraph("CUIT: 30-70728895-3"
+                    + "\nIng. Brutos: 30-70728895-3"
+                    + "\nInic. Activ: Agosto 2000"
+                    + "\nIVA RESPONSABLE INSCRIPTO", FontFactory.getFont(FontFactory.TIMES_ROMAN, 7, Font.BOLD));
+            parrafoo.setAlignment(Element.ALIGN_RIGHT);
+            fechaRecibo.add(parrafoo);
             fechaRecibo.setAlignment(Element.ALIGN_RIGHT);
-
             PdfPCell fechaReciboCell = new PdfPCell();
             fechaReciboCell.addElement(fechaRecibo);
             fechaReciboCell.setBorder(PdfPCell.NO_BORDER);
             tablaTitulos.addCell(fechaReciboCell);
+            // Crea una tabla con 3 columnas
+            float[] anchoss = {0.4f, 1f};
+            PdfPTable tablasegundop = new PdfPTable(anchoss);
+            tablasegundop.setWidthPercentage(100);
 
-            // LOGO
-            InputStream logoStream = getClass().getClassLoader().getResourceAsStream("imagenes/ivacuit.jpg");
-            Image logo = Image.getInstance(ImageIO.read(logoStream), null);
-            logo.scaleToFit(530, 800);
-            logo.setAlignment(Element.ALIGN_LEFT);
+            // celda 1 espacio (segunda columna)
+            Paragraph t = new Paragraph("");
+            t.setAlignment(Element.ALIGN_CENTER);
+            PdfPCell tc = new PdfPCell();
+            tc.setBorder(PdfPCell.NO_BORDER);
+            tablasegundop.addCell(tc);
 
-            // DOC NO VALIDO COMO FACTURA
+            // Celda 2: Documento no válido como factura (centrado)
             Paragraph subtitulo = new Paragraph("DOCUMENTO NO VALIDO COMO FACTURA", FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.NORMAL));
             subtitulo.setAlignment(Element.ALIGN_CENTER);
-            subtitulo.setSpacingAfter(10f); // Espacio después del título (en puntos)
-
+            PdfPCell subtituloCell = new PdfPCell(subtitulo);
+            subtituloCell.setBorder(PdfPCell.NO_BORDER);
+            tablasegundop.addCell(subtituloCell);
+            /*
+            // Celda 3: Párrafo en el margen derecho
+            Paragraph parrafo = new Paragraph("CUIT: 30-70728895-3"
+                    + "\nIng. Brutos: 30-70728895-3"
+                    + "\nInic. Activ: Agosto 2000"
+                    + "\nIVA RESPONSABLE INSCRIPTO", FontFactory.getFont(FontFactory.TIMES_ROMAN, 7, Font.BOLD));
+            parrafo.setAlignment(Element.ALIGN_RIGHT);
+            PdfPCell parrafoCell = new PdfPCell(parrafo);
+            parrafoCell.setBorder(PdfPCell.NO_BORDER);
+            tablasegundop.addCell(parrafoCell);
+             */
             //document.add(titulo);
             document.add(tablaTitulos);
+            // Agregar la tabla al documento
+            document.add(tablasegundop);
             //document.add(fecha);
             //document.add(nroRecibo);
-            document.add(logo);
-            document.add(subtitulo);
+            //document.add(subtitulo);
 
             // Crear una tabla para los senores y domicilio         
             PdfPTable senoresdomicilio = new PdfPTable(2);
@@ -2001,7 +2063,7 @@ public class Recibos extends javax.swing.JFrame {
                 table.setSpacingAfter(10f);
 
                 // Ajustar espacio horizontal
-                float[] columnWidths = {0.8f, 1f, 0.7f, 0.7f, 1f, 1f, 1f, 1f}; // Anchos de las columnas (proporciones)
+                float[] columnWidths = {0.8f, 1f, 0.8f, 0.8f, 1f, 1f, 1.1f, 1f}; // Anchos de las columnas (proporciones)
                 table.setWidths(columnWidths);
                 table.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
 
@@ -2009,6 +2071,9 @@ public class Recibos extends javax.swing.JFrame {
                 for (int i = 0; i < tablaMovimientos.getColumnCount(); i++) {
                     String col = tablaMovimientos.getColumnName(i);
                     if (!col.equals("ID") && !col.equals("HORA") && !col.equals("PAGADO") && !col.equals("REPRESENTANTE") && !col.equals("CLIENTE") && !col.equals("CC") && !col.equals("RENDIDO") && !col.equals("RENDIDO")) {
+                        if (col.equals("A_CARGO_DE")) { // Verificar si la columna es "CC"
+                            col = "FLETE A CARGO"; // Cambiar el nombre de la columna a "F.P"
+                        }
                         PdfPCell cell = new PdfPCell(new Phrase(col, fontColumnas));
                         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                         cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
@@ -2043,40 +2108,63 @@ public class Recibos extends javax.swing.JFrame {
             PdfPTable totalFirmaTable = new PdfPTable(2);
             totalFirmaTable.setWidthPercentage(100);
 
-            // Monto total
+// Monto total
             Phrase montoTotalPhrase = new Phrase("TOTAL MONTO: $" + txtTotalMonto.getText(), fontTotales);
             PdfPCell montoTotalCell = new PdfPCell(montoTotalPhrase);
             montoTotalCell.setBorder(Rectangle.NO_BORDER);
             montoTotalCell.setHorizontalAlignment(Element.ALIGN_LEFT);
-            totalFirmaTable.addCell(montoTotalCell);
 
-            // Agregar celda derecha para firmasello
+// Flete total
+            Phrase fleteTotalPhrase = new Phrase("TOTAL FLETE: $" + txtTotalFlete.getText(), fontTotales);
+            PdfPCell fleteTotalCell = new PdfPCell(fleteTotalPhrase);
+            fleteTotalCell.setBorder(Rectangle.NO_BORDER);
+            fleteTotalCell.setHorizontalAlignment(Element.ALIGN_LEFT);
+
+// Crear una tabla para las filas "TOTAL MONTO" y "TOTAL FLETE"
+            PdfPTable montosTable = new PdfPTable(1);
+            montosTable.setWidthPercentage(100);
+            montosTable.addCell(montoTotalCell);
+            montosTable.addCell(fleteTotalCell);
+
+// Agregar la tabla de montos a la primera columna de totalFirmaTable
+            PdfPCell montosCell = new PdfPCell(montosTable);
+            montosCell.setBorder(Rectangle.NO_BORDER);
+            totalFirmaTable.addCell(montosCell);
+
+// Agregar celda para firmasello en la segunda columna de totalFirmaTable
             PdfPCell firmaSelloCell = new PdfPCell();
             firmaSelloCell.setBorder(Rectangle.NO_BORDER);
-            firmaSelloCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+            firmaSelloCell.setHorizontalAlignment(Element.ALIGN_CENTER);
             firmaSelloCell.setFixedHeight(150); // Ajusta la altura de acuerdo a tus necesidades
 
-            // Crear tabla anidada para la imagen
+// Crear tabla anidada para la imagen
             PdfPTable firmaSelloTable = new PdfPTable(1);
             firmaSelloTable.setWidthPercentage(100);
 
-            // Agregar la imagen firmasello a la tabla anidada
-            InputStream firmaselloStream = getClass().getClassLoader().getResourceAsStream("imagenes/firmasello.jpg");
-            Image firmasello = Image.getInstance(ImageIO.read(firmaselloStream), null);
-            firmasello.scaleToFit(150, 150);
-            PdfPCell firmaSelloImageCell = new PdfPCell(firmasello);
-            firmaSelloImageCell.setBorder(Rectangle.NO_BORDER);
-            firmaSelloImageCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-            firmaSelloTable.addCell(firmaSelloImageCell);
+// Agregar la imagen firmasello a la tabla anidada
+            try {
+                InputStream firmaselloStream = getClass().getClassLoader().getResourceAsStream("imagenes/firma_aclaracion_recibo.png");
+                Image firmasello = Image.getInstance(ImageIO.read(firmaselloStream), null);
+                firmasello.scaleToFit(250, 100);
+                PdfPCell firmaSelloImageCell = new PdfPCell(firmasello);
+                firmaSelloImageCell.setBorder(Rectangle.NO_BORDER);
+                firmaSelloImageCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                firmaSelloTable.addCell(firmaSelloImageCell);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
-            // Agregar la tabla anidada a la celda derecha de la tabla principal
+// Agregar la tabla anidada a la celda de firmasello
             firmaSelloCell.addElement(firmaSelloTable);
 
-            // Agregar celda derecha a la tabla principal
+// Agregar celda de firmasello a la segunda columna de totalFirmaTable
             totalFirmaTable.addCell(firmaSelloCell);
 
-            // Agregar la tabla totalFirmaTable al documento
+// Agregar la tabla totalFirmaTable al documento
             document.add(totalFirmaTable);
+
+// Cerrar el documento
+            document.close();
 
             document.close();
             txtReciboNro.setText(String.valueOf(numeroRecibo));
@@ -2114,7 +2202,6 @@ public class Recibos extends javax.swing.JFrame {
         }
 
     }
-
 
     private void calcularTotales() {
         int rowCount = tablaMovimientos.getRowCount();
