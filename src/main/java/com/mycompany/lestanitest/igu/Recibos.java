@@ -12,12 +12,15 @@ import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.Image;
+import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfReader;
+import com.itextpdf.text.pdf.PdfTemplate;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.mycompany.lestanitest.logica.Cliente;
 import com.mycompany.lestanitest.logica.Controladora;
@@ -1393,8 +1396,10 @@ public class Recibos extends javax.swing.JFrame {
                 File outputFile = new File(outputPath);
                 PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile));
                 document.open();
-                
 
+                // Crear un PdfTemplate para agregar el contenido dentro del marco
+                PdfContentByte canvas = writer.getDirectContent();
+                PdfTemplate template = canvas.createTemplate(document.getPageSize().getWidth() - 40, document.getPageSize().getHeight() - 40);
                 //FUENTES
                 Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.NORMAL);
                 Font fontColumnas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD);
@@ -1597,6 +1602,7 @@ public class Recibos extends javax.swing.JFrame {
         numeroRecibo++;
         // Generar el número de recibo en formato de 5 dígitos
         String numeroReciboString = String.format("%05d", numeroRecibo);
+
         try {
             String userHome = FileSystemView.getFileSystemView().getHomeDirectory().getAbsolutePath();
             String outputPath = userHome + File.separator + "archivo.pdf";
@@ -1605,6 +1611,10 @@ public class Recibos extends javax.swing.JFrame {
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile));
 
             document.open();
+
+            // Crear un PdfTemplate para agregar el contenido dentro del marco
+            PdfContentByte canvas = writer.getDirectContent();
+            PdfTemplate template = canvas.createTemplate(document.getPageSize().getWidth() - 40, document.getPageSize().getHeight() - 40);
 
             //FUENTES
             Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.NORMAL);
@@ -1816,33 +1826,42 @@ public class Recibos extends javax.swing.JFrame {
             montoTotalCell.setHorizontalAlignment(Element.ALIGN_LEFT);
             totalFirmaTable.addCell(montoTotalCell);
 
-            // Agregar celda derecha para firmasello
+            // Agregar celda para firmasello en la segunda columna de totalFirmaTable
             PdfPCell firmaSelloCell = new PdfPCell();
             firmaSelloCell.setBorder(Rectangle.NO_BORDER);
-            firmaSelloCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+            firmaSelloCell.setHorizontalAlignment(Element.ALIGN_CENTER);
             firmaSelloCell.setFixedHeight(150); // Ajusta la altura de acuerdo a tus necesidades
 
-            // Crear tabla anidada para la imagen
-            PdfPTable firmaSelloTable = new PdfPTable(1);
-            firmaSelloTable.setWidthPercentage(100);
+// Crear un párrafo para el texto deseado
+            Paragraph firmaText = new Paragraph("DEVOLVER CONFORMADO"
+                    + "\n\n\n.........................................................................."
+                    + "\nFIRMA                                 SELLO", FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD));
+            firmaText.setAlignment(Element.ALIGN_CENTER);
 
-            // Agregar la imagen firmasello a la tabla anidada
-            InputStream firmaselloStream = getClass().getClassLoader().getResourceAsStream("imagenes/firma_aclaracion_recibo.png");
-            Image firmasello = Image.getInstance(ImageIO.read(firmaselloStream), null);
-            firmasello.scaleToFit(250, 100);
-            PdfPCell firmaSelloImageCell = new PdfPCell(firmasello);
-            firmaSelloImageCell.setBorder(Rectangle.NO_BORDER);
-            firmaSelloImageCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-            firmaSelloTable.addCell(firmaSelloImageCell);
+// Agregar el párrafo a la celda de firmasello
+            firmaSelloCell.addElement(firmaText);
 
-            // Agregar la tabla anidada a la celda derecha de la tabla principal
-            firmaSelloCell.addElement(firmaSelloTable);
-
-            // Agregar celda derecha a la tabla principal
+// Agregar celda de firmasello a la segunda columna de totalFirmaTable
             totalFirmaTable.addCell(firmaSelloCell);
 
-            // Agregar la tabla totalFirmaTable al documento
+// Agregar la tabla totalFirmaTable al documento
             document.add(totalFirmaTable);
+
+            // Cerrar el template y añadirlo al contenido del documento
+            template.closePathFillStroke();
+            canvas.addTemplate(template, 20, 20);
+
+            // Obtener el tamaño exacto del contenido
+            float contentWidth = template.getWidth();
+            float contentHeight = template.getHeight();
+
+            // Crear un rectángulo que servirá como marco alrededor del contenido
+            PdfContentByte canvasForBorders = writer.getDirectContentUnder();
+            Rectangle marco = new Rectangle(20, 400, 20 + contentWidth, 20 + contentHeight);
+            marco.setBorder(Rectangle.BOX); // Establecer el tipo de borde
+            marco.setBorderWidth(1); // Establecer el ancho del borde
+            marco.setBorderColor(BaseColor.BLACK); // Establecer el color del borde
+            canvasForBorders.rectangle(marco);
 
             document.close();
             txtReciboNro.setText(String.valueOf(numeroRecibo));
@@ -1895,6 +1914,9 @@ public class Recibos extends javax.swing.JFrame {
             File outputFile = new File(outputPath);
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile));
             document.open();
+            // Crear un PdfTemplate para agregar el contenido dentro del marco
+            PdfContentByte canvas = writer.getDirectContent();
+            PdfTemplate template = canvas.createTemplate(document.getPageSize().getWidth() - 40, document.getPageSize().getHeight() - 40);
 
             //FUENTES
             Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.NORMAL);
@@ -2137,25 +2159,14 @@ public class Recibos extends javax.swing.JFrame {
             firmaSelloCell.setHorizontalAlignment(Element.ALIGN_CENTER);
             firmaSelloCell.setFixedHeight(150); // Ajusta la altura de acuerdo a tus necesidades
 
-// Crear tabla anidada para la imagen
-            PdfPTable firmaSelloTable = new PdfPTable(1);
-            firmaSelloTable.setWidthPercentage(100);
+// Crear un párrafo para el texto deseado
+            Paragraph firmaText = new Paragraph("DEVOLVER CONFORMADO"
+                    + "\n\n\n.........................................................................."
+                    + "\nFIRMA                                 SELLO", FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD));
+            firmaText.setAlignment(Element.ALIGN_CENTER);
 
-// Agregar la imagen firmasello a la tabla anidada
-            try {
-                InputStream firmaselloStream = getClass().getClassLoader().getResourceAsStream("imagenes/firma_aclaracion_recibo.png");
-                Image firmasello = Image.getInstance(ImageIO.read(firmaselloStream), null);
-                firmasello.scaleToFit(250, 100);
-                PdfPCell firmaSelloImageCell = new PdfPCell(firmasello);
-                firmaSelloImageCell.setBorder(Rectangle.NO_BORDER);
-                firmaSelloImageCell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                firmaSelloTable.addCell(firmaSelloImageCell);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-// Agregar la tabla anidada a la celda de firmasello
-            firmaSelloCell.addElement(firmaSelloTable);
+// Agregar el párrafo a la celda de firmasello
+            firmaSelloCell.addElement(firmaText);
 
 // Agregar celda de firmasello a la segunda columna de totalFirmaTable
             totalFirmaTable.addCell(firmaSelloCell);
@@ -2163,10 +2174,25 @@ public class Recibos extends javax.swing.JFrame {
 // Agregar la tabla totalFirmaTable al documento
             document.add(totalFirmaTable);
 
+            // Cerrar el template y añadirlo al contenido del documento
+            template.closePathFillStroke();
+            canvas.addTemplate(template, 20, 20);
+
+            // Obtener el tamaño exacto del contenido
+            float contentWidth = template.getWidth();
+            float contentHeight = template.getHeight();
+
+            // Crear un rectángulo que servirá como marco alrededor del contenido
+            PdfContentByte canvasForBorders = writer.getDirectContentUnder();
+            Rectangle marco = new Rectangle(20, 400, 20 + contentWidth, 20 + contentHeight);
+            marco.setBorder(Rectangle.BOX); // Establecer el tipo de borde
+            marco.setBorderWidth(1); // Establecer el ancho del borde
+            marco.setBorderColor(BaseColor.BLACK); // Establecer el color del borde
+            canvasForBorders.rectangle(marco);
+
 // Cerrar el documento
             document.close();
 
-            document.close();
             txtReciboNro.setText(String.valueOf(numeroRecibo));
             guardarNumeroRecibo();
 

@@ -65,6 +65,7 @@ import com.itextpdf.text.pdf.PdfDocument;
 import com.itextpdf.text.pdf.PdfImportedPage;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
+import com.itextpdf.text.pdf.PdfTemplate;
 import com.itextpdf.text.pdf.SimpleBookmark;
 import com.mycompany.lestanitest.logica.GenerarPDFDuplicado;
 import java.awt.Desktop;
@@ -1934,6 +1935,10 @@ public class Principal extends javax.swing.JFrame {
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile));
 
             document.open();
+            
+            // Crear un PdfTemplate para agregar el contenido dentro del marco
+            PdfContentByte canvas = writer.getDirectContent();
+            PdfTemplate template = canvas.createTemplate(document.getPageSize().getWidth() - 40, document.getPageSize().getHeight() - 40);
 
             //FUENTES
             Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.NORMAL);
@@ -2267,6 +2272,22 @@ public class Principal extends javax.swing.JFrame {
             tabla.setSpacingAfter(3);
             document.add(tabla);
 
+               // Cerrar el template y añadirlo al contenido del documento
+            template.closePathFillStroke();
+            canvas.addTemplate(template, 20, 20);
+
+            // Obtener el tamaño exacto del contenido
+            float contentWidth = template.getWidth();
+            float contentHeight = template.getHeight();
+
+            // Crear un rectángulo que servirá como marco alrededor del contenido
+            PdfContentByte canvasForBorders = writer.getDirectContentUnder();
+            Rectangle marco = new Rectangle(20, 440, 20 + contentWidth, 20 + contentHeight);
+            marco.setBorder(Rectangle.BOX); // Establecer el tipo de borde
+            marco.setBorderWidth(1); // Establecer el ancho del borde
+            marco.setBorderColor(BaseColor.BLACK); // Establecer el color del borde
+            canvasForBorders.rectangle(marco);
+            
             document.close();
             writer.close();
 
@@ -2317,6 +2338,10 @@ public class Principal extends javax.swing.JFrame {
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile));
 
             document.open();
+
+            // Crear un PdfTemplate para agregar el contenido dentro del marco
+            PdfContentByte canvas = writer.getDirectContent();
+            PdfTemplate template = canvas.createTemplate(document.getPageSize().getWidth() - 40, document.getPageSize().getHeight() - 40);
 
             //FUENTES
             Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.NORMAL);
@@ -2649,6 +2674,22 @@ public class Principal extends javax.swing.JFrame {
             tabla.setSpacingAfter(3);
             document.add(tabla);
 
+            // Cerrar el template y añadirlo al contenido del documento
+            template.closePathFillStroke();
+            canvas.addTemplate(template, 20, 20);
+
+            // Obtener el tamaño exacto del contenido
+            float contentWidth = template.getWidth();
+            float contentHeight = template.getHeight();
+
+            // Crear un rectángulo que servirá como marco alrededor del contenido
+            PdfContentByte canvasForBorders = writer.getDirectContentUnder();
+            Rectangle marco = new Rectangle(20, 440, 20 + contentWidth, 20 + contentHeight);
+            marco.setBorder(Rectangle.BOX); // Establecer el tipo de borde
+            marco.setBorderWidth(1); // Establecer el ancho del borde
+            marco.setBorderColor(BaseColor.BLACK); // Establecer el color del borde
+            canvasForBorders.rectangle(marco);
+
             document.close();
             writer.close();
 
@@ -2663,7 +2704,7 @@ public class Principal extends javax.swing.JFrame {
             printerJob.print();
 
             pdfDocument.close();
-            
+
             JOptionPane.showMessageDialog(null, "El remito se generó e imprimió correctamente.", "Información", JOptionPane.INFORMATION_MESSAGE);
 
         } catch (Exception e) {
