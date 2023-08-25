@@ -6,6 +6,8 @@ package com.mycompany.lestanitest.igu;
 
 import com.mycompany.lestanitest.logica.Controladora;
 import com.mycompany.lestanitest.logica.Representantes;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -25,6 +27,24 @@ public class VerDatosRepresentantes extends javax.swing.JFrame {
     public VerDatosRepresentantes() {
         control = new Controladora();
         initComponents();
+        
+       // Listener al mause para editar con doble click.
+        tablaRepresentante.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    // Acción a realizar cuando se haga doble clic en un elemento de la tabla
+                    int filaSeleccionada = tablaRepresentante.getSelectedRow();
+                    int id = (int) tablaRepresentante.getValueAt(filaSeleccionada, 0);
+                    // Realizar la acción deseada con el ID obtenido
+                    System.out.println("ID seleccionado: " + id);
+                    EditarRepresentante editar = new EditarRepresentante(id);
+                    editar.setVisible(true);
+                    editar.setLocationRelativeTo(null);
+                    dispose();
+                }
+            }
+        });
     }
 
     /**
