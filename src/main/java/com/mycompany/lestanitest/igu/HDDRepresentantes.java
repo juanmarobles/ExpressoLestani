@@ -1498,13 +1498,6 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                 }
             }   
 
-            // Agrega una celda en la última fila que ocupará más espacio vertical
-            PdfPCell emptyCell = new PdfPCell();
-            emptyCell.setFixedHeight(300f); // Cambia 20f al valor deseado
-            emptyCell.setBorder(Rectangle.BOX); // Elimina el borde de la celda
-            emptyCell.setColspan(tablaMovimientos.getColumnCount() - 7 + 1); // Ajusta el colspan según las columnas
-            table.addCell(emptyCell);
-
             document.add(table);
 
             document.close();
