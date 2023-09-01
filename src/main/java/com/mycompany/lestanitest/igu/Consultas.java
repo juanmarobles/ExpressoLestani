@@ -28,6 +28,8 @@ import com.mycompany.lestanitest.logica.ModeloRepresentante;
 import com.mycompany.lestanitest.logica.Representantes;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -77,10 +79,16 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Comparator;
 import javax.imageio.ImageIO;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -116,9 +124,31 @@ public class Consultas extends javax.swing.JFrame {
         cargarOrigen();
         cargarDestino();
         cargarRepresentantes();
-        txtFechaHasta.setText(fechaActual());
-        this.setLocationRelativeTo(null);
-        this.setResizable(false);
+        
+          //FECHA
+       // Obtener la fecha actual
+        LocalDate fechaActual = LocalDate.now();
+        // Mostrar la fecha actual en los campos de texto correspondientes
+        txtDiaH.setText(String.valueOf(fechaActual.getDayOfMonth()));
+        txtMesH.setText(String.valueOf(fechaActual.getMonthValue()));
+        txtAnioH.setText(String.valueOf(fechaActual.getYear()));
+        
+
+        // Mostrar la fecha actual en los campos de texto correspondientes
+        txtDiaD.setText(String.valueOf(fechaActual.getDayOfMonth()));
+        txtMesD.setText(String.valueOf(fechaActual.getMonthValue()));
+        txtAnioD.setText(String.valueOf(fechaActual.getYear()));
+        
+        
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        
+        //Combobox Seleccion
+        ComboBoxStyle(cbClientes);
+        ComboBoxStyle(cbRepresentantes);
+        ComboBoxStyle(cbOrigen);
+        ComboBoxStyle(cbDestino);
+        
+        
         txtTotalMonto.setEditable(false);
         txtTotalFlete.setEditable(false);
         txtCantBultos.setEditable(false);
@@ -395,8 +425,16 @@ public class Consultas extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        txtFechaDesde = new javax.swing.JFormattedTextField();
-        txtFechaHasta = new javax.swing.JFormattedTextField();
+        txtDiaD = new javax.swing.JTextField();
+        jLabel17 = new javax.swing.JLabel();
+        txtMesD = new javax.swing.JTextField();
+        jLabel18 = new javax.swing.JLabel();
+        txtAnioD = new javax.swing.JTextField();
+        txtDiaH = new javax.swing.JTextField();
+        jLabel19 = new javax.swing.JLabel();
+        txtMesH = new javax.swing.JTextField();
+        jLabel20 = new javax.swing.JLabel();
+        txtAnioH = new javax.swing.JTextField();
         CuentaCorriente = new javax.swing.JCheckBox();
         btnImprimir = new javax.swing.JButton();
         jPanel7 = new javax.swing.JPanel();
@@ -421,6 +459,7 @@ public class Consultas extends javax.swing.JFrame {
         jLabel10 = new javax.swing.JLabel();
         cbOrigen = new javax.swing.JComboBox<>();
         cbDestino = new javax.swing.JComboBox<>();
+        btnEliminar = new javax.swing.JButton();
 
         jRadioButton1.setText("jRadioButton1");
 
@@ -718,19 +757,13 @@ public class Consultas extends javax.swing.JFrame {
         jLabel8.setForeground(new java.awt.Color(236, 240, 241));
         jLabel8.setText("Hasta");
 
-        try {
-            txtFechaDesde.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("##/##/####")));
-        } catch (java.text.ParseException ex) {
-            ex.printStackTrace();
-        }
-        txtFechaDesde.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        jLabel17.setText("/");
 
-        try {
-            txtFechaHasta.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("##/##/####")));
-        } catch (java.text.ParseException ex) {
-            ex.printStackTrace();
-        }
-        txtFechaHasta.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        jLabel18.setText("/");
+
+        jLabel19.setText("/");
+
+        jLabel20.setText("/");
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -739,16 +772,38 @@ public class Consultas extends javax.swing.JFrame {
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addGap(14, 14, 14)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(txtFechaHasta, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtFechaDesde, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(37, Short.MAX_VALUE))
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtDiaD, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
+                            .addComponent(txtDiaH))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addComponent(jLabel17)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtMesD, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addComponent(jLabel19)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtMesH)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addComponent(jLabel18)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtAnioD, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addComponent(jLabel20)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtAnioH)))
+                        .addGap(0, 33, Short.MAX_VALUE))))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -758,14 +813,22 @@ public class Consultas extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(txtFechaHasta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel8))
+                        .addComponent(jLabel8)
+                        .addComponent(txtDiaH, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel19)
+                        .addComponent(txtMesH, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel20)
+                        .addComponent(txtAnioH, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel9)
-                            .addComponent(txtFechaDesde, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(47, 47, 47)))
-                .addGap(19, 19, 19))
+                            .addComponent(txtDiaD, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel17)
+                            .addComponent(txtMesD, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel18)
+                            .addComponent(txtAnioD, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(46, 46, 46)))
+                .addGap(16, 16, 16))
         );
 
         CuentaCorriente.setBackground(new java.awt.Color(66, 66, 66));
@@ -913,6 +976,7 @@ public class Consultas extends javax.swing.JFrame {
         jLabel16.setForeground(new java.awt.Color(236, 240, 241));
         jLabel16.setText("Cambiar precio de Flete");
 
+        jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setText("$");
 
         btnCambiar.setBackground(new java.awt.Color(51, 51, 51));
@@ -1019,6 +1083,17 @@ public class Consultas extends javax.swing.JFrame {
                 .addGap(25, 25, 25))
         );
 
+        btnEliminar.setBackground(new java.awt.Color(51, 51, 51));
+        btnEliminar.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        btnEliminar.setForeground(new java.awt.Color(255, 255, 255));
+        btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/X_24px.png"))); // NOI18N
+        btnEliminar.setText("Eliminar");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -1029,7 +1104,10 @@ public class Consultas extends javax.swing.JFrame {
                         .addGap(120, 120, 120)
                         .addComponent(btnImprimirConsulta, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(32, 32, 32)
-                        .addComponent(btnImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btnImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(33, 33, 33)
+                        .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(17, 17, 17)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1042,7 +1120,7 @@ public class Consultas extends javax.swing.JFrame {
                                         .addComponent(cbRepresentantes, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                     .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(60, 60, 60)
+                                .addGap(57, 57, 57)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(btnMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1091,24 +1169,26 @@ public class Consultas extends javax.swing.JFrame {
                             .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addComponent(btnLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(18, 18, 18)
-                                        .addComponent(btnMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(btnMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addGap(11, 11, 11))
                             .addComponent(jPanel10, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 609, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnImprimirConsulta, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnEliminar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnImprimirConsulta, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
 
@@ -1134,6 +1214,7 @@ public class Consultas extends javax.swing.JFrame {
 
         botonMostrarPresionado = true;
         aplicarFiltros();
+        
 
 
     }//GEN-LAST:event_btnMostrarActionPerformed
@@ -1188,29 +1269,40 @@ public class Consultas extends javax.swing.JFrame {
                     .filter(mov -> mov.getDestino().equals(destinoFiltrado))
                     .collect(Collectors.toList());
         }
+        
+        
+        //Fecha
+        // Obtener los valores de los campos de texto para la fecha desde
+        int diaD = Integer.parseInt(txtDiaD.getText());
+        int mesD = Integer.parseInt(txtMesD.getText());
+        int anioD = Integer.parseInt(txtAnioD.getText());
 
-        // Filtrar por fechas
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        final Date desdeFecha;
-        final Date hastaFecha;
+// Crear una instancia de LocalDate si la fecha es válida
+        LocalDate fechaDesde = LocalDate.of(anioD, mesD, diaD);
 
-        try {
-            desdeFecha = dateFormat.parse(txtFechaDesde.getText());
-            hastaFecha = dateFormat.parse(txtFechaHasta.getText());
-        } catch (ParseException ex) {
-            // Manejar la excepción en caso de que el formato de fecha sea incorrecto
-            ex.printStackTrace();
-            return; // Salir del método o agregar otro manejo de error según sea necesario
-        }
+// Obtener los valores de los campos de texto para la fecha hasta
+        int diaH = Integer.parseInt(txtDiaH.getText());
+        int mesH = Integer.parseInt(txtMesH.getText());
+        int anioH = Integer.parseInt(txtAnioH.getText());
 
-        if (desdeFecha != null && hastaFecha != null) {
+// Crear una instancia de LocalDate si la fecha es válida
+        LocalDate fechaHasta = LocalDate.of(anioH, mesH, diaH);
+
+        if (fechaDesde != null && fechaHasta != null) {
             movimientosFiltrados = movimientosFiltrados.stream()
                     .filter(mov -> {
                         Date fechaMovimiento = mov.getFecha();
-                        return fechaMovimiento != null && fechaMovimiento.compareTo(desdeFecha) >= 0 && fechaMovimiento.compareTo(hastaFecha) <= 0;
+                        if (fechaMovimiento != null) {
+                            LocalDate fechaMovimientoLocalDate = fechaMovimiento.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                            return !fechaMovimientoLocalDate.isBefore(fechaDesde) && !fechaMovimientoLocalDate.isAfter(fechaHasta);
+                        }
+                        return false; // Manejar casos donde fechaMovimiento es null
                     })
                     .collect(Collectors.toList());
-        }       //Chechbox
+        }
+    
+        
+        //Chechbox
         boolean mostrarPagados = cbPagados.isSelected();
         boolean mostrarNoPagados = cbNoPagados.isSelected();
         boolean mostrarFPagados = cbFletePagado.isSelected();
@@ -1363,6 +1455,19 @@ public class Consultas extends javax.swing.JFrame {
             txtTotalFlete.setText(totalFormateado);
         }
     }
+    
+    private static void ComboBoxStyle(JComboBox<String> comboBox) {
+        
+
+        comboBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    
+                    comboBox.getEditor().selectAll();
+                }
+            }
+        });}
 
     private void calcularTotalBultos(List<Movimientos> movimientosFiltrados, int[] selectedRows) {
 
@@ -1392,6 +1497,7 @@ public class Consultas extends javax.swing.JFrame {
 
         }
     }
+
 
     private void mostrarTablaMovimientos(List<Movimientos> listaMovimientos) {
         //filas y columnas no editables
@@ -1442,6 +1548,18 @@ public class Consultas extends javax.swing.JFrame {
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
         tablaConsultas.setDefaultRenderer(Object.class, centerRenderer);
 
+    }
+      public void mostrarMensaje(String mensaje, String tipo, String titulo) {
+        JOptionPane optionPane = new JOptionPane(mensaje);
+        if (tipo.equals("Info")) {
+            optionPane.setMessageType(JOptionPane.INFORMATION_MESSAGE);
+
+        } else if (tipo.equals("Error")) {
+            optionPane.setMessageType(JOptionPane.ERROR_MESSAGE);
+        }
+        JDialog dialog = optionPane.createDialog(titulo);
+        dialog.setAlwaysOnTop(true);
+        dialog.setVisible(true);
     }
 
 
@@ -1527,6 +1645,32 @@ public class Consultas extends javax.swing.JFrame {
     private void cbDestinoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbDestinoActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_cbDestinoActionPerformed
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        //Eliminar
+        // Control para verificar que la tabla no esté vacía
+        if (tablaConsultas.getRowCount() > 0) {
+            // Validar que se hayan seleccionado registros
+            int[] selectedRows = tablaConsultas.getSelectedRows();
+            if (selectedRows.length > 0) {
+                int confirmResult = JOptionPane.showConfirmDialog(this, "¿Estás seguro de que deseas borrar los registros seleccionados?", "Confirmar borrado", JOptionPane.YES_NO_OPTION);
+                if (confirmResult == JOptionPane.YES_OPTION) {
+                    for (int selectedRow : selectedRows) {
+                        int idMovimiento = Integer.parseInt(String.valueOf(tablaConsultas.getValueAt(selectedRow, 0)));
+                        control.borrarMovimiento(idMovimiento);
+                    }
+                    mostrarMensaje("Movimientos borrados correctamente", "Info", "Borrados con éxito");
+                    mostrarTablaMovimientos();
+                }
+            } else {
+                mostrarMensaje("No seleccionaste registros para eliminar", "Error", "Error al eliminar");
+            }
+        } else {
+            mostrarMensaje("La tabla está vacía, no se puede eliminar", "Error", "Error al eliminar");
+        }
+        
+        
+    }//GEN-LAST:event_btnEliminarActionPerformed
     private void cambiarValorFlete(double nuevoMontoFlete) {
         int[] filasSeleccionadas = tablaConsultas.getSelectedRows(); // Obtener índices de las filas seleccionadas
         String nuevoValorFleteTexto = txtFleteCambio.getText().trim(); // Obtener el nuevo valor del campo de texto
@@ -1572,6 +1716,65 @@ public class Consultas extends javax.swing.JFrame {
 
             modeloTabla.fireTableDataChanged();
             JOptionPane.showMessageDialog(null, "Se cambió el monto de todos los fletes con éxito", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+    
+    private void mostrarTablaMovimientos() {
+        //filas y columnas no editables
+        DefaultTableModel tabla = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+
+        };
+        //nombres de columnas
+        String titulos[] = {"ID", "HORA", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "PAGADO", "RENDIDO", "FLETE", "PAGADO", "RENDIDO", "A_CARGO_DE", "REPRESENTANTE", "CC", "OBS"};
+        tabla.setColumnIdentifiers(titulos);
+        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tabla);
+        tablaConsultas.setRowSorter(sorter);
+        sorter.setSortKeys(java.util.Arrays.asList(new RowSorter.SortKey(1, SortOrder.DESCENDING)));
+        //carga de los datos desde la bd
+        List<Movimientos> listaMovimientos = control.traerMovimientos();
+        // Ordenar los datos por el ID en forma descendente
+        Collections.sort(listaMovimientos, Comparator.comparingInt(Movimientos::getId_movimientos).reversed());
+
+        //recorrer lista y mostrar elementos en la tabla
+        if (listaMovimientos != null) {
+            for (Movimientos mov : listaMovimientos) {
+                Object[] objeto = {mov.getId_movimientos(), mov.getHora(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
+
+                tabla.addRow(objeto);
+
+            }
+        }
+        tablaConsultas.setModel(tabla);
+
+        // Personalizar el tamaño de las celdas
+        int cellHeight = 25; // Altura de las celdas
+        tablaConsultas.setRowHeight(cellHeight);
+
+        // Personalizar la alineación del contenido en las celdas (opcional)
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        tablaConsultas.setDefaultRenderer(Object.class, centerRenderer);
+
+        // Establecer el ancho específico de las columnas
+        int[] anchos = {15, 50, 50, 120, 120, 40, 25, 80, 30, 30, 80, 30, 30, 50, 100, 30, 120}; // Anchos deseados para cada columna en píxeles
+
+        if (anchos.length == tabla.getColumnCount()) {
+            TableColumnModel columnModel = tablaConsultas.getColumnModel();
+            for (int i = 0; i < anchos.length; i++) {
+                TableColumn columna = columnModel.getColumn(i);
+                columna.setPreferredWidth(anchos[i]);
+                // Renderizador personalizado para centrar el contenido de las celdas
+                DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
+                renderer.setHorizontalAlignment(SwingConstants.CENTER);
+                columna.setCellRenderer(renderer);
+                // Renderizador personalizado para centrar el título de las columnas
+                DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) tablaConsultas.getTableHeader().getDefaultRenderer();
+                headerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+            }
         }
     }
 
@@ -1624,6 +1827,7 @@ public class Consultas extends javax.swing.JFrame {
     private javax.swing.ButtonGroup Grupo1;
     private javax.swing.ButtonGroup Grupo2;
     private javax.swing.JButton btnCambiar;
+    private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnImprimir;
     private javax.swing.JButton btnImprimirConsulta;
     private javax.swing.JButton btnLimpiar;
@@ -1649,7 +1853,11 @@ public class Consultas extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -1670,10 +1878,14 @@ public class Consultas extends javax.swing.JFrame {
     private javax.swing.JRadioButton jRadioButton1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tablaConsultas;
+    private javax.swing.JTextField txtAnioD;
+    private javax.swing.JTextField txtAnioH;
     private javax.swing.JTextField txtCantBultos;
-    private javax.swing.JFormattedTextField txtFechaDesde;
-    private javax.swing.JFormattedTextField txtFechaHasta;
+    private javax.swing.JTextField txtDiaD;
+    private javax.swing.JTextField txtDiaH;
     private javax.swing.JTextField txtFleteCambio;
+    private javax.swing.JTextField txtMesD;
+    private javax.swing.JTextField txtMesH;
     private javax.swing.JTextField txtTotalFlete;
     private javax.swing.JTextField txtTotalMonto;
     // End of variables declaration//GEN-END:variables
@@ -1846,8 +2058,30 @@ public class Consultas extends javax.swing.JFrame {
                 titulo.setSpacingAfter(10f); // Espacio después del título (en puntos)
 
                 // FECHAS
-                String fechaDesde = txtFechaDesde.getText();
-                String fechaHasta = txtFechaHasta.getText();
+                 //Fecha
+        // Obtener los valores de los campos de texto
+        int diaD = Integer.parseInt(txtDiaD.getText());
+        int mesD = Integer.parseInt(txtMesD.getText());
+        int anioD = Integer.parseInt(txtAnioD.getText());
+        
+        // Crear una instancia de LocalDate si la fecha es válida
+            LocalDate fechaArmadaD = LocalDate.of(anioD, mesD, diaD);
+            
+            // Formatear la fecha en el formato deseado
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                    String fechaDesde = fechaArmadaD.format(formatter);
+                    
+                    // Obtener los valores de los campos de texto
+        int diaH = Integer.parseInt(txtDiaH.getText());
+        int mesH = Integer.parseInt(txtMesH.getText());
+        int anioH = Integer.parseInt(txtAnioH.getText());
+        
+        // Crear una instancia de LocalDate si la fecha es válida
+            LocalDate fechaArmadaH = LocalDate.of(anioH, mesH, diaH);
+            
+            // Formatear la fecha en el formato deseado
+                    DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                    String fechaHasta = fechaArmadaH.format(formatter2);
 
                 // Agregar fechas desde y hasta al título
                 Chunk chunkFechas = new Chunk("Desde " + fechaDesde + " \nHasta " + fechaHasta, fontFecha);
@@ -1969,9 +2203,31 @@ public class Consultas extends javax.swing.JFrame {
             titulo.setSpacingAfter(10f); // Espacio después del título (en puntos)
 
             // FECHAS
-            String fechaDesde = txtFechaDesde.getText();
-            String fechaHasta = txtFechaHasta.getText();
-
+                 //Fecha
+        // Obtener los valores de los campos de texto
+        int diaD = Integer.parseInt(txtDiaD.getText());
+        int mesD = Integer.parseInt(txtMesD.getText());
+        int anioD = Integer.parseInt(txtAnioD.getText());
+        
+        // Crear una instancia de LocalDate si la fecha es válida
+            LocalDate fechaArmadaD = LocalDate.of(anioD, mesD, diaD);
+            
+            // Formatear la fecha en el formato deseado
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                    String fechaDesde = fechaArmadaD.format(formatter);
+                    
+                    // Obtener los valores de los campos de texto
+        int diaH = Integer.parseInt(txtDiaH.getText());
+        int mesH = Integer.parseInt(txtMesH.getText());
+        int anioH = Integer.parseInt(txtAnioH.getText());
+        
+        // Crear una instancia de LocalDate si la fecha es válida
+            LocalDate fechaArmadaH = LocalDate.of(anioH, mesH, diaH);
+            
+            // Formatear la fecha en el formato deseado
+                    DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                    String fechaHasta = fechaArmadaH.format(formatter2);
+                    
             // Agregar fechas desde y hasta al título
             Chunk chunkFechas = new Chunk("Desde " + fechaDesde + " \nHasta " + fechaHasta, fontFecha);
             Paragraph fechas = new Paragraph(chunkFechas);

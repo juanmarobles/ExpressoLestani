@@ -21,16 +21,19 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfTemplate;
 import com.itextpdf.text.pdf.PdfWriter;
 import static com.mycompany.lestanitest.igu.HDDRepresentantes.fechaActual;
-import static com.mycompany.lestanitest.igu.Principal.fechaActual;
+
 import com.mycompany.lestanitest.logica.Controladora;
 import com.mycompany.lestanitest.logica.ModeloRepresentante;
 import com.mycompany.lestanitest.logica.ModeloVehiculo;
 import com.mycompany.lestanitest.logica.Movimientos;
 import com.mycompany.lestanitest.logica.Representantes;
 import com.mycompany.lestanitest.logica.Vehiculo;
+import java.awt.Color;
 import static java.awt.Frame.NORMAL;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
@@ -45,6 +48,8 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -56,12 +61,18 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import javax.swing.RowSorter;
 import javax.swing.SortOrder;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileSystemView;
@@ -72,7 +83,7 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableRowSorter;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.printing.PDFPageable;
-import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
+
 
 /**
  *
@@ -88,9 +99,19 @@ public class HojaDeRuta extends javax.swing.JFrame {
      */
     public HojaDeRuta() {
         initComponents();
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         llenarVehiculo();
         llenarChofer();
-        txtFecha.setText(fechaActual());
+         //FECHA
+       // Obtener la fecha actual
+        LocalDate fechaActual = LocalDate.now();
+
+        // Mostrar la fecha actual en los campos de texto correspondientes
+        txtDia.setText(String.valueOf(fechaActual.getDayOfMonth()));
+        txtMes.setText(String.valueOf(fechaActual.getMonthValue()));
+        txtAnio.setText(String.valueOf(fechaActual.getYear()));
+        
+
 
         // Agregar evento de selección a la tabla
         tablaMovimientos.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -116,8 +137,21 @@ public class HojaDeRuta extends javax.swing.JFrame {
         if (!botonMostrarPresionado) {
             return;
         }
-
-        String fecha = txtFecha.getText();
+        //Fecha
+        // Obtener los valores de los campos de texto
+        int dia = Integer.parseInt(txtDia.getText());
+        int mes = Integer.parseInt(txtMes.getText());
+        int anio = Integer.parseInt(txtAnio.getText());
+        
+        // Crear una instancia de LocalDate si la fecha es válida
+            LocalDate fechaArmada = LocalDate.of(anio, mes, dia);
+            
+            // Formatear la fecha en el formato deseado
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                    String fechaFormateada = fechaArmada.format(formatter);
+        
+        
+        
         boolean mostrarCuentaCorriente = cbCC.isSelected();
         boolean mostrarContado = cbContado.isSelected();
         boolean mostrarTodos = cbTodos.isSelected();
@@ -126,9 +160,9 @@ public class HojaDeRuta extends javax.swing.JFrame {
         List<Movimientos> listaFiltrada;
 
         if (mostrarTodos) {
-            listaFiltrada = filtrarPorFecha(listaMovimientos, fecha);
+            listaFiltrada = filtrarPorFecha(listaMovimientos, fechaFormateada);
         } else {
-            listaFiltrada = filtrarMovimientos(listaMovimientos, fecha, mostrarCuentaCorriente, mostrarContado);
+            listaFiltrada = filtrarMovimientos(listaMovimientos, fechaFormateada, mostrarCuentaCorriente, mostrarContado);
         }
 
         mostrarTablaMovimientos(listaFiltrada);
@@ -371,7 +405,11 @@ public class HojaDeRuta extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jPanel6 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
-        txtFecha = new javax.swing.JFormattedTextField();
+        txtDia = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        txtMes = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
+        txtAnio = new javax.swing.JTextField();
         jPanel1 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         txtPatente = new javax.swing.JTextField();
@@ -421,12 +459,9 @@ public class HojaDeRuta extends javax.swing.JFrame {
         jLabel4.setForeground(new java.awt.Color(236, 240, 241));
         jLabel4.setText("Fecha:");
 
-        try {
-            txtFecha.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("##/##/####")));
-        } catch (java.text.ParseException ex) {
-            ex.printStackTrace();
-        }
-        txtFecha.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        jLabel6.setText("/");
+
+        jLabel8.setText("/");
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -436,17 +471,29 @@ public class HojaDeRuta extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(txtDia, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtMes, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel8)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtAnio, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(15, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                .addContainerGap(15, Short.MAX_VALUE)
+                .addContainerGap(17, Short.MAX_VALUE)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4))
-                .addGap(17, 17, 17))
+                    .addComponent(jLabel4)
+                    .addComponent(txtDia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6)
+                    .addComponent(txtMes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel8)
+                    .addComponent(txtAnio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(16, 16, 16))
         );
 
         jPanel1.setBackground(new java.awt.Color(66, 66, 66));
@@ -479,7 +526,7 @@ public class HojaDeRuta extends javax.swing.JFrame {
                     .addComponent(jLabel5)
                     .addComponent(cbChofer, 0, 185, Short.MAX_VALUE)
                     .addComponent(cbVehiculo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -616,6 +663,7 @@ public class HojaDeRuta extends javax.swing.JFrame {
         jLabel24.setForeground(new java.awt.Color(236, 240, 241));
         jLabel24.setText("Total Flete    $:");
 
+        txtTotalM.setEditable(false);
         txtTotalM.setBackground(new java.awt.Color(51, 51, 51));
         txtTotalM.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         txtTotalM.setForeground(new java.awt.Color(0, 153, 51));
@@ -626,6 +674,7 @@ public class HojaDeRuta extends javax.swing.JFrame {
             }
         });
 
+        txtTotalF.setEditable(false);
         txtTotalF.setBackground(new java.awt.Color(51, 51, 51));
         txtTotalF.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         txtTotalF.setForeground(new java.awt.Color(0, 153, 51));
@@ -672,6 +721,7 @@ public class HojaDeRuta extends javax.swing.JFrame {
         jLabel25.setForeground(new java.awt.Color(236, 240, 241));
         jLabel25.setText("Cant. Bultos");
 
+        txtCantBultos.setEditable(false);
         txtCantBultos.setBackground(new java.awt.Color(51, 51, 51));
         txtCantBultos.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         txtCantBultos.setForeground(new java.awt.Color(0, 153, 51));
@@ -757,7 +807,7 @@ public class HojaDeRuta extends javax.swing.JFrame {
                             .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(4, 4, 4)))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 470, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 468, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnImprimirHr, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -933,13 +983,54 @@ public class HojaDeRuta extends javax.swing.JFrame {
         tableModel.setRowCount(0); // Limpiar la tabla
 
         List<Movimientos> listaMovimientos = control.traerMovimientos();
-        String fechaSeleccionada = txtFecha.getText(); // Obtener la fecha seleccionada
+         //Fecha
+        // Obtener los valores de los campos de texto
+        int dia = Integer.parseInt(txtDia.getText());
+        int mes = Integer.parseInt(txtMes.getText());
+        int anio = Integer.parseInt(txtAnio.getText());
+        
+        // Crear una instancia de LocalDate si la fecha es válida
+            LocalDate fechaArmada = LocalDate.of(anio, mes, dia);
+            
+            // Formatear la fecha en el formato deseado
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                    String fechaFormateada = fechaArmada.format(formatter);
+                    
+                    
+                    //Borde al seleccionar TEXFIELD
+         SwingUtilities.invokeLater(() -> {
+            // Define el borde de enfoque
+            Border normalBorder = txtDia.getBorder();
+            Border focusBorder = new LineBorder(Color.BLUE, 3);
+
+           
+            
+            FocusAdapter focusAdapter = new FocusAdapter() {
+                @Override
+                public void focusGained(FocusEvent e) {
+                    ((JComponent) e.getComponent()).setBorder(focusBorder);
+                    if (e.getComponent() instanceof JTextField) {
+                        ((JTextField) e.getComponent()).selectAll();
+                    }
+                }
+
+                @Override
+                public void focusLost(FocusEvent e) {
+                    ((JComponent) e.getComponent()).setBorder(normalBorder);
+                }
+            };
+             txtDia.addFocusListener(focusAdapter);
+             txtMes.addFocusListener(focusAdapter);
+             txtAnio.addFocusListener(focusAdapter);
+             
+        });
+        
 
         // Recorrer la lista y agregar filas a la tabla
         tableModel.setRowCount(0);
         for (Movimientos mov : listaMovimientos) {
             if ((!cbCC.isSelected() || mov.getCuentaCorriente().equals("Si"))
-                    && filtrarPorFecha(Arrays.asList(mov), fechaSeleccionada).size() > 0) {
+                    && filtrarPorFecha(Arrays.asList(mov), fechaFormateada).size() > 0) {
                 Object[] row = {mov.getId_movimientos(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
                 tableModel.addRow(row);
             }
@@ -990,10 +1081,22 @@ public class HojaDeRuta extends javax.swing.JFrame {
                 titulo.setAlignment(Element.ALIGN_CENTER);
                 titulo.setSpacingAfter(10f); // Espacio después del título (en puntos)
                 document.add(titulo);
-                // FECHAS
-                String fecha = txtFecha.getText();
+                 //Fecha
+        // Obtener los valores de los campos de texto
+        int dia = Integer.parseInt(txtDia.getText());
+        int mes = Integer.parseInt(txtMes.getText());
+        int anio = Integer.parseInt(txtAnio.getText());
+        
+        // Crear una instancia de LocalDate si la fecha es válida
+            LocalDate fechaArmada = LocalDate.of(anio, mes, dia);
+            
+            // Formatear la fecha en el formato deseado
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                    String fechaFormateada = fechaArmada.format(formatter);
+                
+                
                 // Agregar fechas desde y hasta al título
-                Chunk chunkFechas = new Chunk("Fecha: " + fecha, fontFecha);
+                Chunk chunkFechas = new Chunk("Fecha: " + fechaFormateada, fontFecha);
                 Paragraph fechas = new Paragraph(chunkFechas);
                 fechas.setAlignment(Element.ALIGN_CENTER);
                 fechas.setSpacingAfter(5f); // Espacio después de las fechas (en puntos)
@@ -1138,8 +1241,22 @@ public class HojaDeRuta extends javax.swing.JFrame {
             tituloFechaParagraph.add(chunkTitulo);
             tituloFechaParagraph.add(Chunk.NEWLINE); // Agregar una nueva línea
 
-            String fecha = txtFecha.getText();
-            Chunk chunkFechas = new Chunk("Fecha: " + fecha, fontFecha);
+            //Fecha
+        // Obtener los valores de los campos de texto
+        int dia = Integer.parseInt(txtDia.getText());
+        int mes = Integer.parseInt(txtMes.getText());
+        int anio = Integer.parseInt(txtAnio.getText());
+        
+        // Crear una instancia de LocalDate si la fecha es válida
+            LocalDate fechaArmada = LocalDate.of(anio, mes, dia);
+            
+            // Formatear la fecha en el formato deseado
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                    String fechaFormateada = fechaArmada.format(formatter);
+            
+            
+            
+            Chunk chunkFechas = new Chunk("Fecha: " + fechaFormateada, fontFecha);
             tituloFechaParagraph.add(chunkFechas);
             tituloFechaParagraph.setAlignment(Element.ALIGN_CENTER);
             celdaTituloFecha.addElement(tituloFechaParagraph);
@@ -1343,57 +1460,31 @@ public class HojaDeRuta extends javax.swing.JFrame {
     private javax.swing.JRadioButton cbTodos;
     private javax.swing.JComboBox<Vehiculo> cbVehiculo;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel16;
-    private javax.swing.JLabel jLabel17;
-    private javax.swing.JLabel jLabel18;
-    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel20;
-    private javax.swing.JLabel jLabel21;
-    private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel25;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel10;
-    private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
-    private javax.swing.JPanel jPanel8;
-    private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tablaMovimientos;
+    private javax.swing.JTextField txtAnio;
     private javax.swing.JTextField txtCantBultos;
-    private javax.swing.JFormattedTextField txtFecha;
+    private javax.swing.JTextField txtDia;
+    private javax.swing.JTextField txtMes;
     private javax.swing.JTextField txtPatente;
     private javax.swing.JTextField txtTotalF;
-    private javax.swing.JTextField txtTotalFlete;
-    private javax.swing.JTextField txtTotalFlete1;
-    private javax.swing.JTextField txtTotalFlete2;
-    private javax.swing.JTextField txtTotalFlete3;
-    private javax.swing.JTextField txtTotalFlete4;
-    private javax.swing.JTextField txtTotalFlete5;
     private javax.swing.JTextField txtTotalM;
-    private javax.swing.JTextField txtTotalMonto;
-    private javax.swing.JTextField txtTotalMonto1;
-    private javax.swing.JTextField txtTotalMonto2;
-    private javax.swing.JTextField txtTotalMonto3;
-    private javax.swing.JTextField txtTotalMonto4;
-    private javax.swing.JTextField txtTotalMonto5;
     // End of variables declaration//GEN-END:variables
 
 }
