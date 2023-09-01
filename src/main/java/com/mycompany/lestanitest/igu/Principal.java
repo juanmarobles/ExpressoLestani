@@ -565,7 +565,7 @@ public class Principal extends javax.swing.JFrame {
                 if (cbDestinos.getSelectedIndex() != -1) {
                     // Obtener el cliente seleccionado del combobox
                     destinatarioSeleccionado = listaClientes.get(cbDestinos.getSelectedIndex());
-                     
+
                     // Actualizar los datos del remitente en el PDF usando clienteSeleccionado
                     // ... (el código para generar el PDF se mantiene igual)
                 }
@@ -2558,25 +2558,25 @@ public class Principal extends javax.swing.JFrame {
             PdfPCell remitenteCell = new PdfPCell();
             remitenteCell.setBorder(Rectangle.BOX);
 
-            String nombreCliente = "";
-            String direccion = "";
-            String localidad = "";
-            String cuit = "";
-            String tel = "";
-            if (clienteSeleccionado != null && clienteSeleccionado.getDireccion() != null && clienteSeleccionado.getLocalidad() != null
-                    && clienteSeleccionado.getCuit() != null && clienteSeleccionado.getNombre() != null && clienteSeleccionado.getTelefono() != null) {
-                nombreCliente = clienteSeleccionado.getNombre().toUpperCase();
-                direccion = clienteSeleccionado.getDireccion().toUpperCase();
-                localidad = clienteSeleccionado.getLocalidad().toUpperCase();
-                tel = clienteSeleccionado.getTelefono().toUpperCase();
-                cuit = clienteSeleccionado.getCuit().toUpperCase();
-            } else {
-                nombreCliente = cbClientes.getSelectedItem().toString().toUpperCase();
-                direccion = "";
-                localidad = cbDestinos.getSelectedItem().toString().toUpperCase();
-                cuit = "";
-                tel = "";
-            }
+            String nombreCliente = clienteSeleccionado != null && clienteSeleccionado.getNombre() != null
+                    ? clienteSeleccionado.getNombre().toUpperCase()
+                    : cbClientes.getSelectedItem().toString().toUpperCase();
+
+            String direccion = clienteSeleccionado != null && clienteSeleccionado.getDireccion() != null
+                    ? clienteSeleccionado.getDireccion().toUpperCase()
+                    : "";
+
+            String localidad = clienteSeleccionado != null && clienteSeleccionado.getLocalidad() != null
+                    ? clienteSeleccionado.getLocalidad().toUpperCase()
+                    : cbDestinos.getSelectedItem().toString().toUpperCase();
+
+            String cuit = clienteSeleccionado != null && clienteSeleccionado.getCuit() != null
+                    ? clienteSeleccionado.getCuit().toUpperCase()
+                    : "";
+
+            String tel = clienteSeleccionado != null && clienteSeleccionado.getTelefono() != null
+                    ? clienteSeleccionado.getTelefono().toUpperCase()
+                    : "";
 
             Paragraph nombreParagraph = new Paragraph("REMITENTE: " + nombreCliente, fontR);
             nombreParagraph.setAlignment(Element.ALIGN_LEFT);
@@ -2590,7 +2590,7 @@ public class Principal extends javax.swing.JFrame {
             localidadParagraph.setAlignment(Element.ALIGN_LEFT);
             remitenteCell.addElement(localidadParagraph);
 
-            Paragraph telParagraph = new Paragraph("CELULAR: " + tel, fontR);
+            Paragraph telParagraph = new Paragraph("TELEFONO: " + tel, fontR);
             telParagraph.setAlignment(Element.ALIGN_LEFT);
             remitenteCell.addElement(telParagraph);
 
@@ -2627,7 +2627,7 @@ public class Principal extends javax.swing.JFrame {
                 telDestinatario = "";
             }
 
-            Paragraph nombreDestinatarioParagraph = new Paragraph("DESTINATARIO: "+nombreDestinatario, fontR);
+            Paragraph nombreDestinatarioParagraph = new Paragraph("DESTINATARIO: " + nombreDestinatario, fontR);
             nombreDestinatarioParagraph.setAlignment(Element.ALIGN_LEFT);
             destinatarioCell.addElement(nombreDestinatarioParagraph);
 
@@ -2638,7 +2638,7 @@ public class Principal extends javax.swing.JFrame {
             Paragraph localidadDestinatarioParagraph = new Paragraph("LOCALIDAD: " + localidadDestinatario, fontR);
             localidadDestinatarioParagraph.setAlignment(Element.ALIGN_LEFT);
             destinatarioCell.addElement(localidadDestinatarioParagraph);
-            
+
             Paragraph telDestinatarioParagraph = new Paragraph("TELEFONO: " + telDestinatario, fontR);
             telDestinatarioParagraph.setAlignment(Element.ALIGN_LEFT);
             destinatarioCell.addElement(telDestinatarioParagraph);
@@ -2974,90 +2974,96 @@ public class Principal extends javax.swing.JFrame {
             PdfPCell remitenteCell = new PdfPCell();
             remitenteCell.setBorder(Rectangle.BOX);
 
-            Paragraph remitenteHeader = new Paragraph("REMITENTE", fontColumnas);
-            remitenteHeader.setAlignment(Element.ALIGN_CENTER);
-            remitenteCell.addElement(remitenteHeader);
+            String nombreCliente = clienteSeleccionado != null && clienteSeleccionado.getNombre() != null
+                    ? clienteSeleccionado.getNombre().toUpperCase()
+                    : cbClientes.getSelectedItem().toString().toUpperCase();
 
-            String nombreCliente = "";
-            String direccion = "";
-            String localidad = "";
-            String cuit = "";
-            if (clienteSeleccionado != null && clienteSeleccionado.getDireccion() != null && clienteSeleccionado.getLocalidad() != null
-                    && clienteSeleccionado.getCuit() != null && clienteSeleccionado.getNombre() != null) {
-                nombreCliente = clienteSeleccionado.getNombre().toUpperCase();
-                direccion = clienteSeleccionado.getDireccion().toUpperCase();
-                localidad = clienteSeleccionado.getLocalidad().toUpperCase();
-                cuit = clienteSeleccionado.getCuit().toUpperCase();
-            } else {
-                nombreCliente = cbClientes.getSelectedItem().toString().toUpperCase();
-                direccion = "";
-                localidad = cbDestinos.getSelectedItem().toString().toUpperCase();
-                cuit = "";
-            }
+            String direccion = clienteSeleccionado != null && clienteSeleccionado.getDireccion() != null
+                    ? clienteSeleccionado.getDireccion().toUpperCase()
+                    : "";
 
-            Paragraph nombreParagraph = new Paragraph(nombreCliente, fontR);
-            nombreParagraph.setAlignment(Element.ALIGN_CENTER);
+            String localidad = clienteSeleccionado != null && clienteSeleccionado.getLocalidad() != null
+                    ? clienteSeleccionado.getLocalidad().toUpperCase()
+                    : cbDestinos.getSelectedItem().toString().toUpperCase();
+
+            String cuit = clienteSeleccionado != null && clienteSeleccionado.getCuit() != null
+                    ? clienteSeleccionado.getCuit().toUpperCase()
+                    : "";
+
+            String tel = clienteSeleccionado != null && clienteSeleccionado.getTelefono() != null
+                    ? clienteSeleccionado.getTelefono().toUpperCase()
+                    : "";
+
+            Paragraph nombreParagraph = new Paragraph("REMITENTE: " + nombreCliente, fontR);
+            nombreParagraph.setAlignment(Element.ALIGN_LEFT);
             remitenteCell.addElement(nombreParagraph);
 
             Paragraph direccionParagraph = new Paragraph("DIRECCION: " + direccion, fontR);
-            direccionParagraph.setAlignment(Element.ALIGN_CENTER);
+            direccionParagraph.setAlignment(Element.ALIGN_LEFT);
             remitenteCell.addElement(direccionParagraph);
 
             Paragraph localidadParagraph = new Paragraph("LOCALIDAD: " + localidad, fontR);
-            localidadParagraph.setAlignment(Element.ALIGN_CENTER);
+            localidadParagraph.setAlignment(Element.ALIGN_LEFT);
             remitenteCell.addElement(localidadParagraph);
 
+            Paragraph telParagraph = new Paragraph("TELEFONO: " + tel, fontR);
+            telParagraph.setAlignment(Element.ALIGN_LEFT);
+            remitenteCell.addElement(telParagraph);
+
             Paragraph cuitParagraph = new Paragraph("CUIT: " + cuit, fontR);
-            cuitParagraph.setAlignment(Element.ALIGN_CENTER);
+            cuitParagraph.setAlignment(Element.ALIGN_LEFT);
             remitenteCell.addElement(cuitParagraph);
 
-            remitenteCell.setHorizontalAlignment(Element.ALIGN_CENTER); // Alineación horizontal de la celda
+            remitenteCell.setHorizontalAlignment(Element.ALIGN_LEFT); // Alineación horizontal de la celda
             tablaContenedora.addCell(remitenteCell);
 
             // Crear la celda del destinatario
             PdfPCell destinatarioCell = new PdfPCell();
             destinatarioCell.setBorder(Rectangle.BOX);
 
-            Paragraph destinatarioHeader = new Paragraph("DESTINATARIO", fontColumnas);
-            destinatarioHeader.setAlignment(Element.ALIGN_CENTER);
-            destinatarioCell.addElement(destinatarioHeader);
-
             String nombreDestinatario = "";
             String direccionDestinatario = "";
             String localidadDestinatario = "";
             String cuitDestinatario = "";
+            String telDestinatario = "";
 
             if (destinatarioSeleccionado != null && destinatarioSeleccionado.getDireccion() != null && destinatarioSeleccionado.getLocalidad() != null
-                    && destinatarioSeleccionado.getCuit() != null && destinatarioSeleccionado.getNombre() != null) {
+                    && destinatarioSeleccionado.getCuit() != null && destinatarioSeleccionado.getNombre() != null && destinatarioSeleccionado.getTelefono() != null) {
                 nombreDestinatario = destinatarioSeleccionado.getNombre().toUpperCase();
                 direccionDestinatario = destinatarioSeleccionado.getDireccion().toUpperCase();
                 localidadDestinatario = destinatarioSeleccionado.getLocalidad().toUpperCase();
                 cuitDestinatario = destinatarioSeleccionado.getCuit().toUpperCase();
+                telDestinatario = destinatarioSeleccionado.getTelefono().toUpperCase();
 
             } else {
                 nombreDestinatario = cbDestinos.getSelectedItem().toString().toUpperCase();
                 direccionDestinatario = "";
                 localidadDestinatario = "";
                 cuitDestinatario = "";
+                telDestinatario = "";
             }
 
-            Paragraph nombreDestinatarioParagraph = new Paragraph(nombreDestinatario, fontR);
-            nombreDestinatarioParagraph.setAlignment(Element.ALIGN_CENTER);
+            Paragraph nombreDestinatarioParagraph = new Paragraph("DESTINATARIO: " + nombreDestinatario, fontR);
+            nombreDestinatarioParagraph.setAlignment(Element.ALIGN_LEFT);
             destinatarioCell.addElement(nombreDestinatarioParagraph);
 
             Paragraph direccionDestinatarioParagraph = new Paragraph("DIRECCION: " + direccionDestinatario, fontR);
-            direccionDestinatarioParagraph.setAlignment(Element.ALIGN_CENTER);
+            direccionDestinatarioParagraph.setAlignment(Element.ALIGN_LEFT);
             destinatarioCell.addElement(direccionDestinatarioParagraph);
 
             Paragraph localidadDestinatarioParagraph = new Paragraph("LOCALIDAD: " + localidadDestinatario, fontR);
-            localidadDestinatarioParagraph.setAlignment(Element.ALIGN_CENTER);
+            localidadDestinatarioParagraph.setAlignment(Element.ALIGN_LEFT);
             destinatarioCell.addElement(localidadDestinatarioParagraph);
 
+            Paragraph telDestinatarioParagraph = new Paragraph("TELEFONO: " + telDestinatario, fontR);
+            telDestinatarioParagraph.setAlignment(Element.ALIGN_LEFT);
+            destinatarioCell.addElement(telDestinatarioParagraph);
+
             Paragraph cuitDestinatarioParagraph = new Paragraph("CUIT: " + cuitDestinatario, fontR);
-            cuitDestinatarioParagraph.setAlignment(Element.ALIGN_CENTER);
+            cuitDestinatarioParagraph.setAlignment(Element.ALIGN_LEFT);
             destinatarioCell.addElement(cuitDestinatarioParagraph);
 
-            destinatarioCell.setHorizontalAlignment(Element.ALIGN_CENTER); // Alineación horizontal de la celda
+            destinatarioCell.setHorizontalAlignment(Element.ALIGN_LEFT); // Alineación horizontal de la celda
             tablaContenedora.addCell(destinatarioCell);
 
             document.add(tablaContenedora);
