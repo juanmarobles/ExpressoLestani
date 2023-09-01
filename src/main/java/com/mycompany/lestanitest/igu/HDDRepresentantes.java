@@ -20,7 +20,7 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfTemplate;
 import com.itextpdf.text.pdf.PdfWriter;
-import static com.mycompany.lestanitest.igu.Principal.fechaActual;
+
 import com.mycompany.lestanitest.logica.Cliente;
 import com.mycompany.lestanitest.logica.Controladora;
 import com.mycompany.lestanitest.logica.ModeloCliente;
@@ -29,8 +29,11 @@ import com.mycompany.lestanitest.logica.ModeloVehiculo;
 import com.mycompany.lestanitest.logica.Movimientos;
 import com.mycompany.lestanitest.logica.Representantes;
 import com.mycompany.lestanitest.logica.Vehiculo;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
@@ -45,6 +48,8 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -56,12 +61,18 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import javax.swing.RowFilter;
 import javax.swing.RowSorter;
 import javax.swing.SortOrder;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
@@ -74,7 +85,7 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableRowSorter;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.printing.PDFPageable;
-import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
+
 
 /**
  *
@@ -90,11 +101,21 @@ public class HDDRepresentantes extends javax.swing.JFrame {
      */
     public HDDRepresentantes() {
         initComponents();
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         llenarVehiculo();
         llenarChofer();
         cargarRepresentantes();
-        txtFecha.setText(fechaActual());
+        
+        //FECHA
+       // Obtener la fecha actual
+        LocalDate fechaActual = LocalDate.now();
 
+        // Mostrar la fecha actual en los campos de texto correspondientes
+        txtDia.setText(String.valueOf(fechaActual.getDayOfMonth()));
+        txtMes.setText(String.valueOf(fechaActual.getMonthValue()));
+        txtAnio.setText(String.valueOf(fechaActual.getYear()));
+        
+        
         // Agregar evento de selección a la tabla
         tablaMovimientos.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -112,6 +133,40 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                 }
             }
         });
+        
+        //Borde al seleccionar TEXFIELD
+         SwingUtilities.invokeLater(() -> {
+            // Define el borde de enfoque
+            Border normalBorder = txtDia.getBorder();
+            Border focusBorder = new LineBorder(Color.BLUE, 3);
+
+           
+            
+            FocusAdapter focusAdapter = new FocusAdapter() {
+                @Override
+                public void focusGained(FocusEvent e) {
+                    ((JComponent) e.getComponent()).setBorder(focusBorder);
+                    if (e.getComponent() instanceof JTextField) {
+                        ((JTextField) e.getComponent()).selectAll();
+                    }
+                }
+
+                @Override
+                public void focusLost(FocusEvent e) {
+                    ((JComponent) e.getComponent()).setBorder(normalBorder);
+                }
+            };
+             txtDia.addFocusListener(focusAdapter);
+             txtMes.addFocusListener(focusAdapter);
+             txtAnio.addFocusListener(focusAdapter);
+             
+        });
+        
+        
+        
+        
+        
+        
     }
 //LLENAR TEXTFIELD REPRESENTANTES
 
@@ -239,7 +294,11 @@ public class HDDRepresentantes extends javax.swing.JFrame {
         txtPatente = new javax.swing.JTextField();
         jPanel6 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
-        txtFecha = new javax.swing.JFormattedTextField();
+        txtDia = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
+        txtMes = new javax.swing.JTextField();
+        jLabel9 = new javax.swing.JLabel();
+        txtAnio = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tablaMovimientos = new javax.swing.JTable();
@@ -302,7 +361,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                     .addComponent(txtPatente, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cbChofer, 0, 170, Short.MAX_VALUE)
                     .addComponent(cbVehiculo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(29, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -329,12 +388,9 @@ public class HDDRepresentantes extends javax.swing.JFrame {
         jLabel4.setForeground(new java.awt.Color(236, 240, 241));
         jLabel4.setText("Fecha:");
 
-        try {
-            txtFecha.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("##/##/####")));
-        } catch (java.text.ParseException ex) {
-            ex.printStackTrace();
-        }
-        txtFecha.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        jLabel8.setText("/");
+
+        jLabel9.setText("/");
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -343,18 +399,30 @@ public class HDDRepresentantes extends javax.swing.JFrame {
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addGap(14, 14, 14)
                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(txtDia, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel8)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtMes, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 6, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(40, Short.MAX_VALUE))
+                .addComponent(txtAnio, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(21, 21, 21))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                .addContainerGap(14, Short.MAX_VALUE)
+                .addContainerGap(15, Short.MAX_VALUE)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4))
-                .addGap(17, 17, 17))
+                    .addComponent(jLabel4)
+                    .addComponent(txtAnio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel9)
+                    .addComponent(txtMes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel8)
+                    .addComponent(txtDia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(16, 16, 16))
         );
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
@@ -498,6 +566,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
         jLabel24.setForeground(new java.awt.Color(236, 240, 241));
         jLabel24.setText("Total Flete    $:");
 
+        txtTotalMont.setEditable(false);
         txtTotalMont.setBackground(new java.awt.Color(51, 51, 51));
         txtTotalMont.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         txtTotalMont.setForeground(new java.awt.Color(0, 153, 51));
@@ -508,6 +577,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
             }
         });
 
+        txtTotalFlet.setEditable(false);
         txtTotalFlet.setBackground(new java.awt.Color(51, 51, 51));
         txtTotalFlet.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         txtTotalFlet.setForeground(new java.awt.Color(0, 153, 51));
@@ -554,6 +624,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
         jLabel25.setForeground(new java.awt.Color(236, 240, 241));
         jLabel25.setText("Cant. Bultos");
 
+        txtCantBultos.setEditable(false);
         txtCantBultos.setBackground(new java.awt.Color(51, 51, 51));
         txtCantBultos.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         txtCantBultos.setForeground(new java.awt.Color(0, 153, 51));
@@ -678,7 +749,20 @@ public class HDDRepresentantes extends javax.swing.JFrame {
             return;
         }
 
-        String fecha = txtFecha.getText();
+         //Fecha
+        // Obtener los valores de los campos de texto
+        int dia = Integer.parseInt(txtDia.getText());
+        int mes = Integer.parseInt(txtMes.getText());
+        int anio = Integer.parseInt(txtAnio.getText());
+        
+        // Crear una instancia de LocalDate si la fecha es válida
+            LocalDate fechaArmada = LocalDate.of(anio, mes, dia);
+            
+            // Formatear la fecha en el formato deseado
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                    String fechaFormateada = fechaArmada.format(formatter);
+                    
+                    
         boolean mostrarCuentaCorriente = cbCC.isSelected();
         boolean mostrarContado = cbContado.isSelected();
         boolean mostrarTodos = cbTodos.isSelected();
@@ -687,9 +771,9 @@ public class HDDRepresentantes extends javax.swing.JFrame {
         List<Movimientos> listaFiltrada;
 
         if (mostrarTodos) {
-            listaFiltrada = filtrarPorFecha(listaMovimientos, fecha);
+            listaFiltrada = filtrarPorFecha(listaMovimientos, fechaFormateada);
         } else {
-            listaFiltrada = filtrarMovimientos(listaMovimientos, fecha, mostrarCuentaCorriente, mostrarContado);
+            listaFiltrada = filtrarMovimientos(listaMovimientos, fechaFormateada, mostrarCuentaCorriente, mostrarContado);
         }
 
         // Obtener el representante seleccionado
@@ -1068,6 +1152,8 @@ public class HDDRepresentantes extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel2;
@@ -1076,8 +1162,10 @@ public class HDDRepresentantes extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel7;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tablaMovimientos;
+    private javax.swing.JTextField txtAnio;
     private javax.swing.JTextField txtCantBultos;
-    private javax.swing.JFormattedTextField txtFecha;
+    private javax.swing.JTextField txtDia;
+    private javax.swing.JTextField txtMes;
     private javax.swing.JTextField txtPatente;
     private javax.swing.JTextField txtTotalFlet;
     private javax.swing.JTextField txtTotalMont;
@@ -1144,8 +1232,22 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                 tituloFechaParagraph.add(chunkTitulo);
                 tituloFechaParagraph.add(Chunk.NEWLINE); // Agregar una nueva línea
 
-                String fecha = txtFecha.getText();
-                Chunk chunkFechas = new Chunk("Fecha: " + fecha, fontFecha);
+                //Fecha
+        // Obtener los valores de los campos de texto
+        int dia = Integer.parseInt(txtDia.getText());
+        int mes = Integer.parseInt(txtMes.getText());
+        int anio = Integer.parseInt(txtAnio.getText());
+        
+        // Crear una instancia de LocalDate si la fecha es válida
+            LocalDate fechaArmada = LocalDate.of(anio, mes, dia);
+            
+            // Formatear la fecha en el formato deseado
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                    String fechaFormateada = fechaArmada.format(formatter);
+                    
+                
+                
+                Chunk chunkFechas = new Chunk("Fecha: " + fechaFormateada, fontFecha);
                 tituloFechaParagraph.add(chunkFechas);
                 tituloFechaParagraph.setAlignment(Element.ALIGN_CENTER);
                 celdaTituloFecha.addElement(tituloFechaParagraph);
@@ -1352,8 +1454,22 @@ public class HDDRepresentantes extends javax.swing.JFrame {
             tituloFechaParagraph.add(chunkTitulo);
             tituloFechaParagraph.add(Chunk.NEWLINE); // Agregar una nueva línea
 
-            String fecha = txtFecha.getText();
-            Chunk chunkFechas = new Chunk("Fecha: " + fecha, fontFecha);
+            //Fecha
+        // Obtener los valores de los campos de texto
+        int dia = Integer.parseInt(txtDia.getText());
+        int mes = Integer.parseInt(txtMes.getText());
+        int anio = Integer.parseInt(txtAnio.getText());
+        
+        // Crear una instancia de LocalDate si la fecha es válida
+            LocalDate fechaArmada = LocalDate.of(anio, mes, dia);
+            
+            // Formatear la fecha en el formato deseado
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                    String fechaFormateada = fechaArmada.format(formatter);
+                    
+            
+            
+            Chunk chunkFechas = new Chunk("Fecha: " + fechaFormateada, fontFecha);
             tituloFechaParagraph.add(chunkFechas);
             tituloFechaParagraph.setAlignment(Element.ALIGN_CENTER);
             celdaTituloFecha.addElement(tituloFechaParagraph);

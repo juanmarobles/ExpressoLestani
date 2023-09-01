@@ -29,7 +29,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
      */
     public VentanaPrincipal() {
         initComponents();
-       setExtendedState(JFrame.MAXIMIZED_BOTH);
+       this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         instancia = this;
         dateAlertAp = new DateAlertApp();
     }
