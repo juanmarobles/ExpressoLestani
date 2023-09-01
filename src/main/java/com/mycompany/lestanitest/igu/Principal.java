@@ -164,7 +164,6 @@ import org.apache.pdfbox.pdmodel.PDPageTree;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 
 public class Principal extends javax.swing.JFrame {
-    
 
     Controladora control = new Controladora();
     TableRowSorter trs;
@@ -193,18 +192,16 @@ public class Principal extends javax.swing.JFrame {
         txtContrarembolso.setText("0");
         txtRedespacho.setText("0");
         txtValDeclarado.setText("0");
-        
-        
-       //FECHA
-       // Obtener la fecha actual
+
+        //FECHA
+        // Obtener la fecha actual
         LocalDate fechaActual = LocalDate.now();
 
         // Mostrar la fecha actual en los campos de texto correspondientes
         txtDia.setText(String.valueOf(fechaActual.getDayOfMonth()));
         txtMes.setText(String.valueOf(fechaActual.getMonthValue()));
         txtAnio.setText(String.valueOf(fechaActual.getYear()));
-        
-        
+
         // Obtener los valores de los campos de texto
         int dia = Integer.parseInt(txtDia.getText());
         int mes = Integer.parseInt(txtMes.getText());
@@ -213,14 +210,14 @@ public class Principal extends javax.swing.JFrame {
         try {
             // Crear una instancia de LocalDate si la fecha es válida
             LocalDate fechaArmada = LocalDate.of(anio, mes, dia);
-            
+
             // Formatear la fecha en el formato deseado
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                    String fechaFormateada = fechaArmada.format(formatter);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            String fechaFormateada = fechaArmada.format(formatter);
 
             // Realizar otras operaciones con fechaArmada aquí
             System.out.println("Fecha  válida: " + fechaFormateada);
-            
+
         } catch (DateTimeException e) {
             // Manejar el caso en que la fecha no sea válida
             System.out.println("Fecha inválida.");
@@ -238,7 +235,7 @@ public class Principal extends javax.swing.JFrame {
         textDestinos.setNextFocusableComponent(cbServicios);
         JTextField textServicios = (JTextField) cbServicios.getEditor().getEditorComponent();
         textServicios.setNextFocusableComponent(txtRemito);
-        
+
         txtRemito.setNextFocusableComponent(txtBulto);
         txtBulto.setNextFocusableComponent(cbfOrigen);
         cbfOrigen.setNextFocusableComponent(cbfDestino);
@@ -247,27 +244,23 @@ public class Principal extends javax.swing.JFrame {
         cbmontoPagado.setNextFocusableComponent(cbMontoRendido);
         cbfleteRendido.setNextFocusableComponent(cbRepresentantes);
 
-        
         JTextField textRepre = (JTextField) cbRepresentantes.getEditor().getEditorComponent();
         textRepre.setNextFocusableComponent(txtObservaciones);
-        
-       cbCuentaCorriente.setNextFocusableComponent(txtMonto);
-       txtObservaciones.setNextFocusableComponent(btnAgregar);
-       btnAgregar.setNextFocusableComponent(btnEditarMovimiento);
-       btnEditarMovimiento.setNextFocusableComponent(btnEliminarMovimiento);
-       btnEliminarMovimiento.setNextFocusableComponent(btnGenerarRemito);
-       btnGenerarRemito.setNextFocusableComponent(btnGenerarRemitoDuplicado);
-       btnGenerarRemitoDuplicado.setNextFocusableComponent(txtDia);
-       
-         
+
+        cbCuentaCorriente.setNextFocusableComponent(txtMonto);
+        txtObservaciones.setNextFocusableComponent(btnAgregar);
+        btnAgregar.setNextFocusableComponent(btnEditarMovimiento);
+        btnEditarMovimiento.setNextFocusableComponent(btnEliminarMovimiento);
+        btnEliminarMovimiento.setNextFocusableComponent(btnGenerarRemito);
+        btnGenerarRemito.setNextFocusableComponent(btnGenerarRemitoDuplicado);
+        btnGenerarRemitoDuplicado.setNextFocusableComponent(txtDia);
+
         //Borde al seleccionar TEXFIELD
-         SwingUtilities.invokeLater(() -> {
+        SwingUtilities.invokeLater(() -> {
             // Define el borde de enfoque
             Border normalBorder = txtRemito.getBorder();
             Border focusBorder = new LineBorder(Color.BLUE, 3);
 
-           
-            
             FocusAdapter focusAdapter = new FocusAdapter() {
                 @Override
                 public void focusGained(FocusEvent e) {
@@ -282,17 +275,17 @@ public class Principal extends javax.swing.JFrame {
                     ((JComponent) e.getComponent()).setBorder(normalBorder);
                 }
             };
-             txtDia.addFocusListener(focusAdapter);
-             txtMes.addFocusListener(focusAdapter);
-             txtAnio.addFocusListener(focusAdapter);
-             txtRemito.addFocusListener(focusAdapter);
-             txtBulto.addFocusListener(focusAdapter);
-             txtObservaciones.addFocusListener(focusAdapter);
-             txtMonto.addFocusListener(focusAdapter);
-             txtFlete.addFocusListener(focusAdapter);
+            txtDia.addFocusListener(focusAdapter);
+            txtMes.addFocusListener(focusAdapter);
+            txtAnio.addFocusListener(focusAdapter);
+            txtRemito.addFocusListener(focusAdapter);
+            txtBulto.addFocusListener(focusAdapter);
+            txtObservaciones.addFocusListener(focusAdapter);
+            txtMonto.addFocusListener(focusAdapter);
+            txtFlete.addFocusListener(focusAdapter);
         });
-         //CHECKBOX
-          SwingUtilities.invokeLater(() -> {
+        //CHECKBOX
+        SwingUtilities.invokeLater(() -> {
 
             // Cambia la apariencia del checkbox cuando obtiene el enfoque
             FocusAdapter focusAdapter = new FocusAdapter() {
@@ -310,23 +303,22 @@ public class Principal extends javax.swing.JFrame {
                     checkBox.setForeground(Color.WHITE);
                 }
             };
-              
-              cbCuentaCorriente.addFocusListener(focusAdapter);
-              cbfOrigen.addFocusListener(focusAdapter);
-              cbfDestino.addFocusListener(focusAdapter);
-              cbmontoPagado.addFocusListener(focusAdapter);
-              cbMontoRendido.addFocusListener(focusAdapter);
-              cbfletePagado.addFocusListener(focusAdapter);
-              cbfleteRendido.addFocusListener(focusAdapter);
 
-                  });
-          
+            cbCuentaCorriente.addFocusListener(focusAdapter);
+            cbfOrigen.addFocusListener(focusAdapter);
+            cbfDestino.addFocusListener(focusAdapter);
+            cbmontoPagado.addFocusListener(focusAdapter);
+            cbMontoRendido.addFocusListener(focusAdapter);
+            cbfletePagado.addFocusListener(focusAdapter);
+            cbfleteRendido.addFocusListener(focusAdapter);
+
+        });
+
         //Combobox
         SwingUtilities.invokeLater(() -> {
             // Colores personalizados
             Color emptyBackgroundColor = Color.RED;
             Color selectedBackgroundColor = Color.YELLOW;
-
 
             applyComboBoxStyle(cbClientes, emptyBackgroundColor, selectedBackgroundColor);
             applyComboBoxStyle(cbDestinos, emptyBackgroundColor, selectedBackgroundColor);
@@ -334,10 +326,10 @@ public class Principal extends javax.swing.JFrame {
             applyComboBoxStyle(cbRepresentantes, emptyBackgroundColor, selectedBackgroundColor);
 
         });
-        
+
         //Botones
         SwingUtilities.invokeLater(() -> {
-          // Define la apariencia normal
+            // Define la apariencia normal
             Color normalFont = btnAgregar.getForeground();
             Color normalBackgroundColor = btnAgregar.getBackground();
             Border normalBorder = btnAgregar.getBorder();
@@ -363,17 +355,14 @@ public class Principal extends javax.swing.JFrame {
                     button.setForeground(normalFont);
                 }
             };
-        
+
             btnAgregar.addFocusListener(focusAdapter);
             btnEditarMovimiento.addFocusListener(focusAdapter);
             btnEliminarMovimiento.addFocusListener(focusAdapter);
             btnGenerarRemito.addFocusListener(focusAdapter);
             btnGenerarRemitoDuplicado.addFocusListener(focusAdapter);
-            });
-       
-       
-       
-        
+        });
+
         // Listener al mause para editar con doble click el movimiento.
         tablaMovimientos.addMouseListener(new MouseAdapter() {
             @Override
@@ -415,28 +404,25 @@ public class Principal extends javax.swing.JFrame {
         txtMonto.addKeyListener(keyListener);
         txtFlete.addKeyListener(keyListener);
 
-       
-                    // Obtén la fecha y hora actual
-                    LocalDateTime now = LocalDateTime.now();
+        // Obtén la fecha y hora actual
+        LocalDateTime now = LocalDateTime.now();
 
-                    // Comprueba si es después de las 17:00 horas
-                    if (now.getHour() >= 17) {
-                        // Añade un día a la fecha actual
-                        LocalDate tomorrow = now.toLocalDate().plusDays(1);
+        // Comprueba si es después de las 17:00 horas
+        if (now.getHour() >= 17) {
+            // Añade un día a la fecha actual
+            LocalDate tomorrow = now.toLocalDate().plusDays(1);
 
-                        // Formatea la fecha en el formato deseado (por ejemplo, "dd/MM/yyyy")
-                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                        String formattedDate = tomorrow.format(formatter);
+            // Formatea la fecha en el formato deseado (por ejemplo, "dd/MM/yyyy")
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            String formattedDate = tomorrow.format(formatter);
 
-                        // Asigna los componentes de la fecha a los campos de texto
-                        txtDia.setText(String.valueOf(tomorrow.getDayOfMonth()));
-                        txtMes.setText(String.valueOf(tomorrow.getMonthValue()));
-                        txtAnio.setText(String.valueOf(tomorrow.getYear()));
+            // Asigna los componentes de la fecha a los campos de texto
+            txtDia.setText(String.valueOf(tomorrow.getDayOfMonth()));
+            txtMes.setText(String.valueOf(tomorrow.getMonthValue()));
+            txtAnio.setText(String.valueOf(tomorrow.getYear()));
 
-                        System.out.println("Fecha cambiada a: " + formattedDate);
-                    } 
-                 
-    
+            System.out.println("Fecha cambiada a: " + formattedDate);
+        }
 
         cargarNumeroRemito();
 
@@ -472,7 +458,7 @@ public class Principal extends javax.swing.JFrame {
         });
 
     }
-    
+
     private static void applyComboBoxStyle(JComboBox<String> comboBox, Color emptyBgColor, Color selectedBgColor) {
         comboBox.setBackground(emptyBgColor);
 
@@ -579,7 +565,7 @@ public class Principal extends javax.swing.JFrame {
                 if (cbDestinos.getSelectedIndex() != -1) {
                     // Obtener el cliente seleccionado del combobox
                     destinatarioSeleccionado = listaClientes.get(cbDestinos.getSelectedIndex());
-
+                     
                     // Actualizar los datos del remitente en el PDF usando clienteSeleccionado
                     // ... (el código para generar el PDF se mantiene igual)
                 }
@@ -1772,53 +1758,52 @@ public class Principal extends javax.swing.JFrame {
 
             modeloTabla.addRow(objeto);
         }
-        
+
         //Limpiar Combobox
-    // Remover los ActionListeners y KeyListeners de cbRepresentantes
-    ActionListener[] repActionListeners = cbRepresentantes.getActionListeners();
-    KeyListener[] repKeyListeners = cbRepresentantes.getEditor().getEditorComponent().getKeyListeners();
+        // Remover los ActionListeners y KeyListeners de cbRepresentantes
+        ActionListener[] repActionListeners = cbRepresentantes.getActionListeners();
+        KeyListener[] repKeyListeners = cbRepresentantes.getEditor().getEditorComponent().getKeyListeners();
 
-    for (ActionListener listener : repActionListeners) {
-        cbRepresentantes.removeActionListener(listener);
-    }
+        for (ActionListener listener : repActionListeners) {
+            cbRepresentantes.removeActionListener(listener);
+        }
 
-    for (KeyListener listener : repKeyListeners) {
-        cbRepresentantes.getEditor().getEditorComponent().removeKeyListener(listener);
-    }
+        for (KeyListener listener : repKeyListeners) {
+            cbRepresentantes.getEditor().getEditorComponent().removeKeyListener(listener);
+        }
 
-    // Remover los ActionListeners y KeyListeners de cbDestinos
-    ActionListener[] destActionListeners = cbDestinos.getActionListeners();
-    KeyListener[] destKeyListeners = cbDestinos.getEditor().getEditorComponent().getKeyListeners();
+        // Remover los ActionListeners y KeyListeners de cbDestinos
+        ActionListener[] destActionListeners = cbDestinos.getActionListeners();
+        KeyListener[] destKeyListeners = cbDestinos.getEditor().getEditorComponent().getKeyListeners();
 
-    for (ActionListener listener : destActionListeners) {
-        cbDestinos.removeActionListener(listener);
-    }
+        for (ActionListener listener : destActionListeners) {
+            cbDestinos.removeActionListener(listener);
+        }
 
-    for (KeyListener listener : destKeyListeners) {
-        cbDestinos.getEditor().getEditorComponent().removeKeyListener(listener);
-    }
+        for (KeyListener listener : destKeyListeners) {
+            cbDestinos.getEditor().getEditorComponent().removeKeyListener(listener);
+        }
 
-    cbRepresentantes.setSelectedIndex(-1); // Deselecciona cualquier elemento en el combo box
-    cbDestinos.setSelectedIndex(-1); // Deselecciona cualquier elemento en cbDestinos
-    
-    // Volver a agregar los ActionListeners y KeyListeners a cbRepresentantes
-    for (ActionListener listener : repActionListeners) {
-        cbRepresentantes.addActionListener(listener);
-    }
+        cbRepresentantes.setSelectedIndex(-1); // Deselecciona cualquier elemento en el combo box
+        cbDestinos.setSelectedIndex(-1); // Deselecciona cualquier elemento en cbDestinos
 
-    for (KeyListener listener : repKeyListeners) {
-        cbRepresentantes.getEditor().getEditorComponent().addKeyListener(listener);
-    }
+        // Volver a agregar los ActionListeners y KeyListeners a cbRepresentantes
+        for (ActionListener listener : repActionListeners) {
+            cbRepresentantes.addActionListener(listener);
+        }
 
-    // Volver a agregar los ActionListeners y KeyListeners a cbDestinos
-    for (ActionListener listener : destActionListeners) {
-        cbDestinos.addActionListener(listener);
-    }
+        for (KeyListener listener : repKeyListeners) {
+            cbRepresentantes.getEditor().getEditorComponent().addKeyListener(listener);
+        }
 
-    for (KeyListener listener : destKeyListeners) {
-        cbDestinos.getEditor().getEditorComponent().addKeyListener(listener);
-    }
+        // Volver a agregar los ActionListeners y KeyListeners a cbDestinos
+        for (ActionListener listener : destActionListeners) {
+            cbDestinos.addActionListener(listener);
+        }
 
+        for (KeyListener listener : destKeyListeners) {
+            cbDestinos.getEditor().getEditorComponent().addKeyListener(listener);
+        }
 
         //Limpiar datos
         txtRemito.setText("0");
@@ -1834,8 +1819,8 @@ public class Principal extends javax.swing.JFrame {
         txtContrarembolso.setText("0");
         txtRedespacho.setText("0");
         txtValDeclarado.setText("0");
-        
-        
+
+
     }//GEN-LAST:event_btnAgregarActionPerformed
 
     private void txtMontoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMontoActionPerformed
@@ -2061,53 +2046,52 @@ public class Principal extends javax.swing.JFrame {
 
             modeloTabla.addRow(objeto);
         }
-        
-          //Limpiar Combobox
-    // Remover los ActionListeners y KeyListeners de cbRepresentantes
-    ActionListener[] repActionListeners = cbRepresentantes.getActionListeners();
-    KeyListener[] repKeyListeners = cbRepresentantes.getEditor().getEditorComponent().getKeyListeners();
 
-    for (ActionListener listener : repActionListeners) {
-        cbRepresentantes.removeActionListener(listener);
-    }
+        //Limpiar Combobox
+        // Remover los ActionListeners y KeyListeners de cbRepresentantes
+        ActionListener[] repActionListeners = cbRepresentantes.getActionListeners();
+        KeyListener[] repKeyListeners = cbRepresentantes.getEditor().getEditorComponent().getKeyListeners();
 
-    for (KeyListener listener : repKeyListeners) {
-        cbRepresentantes.getEditor().getEditorComponent().removeKeyListener(listener);
-    }
+        for (ActionListener listener : repActionListeners) {
+            cbRepresentantes.removeActionListener(listener);
+        }
 
-    // Remover los ActionListeners y KeyListeners de cbDestinos
-    ActionListener[] destActionListeners = cbDestinos.getActionListeners();
-    KeyListener[] destKeyListeners = cbDestinos.getEditor().getEditorComponent().getKeyListeners();
+        for (KeyListener listener : repKeyListeners) {
+            cbRepresentantes.getEditor().getEditorComponent().removeKeyListener(listener);
+        }
 
-    for (ActionListener listener : destActionListeners) {
-        cbDestinos.removeActionListener(listener);
-    }
+        // Remover los ActionListeners y KeyListeners de cbDestinos
+        ActionListener[] destActionListeners = cbDestinos.getActionListeners();
+        KeyListener[] destKeyListeners = cbDestinos.getEditor().getEditorComponent().getKeyListeners();
 
-    for (KeyListener listener : destKeyListeners) {
-        cbDestinos.getEditor().getEditorComponent().removeKeyListener(listener);
-    }
+        for (ActionListener listener : destActionListeners) {
+            cbDestinos.removeActionListener(listener);
+        }
 
-    cbRepresentantes.setSelectedIndex(-1); // Deselecciona cualquier elemento en el combo box
-    cbDestinos.setSelectedIndex(-1); // Deselecciona cualquier elemento en cbDestinos
-    
-    // Volver a agregar los ActionListeners y KeyListeners a cbRepresentantes
-    for (ActionListener listener : repActionListeners) {
-        cbRepresentantes.addActionListener(listener);
-    }
+        for (KeyListener listener : destKeyListeners) {
+            cbDestinos.getEditor().getEditorComponent().removeKeyListener(listener);
+        }
 
-    for (KeyListener listener : repKeyListeners) {
-        cbRepresentantes.getEditor().getEditorComponent().addKeyListener(listener);
-    }
+        cbRepresentantes.setSelectedIndex(-1); // Deselecciona cualquier elemento en el combo box
+        cbDestinos.setSelectedIndex(-1); // Deselecciona cualquier elemento en cbDestinos
 
-    // Volver a agregar los ActionListeners y KeyListeners a cbDestinos
-    for (ActionListener listener : destActionListeners) {
-        cbDestinos.addActionListener(listener);
-    }
+        // Volver a agregar los ActionListeners y KeyListeners a cbRepresentantes
+        for (ActionListener listener : repActionListeners) {
+            cbRepresentantes.addActionListener(listener);
+        }
 
-    for (KeyListener listener : destKeyListeners) {
-        cbDestinos.getEditor().getEditorComponent().addKeyListener(listener);
-    }
+        for (KeyListener listener : repKeyListeners) {
+            cbRepresentantes.getEditor().getEditorComponent().addKeyListener(listener);
+        }
 
+        // Volver a agregar los ActionListeners y KeyListeners a cbDestinos
+        for (ActionListener listener : destActionListeners) {
+            cbDestinos.addActionListener(listener);
+        }
+
+        for (KeyListener listener : destKeyListeners) {
+            cbDestinos.getEditor().getEditorComponent().addKeyListener(listener);
+        }
 
         //Limpiar datos
         txtRemito.setText("0");
@@ -2266,53 +2250,52 @@ public class Principal extends javax.swing.JFrame {
 
             modeloTabla.addRow(objeto);
         }
-        
-          //Limpiar Combobox
-    // Remover los ActionListeners y KeyListeners de cbRepresentantes
-    ActionListener[] repActionListeners = cbRepresentantes.getActionListeners();
-    KeyListener[] repKeyListeners = cbRepresentantes.getEditor().getEditorComponent().getKeyListeners();
 
-    for (ActionListener listener : repActionListeners) {
-        cbRepresentantes.removeActionListener(listener);
-    }
+        //Limpiar Combobox
+        // Remover los ActionListeners y KeyListeners de cbRepresentantes
+        ActionListener[] repActionListeners = cbRepresentantes.getActionListeners();
+        KeyListener[] repKeyListeners = cbRepresentantes.getEditor().getEditorComponent().getKeyListeners();
 
-    for (KeyListener listener : repKeyListeners) {
-        cbRepresentantes.getEditor().getEditorComponent().removeKeyListener(listener);
-    }
+        for (ActionListener listener : repActionListeners) {
+            cbRepresentantes.removeActionListener(listener);
+        }
 
-    // Remover los ActionListeners y KeyListeners de cbDestinos
-    ActionListener[] destActionListeners = cbDestinos.getActionListeners();
-    KeyListener[] destKeyListeners = cbDestinos.getEditor().getEditorComponent().getKeyListeners();
+        for (KeyListener listener : repKeyListeners) {
+            cbRepresentantes.getEditor().getEditorComponent().removeKeyListener(listener);
+        }
 
-    for (ActionListener listener : destActionListeners) {
-        cbDestinos.removeActionListener(listener);
-    }
+        // Remover los ActionListeners y KeyListeners de cbDestinos
+        ActionListener[] destActionListeners = cbDestinos.getActionListeners();
+        KeyListener[] destKeyListeners = cbDestinos.getEditor().getEditorComponent().getKeyListeners();
 
-    for (KeyListener listener : destKeyListeners) {
-        cbDestinos.getEditor().getEditorComponent().removeKeyListener(listener);
-    }
+        for (ActionListener listener : destActionListeners) {
+            cbDestinos.removeActionListener(listener);
+        }
 
-    cbRepresentantes.setSelectedIndex(-1); // Deselecciona cualquier elemento en el combo box
-    cbDestinos.setSelectedIndex(-1); // Deselecciona cualquier elemento en cbDestinos
-    
-    // Volver a agregar los ActionListeners y KeyListeners a cbRepresentantes
-    for (ActionListener listener : repActionListeners) {
-        cbRepresentantes.addActionListener(listener);
-    }
+        for (KeyListener listener : destKeyListeners) {
+            cbDestinos.getEditor().getEditorComponent().removeKeyListener(listener);
+        }
 
-    for (KeyListener listener : repKeyListeners) {
-        cbRepresentantes.getEditor().getEditorComponent().addKeyListener(listener);
-    }
+        cbRepresentantes.setSelectedIndex(-1); // Deselecciona cualquier elemento en el combo box
+        cbDestinos.setSelectedIndex(-1); // Deselecciona cualquier elemento en cbDestinos
 
-    // Volver a agregar los ActionListeners y KeyListeners a cbDestinos
-    for (ActionListener listener : destActionListeners) {
-        cbDestinos.addActionListener(listener);
-    }
+        // Volver a agregar los ActionListeners y KeyListeners a cbRepresentantes
+        for (ActionListener listener : repActionListeners) {
+            cbRepresentantes.addActionListener(listener);
+        }
 
-    for (KeyListener listener : destKeyListeners) {
-        cbDestinos.getEditor().getEditorComponent().addKeyListener(listener);
-    }
+        for (KeyListener listener : repKeyListeners) {
+            cbRepresentantes.getEditor().getEditorComponent().addKeyListener(listener);
+        }
 
+        // Volver a agregar los ActionListeners y KeyListeners a cbDestinos
+        for (ActionListener listener : destActionListeners) {
+            cbDestinos.addActionListener(listener);
+        }
+
+        for (KeyListener listener : destKeyListeners) {
+            cbDestinos.getEditor().getEditorComponent().addKeyListener(listener);
+        }
 
         //Limpiar datos
         txtRemito.setText("0");
@@ -2449,22 +2432,21 @@ public class Principal extends javax.swing.JFrame {
         SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/YYYY");
         return formatoFecha.format(fecha);
     }
-    
-   
 
-   public Date getFecha() {
-    int dia = Integer.parseInt(txtDia.getText());
-    int mes = Integer.parseInt(txtMes.getText());
-    int anio = Integer.parseInt(txtAnio.getText());
+    public Date getFecha() {
+        int dia = Integer.parseInt(txtDia.getText());
+        int mes = Integer.parseInt(txtMes.getText());
+        int anio = Integer.parseInt(txtAnio.getText());
 
-    Calendar calendar = Calendar.getInstance();
-    // Los meses en Calendar van de 0 a 11, así que resta 1 al mes
-    calendar.set(anio, mes - 1, dia);
+        Calendar calendar = Calendar.getInstance();
+        // Los meses en Calendar van de 0 a 11, así que resta 1 al mes
+        calendar.set(anio, mes - 1, dia);
 
-    Date date = calendar.getTime();
+        Date date = calendar.getTime();
 
-    return date;
-}
+        return date;
+    }
+
     private void generarPdf() {
         Document document = new Document();
 
@@ -2483,7 +2465,7 @@ public class Principal extends javax.swing.JFrame {
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile));
 
             document.open();
-            
+
             // Crear un PdfTemplate para agregar el contenido dentro del marco
             PdfContentByte canvas = writer.getDirectContent();
             PdfTemplate template = canvas.createTemplate(document.getPageSize().getWidth() - 40, document.getPageSize().getHeight() - 40);
@@ -2576,90 +2558,96 @@ public class Principal extends javax.swing.JFrame {
             PdfPCell remitenteCell = new PdfPCell();
             remitenteCell.setBorder(Rectangle.BOX);
 
-            Paragraph remitenteHeader = new Paragraph("REMITENTE", fontColumnas);
-            remitenteHeader.setAlignment(Element.ALIGN_CENTER);
-            remitenteCell.addElement(remitenteHeader);
-
             String nombreCliente = "";
             String direccion = "";
             String localidad = "";
             String cuit = "";
+            String tel = "";
             if (clienteSeleccionado != null && clienteSeleccionado.getDireccion() != null && clienteSeleccionado.getLocalidad() != null
-                    && clienteSeleccionado.getCuit() != null && clienteSeleccionado.getNombre() != null) {
+                    && clienteSeleccionado.getCuit() != null && clienteSeleccionado.getNombre() != null && clienteSeleccionado.getTelefono() != null) {
                 nombreCliente = clienteSeleccionado.getNombre().toUpperCase();
                 direccion = clienteSeleccionado.getDireccion().toUpperCase();
                 localidad = clienteSeleccionado.getLocalidad().toUpperCase();
+                tel = clienteSeleccionado.getTelefono().toUpperCase();
                 cuit = clienteSeleccionado.getCuit().toUpperCase();
             } else {
                 nombreCliente = cbClientes.getSelectedItem().toString().toUpperCase();
                 direccion = "";
                 localidad = cbDestinos.getSelectedItem().toString().toUpperCase();
                 cuit = "";
+                tel = "";
             }
 
-            Paragraph nombreParagraph = new Paragraph(nombreCliente, fontR);
-            nombreParagraph.setAlignment(Element.ALIGN_CENTER);
+            Paragraph nombreParagraph = new Paragraph("REMITENTE: " + nombreCliente, fontR);
+            nombreParagraph.setAlignment(Element.ALIGN_LEFT);
             remitenteCell.addElement(nombreParagraph);
 
             Paragraph direccionParagraph = new Paragraph("DIRECCION: " + direccion, fontR);
-            direccionParagraph.setAlignment(Element.ALIGN_CENTER);
+            direccionParagraph.setAlignment(Element.ALIGN_LEFT);
             remitenteCell.addElement(direccionParagraph);
 
             Paragraph localidadParagraph = new Paragraph("LOCALIDAD: " + localidad, fontR);
-            localidadParagraph.setAlignment(Element.ALIGN_CENTER);
+            localidadParagraph.setAlignment(Element.ALIGN_LEFT);
             remitenteCell.addElement(localidadParagraph);
 
+            Paragraph telParagraph = new Paragraph("CELULAR: " + tel, fontR);
+            telParagraph.setAlignment(Element.ALIGN_LEFT);
+            remitenteCell.addElement(telParagraph);
+
             Paragraph cuitParagraph = new Paragraph("CUIT: " + cuit, fontR);
-            cuitParagraph.setAlignment(Element.ALIGN_CENTER);
+            cuitParagraph.setAlignment(Element.ALIGN_LEFT);
             remitenteCell.addElement(cuitParagraph);
 
-            remitenteCell.setHorizontalAlignment(Element.ALIGN_CENTER); // Alineación horizontal de la celda
+            remitenteCell.setHorizontalAlignment(Element.ALIGN_LEFT); // Alineación horizontal de la celda
             tablaContenedora.addCell(remitenteCell);
 
             // Crear la celda del destinatario
             PdfPCell destinatarioCell = new PdfPCell();
             destinatarioCell.setBorder(Rectangle.BOX);
 
-            Paragraph destinatarioHeader = new Paragraph("DESTINATARIO", fontColumnas);
-            destinatarioHeader.setAlignment(Element.ALIGN_CENTER);
-            destinatarioCell.addElement(destinatarioHeader);
-
             String nombreDestinatario = "";
             String direccionDestinatario = "";
             String localidadDestinatario = "";
             String cuitDestinatario = "";
+            String telDestinatario = "";
 
             if (destinatarioSeleccionado != null && destinatarioSeleccionado.getDireccion() != null && destinatarioSeleccionado.getLocalidad() != null
-                    && destinatarioSeleccionado.getCuit() != null && destinatarioSeleccionado.getNombre() != null) {
+                    && destinatarioSeleccionado.getCuit() != null && destinatarioSeleccionado.getNombre() != null && destinatarioSeleccionado.getTelefono() != null) {
                 nombreDestinatario = destinatarioSeleccionado.getNombre().toUpperCase();
                 direccionDestinatario = destinatarioSeleccionado.getDireccion().toUpperCase();
                 localidadDestinatario = destinatarioSeleccionado.getLocalidad().toUpperCase();
                 cuitDestinatario = destinatarioSeleccionado.getCuit().toUpperCase();
+                telDestinatario = destinatarioSeleccionado.getTelefono().toUpperCase();
 
             } else {
                 nombreDestinatario = cbDestinos.getSelectedItem().toString().toUpperCase();
                 direccionDestinatario = "";
                 localidadDestinatario = "";
                 cuitDestinatario = "";
+                telDestinatario = "";
             }
 
-            Paragraph nombreDestinatarioParagraph = new Paragraph(nombreDestinatario, fontR);
-            nombreDestinatarioParagraph.setAlignment(Element.ALIGN_CENTER);
+            Paragraph nombreDestinatarioParagraph = new Paragraph("DESTINATARIO: "+nombreDestinatario, fontR);
+            nombreDestinatarioParagraph.setAlignment(Element.ALIGN_LEFT);
             destinatarioCell.addElement(nombreDestinatarioParagraph);
 
             Paragraph direccionDestinatarioParagraph = new Paragraph("DIRECCION: " + direccionDestinatario, fontR);
-            direccionDestinatarioParagraph.setAlignment(Element.ALIGN_CENTER);
+            direccionDestinatarioParagraph.setAlignment(Element.ALIGN_LEFT);
             destinatarioCell.addElement(direccionDestinatarioParagraph);
 
             Paragraph localidadDestinatarioParagraph = new Paragraph("LOCALIDAD: " + localidadDestinatario, fontR);
-            localidadDestinatarioParagraph.setAlignment(Element.ALIGN_CENTER);
+            localidadDestinatarioParagraph.setAlignment(Element.ALIGN_LEFT);
             destinatarioCell.addElement(localidadDestinatarioParagraph);
+            
+            Paragraph telDestinatarioParagraph = new Paragraph("TELEFONO: " + telDestinatario, fontR);
+            telDestinatarioParagraph.setAlignment(Element.ALIGN_LEFT);
+            destinatarioCell.addElement(telDestinatarioParagraph);
 
             Paragraph cuitDestinatarioParagraph = new Paragraph("CUIT: " + cuitDestinatario, fontR);
-            cuitDestinatarioParagraph.setAlignment(Element.ALIGN_CENTER);
+            cuitDestinatarioParagraph.setAlignment(Element.ALIGN_LEFT);
             destinatarioCell.addElement(cuitDestinatarioParagraph);
 
-            destinatarioCell.setHorizontalAlignment(Element.ALIGN_CENTER); // Alineación horizontal de la celda
+            destinatarioCell.setHorizontalAlignment(Element.ALIGN_LEFT); // Alineación horizontal de la celda
             tablaContenedora.addCell(destinatarioCell);
 
             document.add(tablaContenedora);
@@ -2693,14 +2681,13 @@ public class Principal extends javax.swing.JFrame {
             String comContrarembolso = txtContrarembolso.getText();
             String redespacho = txtRedespacho.getText();
             String valDeclarado = txtValDeclarado.getText();
-                    
 
             // Agregar los valores a la tabla
             tablaa.addCell(createCell(descripcion, font, celdaConBorde));
-            tablaa.addCell(createCell("$"+seguro, font, celdaConBorde)); // Columna "Seguro"
-            tablaa.addCell(createCell("$"+comContrarembolso, font, celdaConBorde)); // Columna "Com. Contrarrembolso"
-            tablaa.addCell(createCell("$"+redespacho, font, celdaConBorde)); // Columna "Redespacho"
-            tablaa.addCell(createCell("$"+valDeclarado, font, celdaConBorde)); // Columna "Valor Declarado"
+            tablaa.addCell(createCell("$" + seguro, font, celdaConBorde)); // Columna "Seguro"
+            tablaa.addCell(createCell("$" + comContrarembolso, font, celdaConBorde)); // Columna "Com. Contrarrembolso"
+            tablaa.addCell(createCell("$" + redespacho, font, celdaConBorde)); // Columna "Redespacho"
+            tablaa.addCell(createCell("$" + valDeclarado, font, celdaConBorde)); // Columna "Valor Declarado"
             tablaa.addCell(createCell(observaciones, font, celdaConBorde));
 
             // Agregar la tabla al documento
@@ -2742,7 +2729,7 @@ public class Principal extends javax.swing.JFrame {
             Font fontPersonalizado = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
 
             // Crea el párrafo con el texto y la fuente personalizada
-            Paragraph c = new Paragraph("CONTRAREEMBOLSO: $" + txtMonto.getText() + ".0", fontPersonalizado);
+            Paragraph c = new Paragraph("CONTRAREEMBOLSO: $" + txtMonto.getText(), fontPersonalizado);
 
             // Resto del código
             c.setAlignment(Element.ALIGN_LEFT);
@@ -2752,7 +2739,7 @@ public class Principal extends javax.swing.JFrame {
             celdaC.setPaddingBottom(4f);
             tablaTexto.addCell(celdaC);
 
-            Paragraph b = new Paragraph("FLETE: $" + txtFlete.getText()+ ".0", fontR);
+            Paragraph b = new Paragraph("FLETE: $" + txtFlete.getText(), fontR);
             b.setAlignment(Element.ALIGN_LEFT);
             PdfPCell celdaB = new PdfPCell(b);
             celdaB.setBorder(Rectangle.LEFT | Rectangle.RIGHT | Rectangle.BOTTOM); // Agregar borde alrededor de la celda "b"
@@ -2810,11 +2797,11 @@ public class Principal extends javax.swing.JFrame {
 
             double monto = Double.parseDouble(txtMonto.getText());
             double fletee = Double.parseDouble(txtFlete.getText());
-            double seguroo = Double.parseDouble(txtSeguro.getText());
-            double comContra = Double.parseDouble(txtContrarembolso.getText());
-            double redespa = Double.parseDouble(txtRedespacho.getText());
-            double valDecla = Double.parseDouble(txtValDeclarado.getText());
-            double total = monto + fletee + seguroo + comContra + redespa + valDecla;
+            //double seguroo = Double.parseDouble(txtSeguro.getText());
+            //double comContra = Double.parseDouble(txtContrarembolso.getText());
+            //double redespa = Double.parseDouble(txtRedespacho.getText());
+            //double valDecla = Double.parseDouble(txtValDeclarado.getText());
+            double total = monto + fletee;
             Paragraph totalMonto = new Paragraph("TOTAL: $" + total, fontR);
             totalMonto.setAlignment(Element.ALIGN_RIGHT);
             PdfPCell celdaTotal = new PdfPCell(totalMonto);
@@ -2829,7 +2816,7 @@ public class Principal extends javax.swing.JFrame {
             tabla.setSpacingAfter(3);
             document.add(tabla);
 
-               // Cerrar el template y añadirlo al contenido del documento
+            // Cerrar el template y añadirlo al contenido del documento
             template.closePathFillStroke();
             canvas.addTemplate(template, 20, 20);
 
@@ -2844,7 +2831,7 @@ public class Principal extends javax.swing.JFrame {
             marco.setBorderWidth(1); // Establecer el ancho del borde
             marco.setBorderColor(BaseColor.BLACK); // Establecer el color del borde
             canvasForBorders.rectangle(marco);
-            
+
             document.close();
             writer.close();
 
@@ -3104,14 +3091,13 @@ public class Principal extends javax.swing.JFrame {
             String comContrarembolso = txtContrarembolso.getText();
             String redespacho = txtRedespacho.getText();
             String valDeclarado = txtValDeclarado.getText();
-                    
 
             // Agregar los valores a la tabla
             tablaa.addCell(createCell(descripcion, font, celdaConBorde));
-            tablaa.addCell(createCell("$"+seguro, font, celdaConBorde)); // Columna "Seguro"
-            tablaa.addCell(createCell("$"+comContrarembolso, font, celdaConBorde)); // Columna "Com. Contrarrembolso"
-            tablaa.addCell(createCell("$"+redespacho, font, celdaConBorde)); // Columna "Redespacho"
-            tablaa.addCell(createCell("$"+valDeclarado, font, celdaConBorde)); // Columna "Valor Declarado"
+            tablaa.addCell(createCell("$" + seguro, font, celdaConBorde)); // Columna "Seguro"
+            tablaa.addCell(createCell("$" + comContrarembolso, font, celdaConBorde)); // Columna "Com. Contrarrembolso"
+            tablaa.addCell(createCell("$" + redespacho, font, celdaConBorde)); // Columna "Redespacho"
+            tablaa.addCell(createCell("$" + valDeclarado, font, celdaConBorde)); // Columna "Valor Declarado"
             tablaa.addCell(createCell(observaciones, font, celdaConBorde));
 
             // Agregar la tabla al documento
