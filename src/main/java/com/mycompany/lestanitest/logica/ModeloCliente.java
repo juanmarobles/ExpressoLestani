@@ -35,6 +35,7 @@ public class ModeloCliente {
                 cl.setNombre(rs.getString("NOMBRE"));
                 cl.setLocalidad(rs.getString("LOCALIDAD"));
                 cl.setDireccion(rs.getString("DIRECCION"));
+                cl.setTelefono(rs.getString("TELEFONO"));
                 cl.setCuit(rs.getString("CUIT"));
                 listaClientes.add(cl);
             }
