@@ -9,8 +9,13 @@ import com.mycompany.lestanitest.logica.Cliente;
 import com.mycompany.lestanitest.logica.Controladora;
 import com.mycompany.lestanitest.logica.ModeloCliente;
 import com.mycompany.lestanitest.logica.Movimientos;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.text.DateFormat;
@@ -34,6 +39,12 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 
 /**
  *
@@ -87,9 +98,91 @@ public class Recibo extends javax.swing.JFrame {
 
                         System.out.println("Fecha cambiada a: " + formattedDate);
                     } 
+                    
+                    
+                    
+                    //Borde al seleccionar TEXFIELD
+         SwingUtilities.invokeLater(() -> {
+            // Define el borde de enfoque
+            Border normalBorder = txtDiaH.getBorder();
+            Border focusBorder = new LineBorder(Color.BLUE, 3);
+
+           
+            
+            FocusAdapter focusAdapter = new FocusAdapter() {
+                @Override
+                public void focusGained(FocusEvent e) {
+                    ((JComponent) e.getComponent()).setBorder(focusBorder);
+                    if (e.getComponent() instanceof JTextField) {
+                        ((JTextField) e.getComponent()).selectAll();
+                    }
+                }
+
+                @Override
+                public void focusLost(FocusEvent e) {
+                    ((JComponent) e.getComponent()).setBorder(normalBorder);
+                }
+            };
+             txtDiaD.addFocusListener(focusAdapter);
+             txtMesD.addFocusListener(focusAdapter);
+             txtAnioD.addFocusListener(focusAdapter);
+             txtDiaH.addFocusListener(focusAdapter);
+             txtMesH.addFocusListener(focusAdapter);
+             txtAnioH.addFocusListener(focusAdapter);
+             
+        });
+         
+         //Combobox
+         ComboBoxStyle(cbClientes);
+         
+         //Botones
+        SwingUtilities.invokeLater(() -> {
+          // Define la apariencia normal
+            Color normalFont = btnCancelar.getForeground();
+            Color normalBackgroundColor = btnCancelar.getBackground();
+            Border normalBorder = btnCancelar.getBorder();
+
+            // Define la apariencia de enfoque
+            Color focusBackgroundColor = Color.LIGHT_GRAY;
+            Border focusBorder = new LineBorder(Color.BLUE, 3);
+
+            FocusAdapter focusAdapter = new FocusAdapter() {
+                @Override
+                public void focusGained(FocusEvent e) {
+                    JButton button = (JButton) e.getComponent();
+                    button.setBackground(focusBackgroundColor);
+                    button.setBorder(focusBorder);
+                    button.setForeground(Color.black);
+                }
+
+                @Override
+                public void focusLost(FocusEvent e) {
+                    JButton button = (JButton) e.getComponent();
+                    button.setBackground(normalBackgroundColor);
+                    button.setBorder(normalBorder);
+                    button.setForeground(normalFont);
+                }
+            };
+        
+            btnCancelar.addFocusListener(focusAdapter);
+            btnVer.addFocusListener(focusAdapter);
+            
+            });
         
          
        
+    }
+    
+    private static void ComboBoxStyle(JComboBox<String> comboBox) {
+        comboBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    
+                    comboBox.getEditor().selectAll();
+                }
+            }
+        });     
     }
 
     //LLENAR TEXTFIELD CLIENTES
@@ -241,9 +334,10 @@ public class Recibo extends javax.swing.JFrame {
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGap(33, 33, 33)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGap(39, 39, 39)
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -270,10 +364,7 @@ public class Recibo extends javax.swing.JFrame {
                             .addGroup(jPanel6Layout.createSequentialGroup()
                                 .addComponent(jLabel6)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtAnioH))))
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(txtAnioH)))))
                 .addGap(0, 26, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
@@ -281,7 +372,7 @@ public class Recibo extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(txtDiaD, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -290,7 +381,7 @@ public class Recibo extends javax.swing.JFrame {
                         .addComponent(jLabel4)
                         .addComponent(txtAnioD, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel9))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
                     .addComponent(jLabel5)
@@ -298,7 +389,7 @@ public class Recibo extends javax.swing.JFrame {
                     .addComponent(txtMesH, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtDiaH, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtAnioH, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(15, 15, 15))
+                .addGap(21, 21, 21))
         );
 
         btnVer.setBackground(new java.awt.Color(51, 51, 51));
@@ -322,7 +413,6 @@ public class Recibo extends javax.swing.JFrame {
         });
 
         cbClientes.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
-        cbClientes.setForeground(new java.awt.Color(255, 255, 255));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -355,7 +445,7 @@ public class Recibo extends javax.swing.JFrame {
                     .addComponent(cbClientes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(27, 27, 27)
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnVer, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
