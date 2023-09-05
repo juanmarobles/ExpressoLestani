@@ -213,25 +213,43 @@ public class Consultas extends javax.swing.JFrame {
     ModeloCliente modClientes = new ModeloCliente();
     ArrayList<Cliente> listaClientes = modClientes.getClientes();
 
-    private static void mostrarResultadosBusqueda(JComboBox<String> combobox, String textoBusqueda) {
+   private static void mostrarResultadosBusqueda(JComboBox<String> combobox, String textoBusqueda) {
+    // Limpiar selección previa
+    combobox.setSelectedIndex(-1);
 
-        // Buscar el resultado de búsqueda
-        boolean encontrado = false;
+    // Buscar resultados de búsqueda exacta
+    boolean encontradoExacta = false;
+
+    for (int i = 0; i < combobox.getItemCount(); i++) {
+        String item = combobox.getItemAt(i).toString();
+        if (item.equalsIgnoreCase(textoBusqueda)) {
+            combobox.setSelectedItem(item);
+            combobox.getEditor().setItem(item);
+            encontradoExacta = true;
+            break; // Terminar la búsqueda cuando se encuentra una coincidencia exacta
+        }
+    }
+
+    // Si no se encontró una coincidencia exacta, buscar coincidencias parciales
+    if (!encontradoExacta) {
+        boolean encontradoParcial = false;
         for (int i = 0; i < combobox.getItemCount(); i++) {
             String item = combobox.getItemAt(i).toString();
             if (item.toLowerCase().contains(textoBusqueda.toLowerCase())) {
-
-                combobox.setSelectedItem(item);
+                combobox.setSelectedIndex(i);
                 combobox.getEditor().setItem(item);
-                encontrado = true;
-                break; // Terminar la búsqueda después de seleccionar el primer resultado
+                encontradoParcial = true;
+                break; // Terminar la búsqueda cuando se encuentra una coincidencia parcial
             }
         }
-        if (!encontrado) {
-            // Si no se encontró ningún resultado, mostrar el menú emergente
+
+        // Si no se encontró ninguna coincidencia parcial, mostrar el desplegable
+        if (!encontradoParcial) {
             combobox.setPopupVisible(true);
+            combobox.getEditor().setItem(textoBusqueda); // Deja el ComboBox con el texto de búsqueda
         }
     }
+}
 
     private void cargarClientes() {
         cbClientes.setEditable(true);
@@ -240,7 +258,8 @@ public class Consultas extends javax.swing.JFrame {
         for (Cliente cliente : listaClientes) {
             cbClientes.addItem(cliente.getNombre());
         }
-
+        // Ordenar la lista de clientes alfabéticamente por el nombre
+        listaClientes.sort((cliente1, cliente2) -> cliente1.getNombre().compareToIgnoreCase(cliente2.getNombre()));
 // Eliminar la opción en blanco después de configurar el decorador
         cbClientes.removeItem("");
 
@@ -277,7 +296,8 @@ public class Consultas extends javax.swing.JFrame {
         for (Cliente cliente : listaClientes) {
             cbDestino.addItem(cliente.getNombre());
         }
-
+        // Ordenar la lista de clientes alfabéticamente por el nombre
+        listaClientes.sort((cliente1, cliente2) -> cliente1.getNombre().compareToIgnoreCase(cliente2.getNombre()));
 // Eliminar la opción en blanco después de configurar el decorador
         cbDestino.removeItem("");
 
@@ -314,7 +334,8 @@ public class Consultas extends javax.swing.JFrame {
         for (Cliente cliente : listaClientes) {
             cbOrigen.addItem(cliente.getNombre());
         }
-
+        // Ordenar la lista de clientes alfabéticamente por el nombre
+        listaClientes.sort((cliente1, cliente2) -> cliente1.getNombre().compareToIgnoreCase(cliente2.getNombre()));
 // Eliminar la opción en blanco después de configurar el decorador
         cbOrigen.removeItem("");
 
@@ -353,6 +374,9 @@ public class Consultas extends javax.swing.JFrame {
         for (Representantes Repre : listaRepresentantes) {
             cbRepresentantes.addItem(Repre.getNombre());
         }
+        
+        // Ordenar la lista de clientes alfabéticamente por el nombre
+        listaRepresentantes.sort((representante1, representante2) -> representante1.getNombre().compareToIgnoreCase(representante2.getNombre()));
 
 // Eliminar la opción en blanco después de configurar el decorador
         cbRepresentantes.removeItem("");

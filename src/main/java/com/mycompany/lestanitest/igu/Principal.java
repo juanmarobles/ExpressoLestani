@@ -519,33 +519,52 @@ public class Principal extends javax.swing.JFrame {
     ArrayList<Cliente> listaClientes = modClientes.getClientes();
 
     private static void mostrarResultadosBusqueda(JComboBox<String> combobox, String textoBusqueda) {
+    // Limpiar selección previa
+    combobox.setSelectedIndex(-1);
 
-        // Buscar el resultado de búsqueda
-        boolean encontrado = false;
-        for (int i = 0; i < combobox.getItemCount(); i++) {
-            String item = combobox.getItemAt(i).toString();
-            if (item.toLowerCase().contains(textoBusqueda.toLowerCase())) {
+    // Buscar resultados de búsqueda exacta
+    boolean encontradoExacta = false;
 
-                combobox.setSelectedItem(item);
-                combobox.getEditor().setItem(item);
-                encontrado = true;
-                break; // Terminar la búsqueda después de seleccionar el primer resultado
-            }
-        }
-        if (!encontrado) {
-            // Si no se encontró ningún resultado, mostrar el menú emergente
-            combobox.setPopupVisible(true);
+    for (int i = 0; i < combobox.getItemCount(); i++) {
+        String item = combobox.getItemAt(i).toString();
+        if (item.equalsIgnoreCase(textoBusqueda)) {
+            combobox.setSelectedItem(item);
+            combobox.getEditor().setItem(item);
+            encontradoExacta = true;
+            break; // Terminar la búsqueda cuando se encuentra una coincidencia exacta
         }
     }
 
+    // Si no se encontró una coincidencia exacta, buscar coincidencias parciales
+    if (!encontradoExacta) {
+        boolean encontradoParcial = false;
+        for (int i = 0; i < combobox.getItemCount(); i++) {
+            String item = combobox.getItemAt(i).toString();
+            if (item.toLowerCase().contains(textoBusqueda.toLowerCase())) {
+                combobox.setSelectedIndex(i);
+                combobox.getEditor().setItem(item);
+                encontradoParcial = true;
+                break; // Terminar la búsqueda cuando se encuentra una coincidencia parcial
+            }
+        }
+
+        // Si no se encontró ninguna coincidencia parcial, mostrar el desplegable
+        if (!encontradoParcial) {
+            combobox.setPopupVisible(true);
+            combobox.getEditor().setItem(textoBusqueda); // Deja el ComboBox con el texto de búsqueda
+        }
+    }
+}
+
     private void cargarDestinos() {
         cbDestinos.setEditable(true);
-
+        
         // Agregar los clientes al combobox
         for (Cliente cliente : listaClientes) {
             cbDestinos.addItem(cliente.getNombre());
         }
-
+        // Ordenar la lista de clientes alfabéticamente por el nombre
+        listaClientes.sort((cliente1, cliente2) -> cliente1.getNombre().compareToIgnoreCase(cliente2.getNombre()));
 // Eliminar la opción en blanco después de configurar el decorador
         cbDestinos.removeItem("");
 
@@ -562,8 +581,6 @@ public class Principal extends javax.swing.JFrame {
                     // Obtener el cliente seleccionado del combobox
                     destinatarioSeleccionado = listaClientes.get(cbDestinos.getSelectedIndex());
 
-                    // Actualizar los datos del remitente en el PDF usando clienteSeleccionado
-                    // ... (el código para generar el PDF se mantiene igual)
                 }
             }
         });
@@ -588,7 +605,10 @@ public class Principal extends javax.swing.JFrame {
         // Agregar los clientes al combobox
         for (Servicios Servicios : listaServ) {
             cbServicios.addItem(Servicios.getServicio());
-        }
+        }   
+        
+         // Ordenar la lista de clientes alfabéticamente por el nombre
+        listaServ.sort((servicio1, servicio2) -> servicio1.getServicio().compareToIgnoreCase(servicio2.getServicio()));
 
 // Eliminar la opción en blanco después de configurar el decorador
         cbServicios.removeItem("");
@@ -629,6 +649,9 @@ public class Principal extends javax.swing.JFrame {
 
 // Eliminar la opción en blanco después de configurar el decorador
         cbRepresentantes.removeItem("");
+        
+        // Ordenar la lista de clientes alfabéticamente por el nombre
+        listaRepresentantes.sort((representante1, representante2) -> representante1.getNombre().compareToIgnoreCase(representante2.getNombre()));
 
         // Establecer el índice seleccionado a -1 para no mostrar ninguna selección
         cbRepresentantes.setSelectedIndex(-1);
@@ -657,12 +680,21 @@ public class Principal extends javax.swing.JFrame {
     private void cargarClientes() {
         cbClientes.setEditable(true);
 
-        // Agregar los clientes al combobox
+        // Carga de los datos desde la base de datos
+        List<Cliente> listaClientes = control.traerClientes();
+
+        // Ordenar la lista de clientes alfabéticamente por el nombre
+        listaClientes.sort((cliente1, cliente2) -> cliente1.getNombre().compareToIgnoreCase(cliente2.getNombre()));
+
+        // Limpiar el ComboBox
+        cbClientes.removeAllItems();
+
+        // Agregar los nombres de los clientes al ComboBox de forma ordenada
         for (Cliente cliente : listaClientes) {
             cbClientes.addItem(cliente.getNombre());
         }
 
-// Eliminar la opción en blanco después de configurar el decorador
+        // Eliminar la opción en blanco después de configurar el decorador
         cbClientes.removeItem("");
 
         // Establecer el índice seleccionado a -1 para no mostrar ninguna selección
@@ -672,15 +704,12 @@ public class Principal extends javax.swing.JFrame {
         cbClientes.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
                 String textoBusqueda = cbClientes.getEditor().getItem().toString();
                 mostrarResultadosBusqueda(cbClientes, textoBusqueda);
                 if (cbClientes.getSelectedIndex() != -1) {
                     // Obtener el cliente seleccionado del combobox
                     clienteSeleccionado = listaClientes.get(cbClientes.getSelectedIndex());
 
-                    // Actualizar los datos del remitente en el PDF usando clienteSeleccionado
-                    // ... (el código para generar el PDF se mantiene igual)
                 }
             }
         });
@@ -1207,12 +1236,13 @@ public class Principal extends javax.swing.JFrame {
                         .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel23, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel21)
-                    .addComponent(jLabel24)
-                    .addComponent(txtBulto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtContrarembolso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtValDeclarado, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtBulto, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtValDeclarado, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel21)
+                        .addComponent(jLabel24)
+                        .addComponent(txtContrarembolso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(13, Short.MAX_VALUE))
         );
 
@@ -1660,6 +1690,7 @@ public class Principal extends javax.swing.JFrame {
         String destino = (cbDestinos.getSelectedItem() != null) ? cbDestinos.getSelectedItem().toString() : "";
         String servicio = (cbServicios.getSelectedItem() != null) ? cbServicios.getSelectedItem().toString() : "";
         String representante = (cbRepresentantes.getSelectedItem() != null) ? cbRepresentantes.getSelectedItem().toString() : "";
+       
 
         int bulto = Integer.parseInt(txtBulto.getText());
         //txt monto
@@ -1946,6 +1977,11 @@ if (tablaMovimientos.getRowCount() > 0) {
         String destino = (cbDestinos.getSelectedItem() != null) ? cbDestinos.getSelectedItem().toString() : "";
         String servicio = (cbServicios.getSelectedItem() != null) ? cbServicios.getSelectedItem().toString() : "";
         String representante = (cbRepresentantes.getSelectedItem() != null) ? cbRepresentantes.getSelectedItem().toString() : "";
+        
+         //bandera 1
+        System.out.println(cliente);
+        System.out.println(destino);
+        System.out.println(servicio);
 
         int bulto = Integer.parseInt(txtBulto.getText());
         //txt monto
@@ -2612,6 +2648,15 @@ if (tablaMovimientos.getRowCount() > 0) {
             String tel = clienteSeleccionado != null && clienteSeleccionado.getTelefono() != null
                     ? clienteSeleccionado.getTelefono().toUpperCase()
                     : "";
+            //Bandera 1
+            System.out.println("Bandera 1:");
+            System.out.println("");
+            System.out.println(nombreCliente);
+            System.out.println(direccion);
+            System.out.println(localidad);
+            System.out.println(tel);
+            System.out.println(cuit);
+            
 
             Paragraph nombreParagraph = new Paragraph("REMITENTE: " + nombreCliente, fontR);
             nombreParagraph.setAlignment(Element.ALIGN_LEFT);
@@ -2653,6 +2698,15 @@ if (tablaMovimientos.getRowCount() > 0) {
                 localidadDestinatario = destinatarioSeleccionado.getLocalidad().toUpperCase();
                 cuitDestinatario = destinatarioSeleccionado.getCuit().toUpperCase();
                 telDestinatario = destinatarioSeleccionado.getTelefono().toUpperCase();
+                 //Bandera 2
+            System.out.println("Bandera 2 Destinatario:");
+            System.out.println("");
+            System.out.println(nombreDestinatario);
+            System.out.println(direccionDestinatario);
+            System.out.println(localidadDestinatario);
+            System.out.println(telDestinatario);
+            System.out.println(cuitDestinatario);
+            
 
             } else {
                 nombreDestinatario = cbDestinos.getSelectedItem().toString().toUpperCase();

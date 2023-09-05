@@ -11,10 +11,13 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Collections;
 import java.util.List;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.RowFilter;
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
@@ -358,31 +361,37 @@ public class VerDatosCliente extends javax.swing.JFrame {
     private javax.swing.JTextField txtFiltroCliente;
     // End of variables declaration//GEN-END:variables
 
-    private void mostrarTablaClientes() {
-        //filas y columnas no editables
-        DefaultTableModel tabla = new DefaultTableModel() {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
-        //nombres de columnas
-        String titulos[] = {"Id_Cliente", "Nombre", "Direccion", "Telefono", "Email", "Cuit", "Localidad"};
-        tabla.setColumnIdentifiers(titulos);
+ private void mostrarTablaClientes() {
+    // Carga de los datos desde la base de datos
+    List<Cliente> listaClientes = control.traerClientes();
 
-        //carga de los datos desde la bd
-        List<Cliente> listaClientes = control.traerClientes();
+    // Ordenar la lista de clientes alfabéticamente por el nombre
+    listaClientes.sort((cliente1, cliente2) -> cliente1.getNombre().compareToIgnoreCase(cliente2.getNombre()));
 
-        //recorrer lista y mostrar elementos en la tabla
-        if (listaClientes != null) {
-            for (Cliente cli : listaClientes) {
-                Object[] objeto = {cli.getId(), cli.getNombre(), cli.getDireccion(), cli.getTelefono(), cli.getEmail(), cli.getCuit(), cli.getLocalidad()};
-
-                tabla.addRow(objeto);
-            }
+    // Filas y columnas no editables
+    DefaultTableModel tabla = new DefaultTableModel() {
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false;
         }
-        tablaClientes.setModel(tabla);
-        tablaClientes.getModel();
+    };
+    
+    // Nombres de columnas
+    String titulos[] = {"Id_Cliente", "Nombre", "Direccion", "Telefono", "Email", "Cuit", "Localidad"};
+    tabla.setColumnIdentifiers(titulos);
+
+    // Recorrer la lista ordenada y mostrar elementos en la tabla
+    if (listaClientes != null) {
+        for (Cliente cli : listaClientes) {
+            Object[] objeto = {cli.getId(), cli.getNombre(), cli.getDireccion(), cli.getTelefono(), cli.getEmail(), cli.getCuit(), cli.getLocalidad()};
+            tabla.addRow(objeto);
+        }
     }
+
+    // Configurar el TableRowSorter para habilitar el ordenamiento en la tabla
+    TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tabla);
+    tablaClientes.setModel(tabla);
+    tablaClientes.setRowSorter(sorter);
+}
 
 }
