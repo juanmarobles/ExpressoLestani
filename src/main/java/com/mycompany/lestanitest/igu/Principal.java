@@ -319,17 +319,11 @@ public class Principal extends javax.swing.JFrame {
         });
 
         //Combobox
-       
-       ComboBoxStyle(cbClientes);
-       ComboBoxStyle(cbDestinos);
-       ComboBoxStyle(cbServicios);
-       ComboBoxStyle(cbRepresentantes);
+        ComboBoxStyle(cbClientes);
+        ComboBoxStyle(cbDestinos);
+        ComboBoxStyle(cbServicios);
+        ComboBoxStyle(cbRepresentantes);
 
-
-        
-        
-
-        
         //Botones
         SwingUtilities.invokeLater(() -> {
             // Define la apariencia normal
@@ -461,25 +455,18 @@ public class Principal extends javax.swing.JFrame {
         });
 
     }
-    
-    
-     private static void ComboBoxStyle(JComboBox<String> comboBox) {
+
+    private static void ComboBoxStyle(JComboBox<String> comboBox) {
         comboBox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
-                    
+
                     comboBox.getEditor().selectAll();
                 }
             }
-        });     
+        });
     }
-    
-   
-    
-
-    
-   
 
     //Actualizar flete nuevo
     private void actualizarFlete() {
@@ -498,11 +485,15 @@ public class Principal extends javax.swing.JFrame {
                 for (Servicios s : listaServicios) {
                     if (s.getServicio().toLowerCase().equals(nombreServicio)) {
                         // Calcular el flete multiplicando el precio del servicio por la cantidad de bultos
-                        BigDecimal precio = BigDecimal.valueOf(s.getPrecio());
+                        Double precioDouble = s.getPrecio(); // Utiliza el Double directamente
+                        BigDecimal precio = BigDecimal.valueOf(precioDouble);
                         BigDecimal montoFlete = precio.multiply(BigDecimal.valueOf(bulto));
 
-                        // Mostrar el archivo en el campo txtFlete
-                        txtFlete.setText(montoFlete.toString());
+                        // Formatear el montoFlete como cadena sin decimales ".0"
+                        String montoFleteStr = String.format("%.0f", montoFlete.doubleValue());
+
+                        // Mostrar el montoFlete en el campo txtFlete
+                        txtFlete.setText(montoFleteStr);
 
                         return;
                     }
@@ -511,7 +502,7 @@ public class Principal extends javax.swing.JFrame {
                 // Handle the case where no item is selected
                 // Maybe display an error message or set a default value for txtFlete
                 // For example, if txtFlete is a JTextField, you could set it to an empty string:
-                // txtFlete.setText("");
+                txtFlete.setText("");
             }
         }
     }
@@ -520,47 +511,47 @@ public class Principal extends javax.swing.JFrame {
     ArrayList<Cliente> listaClientes = modClientes.getClientes();
 
     private static void mostrarResultadosBusqueda(JComboBox<String> combobox, String textoBusqueda) {
-    // Limpiar selección previa
-    combobox.setSelectedIndex(-1);
+        // Limpiar selección previa
+        combobox.setSelectedIndex(-1);
 
-    // Buscar resultados de búsqueda exacta
-    boolean encontradoExacta = false;
+        // Buscar resultados de búsqueda exacta
+        boolean encontradoExacta = false;
 
-    for (int i = 0; i < combobox.getItemCount(); i++) {
-        String item = combobox.getItemAt(i).toString();
-        if (item.equalsIgnoreCase(textoBusqueda)) {
-            combobox.setSelectedItem(item);
-            combobox.getEditor().setItem(item);
-            encontradoExacta = true;
-            break; // Terminar la búsqueda cuando se encuentra una coincidencia exacta
-        }
-    }
-
-    // Si no se encontró una coincidencia exacta, buscar coincidencias parciales
-    if (!encontradoExacta) {
-        boolean encontradoParcial = false;
         for (int i = 0; i < combobox.getItemCount(); i++) {
             String item = combobox.getItemAt(i).toString();
-            if (item.toLowerCase().contains(textoBusqueda.toLowerCase())) {
-                combobox.setSelectedIndex(i);
+            if (item.equalsIgnoreCase(textoBusqueda)) {
+                combobox.setSelectedItem(item);
                 combobox.getEditor().setItem(item);
-                encontradoParcial = true;
-                break; // Terminar la búsqueda cuando se encuentra una coincidencia parcial
+                encontradoExacta = true;
+                break; // Terminar la búsqueda cuando se encuentra una coincidencia exacta
             }
         }
 
-        // Si no se encontró ninguna coincidencia parcial, mantener el texto de búsqueda tal como lo ingresó el usuario
-        if (!encontradoParcial) {
-            combobox.getEditor().setItem(textoBusqueda);
-            combobox.setPopupVisible(true);
+        // Si no se encontró una coincidencia exacta, buscar coincidencias parciales
+        if (!encontradoExacta) {
+            boolean encontradoParcial = false;
+            for (int i = 0; i < combobox.getItemCount(); i++) {
+                String item = combobox.getItemAt(i).toString();
+                if (item.toLowerCase().contains(textoBusqueda.toLowerCase())) {
+                    combobox.setSelectedIndex(i);
+                    combobox.getEditor().setItem(item);
+                    encontradoParcial = true;
+                    break; // Terminar la búsqueda cuando se encuentra una coincidencia parcial
+                }
+            }
+
+            // Si no se encontró ninguna coincidencia parcial, mantener el texto de búsqueda tal como lo ingresó el usuario
+            if (!encontradoParcial) {
+                combobox.getEditor().setItem(textoBusqueda);
+                combobox.setPopupVisible(true);
+            }
         }
     }
-}
 
     private void cargarDestinos() {
         ModeloCliente modClientes = new ModeloCliente();
-    ArrayList<Cliente> listaClientes = modClientes.getClientes();
-    
+        ArrayList<Cliente> listaClientes = modClientes.getClientes();
+
         cbDestinos.setEditable(true);
 
         // Ordenar la lista de clientes alfabéticamente por el nombre
@@ -578,38 +569,38 @@ public class Principal extends javax.swing.JFrame {
         cbDestinos.setSelectedIndex(-1);
 
         cbDestinos.getEditor().getEditorComponent().addKeyListener(new KeyAdapter() {
-    @Override
-    public void keyReleased(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_TAB) {
-            String textoBusqueda = cbDestinos.getEditor().getItem().toString();
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_TAB) {
+                    String textoBusqueda = cbDestinos.getEditor().getItem().toString();
 
-            // Normaliza el texto de búsqueda a mayúsculas y elimina caracteres no deseados excepto espacios en blanco
-            textoBusqueda = textoBusqueda.toUpperCase().replaceAll("[^A-Z\\s]", "");
+                    // Normaliza el texto de búsqueda a mayúsculas y elimina caracteres no deseados excepto espacios en blanco
+                    textoBusqueda = textoBusqueda.toUpperCase().replaceAll("[^A-Z\\s]", "");
 
-            mostrarResultadosBusqueda(cbDestinos, textoBusqueda);
+                    mostrarResultadosBusqueda(cbDestinos, textoBusqueda);
 
-            // Busca el cliente seleccionado en la lista de clientes
-            destinatarioSeleccionado = null; // Restablece el destinatario seleccionado
-            
-            for (Cliente cliente : listaClientes) {
-                // Normaliza el nombre del cliente a mayúsculas y elimina caracteres no deseados excepto espacios en blanco
-                String nombreCliente = cliente.getNombre().toUpperCase().replaceAll("[^A-Z\\s]", "");
+                    // Busca el cliente seleccionado en la lista de clientes
+                    destinatarioSeleccionado = null; // Restablece el destinatario seleccionado
 
-                if (nombreCliente.contains(textoBusqueda)) {
-                    destinatarioSeleccionado = cliente;
-                    System.out.println("Destinatario seleccionado: " + destinatarioSeleccionado);
-                    break;
+                    for (Cliente cliente : listaClientes) {
+                        // Normaliza el nombre del cliente a mayúsculas y elimina caracteres no deseados excepto espacios en blanco
+                        String nombreCliente = cliente.getNombre().toUpperCase().replaceAll("[^A-Z\\s]", "");
+
+                        if (nombreCliente.contains(textoBusqueda)) {
+                            destinatarioSeleccionado = cliente;
+                            System.out.println("Destinatario seleccionado: " + destinatarioSeleccionado);
+                            break;
+                        }
+                    }
+
+                    if (destinatarioSeleccionado == null) {
+                        System.out.println("No se encontró DESTINATARIO.");
+                    }
                 }
             }
+        });
+    }
 
-            if (destinatarioSeleccionado == null) {
-                System.out.println("No se encontró DESTINATARIO.");
-            }
-        }
-    }
-});
-    }
-   
     private void cargarServicios() {
         ModeloServicio modServ = new ModeloServicio();
         ArrayList<Servicios> listaServ = modServ.getServicios();
@@ -618,15 +609,13 @@ public class Principal extends javax.swing.JFrame {
         // Agregar los clientes al combobox
         for (Servicios Servicios : listaServ) {
             cbServicios.addItem(Servicios.getServicio());
-        }   
-        
-         // Ordenar la lista de clientes alfabéticamente por el nombre
+        }
+
+        // Ordenar la lista de clientes alfabéticamente por el nombre
         listaServ.sort((servicio1, servicio2) -> servicio1.getServicio().compareToIgnoreCase(servicio2.getServicio()));
 
         // Eliminar la opción en blanco después de configurar el decorador
         cbServicios.removeItem("");
-        
-       
 
         // Establecer el índice seleccionado a -1 para no mostrar ninguna selección
         cbServicios.setSelectedIndex(-1);
@@ -664,7 +653,7 @@ public class Principal extends javax.swing.JFrame {
 
 // Eliminar la opción en blanco después de configurar el decorador
         cbRepresentantes.removeItem("");
-        
+
         // Ordenar la lista de clientes alfabéticamente por el nombre
         listaRepresentantes.sort((representante1, representante2) -> representante1.getNombre().compareToIgnoreCase(representante2.getNombre()));
 
@@ -693,13 +682,11 @@ public class Principal extends javax.swing.JFrame {
     }
 
     private void cargarClientes() {
-        
-        ModeloCliente modClientes = new ModeloCliente();
-    ArrayList<Cliente> listaClientes = modClientes.getClientes();
-    
-        cbClientes.setEditable(true);
 
-        
+        ModeloCliente modClientes = new ModeloCliente();
+        ArrayList<Cliente> listaClientes = modClientes.getClientes();
+
+        cbClientes.setEditable(true);
 
         // Ordenar la lista de clientes alfabéticamente por el nombre
         listaClientes.sort((cliente1, cliente2) -> cliente1.getNombre().compareToIgnoreCase(cliente2.getNombre()));
@@ -725,22 +712,21 @@ public class Principal extends javax.swing.JFrame {
                 String textoBusqueda = cbClientes.getEditor().getItem().toString();
                 mostrarResultadosBusqueda(cbClientes, textoBusqueda);
                 if (cbClientes.getSelectedIndex() != -1) {
-                 // Normaliza el texto de búsqueda a mayúsculas
-                textoBusqueda = textoBusqueda.toUpperCase();
+                    // Normaliza el texto de búsqueda a mayúsculas
+                    textoBusqueda = textoBusqueda.toUpperCase();
 
-                     clienteSeleccionado = null; // Restablece el destinatario seleccionado
-                for (Cliente cliente : listaClientes) {
-                    if (cliente.getNombre().toUpperCase().equals(textoBusqueda)) {
-                        clienteSeleccionado = cliente;
-                        
-                        break;
+                    clienteSeleccionado = null; // Restablece el destinatario seleccionado
+                    for (Cliente cliente : listaClientes) {
+                        if (cliente.getNombre().toUpperCase().equals(textoBusqueda)) {
+                            clienteSeleccionado = cliente;
+
+                            break;
+                        }
                     }
-                }
                 }
             }
         });
 
-        
     }
 
     @SuppressWarnings("unchecked")
@@ -1054,12 +1040,16 @@ public class Principal extends javax.swing.JFrame {
             }
         });
 
+        cbClientes.setForeground(new java.awt.Color(0, 0, 0));
         cbClientes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbClientesActionPerformed(evt);
             }
         });
 
+        cbDestinos.setForeground(new java.awt.Color(0, 0, 0));
+
+        cbServicios.setForeground(new java.awt.Color(0, 0, 0));
         cbServicios.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbServiciosActionPerformed(evt);
@@ -1707,7 +1697,6 @@ public class Principal extends javax.swing.JFrame {
         String destino = (cbDestinos.getSelectedItem() != null) ? cbDestinos.getSelectedItem().toString() : "";
         String servicio = (cbServicios.getSelectedItem() != null) ? cbServicios.getSelectedItem().toString() : "";
         String representante = (cbRepresentantes.getSelectedItem() != null) ? cbRepresentantes.getSelectedItem().toString() : "";
-       
 
         int bulto = Integer.parseInt(txtBulto.getText());
         //txt monto
@@ -1805,7 +1794,7 @@ public class Principal extends javax.swing.JFrame {
         }
 
         control.cargarMovimiento(cliente, destino, servicio, representante, bulto, monto, flete, tFlete, remito, tMontoP, tMontoR, tFleteP, tFleteR, fecha, cC, obs, horaSQL);
-        System.out.println("Movimiento agregado correctamente"+ "Info"+ "Agregado con exito!");
+        System.out.println("Movimiento agregado correctamente" + "Info" + "Agregado con exito!");
 
         // Actualizar la tabla
         DefaultTableModel modeloTabla = (DefaultTableModel) tablaMovimientos.getModel();
@@ -1892,26 +1881,26 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_txtBultoActionPerformed
 
     private void btnEliminarMovimientoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarMovimientoActionPerformed
-       // Control para verificar que la tabla no esté vacía
-if (tablaMovimientos.getRowCount() > 0) {
-    // Validar que se hayan seleccionado registros
-    int[] selectedRows = tablaMovimientos.getSelectedRows();
-    if (selectedRows.length > 0) {
-        int confirmResult = JOptionPane.showConfirmDialog(this, "¿Estás seguro de que deseas borrar los registros seleccionados?", "Confirmar borrado", JOptionPane.YES_NO_OPTION);
-        if (confirmResult == JOptionPane.YES_OPTION) {
-            for (int selectedRow : selectedRows) {
-                int idMovimiento = Integer.parseInt(String.valueOf(tablaMovimientos.getValueAt(selectedRow, 0)));
-                control.borrarMovimiento(idMovimiento);
+        // Control para verificar que la tabla no esté vacía
+        if (tablaMovimientos.getRowCount() > 0) {
+            // Validar que se hayan seleccionado registros
+            int[] selectedRows = tablaMovimientos.getSelectedRows();
+            if (selectedRows.length > 0) {
+                int confirmResult = JOptionPane.showConfirmDialog(this, "¿Estás seguro de que deseas borrar los registros seleccionados?", "Confirmar borrado", JOptionPane.YES_NO_OPTION);
+                if (confirmResult == JOptionPane.YES_OPTION) {
+                    for (int selectedRow : selectedRows) {
+                        int idMovimiento = Integer.parseInt(String.valueOf(tablaMovimientos.getValueAt(selectedRow, 0)));
+                        control.borrarMovimiento(idMovimiento);
+                    }
+                    mostrarMensaje("Movimientos borrados correctamente", "Info", "Borrados con éxito");
+                    mostrarTablaMovimientos();
+                }
+            } else {
+                mostrarMensaje("No seleccionaste registros para eliminar", "Error", "Error al eliminar");
             }
-            mostrarMensaje("Movimientos borrados correctamente", "Info", "Borrados con éxito");
-            mostrarTablaMovimientos();
+        } else {
+            mostrarMensaje("La tabla está vacía, no se puede eliminar", "Error", "Error al eliminar");
         }
-    } else {
-        mostrarMensaje("No seleccionaste registros para eliminar", "Error", "Error al eliminar");
-    }
-} else {
-    mostrarMensaje("La tabla está vacía, no se puede eliminar", "Error", "Error al eliminar");
-}
     }//GEN-LAST:event_btnEliminarMovimientoActionPerformed
 
     private void btnEditarMovimientoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarMovimientoActionPerformed
@@ -1994,8 +1983,8 @@ if (tablaMovimientos.getRowCount() > 0) {
         String destino = (cbDestinos.getSelectedItem() != null) ? cbDestinos.getSelectedItem().toString() : "";
         String servicio = (cbServicios.getSelectedItem() != null) ? cbServicios.getSelectedItem().toString() : "";
         String representante = (cbRepresentantes.getSelectedItem() != null) ? cbRepresentantes.getSelectedItem().toString() : "";
-        
-         //bandera 1
+
+        //bandera 1
         System.out.println(cliente);
         System.out.println(destino);
         System.out.println(servicio);
@@ -2500,14 +2489,11 @@ if (tablaMovimientos.getRowCount() > 0) {
     private javax.swing.JTextField txtValDeclarado;
     // End of variables declaration//GEN-END:variables
 
-  /*  public static String fechaActual() {
+    /*  public static String fechaActual() {
         Date fecha = new Date();
         SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/YYYY");
         return formatoFecha.format(fecha);
     }*/
-    
-   
-
     public Date getFecha() {
         int dia = Integer.parseInt(txtDia.getText());
         int mes = Integer.parseInt(txtMes.getText());
@@ -2588,18 +2574,17 @@ if (tablaMovimientos.getRowCount() > 0) {
 
             // FECHAS
             // Obtener los valores de los campos de texto
-        int dia = Integer.parseInt(txtDia.getText());
-        int mes = Integer.parseInt(txtMes.getText());
-        int anio = Integer.parseInt(txtAnio.getText());
+            int dia = Integer.parseInt(txtDia.getText());
+            int mes = Integer.parseInt(txtMes.getText());
+            int anio = Integer.parseInt(txtAnio.getText());
 
             // Crear una instancia de LocalDate si la fecha es válida
             LocalDate fechaArmada = LocalDate.of(anio, mes, dia);
-            
-            // Formatear la fecha en el formato deseado
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                    String fechaFormat = fechaArmada.format(formatter);
 
-            
+            // Formatear la fecha en el formato deseado
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            String fechaFormat = fechaArmada.format(formatter);
+
             Chunk chunkFechas = new Chunk("Fecha: " + fechaFormat, fontFecha);
             Paragraph fecha = new Paragraph(chunkFechas);
             fecha.setAlignment(Element.ALIGN_RIGHT);
@@ -2673,7 +2658,6 @@ if (tablaMovimientos.getRowCount() > 0) {
             System.out.println(localidad);
             System.out.println(tel);
             System.out.println(cuit);
-            
 
             Paragraph nombreParagraph = new Paragraph("REMITENTE: " + nombreCliente, fontR);
             nombreParagraph.setAlignment(Element.ALIGN_LEFT);
@@ -2701,19 +2685,16 @@ if (tablaMovimientos.getRowCount() > 0) {
             // Crear la celda del destinatario
             PdfPCell destinatarioCell = new PdfPCell();
             destinatarioCell.setBorder(Rectangle.BOX);
-            System.out.println("Bandera 1 Destinatario en pdf: "+destinatarioSeleccionado);
+            System.out.println("Bandera 1 Destinatario en pdf: " + destinatarioSeleccionado);
 
             String nombreDestinatario = "";
             String direccionDestinatario = "";
             String localidadDestinatario = "";
             String cuitDestinatario = "";
             String telDestinatario = "";
-                
-            System.out.println("Bandera Destinatario 2 en pdf: "+destinatarioSeleccionado);
 
-            
-            
-            
+            System.out.println("Bandera Destinatario 2 en pdf: " + destinatarioSeleccionado);
+
             if (destinatarioSeleccionado != null && destinatarioSeleccionado.getDireccion() != null && destinatarioSeleccionado.getLocalidad() != null
                     && destinatarioSeleccionado.getCuit() != null && destinatarioSeleccionado.getNombre() != null && destinatarioSeleccionado.getTelefono() != null) {
                 nombreDestinatario = destinatarioSeleccionado.getNombre().toUpperCase();
@@ -2721,17 +2702,16 @@ if (tablaMovimientos.getRowCount() > 0) {
                 localidadDestinatario = destinatarioSeleccionado.getLocalidad().toUpperCase();
                 cuitDestinatario = destinatarioSeleccionado.getCuit().toUpperCase();
                 telDestinatario = destinatarioSeleccionado.getTelefono().toUpperCase();
-                System.out.println("Bandera 3 Destinatario en pdf: "+destinatarioSeleccionado);
+                System.out.println("Bandera 3 Destinatario en pdf: " + destinatarioSeleccionado);
 
-                 //Bandera 2
-            System.out.println("Bandera 2 Destinatario:");
-            System.out.println("");
-            System.out.println(nombreDestinatario);
-            System.out.println(direccionDestinatario);
-            System.out.println(localidadDestinatario);
-            System.out.println(telDestinatario);
-            System.out.println(cuitDestinatario);
-            
+                //Bandera 2
+                System.out.println("Bandera 2 Destinatario:");
+                System.out.println("");
+                System.out.println(nombreDestinatario);
+                System.out.println(direccionDestinatario);
+                System.out.println(localidadDestinatario);
+                System.out.println(telDestinatario);
+                System.out.println(cuitDestinatario);
 
             } else {
                 nombreDestinatario = cbDestinos.getSelectedItem().toString().toUpperCase();

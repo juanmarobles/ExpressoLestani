@@ -7,6 +7,7 @@ package com.mycompany.lestanitest.igu;
 import com.mycompany.lestanitest.logica.Controladora;
 
 import com.mycompany.lestanitest.logica.Movimientos;
+import java.math.BigDecimal;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -611,36 +612,45 @@ public class EditarMovimientos extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
   private void cargarDatosMovimiento(int idMovimiento) {
-    //busco id en la bd
-    mov = control.traerMovimiento(idMovimiento);
-    //seteo los valores de ese id
-    txtCliente.setText(mov.getCliente());
-    txtFecha.setText(formatoFecha.format(mov.getFecha()));
-    txtDestino.setText(mov.getDestino());
-    txtServicios.setText(mov.getServicio());
-    txtBulto.setText(Integer.toString(mov.getBultos()));
-    txtRepresentante.setText(mov.getRepresentante());
-    txtRemito.setText(mov.getRemito());
-    
-           
-    // Eliminar el símbolo "$" y el formato de los campos monto y flete
-    String montoSinSimbolo = mov.getMonto().replaceAll("[$,.]", "");
-    String fleteSinSimbolo = mov.getFlete().replaceAll("[$,.]", "");
-    txtMonto.setText(montoSinSimbolo);
-    txtFlete.setText(fleteSinSimbolo);
-    
-    txtRemito.setText(mov.getRemito());
-    txtObservaciones.setText(mov.getObservaciones());
+        // Busco id en la bd
+        mov = control.traerMovimiento(idMovimiento);
+        // Seteo los valores de ese id
+        txtCliente.setText(mov.getCliente());
+        txtFecha.setText(formatoFecha.format(mov.getFecha()));
+        txtDestino.setText(mov.getDestino());
+        txtServicios.setText(mov.getServicio());
+        txtBulto.setText(Integer.toString(mov.getBultos()));
+        txtRepresentante.setText(mov.getRepresentante());
+        txtRemito.setText(mov.getRemito());
 
-    // Setear los valores de los checkboxes
-    cbfDestino.setSelected(mov.getFleteDestinoOrigen().equals("Destino"));
-    cbfOrigen.setSelected(mov.getFleteDestinoOrigen().equals("Origen"));
-    cbCuentaCorriente.setSelected(mov.getCuentaCorriente().equals("Si"));
-    cbmontoPagado.setSelected(mov.getTipoMontoP().equals("Si"));
-    cbMontoRendido.setSelected(mov.getTipoMontoR().equals("Si"));
-    cbfletePagado.setSelected(mov.getTipoFleteP().equals("Si"));
-    cbfleteRendido.setSelected(mov.getTipoFleteR().equals("Si"));
-}
+        // Eliminar el símbolo "$" y el formato de los campos monto y flete
+        String montoSinSimbolo = mov.getMonto().replaceAll("[$]", "");
+        String fleteSinSimbolo = mov.getFlete().replaceAll("[$]", "");
+
+        // Aplicar el formateo para que los números tengan el formato correcto
+        String montoFormateado = montoSinSimbolo.replace(".", "").replace(",", ".");
+        String fleteFormateado = fleteSinSimbolo.replace(".", "").replace(",", ".");
+
+        // Crear objetos BigDecimal a partir de las cadenas formateadas
+        BigDecimal montoBigDecimal = new BigDecimal(montoFormateado);
+        BigDecimal fleteBigDecimal = new BigDecimal(fleteFormateado);
+
+        // Asignar los valores de los BigDecimal a los campos de texto
+        txtMonto.setText(montoBigDecimal.toString());
+        txtFlete.setText(fleteBigDecimal.toString());
+
+        txtRemito.setText(mov.getRemito());
+        txtObservaciones.setText(mov.getObservaciones());
+
+        // Setear los valores de los checkboxes
+        cbfDestino.setSelected(mov.getFleteDestinoOrigen().equals("Destino"));
+        cbfOrigen.setSelected(mov.getFleteDestinoOrigen().equals("Origen"));
+        cbCuentaCorriente.setSelected(mov.getCuentaCorriente().equals("Si"));
+        cbmontoPagado.setSelected(mov.getTipoMontoP().equals("Si"));
+        cbMontoRendido.setSelected(mov.getTipoMontoR().equals("Si"));
+        cbfletePagado.setSelected(mov.getTipoFleteP().equals("Si"));
+        cbfleteRendido.setSelected(mov.getTipoFleteR().equals("Si"));
+    }
 
 
 

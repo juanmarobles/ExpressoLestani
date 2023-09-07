@@ -1052,9 +1052,10 @@ public class Consultas extends javax.swing.JFrame {
         );
 
         cbClientes.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
-        cbClientes.setForeground(new java.awt.Color(185, 185, 185));
+        cbClientes.setForeground(new java.awt.Color(0, 0, 0));
 
         cbRepresentantes.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        cbRepresentantes.setForeground(new java.awt.Color(0, 0, 0));
 
         jLabel7.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(236, 240, 241));
@@ -1072,8 +1073,10 @@ public class Consultas extends javax.swing.JFrame {
         jLabel10.setText("Destino");
 
         cbOrigen.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        cbOrigen.setForeground(new java.awt.Color(0, 0, 0));
 
         cbDestino.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        cbDestino.setForeground(new java.awt.Color(0, 0, 0));
         cbDestino.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbDestinoActionPerformed(evt);

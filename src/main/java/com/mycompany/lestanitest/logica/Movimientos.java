@@ -206,7 +206,26 @@ public class Movimientos implements Serializable {
     }
 
     public void setMonto(String monto) {
-        this.monto = monto;
+        // Reemplazar cualquier coma existente por un punto
+        String montoConPunto = monto.replace(",", ".");
+
+        // Asegurarse de que el valor sea numérico antes de asignarlo
+        if (esNumero(montoConPunto)) {
+            this.monto = montoConPunto;
+        } else {
+            // Manejar el caso en el que el valor no sea numérico
+            throw new IllegalArgumentException("El valor no es numérico válido: " + monto);
+        }
+    }
+
+// Método de utilidad para verificar si una cadena es numérica
+    private boolean esNumero(String str) {
+        try {
+            Double.parseDouble(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 
     public String getFlete() {
