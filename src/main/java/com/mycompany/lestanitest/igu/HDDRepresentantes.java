@@ -212,13 +212,14 @@ public class HDDRepresentantes extends javax.swing.JFrame {
         ModeloRepresentante modRepre = new ModeloRepresentante();
         ArrayList<Representantes> listaRepresentantes = modRepre.getRepresentantes();
         cbRepresentantes.setEditable(true);
-
+        // Ordenar la lista de clientes alfabéticamente por el nombre
+        listaRepresentantes.sort((representante1, representante2) -> representante1.getNombre().compareToIgnoreCase(representante2.getNombre()));
+        
         // Agregar los clientes al combobox
         for (Representantes Repre : listaRepresentantes) {
             cbRepresentantes.addItem(Repre.getNombre());
         }
-        // Ordenar la lista de clientes alfabéticamente por el nombre
-        listaRepresentantes.sort((representante1, representante2) -> representante1.getNombre().compareToIgnoreCase(representante2.getNombre()));
+        
 // Eliminar la opción en blanco después de configurar el decorador
         cbRepresentantes.removeItem("");
 

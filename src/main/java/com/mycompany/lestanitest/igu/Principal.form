@@ -190,15 +190,17 @@
                               </Group>
                           </Group>
                       </Group>
-                      <EmptySpace min="-2" pref="50" max="-2" attributes="0"/>
+                      <EmptySpace min="50" pref="50" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="103" alignment="1" groupAlignment="1" max="-2" attributes="0">
-                              <Component id="btnGenerarRemito" alignment="0" pref="190" max="32767" attributes="0"/>
-                              <Component id="btnEliminarMovimiento" alignment="0" max="32767" attributes="0"/>
-                              <Component id="btnEditarMovimiento" alignment="0" max="32767" attributes="0"/>
-                              <Component id="btnAgregar" alignment="0" max="32767" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="103" alignment="1" groupAlignment="1" max="-2" attributes="0">
+                                  <Component id="btnGenerarRemito" alignment="0" pref="190" max="32767" attributes="0"/>
+                                  <Component id="btnEliminarMovimiento" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="btnAgregar" alignment="0" max="32767" attributes="0"/>
+                              </Group>
+                              <Component id="btnGenerarRemitoDuplicado" alignment="1" min="-2" pref="190" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="btnGenerarRemitoDuplicado" alignment="0" min="-2" pref="190" max="-2" attributes="0"/>
+                          <Component id="btnRemitoTabla" alignment="1" min="-2" pref="190" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="38" max="-2" attributes="0"/>
                   </Group>
@@ -229,7 +231,7 @@
                               </Group>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Group type="102" attributes="0">
+                                  <Group type="102" alignment="0" attributes="0">
                                       <Component id="cbCuentaCorriente" min="-2" pref="27" max="-2" attributes="0"/>
                                       <EmptySpace min="-2" pref="23" max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
@@ -241,14 +243,14 @@
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="cbRepresentantes" min="-2" pref="26" max="-2" attributes="0"/>
                                   </Group>
-                                  <Group type="102" attributes="0">
-                                      <Component id="btnEditarMovimiento" min="-2" pref="54" max="-2" attributes="0"/>
-                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                  <Group type="102" alignment="0" attributes="0">
                                       <Component id="btnEliminarMovimiento" min="-2" pref="52" max="-2" attributes="0"/>
                                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                       <Component id="btnGenerarRemito" min="-2" pref="50" max="-2" attributes="0"/>
                                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                       <Component id="btnGenerarRemitoDuplicado" min="-2" pref="54" max="-2" attributes="0"/>
+                                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                                      <Component id="btnRemitoTabla" min="-2" pref="53" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                           </Group>
@@ -356,26 +358,6 @@
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnEliminarMovimientoActionPerformed"/>
-              </Events>
-            </Component>
-            <Component class="javax.swing.JButton" name="btnEditarMovimiento">
-              <Properties>
-                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="33" green="33" red="33" type="rgb"/>
-                </Property>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Dialog" size="14" style="1"/>
-                </Property>
-                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="f1" green="f0" red="ec" type="rgb"/>
-                </Property>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/icon/editar_32px.png"/>
-                </Property>
-                <Property name="text" type="java.lang.String" value="Editar"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnEditarMovimientoActionPerformed"/>
               </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel13">
@@ -1203,6 +1185,23 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Representante"/>
               </Properties>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnRemitoTabla">
+              <Properties>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="33" green="33" red="33" type="rgb"/>
+                </Property>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="ff" green="ff" red="ff" type="rgb"/>
+                </Property>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/icon/imprimir_16px.png"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Generar Remito"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnRemitoTablaActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>

@@ -253,13 +253,16 @@ public class Consultas extends javax.swing.JFrame {
 
     private void cargarClientes() {
         cbClientes.setEditable(true);
-
+        
+        // Ordenar la lista de clientes alfabéticamente por el nombre
+        listaClientes.sort((cliente1, cliente2) -> cliente1.getNombre().compareToIgnoreCase(cliente2.getNombre()));
+        
+        
         // Agregar los clientes al combobox
         for (Cliente cliente : listaClientes) {
             cbClientes.addItem(cliente.getNombre());
         }
-        // Ordenar la lista de clientes alfabéticamente por el nombre
-        listaClientes.sort((cliente1, cliente2) -> cliente1.getNombre().compareToIgnoreCase(cliente2.getNombre()));
+        
 // Eliminar la opción en blanco después de configurar el decorador
         cbClientes.removeItem("");
 
@@ -291,13 +294,15 @@ public class Consultas extends javax.swing.JFrame {
 
     private void cargarDestino() {
         cbDestino.setEditable(true);
-
+        
+        // Ordenar la lista de clientes alfabéticamente por el nombre
+        listaClientes.sort((cliente1, cliente2) -> cliente1.getNombre().compareToIgnoreCase(cliente2.getNombre()));
+        
         // Agregar los clientes al combobox
         for (Cliente cliente : listaClientes) {
             cbDestino.addItem(cliente.getNombre());
         }
-        // Ordenar la lista de clientes alfabéticamente por el nombre
-        listaClientes.sort((cliente1, cliente2) -> cliente1.getNombre().compareToIgnoreCase(cliente2.getNombre()));
+        
 // Eliminar la opción en blanco después de configurar el decorador
         cbDestino.removeItem("");
 
@@ -329,13 +334,14 @@ public class Consultas extends javax.swing.JFrame {
 
     private void cargarOrigen() {
         cbOrigen.setEditable(true);
-
+        // Ordenar la lista de clientes alfabéticamente por el nombre
+        listaClientes.sort((cliente1, cliente2) -> cliente1.getNombre().compareToIgnoreCase(cliente2.getNombre()));
+        
         // Agregar los clientes al combobox
         for (Cliente cliente : listaClientes) {
             cbOrigen.addItem(cliente.getNombre());
         }
-        // Ordenar la lista de clientes alfabéticamente por el nombre
-        listaClientes.sort((cliente1, cliente2) -> cliente1.getNombre().compareToIgnoreCase(cliente2.getNombre()));
+        
 // Eliminar la opción en blanco después de configurar el decorador
         cbOrigen.removeItem("");
 
@@ -368,15 +374,18 @@ public class Consultas extends javax.swing.JFrame {
     private void cargarRepresentantes() {
         ModeloRepresentante modRepre = new ModeloRepresentante();
         ArrayList<Representantes> listaRepresentantes = modRepre.getRepresentantes();
+        
         cbRepresentantes.setEditable(true);
-
+        
+         // Ordenar la lista de clientes alfabéticamente por el nombre
+        listaRepresentantes.sort((representante1, representante2) -> representante1.getNombre().compareToIgnoreCase(representante2.getNombre()));
+        
+        
         // Agregar los clientes al combobox
         for (Representantes Repre : listaRepresentantes) {
             cbRepresentantes.addItem(Repre.getNombre());
         }
         
-        // Ordenar la lista de clientes alfabéticamente por el nombre
-        listaRepresentantes.sort((representante1, representante2) -> representante1.getNombre().compareToIgnoreCase(representante2.getNombre()));
 
 // Eliminar la opción en blanco después de configurar el decorador
         cbRepresentantes.removeItem("");

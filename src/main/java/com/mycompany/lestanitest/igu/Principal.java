@@ -170,12 +170,12 @@ public class Principal extends javax.swing.JFrame {
     Controladora control = new Controladora();
     TableRowSorter trs;
     DefaultTableModel dtm = new DefaultTableModel();
-    private Cliente clienteSeleccionado;
-    private Cliente destinatarioSeleccionado;
+    private Cliente cliente;
+    private Cliente destinatario;
     private Movimientos movimientoSeleccionado;
     private Servicios servicioSeleccionado;
     int numeroRemito = 0;
-
+    private int idSeleccionado = -1; // Inicializado con un valor negativo para indicar que no se ha seleccionado ningún movimiento.    
     public Principal() {
         initComponents();
         setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -253,8 +253,7 @@ public class Principal extends javax.swing.JFrame {
 
         cbCuentaCorriente.setNextFocusableComponent(txtMonto);
         txtObservaciones.setNextFocusableComponent(btnAgregar);
-        btnAgregar.setNextFocusableComponent(btnEditarMovimiento);
-        btnEditarMovimiento.setNextFocusableComponent(btnEliminarMovimiento);
+        btnAgregar.setNextFocusableComponent(btnEliminarMovimiento);
         btnEliminarMovimiento.setNextFocusableComponent(btnGenerarRemito);
         btnGenerarRemito.setNextFocusableComponent(btnGenerarRemitoDuplicado);
         btnGenerarRemitoDuplicado.setNextFocusableComponent(txtDia);
@@ -353,31 +352,37 @@ public class Principal extends javax.swing.JFrame {
                 }
             };
 
-            btnAgregar.addFocusListener(focusAdapter);
-            btnEditarMovimiento.addFocusListener(focusAdapter);
+            btnAgregar.addFocusListener(focusAdapter); 
             btnEliminarMovimiento.addFocusListener(focusAdapter);
             btnGenerarRemito.addFocusListener(focusAdapter);
             btnGenerarRemitoDuplicado.addFocusListener(focusAdapter);
         });
 
-        // Listener al mause para editar con doble click el movimiento.
+        
+        
         tablaMovimientos.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) {
-                    // Acción a realizar cuando se haga doble clic en un elemento de la tabla
-                    int filaSeleccionada = tablaMovimientos.getSelectedRow();
+                int filaSeleccionada = tablaMovimientos.getSelectedRow();
+                if (filaSeleccionada != -1) {
                     int id = (int) tablaMovimientos.getValueAt(filaSeleccionada, 0);
-                    // Realizar la acción deseada con el ID obtenido
-                    System.out.println("ID seleccionado: " + id);
-                    EditarMovimientos editar = new EditarMovimientos(id);
-                    editar.setVisible(true);
-                    editar.setLocationRelativeTo(null);
 
+                    // Realizar la acción deseada con el ID obtenido al dar un clic
+                    System.out.println("ID seleccionado al dar un clic: " + id);
+                    idSeleccionado = id;
+
+                    if (e.getClickCount() == 2) {
+                        // Acción a realizar cuando se haga doble clic en un elemento de la tabla
+                        System.out.println("ID seleccionado al dar doble clic: " + id);
+                        EditarMovimientos editar = new EditarMovimientos(id);
+                        editar.setVisible(true);
+                        editar.setLocationRelativeTo(null);
+                    }
                 }
             }
         });
-
+        
+        
         KeyListener keyListener = new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent e) {
@@ -580,20 +585,20 @@ public class Principal extends javax.swing.JFrame {
                     mostrarResultadosBusqueda(cbDestinos, textoBusqueda);
 
                     // Busca el cliente seleccionado en la lista de clientes
-                    destinatarioSeleccionado = null; // Restablece el destinatario seleccionado
+                    destinatario = null; // Restablece el destinatario seleccionado
 
                     for (Cliente cliente : listaClientes) {
                         // Normaliza el nombre del cliente a mayúsculas y elimina caracteres no deseados excepto espacios en blanco
                         String nombreCliente = cliente.getNombre().toUpperCase().replaceAll("[^A-Z\\s]", "");
 
                         if (nombreCliente.contains(textoBusqueda)) {
-                            destinatarioSeleccionado = cliente;
-                            System.out.println("Destinatario seleccionado: " + destinatarioSeleccionado);
+                            destinatario = cliente;
+                            System.out.println("Destinatario seleccionado: " + destinatario);
                             break;
                         }
                     }
 
-                    if (destinatarioSeleccionado == null) {
+                    if (destinatario == null) {
                         System.out.println("No se encontró DESTINATARIO.");
                     }
                 }
@@ -605,14 +610,15 @@ public class Principal extends javax.swing.JFrame {
         ModeloServicio modServ = new ModeloServicio();
         ArrayList<Servicios> listaServ = modServ.getServicios();
         cbServicios.setEditable(true);
-
+         // Ordenar la lista de clientes alfabéticamente por el nombre
+        listaServ.sort((servicio1, servicio2) -> servicio1.getServicio().compareToIgnoreCase(servicio2.getServicio()));
+        
         // Agregar los clientes al combobox
         for (Servicios Servicios : listaServ) {
             cbServicios.addItem(Servicios.getServicio());
         }
 
-        // Ordenar la lista de clientes alfabéticamente por el nombre
-        listaServ.sort((servicio1, servicio2) -> servicio1.getServicio().compareToIgnoreCase(servicio2.getServicio()));
+       
 
         // Eliminar la opción en blanco después de configurar el decorador
         cbServicios.removeItem("");
@@ -645,7 +651,9 @@ public class Principal extends javax.swing.JFrame {
         ModeloRepresentante modRepre = new ModeloRepresentante();
         ArrayList<Representantes> listaRepresentantes = modRepre.getRepresentantes();
         cbRepresentantes.setEditable(true);
-
+        // Ordenar la lista de clientes alfabéticamente por el nombre
+        listaRepresentantes.sort((representante1, representante2) -> representante1.getNombre().compareToIgnoreCase(representante2.getNombre()));
+        
         // Agregar los clientes al combobox
         for (Representantes Repre : listaRepresentantes) {
             cbRepresentantes.addItem(Repre.getNombre());
@@ -654,8 +662,7 @@ public class Principal extends javax.swing.JFrame {
 // Eliminar la opción en blanco después de configurar el decorador
         cbRepresentantes.removeItem("");
 
-        // Ordenar la lista de clientes alfabéticamente por el nombre
-        listaRepresentantes.sort((representante1, representante2) -> representante1.getNombre().compareToIgnoreCase(representante2.getNombre()));
+        
 
         // Establecer el índice seleccionado a -1 para no mostrar ninguna selección
         cbRepresentantes.setSelectedIndex(-1);
@@ -715,10 +722,10 @@ public class Principal extends javax.swing.JFrame {
                     // Normaliza el texto de búsqueda a mayúsculas
                     textoBusqueda = textoBusqueda.toUpperCase();
 
-                    clienteSeleccionado = null; // Restablece el destinatario seleccionado
+                    cliente = null; // Restablece el destinatario seleccionado
                     for (Cliente cliente : listaClientes) {
                         if (cliente.getNombre().toUpperCase().equals(textoBusqueda)) {
-                            clienteSeleccionado = cliente;
+                            Principal.this.cliente = cliente;
 
                             break;
                         }
@@ -742,7 +749,6 @@ public class Principal extends javax.swing.JFrame {
         jLabel10 = new javax.swing.JLabel();
         btnAgregar = new javax.swing.JButton();
         btnEliminarMovimiento = new javax.swing.JButton();
-        btnEditarMovimiento = new javax.swing.JButton();
         jLabel13 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
         btnAgregarCliente = new javax.swing.JButton();
@@ -794,6 +800,7 @@ public class Principal extends javax.swing.JFrame {
         cbMontoRendido = new javax.swing.JCheckBox();
         cbRepresentantes = new javax.swing.JComboBox<>();
         jLabel8 = new javax.swing.JLabel();
+        btnRemitoTabla = new javax.swing.JButton();
         PanelBusquedas = new javax.swing.JPanel();
         txtFiltroCliente = new javax.swing.JTextField();
         txtFiltroRemito = new javax.swing.JTextField();
@@ -871,17 +878,6 @@ public class Principal extends javax.swing.JFrame {
         btnEliminarMovimiento.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnEliminarMovimientoActionPerformed(evt);
-            }
-        });
-
-        btnEditarMovimiento.setBackground(new java.awt.Color(51, 51, 51));
-        btnEditarMovimiento.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
-        btnEditarMovimiento.setForeground(new java.awt.Color(236, 240, 241));
-        btnEditarMovimiento.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/editar_32px.png"))); // NOI18N
-        btnEditarMovimiento.setText("Editar");
-        btnEditarMovimiento.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEditarMovimientoActionPerformed(evt);
             }
         });
 
@@ -1325,6 +1321,16 @@ public class Principal extends javax.swing.JFrame {
         jLabel8.setForeground(new java.awt.Color(236, 240, 241));
         jLabel8.setText("Representante");
 
+        btnRemitoTabla.setBackground(new java.awt.Color(51, 51, 51));
+        btnRemitoTabla.setForeground(new java.awt.Color(255, 255, 255));
+        btnRemitoTabla.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/imprimir_16px.png"))); // NOI18N
+        btnRemitoTabla.setText("Generar Remito");
+        btnRemitoTabla.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemitoTablaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panelCargaMovimientosLayout = new javax.swing.GroupLayout(panelCargaMovimientos);
         panelCargaMovimientos.setLayout(panelCargaMovimientosLayout);
         panelCargaMovimientosLayout.setHorizontalGroup(
@@ -1366,12 +1372,13 @@ public class Principal extends javax.swing.JFrame {
                                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addGap(50, 50, 50)
                 .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(btnGenerarRemito, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
-                        .addComponent(btnEliminarMovimiento, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnEditarMovimiento, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnAgregar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(btnGenerarRemitoDuplicado, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(btnGenerarRemito, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
+                            .addComponent(btnEliminarMovimiento, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnAgregar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(btnGenerarRemitoDuplicado, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnRemitoTabla, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(38, 38, 38))
         );
         panelCargaMovimientosLayout.setVerticalGroup(
@@ -1405,13 +1412,13 @@ public class Principal extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(cbRepresentantes, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
-                                .addComponent(btnEditarMovimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(btnEliminarMovimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(btnGenerarRemito, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btnGenerarRemitoDuplicado, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(btnGenerarRemitoDuplicado, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnRemitoTabla, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
                         .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -1903,23 +1910,6 @@ public class Principal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnEliminarMovimientoActionPerformed
 
-    private void btnEditarMovimientoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarMovimientoActionPerformed
-        if (tablaMovimientos.getRowCount() > 0) {
-            //validar q se haya seleccionado un registro
-            if (tablaMovimientos.getSelectedRow() != -1) {
-                //obtener la id de lo q quiero editar
-                int idMovimiento = Integer.parseInt(String.valueOf(tablaMovimientos.getValueAt(tablaMovimientos.getSelectedRow(), 0)));
-                EditarMovimientos editar = new EditarMovimientos(idMovimiento);
-                editar.setVisible(true);
-                editar.setLocationRelativeTo(null);
-                this.dispose();
-            } else {
-                mostrarMensaje("No seleccinó un Registro para editar", "Error", "Error al editar");
-            }
-        }
-
-    }//GEN-LAST:event_btnEditarMovimientoActionPerformed
-
     private void cbfDestinoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbfDestinoActionPerformed
         String tFlete = "";
         if (cbfDestino.isSelected()) {
@@ -1993,8 +1983,21 @@ public class Principal extends javax.swing.JFrame {
         //txt monto
         String txtMontoValor = txtMonto.getText();
         String monto;
-        //remito
-        remito = txtRemito.getText();
+        // Obtener el valor del campo de texto txtRemito
+        String textoRemito = txtRemito.getText();
+        
+        if (!textoRemito.equals("0")) {
+            // Asignar el valor de txtRemito a remito si no es igual a "0"
+            remito = textoRemito;
+        } else {
+           
+            
+            // Usando String.valueOf()
+            remito = String.valueOf(numeroRemito + 1);
+            
+            // JOptionPane.showMessageDialog(null, "El valor de remito no puede ser 0", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
 
         // Si hay campos faltantes, mostrar el mensaje de alerta
         if (!txtMontoValor.isEmpty()) {
@@ -2090,6 +2093,8 @@ public class Principal extends javax.swing.JFrame {
 
         control.cargarMovimiento(cliente, destino, servicio, representante, bulto, monto, flete, tFlete, remito, tMontoP, tMontoR, tFleteP, tFleteR, fecha, cC, obs, horaSQL);
         //mostrarMensaje("Movimiento agregado correctamente", "Info", "Agregado con exito!");
+        
+        //Llama la funcion generar  
         generarPdf();
 
         // Actualizar la tabla
@@ -2383,6 +2388,83 @@ public class Principal extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtValDeclaradoActionPerformed
 
+    private void btnRemitoTablaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemitoTablaActionPerformed
+      
+        
+        
+        
+        SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/YYYY");
+        Movimientos mov = new Movimientos();
+        if (idSeleccionado != -1) {
+            // Busco id en la bd
+             mov = control.traerMovimiento(idSeleccionado);
+             
+            // Debes implementar el código para acceder a tu base de datos y obtener los datos del cliente y destino
+            String cliente = mov.getCliente();
+            String destino  = mov.getDestino();
+            String fecha = formatoFecha.format(mov.getFecha());
+            String servicio = mov.getServicio();
+            String bulto = Integer.toString(mov.getBultos());
+            String representante = mov.getRepresentante();
+            String remito = mov.getRemito();
+            
+         
+            
+            
+            
+                    
+            // Eliminar el símbolo "$" y el formato de los campos monto y flete
+            String montoSinSimbolo = mov.getMonto().replaceAll("[$]", "");
+            String fleteSinSimbolo = mov.getFlete().replaceAll("[$]", "");
+
+            // Aplicar el formateo para que los números tengan el formato correcto
+            String montoFormateado = montoSinSimbolo.replace(".", "").replace(",", ".");
+            String fleteFormateado = fleteSinSimbolo.replace(".", "").replace(",", ".");
+
+            // Crear objetos BigDecimal a partir de las cadenas formateadas
+            BigDecimal montoBigDecimal = new BigDecimal(montoFormateado);
+            BigDecimal fleteBigDecimal = new BigDecimal(fleteFormateado);
+
+            // Asignar los valores de los BigDecimal a los campos de texto
+           String monto = montoBigDecimal.toString();
+           String flete = fleteBigDecimal.toString();
+           
+           
+            String obs = mov.getObservaciones();        
+            String origenDestino = mov.getFleteDestinoOrigen();
+            String cc = mov.getCuentaCorriente();
+            boolean cuentaCorriente;
+
+            if ("Si".equalsIgnoreCase(cc)) {
+                cuentaCorriente = true;
+            } else if ("No".equalsIgnoreCase(cc)) {
+                cuentaCorriente = false;
+            } else {
+                // Manejar un caso no válido si es necesario
+                cuentaCorriente = false; // Puedes asignar un valor predeterminado
+            }
+            System.out.println("cuenta corriente:");
+            System.out.println(cuentaCorriente);
+            
+            String montoPagado = mov.getTipoMontoP();
+            String montoRendido = mov.getTipoMontoR();
+            String fletePagado = mov.getTipoFleteP();
+            String fleteRendido = mov.getTipoFleteR();
+            
+            
+                    
+            System.out.println("Datos de id: "+fecha+" "+ cliente +" "+ destino+" "+ bulto +" "+ remito +" "+ monto +" "+ montoPagado +" "+ montoRendido +" "+ flete+" "+fletePagado+" "+ fleteRendido+" "+origenDestino+" "+cc+" "+representante+" "+obs);
+           
+            generarRemito(fecha, cliente, destino, servicio, bulto, representante, monto, montoPagado, montoRendido, flete, fletePagado, fleteRendido, origenDestino, cuentaCorriente, obs);
+        }else{
+            // No hay ningún ID seleccionado en la tabla, muestra un JOptionPane
+        JOptionPane.showMessageDialog(this, "Selecciona algún movimiento en la tabla", "Mensaje de Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+
+    }//GEN-LAST:event_btnRemitoTablaActionPerformed
+
+
     /**
      * @param args the command line arguments
      */
@@ -2422,10 +2504,10 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JPanel PanelBusquedas;
     private javax.swing.JButton btnAgregar;
     private javax.swing.JButton btnAgregarCliente;
-    private javax.swing.JButton btnEditarMovimiento;
     private javax.swing.JButton btnEliminarMovimiento;
     private javax.swing.JButton btnGenerarRemito;
     private javax.swing.JButton btnGenerarRemitoDuplicado;
+    private javax.swing.JButton btnRemitoTabla;
     private javax.swing.JLabel bulto;
     private javax.swing.JComboBox<String> cbClientes;
     private javax.swing.JCheckBox cbCuentaCorriente;
@@ -2506,7 +2588,510 @@ public class Principal extends javax.swing.JFrame {
         Date date = calendar.getTime();
 
         return date;
+    }       
+    
+    
+    
+    
+    
+    
+    private void generarRemito(String fecha,String clientee,String destinoo,String servicio, String bulto,String representantes,
+             String monto, String montoPagado,String montoRendido, String flete,String fletePagado, String fleteRendido, String origenDestino, boolean cuentaCorriente, String obs ){
+        
+        
+     Document document = new Document();
+     
+     
+     
+     ModeloCliente modClientes = new ModeloCliente();
+     ArrayList<Cliente> listaClientes = modClientes.getClientes();
+        
+        String clienteSelect =  clientee;
+        String destinoSelect =  destinoo;
+        
+        String nombreClienteImpresion = clienteSelect;
+        // Buscar el cliente por nombre
+        Cliente clienteEncontrado = null;
+        for (Cliente cliente : listaClientes) {
+            if (cliente.getNombre().equalsIgnoreCase(clienteSelect)) {
+                clienteEncontrado = cliente;
+                break; // Terminar el bucle una vez que se encuentra el cliente
+            }
+        }
+
+        if (clienteEncontrado != null) {
+            // El cliente fue encontrado, ahora puedes usar "clienteEncontrado" como un objeto Cliente
+            // Realiza las acciones necesarias con el objeto cliente, por ejemplo:
+            System.out.println("Nombre del cliente: " + clienteEncontrado.getNombre());
+            System.out.println("Dirección: " + clienteEncontrado.getDireccion());
+            // Y así sucesivamente...
+        } else {
+            // El cliente no fue encontrado en la lista
+            System.out.println("Cliente no encontrado: " + clienteSelect);
+        }
+            
+        
+        
+            
+            Cliente destinoEncontrado = null;
+            String nombreDestinoImpresion = destinoSelect; // Variable auxiliar para almacenar el nombre
+
+            for (Cliente destino : listaClientes) {
+                if (destino.getNombre().equalsIgnoreCase(destinoSelect)) {
+                    destinoEncontrado = destino;
+                    nombreDestinoImpresion = destino.getNombre(); // Actualiza el nombre desde el objeto Cliente
+                    break; // Terminar el bucle una vez que se encuentra el cliente
+                }
+            }
+
+            if (destinoEncontrado != null) {
+                // El cliente fue encontrado en la lista y destinoEncontrado contiene toda la información del cliente
+                // Realiza las acciones necesarias con el objeto cliente, por ejemplo:
+                System.out.println("Nombre del cliente: " + destinoEncontrado.getNombre());
+                System.out.println("Dirección: " + destinoEncontrado.getDireccion());
+                // Y así sucesivamente...
+            } else {
+                // El cliente no fue encontrado en la lista, pero aún tienes acceso al nombre almacenado en nombreDestinoImpresion
+                System.out.println("Cliente no encontrado: " + nombreDestinoImpresion);
+            }
+     
+     
+     
+        
+
+        // Incrementar el contador de remito
+        numeroRemito++;
+        // Generar el número de remito en formato de 8 dígitos
+        String numeroRemitoString = String.format("%08d", numeroRemito);
+        try {
+            // Obtener la ruta del escritorio del usuario
+            String userHome = FileSystemView.getFileSystemView().getHomeDirectory().getAbsolutePath();
+            // Especificar la ruta de salida del archivo PDF en el escritorio
+            String outputPath = userHome + File.separator + "archivo.pdf";
+
+            // Crear el archivo de salida
+            File outputFile = new File(outputPath);
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile));
+
+            document.open();
+
+            // Crear un PdfTemplate para agregar el contenido dentro del marco
+            PdfContentByte canvas = writer.getDirectContent();
+            PdfTemplate template = canvas.createTemplate(document.getPageSize().getWidth() - 40, document.getPageSize().getHeight() - 40);
+
+            //FUENTES
+            Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.NORMAL);
+            Font fontColumnas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD);
+            Font fontTotales = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
+            Font fontFecha = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD, BaseColor.BLACK);
+            Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 9, Font.NORMAL, BaseColor.BLACK);
+            Font fontR = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD, BaseColor.BLACK);
+            // Crear una tabla para organizar los elementos
+            PdfPTable table = new PdfPTable(3); // 2 columnas
+            table.setWidthPercentage(100); // Ancho de la tabla en porcentaje del ancho de página
+
+            // LOGO
+            InputStream logoStream = getClass().getClassLoader().getResourceAsStream("imagenes/logoreportes.jpg");
+            BufferedImage bufferedImage = ImageIO.read(logoStream);
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(bufferedImage, "jpg", baos);
+            byte[] logoBytes = baos.toByteArray();
+
+            Image logo = Image.getInstance(logoBytes);
+            logo.scaleAbsolute(150, 120);
+            logo.setAlignment(Element.ALIGN_LEFT);
+
+            // TEXTO
+            InputStream textoStream = getClass().getClassLoader().getResourceAsStream("imagenes/texto.png");
+            Image texto = Image.getInstance(ImageIO.read(textoStream), null);
+            texto.scaleToFit(150, 120);
+            texto.setAlignment(Element.ALIGN_LEFT);
+
+            // REMITO NO VALIDO
+            InputStream remStream = getClass().getClassLoader().getResourceAsStream("imagenes/Remito.jpg");
+            Image rem = Image.getInstance(ImageIO.read(remStream), null);
+            rem.scaleToFit(50, 50);
+            rem.setAlignment(Element.ALIGN_CENTER);
+
+            // REMITO
+            InputStream remitoStream = getClass().getClassLoader().getResourceAsStream("imagenes/remito_cuit.jpg");
+            Image remito = Image.getInstance(ImageIO.read(remitoStream), null);
+            remito.scaleToFit(150, 180);
+            remito.setAlignment(Element.ALIGN_RIGHT);
+
+            // FECHAS
+            //alpicar fecha 
+            Chunk chunkFechas = new Chunk("Fecha: " + fecha, fontFecha);
+            Paragraph dfecha = new Paragraph(chunkFechas);
+            dfecha.setAlignment(Element.ALIGN_RIGHT);
+            //REMITO NRO
+            Paragraph nroRemito = new Paragraph("REMITO N° " + String.format("%08d", numeroRemito), FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD));
+            guardarNumeroRemito();
+            nroRemito.setAlignment(Element.ALIGN_RIGHT);
+
+            // Celda 1: Logo + Texto relacionado al logo + Fecha
+            PdfPCell cell1 = new PdfPCell();
+            cell1.addElement(logo);
+            cell1.addElement(texto);
+            cell1.setHorizontalAlignment(Element.ALIGN_CENTER); // Alinear a la izquierda
+            cell1.setVerticalAlignment(Element.ALIGN_RIGHT); // Alinear arriba
+            cell1.setBorder(Rectangle.NO_BORDER); // Sin bordes
+
+            table.addCell(cell1);
+
+            // Celda 3: Remito
+            PdfPCell cell3 = new PdfPCell(rem);
+            cell3.addElement(rem);
+            cell3.setHorizontalAlignment(Element.ALIGN_CENTER); // Alinear a la derecha
+            cell3.setVerticalAlignment(Element.ALIGN_RIGHT); // Alinear abajo
+            cell3.setBorder(Rectangle.NO_BORDER); // Sin bordes
+            table.addCell(cell3);
+
+            // Celda 2: Hector Alejandro Espindola
+            PdfPCell cell2 = new PdfPCell(remito);
+            cell2.addElement(dfecha);
+            cell2.addElement(nroRemito);
+            cell2.addElement(remito);
+            cell2.setHorizontalAlignment(Element.ALIGN_CENTER); // Alinear a la derecha
+            cell2.setVerticalAlignment(Element.ALIGN_RIGHT); // Alinear abajo
+            cell2.setBorder(Rectangle.NO_BORDER); // Sin bordes
+            table.addCell(cell2);
+
+            document.add(table);
+            // Crear una tabla contenedora con 2 columnas
+            PdfPTable tablaContenedora = new PdfPTable(2);
+            tablaContenedora.setWidthPercentage(100);
+            float[] columnWidths = {1, 1}; // Ajusta los valores según tu necesidad
+            tablaContenedora.setWidths(columnWidths);
+
+            PdfPCell remitenteCell = new PdfPCell();
+            remitenteCell.setBorder(Rectangle.BOX);
+
+            String nombreCliente = clienteEncontrado != null && clienteEncontrado.getNombre() != null
+                    ? clienteEncontrado.getNombre().toUpperCase():"";
+                    
+
+            String direccion = clienteEncontrado != null && clienteEncontrado.getDireccion() != null
+                    ? clienteEncontrado.getDireccion().toUpperCase()
+                    : "";
+
+            String localidad = clienteEncontrado != null && clienteEncontrado.getLocalidad() != null
+                    ? clienteEncontrado.getLocalidad().toUpperCase()
+                    : "";
+
+            String cuit = clienteEncontrado != null && clienteEncontrado.getCuit() != null
+                    ? clienteEncontrado.getCuit().toUpperCase()
+                    : "";
+
+            String tel = clienteEncontrado != null && clienteEncontrado.getTelefono() != null
+                    ? clienteEncontrado.getTelefono().toUpperCase()
+                    : "";
+            
+
+            Paragraph nombreParagraph = new Paragraph("REMITENTE: " + nombreCliente, fontR);
+            nombreParagraph.setAlignment(Element.ALIGN_LEFT);
+            remitenteCell.addElement(nombreParagraph);
+
+            Paragraph direccionParagraph = new Paragraph("DIRECCION: " + direccion, fontR);
+            direccionParagraph.setAlignment(Element.ALIGN_LEFT);
+            remitenteCell.addElement(direccionParagraph);
+
+            Paragraph localidadParagraph = new Paragraph("LOCALIDAD: " + localidad, fontR);
+            localidadParagraph.setAlignment(Element.ALIGN_LEFT);
+            remitenteCell.addElement(localidadParagraph);
+
+            Paragraph telParagraph = new Paragraph("TELEFONO: " + tel, fontR);
+            telParagraph.setAlignment(Element.ALIGN_LEFT);
+            remitenteCell.addElement(telParagraph);
+
+            Paragraph cuitParagraph = new Paragraph("CUIT: " + cuit, fontR);
+            cuitParagraph.setAlignment(Element.ALIGN_LEFT);
+            remitenteCell.addElement(cuitParagraph);
+
+            remitenteCell.setHorizontalAlignment(Element.ALIGN_LEFT); // Alineación horizontal de la celda
+            tablaContenedora.addCell(remitenteCell);
+
+            // Crear la celda del destinatario
+            PdfPCell destinatarioCell = new PdfPCell();
+            destinatarioCell.setBorder(Rectangle.BOX);
+            
+            
+
+            String nombreDestinatario = nombreClienteImpresion;
+            String direccionDestinatario = "";
+            String localidadDestinatario = "";
+            String cuitDestinatario = "";
+            String telDestinatario = "";
+
+           
+
+            if (destinoEncontrado != null && destinoEncontrado.getDireccion() != null && destinoEncontrado.getLocalidad() != null
+                    && destinoEncontrado.getCuit() != null && destinoEncontrado.getNombre() != null && destinoEncontrado.getTelefono() != null) {
+                nombreDestinatario = destinoEncontrado.getNombre().toUpperCase();
+                direccionDestinatario = destinoEncontrado.getDireccion().toUpperCase();
+                localidadDestinatario = destinoEncontrado.getLocalidad().toUpperCase();
+                cuitDestinatario = destinoEncontrado.getCuit().toUpperCase();
+                telDestinatario = destinoEncontrado.getTelefono().toUpperCase();
+                
+              
+
+                
+
+            } else {
+                nombreDestinatario = nombreDestinoImpresion;
+                direccionDestinatario = "";
+                localidadDestinatario = "";
+                cuitDestinatario = "";
+                telDestinatario = "";
+            }
+
+            Paragraph nombreDestinatarioParagraph = new Paragraph("DESTINATARIO: " + nombreDestinatario, fontR);
+            nombreDestinatarioParagraph.setAlignment(Element.ALIGN_LEFT);
+            destinatarioCell.addElement(nombreDestinatarioParagraph);
+
+            Paragraph direccionDestinatarioParagraph = new Paragraph("DIRECCION: " + direccionDestinatario, fontR);
+            direccionDestinatarioParagraph.setAlignment(Element.ALIGN_LEFT);
+            destinatarioCell.addElement(direccionDestinatarioParagraph);
+
+            Paragraph localidadDestinatarioParagraph = new Paragraph("LOCALIDAD: " + localidadDestinatario, fontR);
+            localidadDestinatarioParagraph.setAlignment(Element.ALIGN_LEFT);
+            destinatarioCell.addElement(localidadDestinatarioParagraph);
+
+            Paragraph telDestinatarioParagraph = new Paragraph("TELEFONO: " + telDestinatario, fontR);
+            telDestinatarioParagraph.setAlignment(Element.ALIGN_LEFT);
+            destinatarioCell.addElement(telDestinatarioParagraph);
+
+            Paragraph cuitDestinatarioParagraph = new Paragraph("CUIT: " + cuitDestinatario, fontR);
+            cuitDestinatarioParagraph.setAlignment(Element.ALIGN_LEFT);
+            destinatarioCell.addElement(cuitDestinatarioParagraph);
+
+            destinatarioCell.setHorizontalAlignment(Element.ALIGN_LEFT); // Alineación horizontal de la celda
+            tablaContenedora.addCell(destinatarioCell);
+
+            document.add(tablaContenedora);
+
+            // Agregar espacio arriba de la tabla
+            Paragraph espacio = new Paragraph(1f, " "); // tamaño del espacio
+            document.add(espacio);
+
+            // Crear la tabla con 6 columnas
+            PdfPTable tablaa = new PdfPTable(6);
+            tablaa.setWidthPercentage(100);
+
+            // Establecer el borde de las celdas de las filas como NO_BORDER
+            PdfPCell bordeTop = new PdfPCell();
+            bordeTop.setBorder(Rectangle.TOP | Rectangle.LEFT | Rectangle.RIGHT);
+            PdfPCell celdaConBorde = new PdfPCell();
+            celdaConBorde.setBorder(Rectangle.BOTTOM | Rectangle.LEFT | Rectangle.RIGHT);
+
+            // Agregar las celdas a la tabla
+            tablaa.addCell(createCell("Descripción", font, bordeTop));
+            tablaa.addCell(createCell("Seguro", font, bordeTop));
+            tablaa.addCell(createCell("Comision contrarrembolso", font, bordeTop));
+            tablaa.addCell(createCell("Redespacho", font, bordeTop));
+            tablaa.addCell(createCell("Valor Declarado", font, bordeTop));
+            tablaa.addCell(createCell("Observaciones", font, bordeTop));
+
+            // Obtener los valores de los campos de texto
+            String descripcion = bulto + " bultos";
+            String observaciones = obs;
+            String seguro = txtSeguro.getText();
+            String comContrarembolso = txtContrarembolso.getText();
+            String redespacho = txtRedespacho.getText();
+            String valDeclarado = txtValDeclarado.getText();
+
+            // Agregar los valores a la tabla
+            tablaa.addCell(createCell(descripcion, font, celdaConBorde));
+            tablaa.addCell(createCell("$" + seguro, font, celdaConBorde)); // Columna "Seguro"
+            tablaa.addCell(createCell("$" + comContrarembolso, font, celdaConBorde)); // Columna "Com. Contrarrembolso"
+            tablaa.addCell(createCell("$" + redespacho, font, celdaConBorde)); // Columna "Redespacho"
+            tablaa.addCell(createCell("$" + valDeclarado, font, celdaConBorde)); // Columna "Valor Declarado"
+            tablaa.addCell(createCell(observaciones, font, celdaConBorde));
+
+            // Agregar la tabla al documento
+            document.add(tablaa);
+            Paragraph recibenB = new Paragraph("SE RECIBEN LOS BULTOS SIN ESPECIFICAR SU CONTENIDO", fontR);
+            recibenB.setAlignment(Element.ALIGN_CENTER);
+            document.add(recibenB);
+            // Crear la tabla con 2 columnas
+            PdfPTable tabla = new PdfPTable(2);
+            tabla.setWidthPercentage(100);
+            tabla.setWidths(new float[]{1, 0.5f}); // Ajustar el ancho de las columnas
+
+            // Agregar la imagen a la primera celda
+            PdfPCell imagenCell = new PdfPCell();
+            InputStream firmaStream = getClass().getClassLoader().getResourceAsStream("imagenes/firma_aclaracion.png");
+            Image firmasello = Image.getInstance(ImageIO.read(firmaStream), null);
+            firmasello.scaleToFit(300, 200);
+            firmasello.setAlignment(Element.ALIGN_LEFT);
+            imagenCell.addElement(firmasello);
+            imagenCell.setBorder(Rectangle.NO_BORDER);
+            tabla.addCell(imagenCell);
+
+            // Agregar el texto a la segunda celda
+            String condicionFlete = cuentaCorriente ? "CUENTA CORRIENTE" : "CONTADO";
+            
+            if (origenDestino == "origen") {
+                origenDestino = "origen";
+            } else if (origenDestino== "destino") {
+                origenDestino = "destino";
+            }
+
+            PdfPCell textoCell = new PdfPCell();
+            textoCell.setBorder(Rectangle.NO_BORDER);
+            // Crear una tabla interna para el texto
+            PdfPTable tablaTexto = new PdfPTable(1);
+            tablaTexto.setWidthPercentage(100);
+
+            // Crea una instancia personalizada de Font con tus preferencias
+            Font fontPersonalizado = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
+
+            // Crea el párrafo con el texto y la fuente personalizada
+            Paragraph c = new Paragraph("CONTRAREEMBOLSO: $" + txtMonto.getText(), fontPersonalizado);
+
+            // Resto del código
+            c.setAlignment(Element.ALIGN_LEFT);
+            PdfPCell celdaC = new PdfPCell(c);
+            celdaC.setBorder(Rectangle.LEFT | Rectangle.RIGHT | Rectangle.TOP | Rectangle.BOTTOM);
+            celdaC.setPadding(3f);
+            celdaC.setPaddingBottom(4f);
+            tablaTexto.addCell(celdaC);
+
+            Paragraph b = new Paragraph("FLETE: $" + txtFlete.getText(), fontR);
+            b.setAlignment(Element.ALIGN_LEFT);
+            PdfPCell celdaB = new PdfPCell(b);
+            celdaB.setBorder(Rectangle.LEFT | Rectangle.RIGHT | Rectangle.BOTTOM); // Agregar borde alrededor de la celda "b"
+            celdaB.setPadding(1f); // Ajustar el relleno de la celda "b"
+            celdaB.setPaddingBottom(4f); // Ajustar el relleno de la celda "b"
+            tablaTexto.addCell(celdaB);
+
+            // Crear una instancia personalizada de Font con subrayado y negrita
+            Font fontSubrayadoNegrita = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD | Font.UNDERLINE, BaseColor.BLACK);
+            Font fontNegrita = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD, BaseColor.BLACK);
+
+            // Crear un Chunk con el texto "Condicion de venta:" y aplicarle el estilo de negrita
+            Chunk textoCondicionVenta = new Chunk("Condicion de venta: ", fontNegrita);
+
+            // Crear un Chunk con el texto de condicionFlete y aplicarle el estilo de subrayado y negrita
+            Chunk condicionChunk = new Chunk(condicionFlete, fontSubrayadoNegrita);
+
+            // Crear el Paragraph con los Chunks de "Condicion de venta:" y la variable condicionFlete
+            Paragraph a = new Paragraph();
+            a.add(textoCondicionVenta);
+            a.add(condicionChunk); // Agregar el Chunk al Paragraph
+            a.setAlignment(Element.ALIGN_RIGHT);
+
+            PdfPCell celdaA = new PdfPCell(a);
+            celdaA.setBorder(Rectangle.NO_BORDER);
+            celdaA.setPaddingBottom(2);
+            tablaTexto.addCell(celdaA);
+
+            // Crear una instancia personalizada de Font con negrita y subrayado
+            Font fontNegritaSubrayado = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD | Font.UNDERLINE, BaseColor.BLACK);
+
+            // Crear un Chunk con el texto "Flete: a cobrar en" y aplicarle el estilo de negrita
+            Chunk fleteChunk = new Chunk("Flete: a cobrar en ", FontFactory.getFont(FontFactory.TIMES_BOLD, 12));
+
+            // Crear un Chunk con el texto de la variable flete y aplicarle el estilo de negrita y subrayado
+            Chunk fleteValorChunk = new Chunk(origenDestino, fontNegritaSubrayado);
+
+            // Crear el Paragraph con los Chunks de "Flete: a cobrar en" y la variable flete
+            Paragraph f = new Paragraph();
+            f.add(fleteChunk);
+            f.add(fleteValorChunk);
+            f.setAlignment(Element.ALIGN_RIGHT);
+
+            PdfPCell celdaF = new PdfPCell(f);
+            celdaF.setBorder(Rectangle.NO_BORDER);
+            celdaF.setPaddingBottom(2);
+            tablaTexto.addCell(celdaF);
+
+            Paragraph facturaremito = new Paragraph("Factura/Remito N°: " + txtRemito.getText(), fontR);
+            facturaremito.setAlignment(Element.ALIGN_RIGHT);
+            PdfPCell celdafacturaremito = new PdfPCell(facturaremito);
+            celdafacturaremito.setBorder(Rectangle.NO_BORDER); // Sin borde para la celda "f"
+            celdafacturaremito.setPaddingBottom(2); // Ajustar el espacio inferior de la celda "f"
+            tablaTexto.addCell(celdafacturaremito);
+
+            double dmonto = Double.parseDouble(monto);
+            double fletee = Double.parseDouble(flete);
+            //double seguroo = Double.parseDouble(txtSeguro.getText());
+            //double comContra = Double.parseDouble(txtContrarembolso.getText());
+            //double redespa = Double.parseDouble(txtRedespacho.getText());
+            //double valDecla = Double.parseDouble(txtValDeclarado.getText());
+            double total = dmonto + fletee;
+            Paragraph totalMonto = new Paragraph("TOTAL: $" + total, fontR);
+            totalMonto.setAlignment(Element.ALIGN_RIGHT);
+            PdfPCell celdaTotal = new PdfPCell(totalMonto);
+            celdaTotal.setBorder(Rectangle.NO_BORDER); // Sin borde para la celda "total"
+            celdaTotal.setPaddingBottom(2); // Ajustar el espacio inferior de la celda "total"
+            tablaTexto.addCell(celdaTotal);
+
+            textoCell.addElement(tablaTexto);
+            tabla.addCell(textoCell);
+
+            // Ajustar el espacio entre las filas de la tabla
+            tabla.setSpacingAfter(3);
+            document.add(tabla);
+
+            // Cerrar el template y añadirlo al contenido del documento
+            template.closePathFillStroke();
+            canvas.addTemplate(template, 20, 20);
+
+            // Obtener el tamaño exacto del contenido
+            float contentWidth = template.getWidth();
+            float contentHeight = template.getHeight();
+
+            // Crear un rectángulo que servirá como marco alrededor del contenido
+            PdfContentByte canvasForBorders = writer.getDirectContentUnder();
+            Rectangle marco = new Rectangle(20, 440, 20 + contentWidth, 20 + contentHeight);
+            marco.setBorder(Rectangle.BOX); // Establecer el tipo de borde
+            marco.setBorderWidth(1); // Establecer el ancho del borde
+            marco.setBorderColor(BaseColor.BLACK); // Establecer el color del borde
+            canvasForBorders.rectangle(marco);
+
+            document.close();
+            writer.close();
+
+            // Imprimir el archivo PDF automáticamente
+            try {
+                // Cargar el archivo PDF generado previamente
+                PDDocument pdfDocument = PDDocument.load(new File(outputPath));
+
+                // Obtener la impresora predeterminada y crear un objeto PDFPageable
+                PrinterJob printerJob = PrinterJob.getPrinterJob();
+                PDFPageable pageable = new PDFPageable(pdfDocument);
+
+                // Establecer el objeto PDFPageable en el trabajo de impresión
+                printerJob.setPageable(pageable);
+
+                // Imprimir el documento
+                printerJob.print();
+
+                // Cerrar el documento PDF después de imprimir
+                pdfDocument.close();
+
+                JOptionPane.showMessageDialog(null, "El remito se generó e imprimió correctamente.", "Información", JOptionPane.INFORMATION_MESSAGE);
+            } catch (Exception e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Error al generar o imprimir el remito.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error al generar el remito.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
     }
+    
+    
+    
+    
+    
+    
+    
+    
 
     private void generarPdf() {
         Document document = new Document();
@@ -2588,6 +3173,7 @@ public class Principal extends javax.swing.JFrame {
             Chunk chunkFechas = new Chunk("Fecha: " + fechaFormat, fontFecha);
             Paragraph fecha = new Paragraph(chunkFechas);
             fecha.setAlignment(Element.ALIGN_RIGHT);
+            
             //REMITO NRO
             Paragraph nroRemito = new Paragraph("REMITO N° " + String.format("%08d", numeroRemito), FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD));
             guardarNumeroRemito();
@@ -2631,24 +3217,24 @@ public class Principal extends javax.swing.JFrame {
             PdfPCell remitenteCell = new PdfPCell();
             remitenteCell.setBorder(Rectangle.BOX);
 
-            String nombreCliente = clienteSeleccionado != null && clienteSeleccionado.getNombre() != null
-                    ? clienteSeleccionado.getNombre().toUpperCase()
+            String nombreCliente = cliente != null && cliente.getNombre() != null
+                    ? cliente.getNombre().toUpperCase()
                     : cbClientes.getSelectedItem().toString().toUpperCase();
 
-            String direccion = clienteSeleccionado != null && clienteSeleccionado.getDireccion() != null
-                    ? clienteSeleccionado.getDireccion().toUpperCase()
+            String direccion = cliente != null && cliente.getDireccion() != null
+                    ? cliente.getDireccion().toUpperCase()
                     : "";
 
-            String localidad = clienteSeleccionado != null && clienteSeleccionado.getLocalidad() != null
-                    ? clienteSeleccionado.getLocalidad().toUpperCase()
+            String localidad = cliente != null && cliente.getLocalidad() != null
+                    ? cliente.getLocalidad().toUpperCase()
                     : cbDestinos.getSelectedItem().toString().toUpperCase();
 
-            String cuit = clienteSeleccionado != null && clienteSeleccionado.getCuit() != null
-                    ? clienteSeleccionado.getCuit().toUpperCase()
+            String cuit = cliente != null && cliente.getCuit() != null
+                    ? cliente.getCuit().toUpperCase()
                     : "";
 
-            String tel = clienteSeleccionado != null && clienteSeleccionado.getTelefono() != null
-                    ? clienteSeleccionado.getTelefono().toUpperCase()
+            String tel = cliente != null && cliente.getTelefono() != null
+                    ? cliente.getTelefono().toUpperCase()
                     : "";
             //Bandera 1
             System.out.println("Bandera 1:");
@@ -2685,7 +3271,7 @@ public class Principal extends javax.swing.JFrame {
             // Crear la celda del destinatario
             PdfPCell destinatarioCell = new PdfPCell();
             destinatarioCell.setBorder(Rectangle.BOX);
-            System.out.println("Bandera 1 Destinatario en pdf: " + destinatarioSeleccionado);
+            System.out.println("Bandera 1 Destinatario en pdf: " + destinatario);
 
             String nombreDestinatario = "";
             String direccionDestinatario = "";
@@ -2693,16 +3279,16 @@ public class Principal extends javax.swing.JFrame {
             String cuitDestinatario = "";
             String telDestinatario = "";
 
-            System.out.println("Bandera Destinatario 2 en pdf: " + destinatarioSeleccionado);
+            System.out.println("Bandera Destinatario 2 en pdf: " + destinatario);
 
-            if (destinatarioSeleccionado != null && destinatarioSeleccionado.getDireccion() != null && destinatarioSeleccionado.getLocalidad() != null
-                    && destinatarioSeleccionado.getCuit() != null && destinatarioSeleccionado.getNombre() != null && destinatarioSeleccionado.getTelefono() != null) {
-                nombreDestinatario = destinatarioSeleccionado.getNombre().toUpperCase();
-                direccionDestinatario = destinatarioSeleccionado.getDireccion().toUpperCase();
-                localidadDestinatario = destinatarioSeleccionado.getLocalidad().toUpperCase();
-                cuitDestinatario = destinatarioSeleccionado.getCuit().toUpperCase();
-                telDestinatario = destinatarioSeleccionado.getTelefono().toUpperCase();
-                System.out.println("Bandera 3 Destinatario en pdf: " + destinatarioSeleccionado);
+            if (destinatario != null && destinatario.getDireccion() != null && destinatario.getLocalidad() != null
+                    && destinatario.getCuit() != null && destinatario.getNombre() != null && destinatario.getTelefono() != null) {
+                nombreDestinatario = destinatario.getNombre().toUpperCase();
+                direccionDestinatario = destinatario.getDireccion().toUpperCase();
+                localidadDestinatario = destinatario.getLocalidad().toUpperCase();
+                cuitDestinatario = destinatario.getCuit().toUpperCase();
+                telDestinatario = destinatario.getTelefono().toUpperCase();
+                System.out.println("Bandera 3 Destinatario en pdf: " + destinatario);
 
                 //Bandera 2
                 System.out.println("Bandera 2 Destinatario:");
@@ -3068,24 +3654,24 @@ public class Principal extends javax.swing.JFrame {
             PdfPCell remitenteCell = new PdfPCell();
             remitenteCell.setBorder(Rectangle.BOX);
 
-            String nombreCliente = clienteSeleccionado != null && clienteSeleccionado.getNombre() != null
-                    ? clienteSeleccionado.getNombre().toUpperCase()
+            String nombreCliente = cliente != null && cliente.getNombre() != null
+                    ? cliente.getNombre().toUpperCase()
                     : cbClientes.getSelectedItem().toString().toUpperCase();
 
-            String direccion = clienteSeleccionado != null && clienteSeleccionado.getDireccion() != null
-                    ? clienteSeleccionado.getDireccion().toUpperCase()
+            String direccion = cliente != null && cliente.getDireccion() != null
+                    ? cliente.getDireccion().toUpperCase()
                     : "";
 
-            String localidad = clienteSeleccionado != null && clienteSeleccionado.getLocalidad() != null
-                    ? clienteSeleccionado.getLocalidad().toUpperCase()
+            String localidad = cliente != null && cliente.getLocalidad() != null
+                    ? cliente.getLocalidad().toUpperCase()
                     : cbDestinos.getSelectedItem().toString().toUpperCase();
 
-            String cuit = clienteSeleccionado != null && clienteSeleccionado.getCuit() != null
-                    ? clienteSeleccionado.getCuit().toUpperCase()
+            String cuit = cliente != null && cliente.getCuit() != null
+                    ? cliente.getCuit().toUpperCase()
                     : "";
 
-            String tel = clienteSeleccionado != null && clienteSeleccionado.getTelefono() != null
-                    ? clienteSeleccionado.getTelefono().toUpperCase()
+            String tel = cliente != null && cliente.getTelefono() != null
+                    ? cliente.getTelefono().toUpperCase()
                     : "";
 
             Paragraph nombreParagraph = new Paragraph("REMITENTE: " + nombreCliente, fontR);
@@ -3121,13 +3707,13 @@ public class Principal extends javax.swing.JFrame {
             String cuitDestinatario = "";
             String telDestinatario = "";
 
-            if (destinatarioSeleccionado != null && destinatarioSeleccionado.getDireccion() != null && destinatarioSeleccionado.getLocalidad() != null
-                    && destinatarioSeleccionado.getCuit() != null && destinatarioSeleccionado.getNombre() != null && destinatarioSeleccionado.getTelefono() != null) {
-                nombreDestinatario = destinatarioSeleccionado.getNombre().toUpperCase();
-                direccionDestinatario = destinatarioSeleccionado.getDireccion().toUpperCase();
-                localidadDestinatario = destinatarioSeleccionado.getLocalidad().toUpperCase();
-                cuitDestinatario = destinatarioSeleccionado.getCuit().toUpperCase();
-                telDestinatario = destinatarioSeleccionado.getTelefono().toUpperCase();
+            if (destinatario != null && destinatario.getDireccion() != null && destinatario.getLocalidad() != null
+                    && destinatario.getCuit() != null && destinatario.getNombre() != null && destinatario.getTelefono() != null) {
+                nombreDestinatario = destinatario.getNombre().toUpperCase();
+                direccionDestinatario = destinatario.getDireccion().toUpperCase();
+                localidadDestinatario = destinatario.getLocalidad().toUpperCase();
+                cuitDestinatario = destinatario.getCuit().toUpperCase();
+                telDestinatario = destinatario.getTelefono().toUpperCase();
 
             } else {
                 nombreDestinatario = cbDestinos.getSelectedItem().toString().toUpperCase();
@@ -3416,6 +4002,7 @@ public class Principal extends javax.swing.JFrame {
             // Manejar el error de escritura del archivo
             e.printStackTrace();
         }
+
     }
 
     private void cargarNumeroRemito() {
