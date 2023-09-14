@@ -134,6 +134,10 @@ import org.jdesktop.swingx.autocomplete.ObjectToStringConverter;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.time.DateTimeException;
 import java.util.Calendar;
 import java.util.Collections;
@@ -1592,6 +1596,7 @@ public class Principal extends javax.swing.JFrame {
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tabla);
         tablaMovimientos.setRowSorter(sorter);
         sorter.setSortKeys(java.util.Arrays.asList(new RowSorter.SortKey(1, SortOrder.DESCENDING)));
+        
         //carga de los datos desde la bd
         List<Movimientos> listaMovimientos = control.traerMovimientos();
         // Ordenar los datos por el ID en forma descendente
@@ -1635,19 +1640,22 @@ public class Principal extends javax.swing.JFrame {
             }
         }
     }
-
+        
 
     private void txtFiltroClienteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFiltroClienteKeyTyped
-
-        txtFiltroCliente.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyReleased(KeyEvent e) {
-                trs.setRowFilter(RowFilter.regexFilter("(?i)" + txtFiltroCliente.getText(), 3));
-            }
-
-        });
         trs = new TableRowSorter(tablaMovimientos.getModel());
         tablaMovimientos.setRowSorter(trs);
+        
+         txtFiltroCliente.addKeyListener(new KeyAdapter() {
+        @Override
+        public void keyReleased(KeyEvent e) {
+            String textoFiltro = txtFiltroCliente.getText();
+            // Crear un filtro que busque en las columnas "Clientes" (columna 3) y "Destinos" (columna 4)
+            trs.setRowFilter(RowFilter.regexFilter("(?i)" + textoFiltro, 3, 4));
+        }
+    });
+        
+        
     }//GEN-LAST:event_txtFiltroClienteKeyTyped
     public void mostrarMensaje(String mensaje, String tipo, String titulo) {
         JOptionPane optionPane = new JOptionPane(mensaje);
@@ -2204,7 +2212,20 @@ public class Principal extends javax.swing.JFrame {
         String txtMontoValor = txtMonto.getText();
         String monto;
         //remito
-        remito = txtRemito.getText();
+        // Obtener el valor del campo de texto txtRemito
+        String textoRemito = txtRemito.getText();
+        
+        if (!textoRemito.equals("0")) {
+            // Asignar el valor de txtRemito a remito si no es igual a "0"
+            remito = textoRemito;
+        } else {
+
+            // Usando String.valueOf()
+            remito = String.valueOf(numeroRemito + 1);
+            
+            // JOptionPane.showMessageDialog(null, "El valor de remito no puede ser 0", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
 
         // Si hay campos faltantes, mostrar el mensaje de alerta
         if (!txtMontoValor.isEmpty()) {
@@ -2433,7 +2454,28 @@ public class Principal extends javax.swing.JFrame {
             String obs = mov.getObservaciones();        
             String origenDestino = mov.getFleteDestinoOrigen();
             String cc = mov.getCuentaCorriente();
+            
             boolean cuentaCorriente;
+            
+             
+        if (remito.equals("0")) {
+            // Usando String.valueOf()
+            remito = String.valueOf(numeroRemito + 1);
+            // Actualizar la tabla en la base de datos
+            if (remito.equals("0")) {
+                // Incrementar el número de remito
+                int nuevoNumeroRemito = numeroRemito + 1;
+                remito = String.valueOf(nuevoNumeroRemito);    
+            }
+          
+        } else {
+  
+             // Asignar el valor de txtRemito a remito si no es igual a "0"
+            remito = remito;
+            System.out.println("remito else "+ remito);
+            // JOptionPane.showMessageDialog(null, "El valor de remito no puede ser 0", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        
 
             if ("Si".equalsIgnoreCase(cc)) {
                 cuentaCorriente = true;
@@ -2455,7 +2497,9 @@ public class Principal extends javax.swing.JFrame {
                     
             System.out.println("Datos de id: "+fecha+" "+ cliente +" "+ destino+" "+ bulto +" "+ remito +" "+ monto +" "+ montoPagado +" "+ montoRendido +" "+ flete+" "+fletePagado+" "+ fleteRendido+" "+origenDestino+" "+cc+" "+representante+" "+obs);
            
+           
             generarRemito(fecha, cliente, destino, servicio, bulto, representante, monto, montoPagado, montoRendido, flete, fletePagado, fleteRendido, origenDestino, cuentaCorriente, obs);
+
         }else{
             // No hay ningún ID seleccionado en la tabla, muestra un JOptionPane
         JOptionPane.showMessageDialog(this, "Selecciona algún movimiento en la tabla", "Mensaje de Error", JOptionPane.ERROR_MESSAGE);

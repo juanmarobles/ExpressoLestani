@@ -104,6 +104,7 @@ public class Consultas extends javax.swing.JFrame {
     Controladora control = new Controladora();
     TableRowSorter trs;
     DefaultTableModel tabla = new DefaultTableModel();
+    private Cliente cliente;
     private SimpleDateFormat sdf;
     private String montoTotalImpreso;
     private String fleteTotalImpreso;
@@ -252,81 +253,99 @@ public class Consultas extends javax.swing.JFrame {
 }
 
     private void cargarClientes() {
+         ModeloCliente modClientes = new ModeloCliente();
+        ArrayList<Cliente> listaClientes = modClientes.getClientes();
+
         cbClientes.setEditable(true);
-        
+
         // Ordenar la lista de clientes alfabéticamente por el nombre
         listaClientes.sort((cliente1, cliente2) -> cliente1.getNombre().compareToIgnoreCase(cliente2.getNombre()));
-        
-        
+
         // Agregar los clientes al combobox
         for (Cliente cliente : listaClientes) {
             cbClientes.addItem(cliente.getNombre());
         }
-        
-// Eliminar la opción en blanco después de configurar el decorador
+
+        // Eliminar la opción en blanco después de configurar el decorador
         cbClientes.removeItem("");
 
         // Establecer el índice seleccionado a -1 para no mostrar ninguna selección
         cbClientes.setSelectedIndex(-1);
 
-        // Agregar ActionListener para capturar el evento "Enter"
-        cbClientes.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                String textoBusqueda = cbClientes.getEditor().getItem().toString();
-                mostrarResultadosBusqueda(cbClientes, textoBusqueda);
-
-            }
-        });
-
-        // Agregar KeyListener para capturar el evento "Enter"
         cbClientes.getEditor().getEditorComponent().addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_TAB) {
                     String textoBusqueda = cbClientes.getEditor().getItem().toString();
+
+                    // Normaliza el texto de búsqueda a mayúsculas y elimina caracteres no deseados excepto espacios en blanco
+                    textoBusqueda = textoBusqueda.toUpperCase().replaceAll("[^A-Z\\s]", "");
+
                     mostrarResultadosBusqueda(cbClientes, textoBusqueda);
+
+                    // Busca el cliente seleccionado en la lista de clientes
+                    cliente = null; // Restablece el destinatario seleccionado
+
+                    for (Cliente clientes : listaClientes) {
+                        // Normaliza el nombre del cliente a mayúsculas y elimina caracteres no deseados excepto espacios en blanco
+                        String nombreCliente = clientes.getNombre().toUpperCase().replaceAll("[^A-Z\\s]", "");
+
+                        if (nombreCliente.contains(textoBusqueda)) {
+                            cliente = clientes;
+                            System.out.println("Destinatario seleccionado: " + cliente);
+                            break;
+                        }
+                    }
+
+                    if (cliente == null) {
+                        System.out.println("No se encontró Cliente.");
+                    }
                 }
             }
         });
     }
 
     private void cargarDestino() {
+         ModeloCliente modClientes = new ModeloCliente();
+        ArrayList<Cliente> listaClientes = modClientes.getClientes();
+
         cbDestino.setEditable(true);
-        
+
         // Ordenar la lista de clientes alfabéticamente por el nombre
         listaClientes.sort((cliente1, cliente2) -> cliente1.getNombre().compareToIgnoreCase(cliente2.getNombre()));
-        
+
         // Agregar los clientes al combobox
         for (Cliente cliente : listaClientes) {
             cbDestino.addItem(cliente.getNombre());
         }
-        
-// Eliminar la opción en blanco después de configurar el decorador
+
+        // Eliminar la opción en blanco después de configurar el decorador
         cbDestino.removeItem("");
 
         // Establecer el índice seleccionado a -1 para no mostrar ninguna selección
         cbDestino.setSelectedIndex(-1);
 
-        // Agregar ActionListener para capturar el evento "Enter"
-        cbDestino.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                String textoBusqueda = cbDestino.getEditor().getItem().toString();
-                mostrarResultadosBusqueda(cbDestino, textoBusqueda);
-
-            }
-        });
-
-        // Agregar KeyListener para capturar el evento "Enter"
         cbDestino.getEditor().getEditorComponent().addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_TAB) {
                     String textoBusqueda = cbDestino.getEditor().getItem().toString();
+
+                    // Normaliza el texto de búsqueda a mayúsculas y elimina caracteres no deseados excepto espacios en blanco
+                    textoBusqueda = textoBusqueda.toUpperCase().replaceAll("[^A-Z\\s]", "");
+
                     mostrarResultadosBusqueda(cbDestino, textoBusqueda);
+
+                    // Busca el cliente seleccionado en la lista de clientes
+                    
+
+                    for (Cliente cliente : listaClientes) {
+                        // Normaliza el nombre del cliente a mayúsculas y elimina caracteres no deseados excepto espacios en blanco
+                        String nombreCliente = cliente.getNombre().toUpperCase().replaceAll("[^A-Z\\s]", "");
+
+                            break; 
+                    }
+
                 }
             }
         });
@@ -1323,17 +1342,24 @@ public class Consultas extends javax.swing.JFrame {
         Object clienteSeleccionado = cbClientes.getSelectedItem();
         String clienteFiltrado = clienteSeleccionado != null ? clienteSeleccionado.toString() : "";
 
-        
-        
-
         // Filtrar por cliente (solo si se ha seleccionado un cliente)
         if (!clienteFiltrado.isEmpty()) {
             movimientosFiltrados = movimientosFiltrados.stream()
-                    .filter(mov -> mov.getCliente().equals(clienteFiltrado))
-                    .collect(Collectors.toList());
-        }
+                    .filter(mov -> {
+                        String cliente = mov.getCliente();
+                        String destino = mov.getDestino();
 
-       
+                        // Realizar una búsqueda exacta (insensible a mayúsculas/minúsculas) cuando el texto es igual
+                        if (cliente.equalsIgnoreCase(clienteFiltrado) || destino.equalsIgnoreCase(clienteFiltrado)) {
+                            return true;
+                        }
+
+                        // Realizar una búsqueda parcial (insensible a mayúsculas/minúsculas) cuando el texto no es igual
+                        return cliente.toLowerCase().contains(clienteFiltrado.toLowerCase()) || destino.toLowerCase().contains(clienteFiltrado.toLowerCase());
+                    })
+                    .collect(Collectors.toList());
+
+        }
 
         // Obtener el cliente seleccionado en el ComboBox cbOrigen
         Object origenSeleccionado = cbOrigen.getSelectedItem();

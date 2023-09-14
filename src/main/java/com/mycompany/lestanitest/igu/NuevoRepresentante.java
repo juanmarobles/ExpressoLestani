@@ -196,10 +196,11 @@ public class NuevoRepresentante extends javax.swing.JFrame {
 
     private void btnCargarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCargarActionPerformed
         //String vehiculo = txtVehiculo.getText();
-        String direccion = txtLocalidad.getText();
-        String localidad = txtDireccion.getText();
         String nombre = txtNombre.getText();
+        String direccion = txtDireccion.getText();
+        String localidad = txtLocalidad.getText();
         String telefono = txtTelefono.getText();
+
         
         control.cargarRepresentante(nombre,direccion,localidad,telefono);
         
