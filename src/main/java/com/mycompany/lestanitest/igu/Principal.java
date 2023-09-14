@@ -231,8 +231,8 @@ public class Principal extends javax.swing.JFrame {
             System.out.println("Fecha inválida.");
         }
 
-        TextPrompt filtroCl = new TextPrompt("Busqueda por cliente", txtFiltroCliente);
-        TextPrompt filtroRe = new TextPrompt("Busqueda por remito", txtFiltroRemito);
+        TextPrompt filtroCl = new TextPrompt("Busqueda por Cliente y Destino", txtFiltroCliente);
+        TextPrompt filtroRe = new TextPrompt("Busqueda por Remito", txtFiltroRemito);
 
         // Tabulador cambiar Default
         // Establecer el siguiente componente enfocable para el campo de texto del JComboBox
@@ -2498,7 +2498,7 @@ public class Principal extends javax.swing.JFrame {
             System.out.println("Datos de id: "+fecha+" "+ cliente +" "+ destino+" "+ bulto +" "+ remito +" "+ monto +" "+ montoPagado +" "+ montoRendido +" "+ flete+" "+fletePagado+" "+ fleteRendido+" "+origenDestino+" "+cc+" "+representante+" "+obs);
            
            
-            generarRemito(fecha, cliente, destino, servicio, bulto, representante, monto, montoPagado, montoRendido, flete, fletePagado, fleteRendido, origenDestino, cuentaCorriente, obs);
+            generarRemito(fecha, cliente, destino, servicio,remito, bulto, representante, monto, montoPagado, montoRendido, flete, fletePagado, fleteRendido, origenDestino, cuentaCorriente, obs);
 
         }else{
             // No hay ningún ID seleccionado en la tabla, muestra un JOptionPane
@@ -2639,7 +2639,7 @@ public class Principal extends javax.swing.JFrame {
     
     
     
-    private void generarRemito(String fecha,String clientee,String destinoo,String servicio, String bulto,String representantes,
+    private void generarRemito(String fecha,String clientee,String destinoo,String servicio,String remitoo, String bulto,String representantes, 
              String monto, String montoPagado,String montoRendido, String flete,String fletePagado, String fleteRendido, String origenDestino, boolean cuentaCorriente, String obs ){
         
         
@@ -2992,7 +2992,7 @@ public class Principal extends javax.swing.JFrame {
             Font fontPersonalizado = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
 
             // Crea el párrafo con el texto y la fuente personalizada
-            Paragraph c = new Paragraph("CONTRAREEMBOLSO: $" + txtMonto.getText(), fontPersonalizado);
+            Paragraph c = new Paragraph("CONTRAREEMBOLSO: $" + monto, fontPersonalizado);
 
             // Resto del código
             c.setAlignment(Element.ALIGN_LEFT);
@@ -3002,7 +3002,7 @@ public class Principal extends javax.swing.JFrame {
             celdaC.setPaddingBottom(4f);
             tablaTexto.addCell(celdaC);
 
-            Paragraph b = new Paragraph("FLETE: $" + txtFlete.getText(), fontR);
+            Paragraph b = new Paragraph("FLETE: $" + flete, fontR);
             b.setAlignment(Element.ALIGN_LEFT);
             PdfPCell celdaB = new PdfPCell(b);
             celdaB.setBorder(Rectangle.LEFT | Rectangle.RIGHT | Rectangle.BOTTOM); // Agregar borde alrededor de la celda "b"
@@ -3051,7 +3051,7 @@ public class Principal extends javax.swing.JFrame {
             celdaF.setPaddingBottom(2);
             tablaTexto.addCell(celdaF);
 
-            Paragraph facturaremito = new Paragraph("Factura/Remito N°: " + txtRemito.getText(), fontR);
+            Paragraph facturaremito = new Paragraph("Factura/Remito N°: " + remitoo, fontR);
             facturaremito.setAlignment(Element.ALIGN_RIGHT);
             PdfPCell celdafacturaremito = new PdfPCell(facturaremito);
             celdafacturaremito.setBorder(Rectangle.NO_BORDER); // Sin borde para la celda "f"
