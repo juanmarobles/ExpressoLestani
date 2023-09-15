@@ -2496,8 +2496,8 @@ public class Principal extends javax.swing.JFrame {
             
                     
             System.out.println("Datos de id: "+fecha+" "+ cliente +" "+ destino+" "+ bulto +" "+ remito +" "+ monto +" "+ montoPagado +" "+ montoRendido +" "+ flete+" "+fletePagado+" "+ fleteRendido+" "+origenDestino+" "+cc+" "+representante+" "+obs);
-           
-           
+            System.out.println("numero remito"+remito);
+            control.editarMovimiento(mov, remito);
             generarRemito(fecha, cliente, destino, servicio,remito, bulto, representante, monto, montoPagado, montoRendido, flete, fletePagado, fleteRendido, origenDestino, cuentaCorriente, obs);
 
         }else{

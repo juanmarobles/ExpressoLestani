@@ -127,21 +127,22 @@ public class Recibos extends javax.swing.JFrame {
         cargarNumeroRecibo();
         txtReciboNro.setText(String.format("%05d", numeroRecibo));
         // Cargar los IDs eliminados desde el archivo (si existe)
-        cargarRecibosEliminados();
+       // cargarRecibosEliminados();
         // Cargar datos en la tabla (suponiendo que carga los datos en la listaFiltrada)
         cargarTablaMovimientos();
         // Agregar el WindowListener para guardar los IDs eliminados antes de cerrar la ventana
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                guardarRecibosEliminados();
+             //   guardarRecibosEliminados();
                 // Luego cierra la ventana
                 dispose();
             }
         });
+        
         //Por defecto
         cbReciboCon.setSelected(true);
-
+        //REcibo con flete y sin flete
         ActionListener listener = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 
@@ -254,7 +255,9 @@ public class Recibos extends javax.swing.JFrame {
             }
         });
         // Ocultar las filas con ID presentes en recibosEliminados
-        ocultarFilasEliminadas();
+       // ocultarFilasEliminadas();
+       
+       
         //BOTON IMPRIMIR
         btnImprimir.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -449,11 +452,12 @@ public class Recibos extends javax.swing.JFrame {
         tabla.setColumnIdentifiers(titulos);
 
         for (Movimientos mov : listaFiltrada) {
+            String pagado = mov.getTipoMontoP();
             String rendido = mov.getTipoMontoR();
-            // Verificar si el movimiento no está en la lista de recibosEliminados
-            // y si la columna "Rendido" no tiene el valor "Si"
-            if (!recibosEliminados.contains(mov.getId_movimientos()) && !"Si".equalsIgnoreCase(rendido)) {
-                Object[] objeto = {mov.getId_movimientos(), mov.getHora(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
+
+            // Verificar si la columna "Monto Pagado" es "Si" y "Monto Rendido" es "No"
+            if ("Si".equalsIgnoreCase(pagado) && "No".equalsIgnoreCase(rendido)) {
+                Object[] objeto = {mov.getId_movimientos(), mov.getHora(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), pagado, rendido, mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
                 tabla.addRow(objeto);
             }
         }
@@ -861,7 +865,7 @@ public class Recibos extends javax.swing.JFrame {
         // Asignar el TableRowSorter a la tabla para que se aplique el filtro
         tablaMovimientos.setRowSorter(sorter);
     }
-
+/*
     private void guardarRecibosEliminados() {
         try {
             FileOutputStream fileOut = new FileOutputStream("recibosEliminados.ser");
@@ -888,7 +892,7 @@ public class Recibos extends javax.swing.JFrame {
             recibosEliminados = new HashSet<>();
         }
     }
-
+*/
     public void actualizarTabla() {
         // Limpia el modelo de tabla
         DefaultTableModel model = (DefaultTableModel) tablaMovimientos.getModel();

@@ -328,6 +328,12 @@ public class Controladora {
         mov.setObservaciones(obs);
         ctrl.modificarMovimiento(mov);
     }
+    public void editarMovimiento(Movimientos mov,  String remito) {
+       
+        mov.setRemito(remito);
+     
+        ctrl.modificarMovimiento(mov);
+    }
 
     /**
      * ----------------------------------------------CLASE DESTINOS
