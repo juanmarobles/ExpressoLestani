@@ -839,7 +839,6 @@ public class Principal extends javax.swing.JFrame {
         jScrollPane2.setViewportView(tablaMovimientos);
 
         panelCargaMovimientos.setBackground(new java.awt.Color(66, 66, 66));
-        panelCargaMovimientos.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
         panelCargaMovimientos.setForeground(new java.awt.Color(255, 255, 255));
 
         bulto.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
@@ -910,7 +909,7 @@ public class Principal extends javax.swing.JFrame {
         });
 
         jPanel2.setBackground(new java.awt.Color(66, 66, 66));
-        jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(null));
 
         jLabel17.setBackground(new java.awt.Color(66, 66, 66));
         jLabel17.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
@@ -963,7 +962,7 @@ public class Principal extends javax.swing.JFrame {
         );
 
         jPanel4.setBackground(new java.awt.Color(66, 66, 66));
-        jPanel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jPanel4.setBorder(javax.swing.BorderFactory.createLineBorder(null));
 
         jLabel6.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(236, 240, 241));
@@ -1106,17 +1105,18 @@ public class Principal extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel9)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtDia, javax.swing.GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE)
-                    .addComponent(jLabel2)
-                    .addComponent(txtMes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel3)
-                    .addComponent(txtAnio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtAnio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(txtDia, javax.swing.GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE)
+                        .addComponent(jLabel2)
+                        .addComponent(txtMes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel3)))
                 .addContainerGap())
         );
 
         jPanel6.setBackground(new java.awt.Color(66, 66, 66));
-        jPanel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jPanel6.setBorder(javax.swing.BorderFactory.createLineBorder(null));
 
         jLabel12.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel12.setForeground(new java.awt.Color(236, 240, 241));
@@ -1206,13 +1206,9 @@ public class Principal extends javax.swing.JFrame {
                                 .addComponent(jLabel25))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
                                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel6Layout.createSequentialGroup()
-                                        .addComponent(txtBulto, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                                        .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                                .addGap(6, 6, 6)
+                                    .addComponent(txtBulto, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(jPanel6Layout.createSequentialGroup()
@@ -1240,12 +1236,13 @@ public class Principal extends javax.swing.JFrame {
                     .addComponent(jLabel11)
                     .addComponent(jLabel22))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel25)
-                    .addComponent(jLabel18)
-                    .addComponent(txtRemito, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(txtSeguro, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtRedespacho, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtRedespacho, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel25)
+                        .addComponent(jLabel18)
+                        .addComponent(txtRemito, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -1264,7 +1261,7 @@ public class Principal extends javax.swing.JFrame {
         );
 
         jPanel3.setBackground(new java.awt.Color(66, 66, 66));
-        jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(null));
 
         jLabel5.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(236, 240, 241));
@@ -3315,11 +3312,11 @@ if (tablaMovimientos.getRowCount() > 0) {
 
             double monto = Double.parseDouble(txtMonto.getText());
             double fletee = Double.parseDouble(txtFlete.getText());
-            double seguroo = Double.parseDouble(txtSeguro.getText());
-            double comContra = Double.parseDouble(txtContrarembolso.getText());
-            double redespa = Double.parseDouble(txtRedespacho.getText());
-            double valDecla = Double.parseDouble(txtValDeclarado.getText());
-            double total = monto + fletee + seguroo + comContra + redespa + valDecla;
+            //double seguroo = Double.parseDouble(txtSeguro.getText());
+            //double comContra = Double.parseDouble(txtContrarembolso.getText());
+            //double redespa = Double.parseDouble(txtRedespacho.getText());
+            //double valDecla = Double.parseDouble(txtValDeclarado.getText());
+            double total = monto + fletee;
             Paragraph totalMonto = new Paragraph("TOTAL: $" + total, fontR);
             totalMonto.setAlignment(Element.ALIGN_RIGHT);
             PdfPCell celdaTotal = new PdfPCell(totalMonto);
