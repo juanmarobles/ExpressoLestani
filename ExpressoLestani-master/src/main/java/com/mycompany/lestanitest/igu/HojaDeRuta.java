@@ -1374,6 +1374,15 @@ public class HojaDeRuta extends javax.swing.JFrame {
                     }
                 }
             }
+            // Crear una fila vacía
+            for (int col = 0; col < tablaMovimientos.getColumnCount() - 7; col++) {
+                PdfPCell emptyCell = new PdfPCell();
+                emptyCell.setFixedHeight(200f); // Altura de la celda para espacio de escritura a lápiz
+                table.addCell(emptyCell);
+            }
+
+
+
 
             document.add(table);   
 
