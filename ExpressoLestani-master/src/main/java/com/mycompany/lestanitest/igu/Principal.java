@@ -2896,11 +2896,11 @@ if (tablaMovimientos.getRowCount() > 0) {
 
             double monto = Double.parseDouble(txtMonto.getText());
             double fletee = Double.parseDouble(txtFlete.getText());
-            //double seguroo = Double.parseDouble(txtSeguro.getText());
-            //double comContra = Double.parseDouble(txtContrarembolso.getText());
-            //double redespa = Double.parseDouble(txtRedespacho.getText());
-            //double valDecla = Double.parseDouble(txtValDeclarado.getText());
-            double total = monto + fletee;
+            double seguroo = Double.parseDouble(txtSeguro.getText());
+            double comContra = Double.parseDouble(txtContrarembolso.getText());
+            double redespa = Double.parseDouble(txtRedespacho.getText());
+            double valDecla = Double.parseDouble(txtValDeclarado.getText());
+            double total = monto + fletee + seguroo + comContra + redespa + valDecla;
             Paragraph totalMonto = new Paragraph("TOTAL: $" + total, fontR);
             totalMonto.setAlignment(Element.ALIGN_RIGHT);
             PdfPCell celdaTotal = new PdfPCell(totalMonto);
@@ -3312,11 +3312,11 @@ if (tablaMovimientos.getRowCount() > 0) {
 
             double monto = Double.parseDouble(txtMonto.getText());
             double fletee = Double.parseDouble(txtFlete.getText());
-            //double seguroo = Double.parseDouble(txtSeguro.getText());
-            //double comContra = Double.parseDouble(txtContrarembolso.getText());
-            //double redespa = Double.parseDouble(txtRedespacho.getText());
-            //double valDecla = Double.parseDouble(txtValDeclarado.getText());
-            double total = monto + fletee;
+            double seguroo = Double.parseDouble(txtSeguro.getText());
+            double comContra = Double.parseDouble(txtContrarembolso.getText());
+            double redespa = Double.parseDouble(txtRedespacho.getText());
+            double valDecla = Double.parseDouble(txtValDeclarado.getText());
+            double total = monto + fletee + seguroo + comContra + redespa + valDecla;
             Paragraph totalMonto = new Paragraph("TOTAL: $" + total, fontR);
             totalMonto.setAlignment(Element.ALIGN_RIGHT);
             PdfPCell celdaTotal = new PdfPCell(totalMonto);

@@ -1596,7 +1596,25 @@ public class Recibos extends javax.swing.JFrame {
             Logger.getLogger(Consultas.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    private PdfPTable crearTablaMarco() {
+    PdfPTable tablaMarco = new PdfPTable(1); // 1 columna
+    tablaMarco.setWidthPercentage(100);
+    tablaMarco.getDefaultCell().setBorder(Rectangle.BOX); // Establecer el borde de la tabla
 
+    PdfPCell cellMarco = new PdfPCell();
+    cellMarco.setBorder(Rectangle.BOX); // Establecer el borde de la celda
+    cellMarco.setPadding(10); // Espacio interno de la celda
+
+    // Agregar contenido personalizado a la celda del marco
+    // Por ejemplo, puedes agregar un párrafo con un texto
+    Paragraph contenidoMarco = new Paragraph("Contenido del marco", FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.NORMAL));
+    contenidoMarco.setAlignment(Element.ALIGN_CENTER);
+    cellMarco.addElement(contenidoMarco);
+
+    tablaMarco.addCell(cellMarco); // Agregar la celda del marco a la tabla
+
+    return tablaMarco;
+}
     private void imprimirPdfSinFlete() {
         Document document = new Document();
         // Incrementar el contador de recibo
@@ -1612,6 +1630,14 @@ public class Recibos extends javax.swing.JFrame {
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile));
 
             document.open();
+             // Crear una tabla que simule el marco
+        PdfPTable tablaMarco = new PdfPTable(1);
+        tablaMarco.setWidthPercentage(100);
+
+        // Crea una celda para el contenido
+        PdfPCell cellContenido = new PdfPCell();
+        cellContenido.setBorder(Rectangle.BOX); // Establecer el borde de la celda
+        cellContenido.setPadding(10);
             
             //FUENTES
             Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.NORMAL);
@@ -1660,6 +1686,7 @@ public class Recibos extends javax.swing.JFrame {
             fechaReciboCell.addElement(fechaRecibo);
             fechaReciboCell.setBorder(PdfPCell.NO_BORDER);
             tablaTitulos.addCell(fechaReciboCell);
+
             // Crea una tabla con 3 columnas
             float[] anchoss = {0.4f, 1f};
             PdfPTable tablasegundop = new PdfPTable(anchoss);
@@ -1690,9 +1717,11 @@ public class Recibos extends javax.swing.JFrame {
             tablasegundop.addCell(parrafoCell);
              */
             //document.add(titulo);
-            document.add(tablaTitulos);
+            // Agrega la tabla de títulos al contenido
+    cellContenido.addElement(tablaTitulos);
             // Agregar la tabla al documento
-            document.add(tablasegundop);
+            // Agrega la tabla de títulos al contenido
+    cellContenido.addElement(tablasegundop);
             //document.add(fecha);
             //document.add(nroRecibo);
             //document.add(subtitulo);
@@ -1738,7 +1767,7 @@ public class Recibos extends javax.swing.JFrame {
             senoresdomicilio.addCell(domicilioValueCell);
 
             senoresdomicilio.setSpacingBefore(0.1f);
-            document.add(senoresdomicilio);
+            cellContenido.addElement(senoresdomicilio);
 
             // Crear una tabla para recibi y concepto
             PdfPTable recibiconcepto = new PdfPTable(2);
@@ -1752,8 +1781,7 @@ public class Recibos extends javax.swing.JFrame {
             // Reducir el interlineado (leading) del párrafo textoRecibi
             textoRecibi.setLeading(0f, 0.8f); // Ajusta el segundo parámetro según el espacio deseado
 
-            document.add(textoRecibi);
-
+            cellContenido.addElement(textoRecibi);
             // CONCEPTO DE
             Phrase textodos = new Phrase("\nEN CONCEPTO DE: " + txtConcepto.getText().toUpperCase(), font);
             Paragraph textoConcepto = new Paragraph(textodos);
@@ -1762,9 +1790,9 @@ public class Recibos extends javax.swing.JFrame {
             // Reducir el interlineado (leading) del párrafo textoConcepto
             textoConcepto.setLeading(0f, 0.8f); // Ajusta el segundo parámetro según el espacio deseado
 
-            document.add(textoConcepto);
-
-            document.add(recibiconcepto);
+            cellContenido.addElement(textoConcepto);
+            
+            cellContenido.addElement(recibiconcepto);
 
             //TABLA
             // Obtener las filas seleccionadas de la tabla
@@ -1807,7 +1835,8 @@ public class Recibos extends javax.swing.JFrame {
                     }
                 }
 
-                document.add(table);
+                
+                cellContenido.addElement(table);
             } else {
                 // Si no se ha seleccionado ninguna fila, mostrar un mensaje de error o realizar alguna acción adecuada.
             }
@@ -1827,7 +1856,7 @@ public class Recibos extends javax.swing.JFrame {
             PdfPCell firmaSelloCell = new PdfPCell();
             firmaSelloCell.setBorder(Rectangle.NO_BORDER);
             firmaSelloCell.setHorizontalAlignment(Element.ALIGN_CENTER);
-            firmaSelloCell.setFixedHeight(150); // Ajusta la altura de acuerdo a tus necesidades
+            firmaSelloCell.setFixedHeight(100); // Ajusta la altura de acuerdo a tus necesidades
 
 // Crear un párrafo para el texto deseado
             Paragraph firmaText = new Paragraph("DEVOLVER CONFORMADO"
@@ -1840,10 +1869,23 @@ public class Recibos extends javax.swing.JFrame {
 
 // Agregar celda de firmasello a la segunda columna de totalFirmaTable
             totalFirmaTable.addCell(firmaSelloCell);
-
+            
+            
+            
 // Agregar la tabla totalFirmaTable al documento
-            document.add(totalFirmaTable);
+          
+            cellContenido.addElement(totalFirmaTable);
+            
+    
+// Agrega la celda de contenido a la tabla de marco
+        tablaMarco.addCell(cellContenido);
 
+        // Agregar la tabla de marco al documento
+        document.add(tablaMarco);
+
+            
+           
+            
             document.close();
             txtReciboNro.setText(String.valueOf(numeroRecibo));
             guardarNumeroRecibo();
@@ -1862,7 +1904,7 @@ public class Recibos extends javax.swing.JFrame {
 
                 // Imprimir el documento
                 printerJob.print();
-
+                
                 // Cerrar el documento PDF después de imprimir
                 pdfDocument.close();
 
@@ -1895,6 +1937,15 @@ public class Recibos extends javax.swing.JFrame {
             File outputFile = new File(outputPath);
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile));
             document.open();
+            
+            // Crear una tabla que simule el marco
+                PdfPTable tablaMarco = new PdfPTable(1);
+                tablaMarco.setWidthPercentage(100);
+
+                // Crea una celda para el contenido
+                PdfPCell cellContenido = new PdfPCell();
+                cellContenido.setBorder(Rectangle.BOX); // Establecer el borde de la celda
+                cellContenido.setPadding(10);
 
 
             //FUENTES
@@ -1974,9 +2025,9 @@ public class Recibos extends javax.swing.JFrame {
             tablasegundop.addCell(parrafoCell);
              */
             //document.add(titulo);
-            document.add(tablaTitulos);
+            cellContenido.addElement(tablaTitulos);
             // Agregar la tabla al documento
-            document.add(tablasegundop);
+            cellContenido.addElement(tablasegundop);
             //document.add(fecha);
             //document.add(nroRecibo);
             //document.add(subtitulo);
@@ -2022,7 +2073,7 @@ public class Recibos extends javax.swing.JFrame {
             senoresdomicilio.addCell(domicilioValueCell);
 
             senoresdomicilio.setSpacingBefore(0.1f);
-            document.add(senoresdomicilio);
+            cellContenido.addElement(senoresdomicilio);
 
             // Crear una tabla para recibi y concepto
             PdfPTable recibiconcepto = new PdfPTable(2);
@@ -2036,7 +2087,7 @@ public class Recibos extends javax.swing.JFrame {
             // Reducir el interlineado (leading) del párrafo textoRecibi
             textoRecibi.setLeading(0f, 0.8f); // Ajusta el segundo parámetro según el espacio deseado
 
-            document.add(textoRecibi);
+            cellContenido.addElement(textoRecibi);
 
             // CONCEPTO DE
             Phrase textodos = new Phrase("\nEN CONCEPTO DE: " + txtConcepto.getText().toUpperCase(), font);
@@ -2046,9 +2097,9 @@ public class Recibos extends javax.swing.JFrame {
             // Reducir el interlineado (leading) del párrafo textoConcepto
             textoConcepto.setLeading(0f, 0.8f); // Ajusta el segundo parámetro según el espacio deseado
 
-            document.add(textoConcepto);
-
-            document.add(recibiconcepto);
+            cellContenido.addElement(textoConcepto);
+            
+            cellContenido.addElement(recibiconcepto);
 
             //TABLA
             // Obtener las filas seleccionadas de la tabla
@@ -2100,7 +2151,7 @@ public class Recibos extends javax.swing.JFrame {
 
                 }
 
-                document.add(table);
+                cellContenido.addElement(table);
             } else {
                 // Si no se ha seleccionado ninguna fila, mostrar un mensaje de error o realizar alguna acción adecuada.
             }
@@ -2136,7 +2187,7 @@ public class Recibos extends javax.swing.JFrame {
             PdfPCell firmaSelloCell = new PdfPCell();
             firmaSelloCell.setBorder(Rectangle.NO_BORDER);
             firmaSelloCell.setHorizontalAlignment(Element.ALIGN_CENTER);
-            firmaSelloCell.setFixedHeight(150); // Ajusta la altura de acuerdo a tus necesidades
+            firmaSelloCell.setFixedHeight(100); // Ajusta la altura de acuerdo a tus necesidades
 
 // Crear un párrafo para el texto deseado
             Paragraph firmaText = new Paragraph("DEVOLVER CONFORMADO"
@@ -2151,8 +2202,14 @@ public class Recibos extends javax.swing.JFrame {
             totalFirmaTable.addCell(firmaSelloCell);
 
 // Agregar la tabla totalFirmaTable al documento
-            document.add(totalFirmaTable);
+            cellContenido.addElement(totalFirmaTable);
 
+            // Agrega la celda de contenido a la tabla de marco
+        tablaMarco.addCell(cellContenido);
+
+        // Agregar la tabla de marco al documento
+        document.add(tablaMarco);
+            
 // Cerrar el documento
             document.close();
 
