@@ -17,6 +17,7 @@ import com.itextpdf.text.Phrase;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPRow;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfTemplate;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -84,7 +85,6 @@ import javax.swing.table.TableRowSorter;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.printing.PDFPageable;
 
-
 /**
  *
  * @author Marco
@@ -102,16 +102,14 @@ public class HojaDeRuta extends javax.swing.JFrame {
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         llenarVehiculo();
         llenarChofer();
-         //FECHA
-       // Obtener la fecha actual
+        //FECHA
+        // Obtener la fecha actual
         LocalDate fechaActual = LocalDate.now();
 
         // Mostrar la fecha actual en los campos de texto correspondientes
         txtDia.setText(String.valueOf(fechaActual.getDayOfMonth()));
         txtMes.setText(String.valueOf(fechaActual.getMonthValue()));
         txtAnio.setText(String.valueOf(fechaActual.getYear()));
-        
-
 
         // Agregar evento de selección a la tabla
         tablaMovimientos.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -142,16 +140,14 @@ public class HojaDeRuta extends javax.swing.JFrame {
         int dia = Integer.parseInt(txtDia.getText());
         int mes = Integer.parseInt(txtMes.getText());
         int anio = Integer.parseInt(txtAnio.getText());
-        
+
         // Crear una instancia de LocalDate si la fecha es válida
-            LocalDate fechaArmada = LocalDate.of(anio, mes, dia);
-            
-            // Formatear la fecha en el formato deseado
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                    String fechaFormateada = fechaArmada.format(formatter);
-        
-        
-        
+        LocalDate fechaArmada = LocalDate.of(anio, mes, dia);
+
+        // Formatear la fecha en el formato deseado
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String fechaFormateada = fechaArmada.format(formatter);
+
         boolean mostrarCuentaCorriente = cbCC.isSelected();
         boolean mostrarContado = cbContado.isSelected();
         boolean mostrarTodos = cbTodos.isSelected();
@@ -987,28 +983,25 @@ public class HojaDeRuta extends javax.swing.JFrame {
         tableModel.setRowCount(0); // Limpiar la tabla
 
         List<Movimientos> listaMovimientos = control.traerMovimientos();
-         //Fecha
+        //Fecha
         // Obtener los valores de los campos de texto
         int dia = Integer.parseInt(txtDia.getText());
         int mes = Integer.parseInt(txtMes.getText());
         int anio = Integer.parseInt(txtAnio.getText());
-        
+
         // Crear una instancia de LocalDate si la fecha es válida
-            LocalDate fechaArmada = LocalDate.of(anio, mes, dia);
-            
-            // Formatear la fecha en el formato deseado
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                    String fechaFormateada = fechaArmada.format(formatter);
-                    
-                    
-                    //Borde al seleccionar TEXFIELD
-         SwingUtilities.invokeLater(() -> {
+        LocalDate fechaArmada = LocalDate.of(anio, mes, dia);
+
+        // Formatear la fecha en el formato deseado
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String fechaFormateada = fechaArmada.format(formatter);
+
+        //Borde al seleccionar TEXFIELD
+        SwingUtilities.invokeLater(() -> {
             // Define el borde de enfoque
             Border normalBorder = txtDia.getBorder();
             Border focusBorder = new LineBorder(Color.BLUE, 3);
 
-           
-            
             FocusAdapter focusAdapter = new FocusAdapter() {
                 @Override
                 public void focusGained(FocusEvent e) {
@@ -1023,12 +1016,11 @@ public class HojaDeRuta extends javax.swing.JFrame {
                     ((JComponent) e.getComponent()).setBorder(normalBorder);
                 }
             };
-             txtDia.addFocusListener(focusAdapter);
-             txtMes.addFocusListener(focusAdapter);
-             txtAnio.addFocusListener(focusAdapter);
-             
+            txtDia.addFocusListener(focusAdapter);
+            txtMes.addFocusListener(focusAdapter);
+            txtAnio.addFocusListener(focusAdapter);
+
         });
-        
 
         // Recorrer la lista y agregar filas a la tabla
         tableModel.setRowCount(0);
@@ -1085,20 +1077,19 @@ public class HojaDeRuta extends javax.swing.JFrame {
                 titulo.setAlignment(Element.ALIGN_CENTER);
                 titulo.setSpacingAfter(10f); // Espacio después del título (en puntos)
                 document.add(titulo);
-                 //Fecha
-        // Obtener los valores de los campos de texto
-        int dia = Integer.parseInt(txtDia.getText());
-        int mes = Integer.parseInt(txtMes.getText());
-        int anio = Integer.parseInt(txtAnio.getText());
-        
-        // Crear una instancia de LocalDate si la fecha es válida
-            LocalDate fechaArmada = LocalDate.of(anio, mes, dia);
-            
-            // Formatear la fecha en el formato deseado
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                    String fechaFormateada = fechaArmada.format(formatter);
-                
-                
+                //Fecha
+                // Obtener los valores de los campos de texto
+                int dia = Integer.parseInt(txtDia.getText());
+                int mes = Integer.parseInt(txtMes.getText());
+                int anio = Integer.parseInt(txtAnio.getText());
+
+                // Crear una instancia de LocalDate si la fecha es válida
+                LocalDate fechaArmada = LocalDate.of(anio, mes, dia);
+
+                // Formatear la fecha en el formato deseado
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                String fechaFormateada = fechaArmada.format(formatter);
+
                 // Agregar fechas desde y hasta al título
                 Chunk chunkFechas = new Chunk("Fecha: " + fechaFormateada, fontFecha);
                 Paragraph fechas = new Paragraph(chunkFechas);
@@ -1215,7 +1206,7 @@ public class HojaDeRuta extends javax.swing.JFrame {
             File outputFile = new File(outputPath);
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile));
             document.open();
-           
+
             //FUENTES
             Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 8, Font.BOLD);
             Font fontDatos = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, NORMAL);
@@ -1246,20 +1237,18 @@ public class HojaDeRuta extends javax.swing.JFrame {
             tituloFechaParagraph.add(Chunk.NEWLINE); // Agregar una nueva línea
 
             //Fecha
-        // Obtener los valores de los campos de texto
-        int dia = Integer.parseInt(txtDia.getText());
-        int mes = Integer.parseInt(txtMes.getText());
-        int anio = Integer.parseInt(txtAnio.getText());
-        
-        // Crear una instancia de LocalDate si la fecha es válida
+            // Obtener los valores de los campos de texto
+            int dia = Integer.parseInt(txtDia.getText());
+            int mes = Integer.parseInt(txtMes.getText());
+            int anio = Integer.parseInt(txtAnio.getText());
+
+            // Crear una instancia de LocalDate si la fecha es válida
             LocalDate fechaArmada = LocalDate.of(anio, mes, dia);
-            
+
             // Formatear la fecha en el formato deseado
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                    String fechaFormateada = fechaArmada.format(formatter);
-            
-            
-            
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            String fechaFormateada = fechaArmada.format(formatter);
+
             Chunk chunkFechas = new Chunk("Fecha: " + fechaFormateada, fontFecha);
             tituloFechaParagraph.add(chunkFechas);
             tituloFechaParagraph.setAlignment(Element.ALIGN_CENTER);
@@ -1327,17 +1316,17 @@ public class HojaDeRuta extends javax.swing.JFrame {
                 }
             }
 
-            // CREACION DE TABLA
-            PdfPTable table = new PdfPTable(tablaMovimientos.getColumnCount() - 7);
-            table.setSpacingBefore(10f); // Espacio antes de la tabla (en puntos)
-            table.setSpacingAfter(10f);
+        // CREACION DE TABLA
+                    PdfPTable table = new PdfPTable(tablaMovimientos.getColumnCount() - 7);
+                    table.setSpacingBefore(10f); // Espacio antes de la tabla (en puntos)
+                    table.setSpacingAfter(0f);
 
-            // Ajustar espacio horizontal
-            float[] columnWidths = {1.5f, 1.5f, 1f, 0.9f, 1f, 0.9f, 1f, 0.9f, 1f, 1f};
-            table.setWidths(columnWidths);
-            table.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
+        // Ajustar espacio horizontal
+                float[] columnWidths = {1.7f, 1.7f, 0.8f, 0.8f, 1f, 0.8f, 1f, 0.8f, 1f, 1f};
+                    table.setWidths(columnWidths);
+                    table.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
 
-            // Agregar las celdas a la tabla
+// Agregar las celdas a la tabla
             for (int i = 0; i < tablaMovimientos.getColumnCount(); i++) {
                 String col = tablaMovimientos.getColumnName(i);
                 if (!col.equals("FECHA") && !col.equals("HORA") && !col.equals("ID") && !col.equals("CC") && !col.equals("OBS") && !col.equals("RENDIDO") && !col.equals("RENDIDO")) {
@@ -1370,14 +1359,102 @@ public class HojaDeRuta extends javax.swing.JFrame {
                                 cell.setHorizontalAlignment(Element.ALIGN_LEFT);
                             }
                             table.addCell(cell);
+
                         }
+
                     }
+
                 }
+
             }
+              document.add(table); // Agregar la primera tabla
 
-            document.add(table);   
+        // Crear la tabla vacía con una celda para las líneas verticales
+        PdfPTable emptyTable = new PdfPTable(tablaMovimientos.getColumnCount() - 7);
+        emptyTable.setSpacingBefore(0f); // Espacio antes de la tabla (en puntos)
+        emptyTable.setSpacingAfter(0f);
+        float[] columnWidthss = {1.7f, 1.7f, 0.8f, 0.8f, 1f, 0.8f, 1f, 0.8f, 1f, 1f};
+        emptyTable.setWidths(columnWidthss);
+        emptyTable.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
 
+
+                    // Calcular la altura de la fila vacía en función del número de filas seleccionadas
+            float emptyRowHeight = 0f;
+            if (filasSeleccionadas.length == 1) {
+                emptyRowHeight = 600f; // Altura para una fila seleccionada
+            } else if (filasSeleccionadas.length == 2) {
+                emptyRowHeight = 580f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 3) {
+                emptyRowHeight = 560f; // Altura para dos filas seleccionadas
+            } else if (filasSeleccionadas.length == 4) {
+                emptyRowHeight = 540f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 5) {
+                emptyRowHeight = 520f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 6) {
+                emptyRowHeight = 500f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 7) {
+                emptyRowHeight = 480f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 8) {
+                emptyRowHeight = 440f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 9) {
+                emptyRowHeight = 420f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 10) {
+                emptyRowHeight = 400f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 11) {
+                emptyRowHeight = 380f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 12) {
+                emptyRowHeight = 360f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 13) {
+                emptyRowHeight = 340f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 14) {
+                emptyRowHeight = 300f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 15) {
+                emptyRowHeight = 280f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 16) {
+                emptyRowHeight = 260f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 17) {
+                emptyRowHeight = 240f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 18) {
+                emptyRowHeight = 220f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 19) {
+                emptyRowHeight = 200f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 20) {
+                emptyRowHeight = 160f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 21) {
+                emptyRowHeight = 140f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 22) {
+                emptyRowHeight = 120f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 23) {
+                emptyRowHeight = 100f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 24) {
+                emptyRowHeight = 80f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 25) {
+                emptyRowHeight = 60f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 26) {
+                emptyRowHeight = 40f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 27) {
+                emptyRowHeight = 20f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 28) {
+                emptyRowHeight = 20f; // Altura para dos filas seleccionadas
+            }
+            
+           
+
+        // Crear una fila vacía en la tabla vacía
+        for (int col = 0; col < tablaMovimientos.getColumnCount() - 7; col++) {
+            PdfPCell emptyTableCell = new PdfPCell();
+            emptyTableCell.setFixedHeight(emptyRowHeight);
+            emptyTableCell.setBorder(Rectangle.BOX);
+            emptyTable.addCell(emptyTableCell);
+        }
+
+        document.add(emptyTable);
+
+            
             document.close();
+
+
+
             writer.close();
 
             try {

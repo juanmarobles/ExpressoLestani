@@ -1564,10 +1564,10 @@ public class HDDRepresentantes extends javax.swing.JFrame {
             //CREACION DE TABLA
             PdfPTable table = new PdfPTable(tablaMovimientos.getColumnCount() - 7 + 1); // Excluir columnas MOVIMIENTO,FECHA,REPRESENTANTE,Y OBS
             table.setSpacingBefore(10f); // Espacio antes de la tabla (en puntos)
-            table.setSpacingAfter(10f);
+            table.setSpacingAfter(0f);
 
             // Ajustar espacio horizontal
-            float[] columnWidths = {1.5f, 1.5f, 1f, 0.9f, 1f, 0.9f, 1f, 0.9f, 0.8f, 0.6f, 1.5f}; // Añadir un ancho para la nueva columna "observaciones"
+            float[] columnWidths = {1.6f, 1.6f, 0.85f, 0.8f, 1f, 0.85f, 1f, 0.85f, 0.8f, 0.6f, 1.5f}; // Añadir un ancho para la nueva columna "observaciones"
             table.setWidths(columnWidths);
             table.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
 
@@ -1637,8 +1637,81 @@ public class HDDRepresentantes extends javax.swing.JFrame {
 
                 }
             }   
-
+            
             document.add(table);
+            
+            //CREACION DE TABLA CON FILA VACIA PARA ESPACIO CON LINEAS VERTICALES
+             // Crear la tabla vacía con una celda para las líneas verticales
+        PdfPTable emptyTable = new PdfPTable(tablaMovimientos.getColumnCount() - 7 + 1);
+        emptyTable.setSpacingBefore(0f); // Espacio antes de la tabla (en puntos)
+        emptyTable.setSpacingAfter(0f);
+         float[] columnWidthss = {1.6f, 1.6f, 0.85f, 0.8f, 1f, 0.85f, 1f, 0.85f, 0.8f, 0.6f, 1.5f}; // Añadir un ancho para la nueva columna "observaciones"
+        emptyTable.setWidths(columnWidthss);
+        emptyTable.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
+
+
+                    // Calcular la altura de la fila vacía en función del número de filas seleccionadas
+            float emptyRowHeight = 0f;
+            if (filasSeleccionadas.length == 1) {
+                emptyRowHeight = 580f; // Altura para una fila seleccionada
+            } else if (filasSeleccionadas.length == 2) {
+                emptyRowHeight = 560f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 3) {
+                emptyRowHeight = 540f; // Altura para dos filas seleccionadas
+            } else if (filasSeleccionadas.length == 4) {
+                emptyRowHeight = 520f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 5) {
+                emptyRowHeight = 500f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 6) {
+                emptyRowHeight = 460f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 7) {
+                emptyRowHeight = 440f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 8) {
+                emptyRowHeight = 420f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 9) {
+                emptyRowHeight = 400f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 10) {
+                emptyRowHeight = 380f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 11) {
+                emptyRowHeight = 360f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 12) {
+                emptyRowHeight = 340f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 13) {
+                emptyRowHeight = 300f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 14) {
+                emptyRowHeight = 280f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 15) {
+                emptyRowHeight = 260f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 16) {
+                emptyRowHeight = 240f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 17) {
+                emptyRowHeight = 220f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 18) {
+                emptyRowHeight = 180f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 19) {
+                emptyRowHeight = 160f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 20) {
+                emptyRowHeight = 140f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 21) {
+                emptyRowHeight = 120f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 22) {
+                emptyRowHeight = 100f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 23) {
+                emptyRowHeight = 80f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 24) {
+                emptyRowHeight = 60f; // Altura para dos filas seleccionadas
+            }
+           
+
+        // Crear una fila vacía en la tabla vacía
+        for (int col = 0; col < tablaMovimientos.getColumnCount() - 7 + 1; col++) {
+            PdfPCell emptyTableCell = new PdfPCell();
+            emptyTableCell.setFixedHeight(emptyRowHeight);
+            emptyTableCell.setBorder(Rectangle.BOX);
+            emptyTable.addCell(emptyTableCell);
+        }
+
+        document.add(emptyTable);
 
             document.close();
             writer.close();
