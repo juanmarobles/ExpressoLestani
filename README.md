@@ -8,10 +8,10 @@ Está diseñada específicamente para satisfacer las necesidades de [Expreso Les
 
 Antes de comenzar, asegúrate de tener lo siguiente instalado en tu sistema:
 
--[Java Development Kit (JDK) para el desarrollo en Java.]
--[MySQL para gestionar la base de datos.]
--[Maven para administrar las dependencias y la construcción del proyecto.]
--[IntelliJ IDEA).]
+-[Java Development Kit (JDK)] para el desarrollo en Java.
+-[MySQL] para gestionar la base de datos.
+-[Maven] para administrar las dependencias y la construcción del proyecto.
+-[IntelliJ IDEA] IDE de Java.
 
 ## **Configuración**
 
@@ -52,5 +52,5 @@ Capacidad para generar informes en formato PDF con detalles sobre rutas, envíos
 
 ## **Licencia**
 
-Este proyecto está bajo la licencia de Juan Manuel Robles. Todos los derechos reservados.
+Este proyecto está bajo la licencia de Robles, Juan Manuel(backend) y Espindola, Marcos(ux/ui,frontend). Todos los derechos reservados.
 ¡Agradecemos la oportunidad de colaborar con [Expreso Lestani] y sastifacer todas sus necesidades!
