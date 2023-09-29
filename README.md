@@ -8,10 +8,10 @@ Está diseñada específicamente para satisfacer las necesidades de [Expreso Les
 
 Antes de comenzar, asegúrate de tener lo siguiente instalado en tu sistema:
 
--[Java Development Kit (JDK)] para el desarrollo en Java.
--[MySQL] para gestionar la base de datos.
--[Maven] para administrar las dependencias y la construcción del proyecto.
--[IntelliJ IDEA] IDE de Java.
+-**[Java Development Kit (JDK)]**: para el desarrollo en Java.
+-**[MySQL]**: para gestionar la base de datos.
+-**[Maven]**: para administrar las dependencias y la construcción del proyecto.
+-**[IntelliJ IDEA]**: IDE de Java.
 
 ## **Configuración**
 
