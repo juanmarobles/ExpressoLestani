@@ -877,7 +877,7 @@ public class EditarMovimientos extends javax.swing.JFrame {
             tFleteR = "No";
             tFleteP = "No";
         }
-
+        System.out.println("el tipo de flete es: "+tFlete);
         control.editarMovimiento(mov, cliente, destino, servicio, representante, bulto, monto, flete, tFlete, remito, tMontoP, tMontoR, tFleteP, tFleteR, fecha, cC, obs);
 
         mostrarMensaje("Movimiento modificado correctamente", "Info", "Edicion exitosa!");

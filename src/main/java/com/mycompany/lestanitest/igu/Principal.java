@@ -591,7 +591,7 @@ public class Principal extends javax.swing.JFrame {
                     String textoBusqueda = cbDestinos.getEditor().getItem().toString();
 
                     // Normaliza el texto de búsqueda a mayúsculas y elimina caracteres no deseados excepto espacios en blanco
-                    textoBusqueda = textoBusqueda.toUpperCase().replaceAll("[^A-Z\\s]", "");
+                    textoBusqueda = textoBusqueda.toUpperCase().replaceAll("[^A-Z.\\s]", "");
 
                     mostrarResultadosBusqueda(cbDestinos, textoBusqueda);
 
