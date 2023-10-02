@@ -1446,11 +1446,34 @@ public class Consultas extends javax.swing.JFrame {
 
         final String finalRadioButtonSeleccionado = radioButtonSeleccionado; // Hacer que la variable sea final
 
-        // Filtrar por cuentas corrientes si no se selecciona "Todos"
-        if (!finalRadioButtonSeleccionado.equals("Todos")) {
+        if (!radioButtonSeleccionado.equals("Todos")) {
             movimientosFiltrados = movimientosFiltrados.stream()
-                    .filter(mov -> mov.getCuentaCorriente().equals(finalRadioButtonSeleccionado))
+                    .filter(mov -> mov.getCuentaCorriente().equalsIgnoreCase(finalRadioButtonSeleccionado))
                     .collect(Collectors.toList());
+
+            // Agregar filtro adicional por cliente si ccSi está seleccionado o ccNo está seleccionado
+            if (ccSi.isSelected() || ccNo.isSelected()) {
+                // Obtener el cliente seleccionado
+                Object clienteSelect = cbClientes.getSelectedItem();
+                String clienteFilt = clienteSelect != null ? clienteSelect.toString() : "";
+
+                // Filtrar solo si se ha seleccionado un cliente
+                if (!clienteFilt.isEmpty()) {
+                    movimientosFiltrados = movimientosFiltrados.stream()
+                            .filter(mov -> {
+                                // Verificar si ccSi está seleccionado y el cliente coincide
+                                if (ccSi.isSelected()) {
+                                    return mov.getCliente().equalsIgnoreCase(clienteFilt);
+                                } // Verificar si ccNo está seleccionado y el cliente coincide con cuenta corriente "No"
+                                else if (ccNo.isSelected()) {
+                                    return mov.getCliente().equalsIgnoreCase(clienteFilt)
+                                            && mov.getCuentaCorriente().equalsIgnoreCase("No");
+                                }
+                                return false; // Este retorno no debería ocurrir, pero es necesario para la estructura del filtro
+                            })
+                            .collect(Collectors.toList());
+                }
+            }
         }
 
          
