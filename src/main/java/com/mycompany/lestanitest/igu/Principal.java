@@ -1399,18 +1399,18 @@ public class Principal extends javax.swing.JFrame {
                 .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
                         .addGap(9, 9, 9)
-                        .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
+                        .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelCargaMovimientosLayout.createSequentialGroup()
                                 .addComponent(jLabel14)
                                 .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
-                                        .addGap(33, 33, 33)
-                                        .addComponent(btnAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(txtObservaciones, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(txtObservaciones, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
+                                        .addGap(53, 53, 53)
+                                        .addComponent(btnAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
                                 .addComponent(cbCuentaCorriente, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1563,7 +1563,7 @@ public class Principal extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(PanelBusquedas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(37, 37, 37)))
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 692, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 685, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -1733,7 +1733,18 @@ public class Principal extends javax.swing.JFrame {
         } else {
             monto = "0";
         }
-        String flete = txtFlete.getText();
+        
+            String fleteTexto = txtFlete.getText();
+            BigDecimal flete = new BigDecimal(fleteTexto);
+            String sTexto = txtSeguro.getText();
+            String rTexto = txtRedespacho.getText();
+            String ccTexto = txtContrarembolso.getText();
+            BigDecimal s = new BigDecimal(sTexto);
+            BigDecimal r = new BigDecimal(rTexto);
+            BigDecimal cc = new BigDecimal(ccTexto);
+            BigDecimal resultado = flete.add(s).add(r).add(cc);
+            String fletenuevo = resultado.toString();
+            
         String obs = txtObservaciones.getText();
         //verif flete origen/destino
         if (cbfDestino.isSelected()) {
@@ -1815,7 +1826,7 @@ public class Principal extends javax.swing.JFrame {
             return; // Detener la ejecución para no agregar el movimiento
         }
 
-        control.cargarMovimiento(cliente, destino, servicio, representante, bulto, monto, flete, tFlete, remito, tMontoP, tMontoR, tFleteP, tFleteR, fecha, cC, obs, horaSQL);
+        control.cargarMovimiento(cliente, destino, servicio, representante, bulto, monto, fletenuevo, tFlete, remito, tMontoP, tMontoR, tFleteP, tFleteR, fecha, cC, obs, horaSQL);
         System.out.println("Movimiento agregado correctamente" + "Info" + "Agregado con exito!");
 
         // Actualizar la tabla
@@ -1977,10 +1988,7 @@ public class Principal extends javax.swing.JFrame {
         String tFleteP = "";
         String tFleteR = "";
         String cC = "";
-        String remito;
-        String s = txtSeguro.getText();
-        String r = txtRedespacho.getText();
-        String cc = txtContrarembolso.getText();
+        String remito;  
         //FECHA
         Date fecha = getFecha();
         //HORA
@@ -2023,7 +2031,19 @@ public class Principal extends javax.swing.JFrame {
         } else {
             monto = "0";
         }
-        String flete = txtFlete.getText();
+          String fleteTexto = txtFlete.getText();
+            BigDecimal flete = new BigDecimal(fleteTexto);
+            String sTexto = txtSeguro.getText();
+            String rTexto = txtRedespacho.getText();
+            String ccTexto = txtContrarembolso.getText();
+            BigDecimal s = new BigDecimal(sTexto);
+            BigDecimal r = new BigDecimal(rTexto);
+            BigDecimal cc = new BigDecimal(ccTexto);
+            BigDecimal resultado = flete.add(s).add(r).add(cc);
+            String fletenuevo = resultado.toString();
+            
+           
+            
         String obs = txtObservaciones.getText();
         //verif flete origen/destino
         if (cbfDestino.isSelected()) {
@@ -2109,7 +2129,7 @@ public class Principal extends javax.swing.JFrame {
             return; // Detener la ejecución para no agregar el movimiento
         }
 
-        control.cargarMovimiento(cliente, destino, servicio, representante, bulto, monto, flete, tFlete, remito, tMontoP, tMontoR, tFleteP, tFleteR, fecha, cC, obs, horaSQL);
+        control.cargarMovimiento(cliente, destino, servicio, representante, bulto, monto, fletenuevo, tFlete, remito, tMontoP, tMontoR, tFleteP, tFleteR, fecha, cC, obs, horaSQL);
         //mostrarMensaje("Movimiento agregado correctamente", "Info", "Agregado con exito!");
         
         //Llama la funcion generar  
@@ -2243,7 +2263,17 @@ public class Principal extends javax.swing.JFrame {
         } else {
             monto = "0";
         }
-        String flete = txtFlete.getText();
+        String fleteTexto = txtFlete.getText();
+            BigDecimal flete = new BigDecimal(fleteTexto);
+            String sTexto = txtSeguro.getText();
+            String rTexto = txtRedespacho.getText();
+            String ccTexto = txtContrarembolso.getText();
+            BigDecimal s = new BigDecimal(sTexto);
+            BigDecimal r = new BigDecimal(rTexto);
+            BigDecimal cc = new BigDecimal(ccTexto);
+            BigDecimal resultado = flete.add(s).add(r).add(cc);
+            String fletenuevo = resultado.toString();
+            
         String obs = txtObservaciones.getText();
         //verif flete origen/destino
         if (cbfDestino.isSelected()) {
@@ -2329,7 +2359,7 @@ public class Principal extends javax.swing.JFrame {
             return; // Detener la ejecución para no agregar el movimiento
         }
 
-        control.cargarMovimiento(cliente, destino, servicio, representante, bulto, monto, flete, tFlete, remito, tMontoP, tMontoR, tFleteP, tFleteR, fecha, cC, obs, horaSQL);
+        control.cargarMovimiento(cliente, destino, servicio, representante, bulto, monto, fletenuevo, tFlete, remito, tMontoP, tMontoR, tFleteP, tFleteR, fecha, cC, obs, horaSQL);
         //mostrarMensaje("Movimiento agregado correctamente", "Info", "Agregado con exito!");
         generarPdfDuplicado();
 

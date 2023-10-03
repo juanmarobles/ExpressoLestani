@@ -232,7 +232,7 @@ public class Controladora {
     /**
      * ----------------------------------------------GUARDAR-----------------------------------------------------------------
      */
-    public void cargarMovimiento(String cliente, String destino, String servicio, String representante, int bulto, String monto, String flete, String tFlete, String remito, String tMontoP, String tMontoR, String tFleteP, String tFleteR, Date fecha, String cC, String obs, Time hora) {
+    public void cargarMovimiento(String cliente, String destino, String servicio, String representante, int bulto, String monto, String fletenuevo, String tFlete, String remito, String tMontoP, String tMontoR, String tFleteP, String tFleteR, Date fecha, String cC, String obs, Time hora) {
         Movimientos m = new Movimientos();
         m.setCliente(cliente);
         m.setDestino(destino);
@@ -240,7 +240,7 @@ public class Controladora {
         m.setRepresentante(representante);
         m.setBultos(bulto);
         m.setMonto(monto);
-        m.setFlete(flete);
+        m.setFlete(fletenuevo);
         m.setFleteDestinoOrigen(tFlete);
         m.setRemito(remito);
         m.setFecha(fecha);
