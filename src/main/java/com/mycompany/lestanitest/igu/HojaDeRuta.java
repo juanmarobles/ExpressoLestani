@@ -1380,62 +1380,56 @@ public class HojaDeRuta extends javax.swing.JFrame {
 
                     // Calcular la altura de la fila vacía en función del número de filas seleccionadas
             float emptyRowHeight = 0f;
-            if (filasSeleccionadas.length == 1) {
-                emptyRowHeight = 600f; // Altura para una fila seleccionada
+             if(filasSeleccionadas.length == 0){
+                emptyRowHeight = 480f;
+            }else if (filasSeleccionadas.length == 1) {
+                emptyRowHeight = 460f; // Altura para una fila seleccionada
             } else if (filasSeleccionadas.length == 2) {
-                emptyRowHeight = 580f; // Altura para dos filas seleccionadas
-            }else if (filasSeleccionadas.length == 3) {
-                emptyRowHeight = 560f; // Altura para dos filas seleccionadas
-            } else if (filasSeleccionadas.length == 4) {
-                emptyRowHeight = 540f; // Altura para dos filas seleccionadas
-            }else if (filasSeleccionadas.length == 5) {
-                emptyRowHeight = 520f; // Altura para dos filas seleccionadas
-            }else if (filasSeleccionadas.length == 6) {
-                emptyRowHeight = 500f; // Altura para dos filas seleccionadas
-            }else if (filasSeleccionadas.length == 7) {
-                emptyRowHeight = 480f; // Altura para dos filas seleccionadas
-            }else if (filasSeleccionadas.length == 8) {
                 emptyRowHeight = 440f; // Altura para dos filas seleccionadas
-            }else if (filasSeleccionadas.length == 9) {
+            }else if (filasSeleccionadas.length == 3) {
                 emptyRowHeight = 420f; // Altura para dos filas seleccionadas
-            }else if (filasSeleccionadas.length == 10) {
+            } else if (filasSeleccionadas.length == 4) {
                 emptyRowHeight = 400f; // Altura para dos filas seleccionadas
-            }else if (filasSeleccionadas.length == 11) {
+            }else if (filasSeleccionadas.length == 5) {
                 emptyRowHeight = 380f; // Altura para dos filas seleccionadas
-            }else if (filasSeleccionadas.length == 12) {
+            }else if (filasSeleccionadas.length == 6) {
                 emptyRowHeight = 360f; // Altura para dos filas seleccionadas
-            }else if (filasSeleccionadas.length == 13) {
+            }else if (filasSeleccionadas.length == 7) {
                 emptyRowHeight = 340f; // Altura para dos filas seleccionadas
-            }else if (filasSeleccionadas.length == 14) {
+            }else if (filasSeleccionadas.length == 8) {
+                emptyRowHeight = 320f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 9) {
                 emptyRowHeight = 300f; // Altura para dos filas seleccionadas
-            }else if (filasSeleccionadas.length == 15) {
+            }else if (filasSeleccionadas.length == 10) {
                 emptyRowHeight = 280f; // Altura para dos filas seleccionadas
-            }else if (filasSeleccionadas.length == 16) {
+            }else if (filasSeleccionadas.length == 11) {
                 emptyRowHeight = 260f; // Altura para dos filas seleccionadas
-            }else if (filasSeleccionadas.length == 17) {
+            }else if (filasSeleccionadas.length == 12) {
                 emptyRowHeight = 240f; // Altura para dos filas seleccionadas
-            }else if (filasSeleccionadas.length == 18) {
-                emptyRowHeight = 220f; // Altura para dos filas seleccionadas
-            }else if (filasSeleccionadas.length == 19) {
+            }else if (filasSeleccionadas.length == 13) {
                 emptyRowHeight = 200f; // Altura para dos filas seleccionadas
-            }else if (filasSeleccionadas.length == 20) {
+            }else if (filasSeleccionadas.length == 14) {
+                emptyRowHeight = 200f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 15) {
+                emptyRowHeight = 180f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 16) {
                 emptyRowHeight = 160f; // Altura para dos filas seleccionadas
-            }else if (filasSeleccionadas.length == 21) {
+            }else if (filasSeleccionadas.length == 17) {
                 emptyRowHeight = 140f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 18) {
+                emptyRowHeight = 120f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 19) {
+                emptyRowHeight = 120f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 20) {
+                emptyRowHeight = 120f; // Altura para dos filas seleccionadas
+            }else if (filasSeleccionadas.length == 21) {
+                emptyRowHeight = 120f; // Altura para dos filas seleccionadas
             }else if (filasSeleccionadas.length == 22) {
                 emptyRowHeight = 120f; // Altura para dos filas seleccionadas
             }else if (filasSeleccionadas.length == 23) {
-                emptyRowHeight = 100f; // Altura para dos filas seleccionadas
-            }else if (filasSeleccionadas.length == 24) {
                 emptyRowHeight = 80f; // Altura para dos filas seleccionadas
-            }else if (filasSeleccionadas.length == 25) {
+            }else if (filasSeleccionadas.length == 24) {
                 emptyRowHeight = 60f; // Altura para dos filas seleccionadas
-            }else if (filasSeleccionadas.length == 26) {
-                emptyRowHeight = 40f; // Altura para dos filas seleccionadas
-            }else if (filasSeleccionadas.length == 27) {
-                emptyRowHeight = 20f; // Altura para dos filas seleccionadas
-            }else if (filasSeleccionadas.length == 28) {
-                emptyRowHeight = 20f; // Altura para dos filas seleccionadas
             }
             
            

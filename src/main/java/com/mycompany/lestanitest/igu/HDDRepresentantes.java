@@ -86,7 +86,6 @@ import javax.swing.table.TableRowSorter;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.printing.PDFPageable;
 
-
 /**
  *
  * @author Usuario
@@ -105,17 +104,16 @@ public class HDDRepresentantes extends javax.swing.JFrame {
         llenarVehiculo();
         llenarChofer();
         cargarRepresentantes();
-        
+
         //FECHA
-       // Obtener la fecha actual
+        // Obtener la fecha actual
         LocalDate fechaActual = LocalDate.now();
 
         // Mostrar la fecha actual en los campos de texto correspondientes
         txtDia.setText(String.valueOf(fechaActual.getDayOfMonth()));
         txtMes.setText(String.valueOf(fechaActual.getMonthValue()));
         txtAnio.setText(String.valueOf(fechaActual.getYear()));
-        
-        
+
         // Agregar evento de selección a la tabla
         tablaMovimientos.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -133,15 +131,13 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                 }
             }
         });
-        
+
         //Borde al seleccionar TEXFIELD
-         SwingUtilities.invokeLater(() -> {
+        SwingUtilities.invokeLater(() -> {
             // Define el borde de enfoque
             Border normalBorder = txtDia.getBorder();
             Border focusBorder = new LineBorder(Color.BLUE, 3);
 
-           
-            
             FocusAdapter focusAdapter = new FocusAdapter() {
                 @Override
                 public void focusGained(FocusEvent e) {
@@ -156,57 +152,52 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                     ((JComponent) e.getComponent()).setBorder(normalBorder);
                 }
             };
-             txtDia.addFocusListener(focusAdapter);
-             txtMes.addFocusListener(focusAdapter);
-             txtAnio.addFocusListener(focusAdapter);
-             
+            txtDia.addFocusListener(focusAdapter);
+            txtMes.addFocusListener(focusAdapter);
+            txtAnio.addFocusListener(focusAdapter);
+
         });
-        
-        
-        
-        
-        
-        
+
     }
 //LLENAR TEXTFIELD REPRESENTANTES
 
     private static void mostrarResultadosBusqueda(JComboBox<String> combobox, String textoBusqueda) {
-    // Limpiar selección previa
-    combobox.setSelectedIndex(-1);
+        // Limpiar selección previa
+        combobox.setSelectedIndex(-1);
 
-    // Buscar resultados de búsqueda exacta
-    boolean encontradoExacta = false;
+        // Buscar resultados de búsqueda exacta
+        boolean encontradoExacta = false;
 
-    for (int i = 0; i < combobox.getItemCount(); i++) {
-        String item = combobox.getItemAt(i).toString();
-        if (item.equalsIgnoreCase(textoBusqueda)) {
-            combobox.setSelectedItem(item);
-            combobox.getEditor().setItem(item);
-            encontradoExacta = true;
-            break; // Terminar la búsqueda cuando se encuentra una coincidencia exacta
-        }
-    }
-
-    // Si no se encontró una coincidencia exacta, buscar coincidencias parciales
-    if (!encontradoExacta) {
-        boolean encontradoParcial = false;
         for (int i = 0; i < combobox.getItemCount(); i++) {
             String item = combobox.getItemAt(i).toString();
-            if (item.toLowerCase().contains(textoBusqueda.toLowerCase())) {
-                combobox.setSelectedIndex(i);
+            if (item.equalsIgnoreCase(textoBusqueda)) {
+                combobox.setSelectedItem(item);
                 combobox.getEditor().setItem(item);
-                encontradoParcial = true;
-                break; // Terminar la búsqueda cuando se encuentra una coincidencia parcial
+                encontradoExacta = true;
+                break; // Terminar la búsqueda cuando se encuentra una coincidencia exacta
             }
         }
 
-        // Si no se encontró ninguna coincidencia parcial, mostrar el desplegable
-        if (!encontradoParcial) {
-            combobox.setPopupVisible(true);
-            combobox.getEditor().setItem(textoBusqueda); // Deja el ComboBox con el texto de búsqueda
+        // Si no se encontró una coincidencia exacta, buscar coincidencias parciales
+        if (!encontradoExacta) {
+            boolean encontradoParcial = false;
+            for (int i = 0; i < combobox.getItemCount(); i++) {
+                String item = combobox.getItemAt(i).toString();
+                if (item.toLowerCase().contains(textoBusqueda.toLowerCase())) {
+                    combobox.setSelectedIndex(i);
+                    combobox.getEditor().setItem(item);
+                    encontradoParcial = true;
+                    break; // Terminar la búsqueda cuando se encuentra una coincidencia parcial
+                }
+            }
+
+            // Si no se encontró ninguna coincidencia parcial, mostrar el desplegable
+            if (!encontradoParcial) {
+                combobox.setPopupVisible(true);
+                combobox.getEditor().setItem(textoBusqueda); // Deja el ComboBox con el texto de búsqueda
+            }
         }
     }
-}
 
     private void cargarRepresentantes() {
         ModeloRepresentante modRepre = new ModeloRepresentante();
@@ -214,12 +205,12 @@ public class HDDRepresentantes extends javax.swing.JFrame {
         cbRepresentantes.setEditable(true);
         // Ordenar la lista de clientes alfabéticamente por el nombre
         listaRepresentantes.sort((representante1, representante2) -> representante1.getNombre().compareToIgnoreCase(representante2.getNombre()));
-        
+
         // Agregar los clientes al combobox
         for (Representantes Repre : listaRepresentantes) {
             cbRepresentantes.addItem(Repre.getNombre());
         }
-        
+
 // Eliminar la opción en blanco después de configurar el decorador
         cbRepresentantes.removeItem("");
 
@@ -773,20 +764,19 @@ public class HDDRepresentantes extends javax.swing.JFrame {
             return;
         }
 
-         //Fecha
+        //Fecha
         // Obtener los valores de los campos de texto
         int dia = Integer.parseInt(txtDia.getText());
         int mes = Integer.parseInt(txtMes.getText());
         int anio = Integer.parseInt(txtAnio.getText());
-        
+
         // Crear una instancia de LocalDate si la fecha es válida
-            LocalDate fechaArmada = LocalDate.of(anio, mes, dia);
-            
-            // Formatear la fecha en el formato deseado
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                    String fechaFormateada = fechaArmada.format(formatter);
-                    
-                    
+        LocalDate fechaArmada = LocalDate.of(anio, mes, dia);
+
+        // Formatear la fecha en el formato deseado
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String fechaFormateada = fechaArmada.format(formatter);
+
         boolean mostrarCuentaCorriente = cbCC.isSelected();
         boolean mostrarContado = cbContado.isSelected();
         boolean mostrarTodos = cbTodos.isSelected();
@@ -1257,20 +1247,18 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                 tituloFechaParagraph.add(Chunk.NEWLINE); // Agregar una nueva línea
 
                 //Fecha
-        // Obtener los valores de los campos de texto
-        int dia = Integer.parseInt(txtDia.getText());
-        int mes = Integer.parseInt(txtMes.getText());
-        int anio = Integer.parseInt(txtAnio.getText());
-        
-        // Crear una instancia de LocalDate si la fecha es válida
-            LocalDate fechaArmada = LocalDate.of(anio, mes, dia);
-            
-            // Formatear la fecha en el formato deseado
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                    String fechaFormateada = fechaArmada.format(formatter);
-                    
-                
-                
+                // Obtener los valores de los campos de texto
+                int dia = Integer.parseInt(txtDia.getText());
+                int mes = Integer.parseInt(txtMes.getText());
+                int anio = Integer.parseInt(txtAnio.getText());
+
+                // Crear una instancia de LocalDate si la fecha es válida
+                LocalDate fechaArmada = LocalDate.of(anio, mes, dia);
+
+                // Formatear la fecha en el formato deseado
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                String fechaFormateada = fechaArmada.format(formatter);
+
                 Chunk chunkFechas = new Chunk("Fecha: " + fechaFormateada, fontFecha);
                 tituloFechaParagraph.add(chunkFechas);
                 tituloFechaParagraph.setAlignment(Element.ALIGN_CENTER);
@@ -1479,20 +1467,18 @@ public class HDDRepresentantes extends javax.swing.JFrame {
             tituloFechaParagraph.add(Chunk.NEWLINE); // Agregar una nueva línea
 
             //Fecha
-        // Obtener los valores de los campos de texto
-        int dia = Integer.parseInt(txtDia.getText());
-        int mes = Integer.parseInt(txtMes.getText());
-        int anio = Integer.parseInt(txtAnio.getText());
-        
-        // Crear una instancia de LocalDate si la fecha es válida
+            // Obtener los valores de los campos de texto
+            int dia = Integer.parseInt(txtDia.getText());
+            int mes = Integer.parseInt(txtMes.getText());
+            int anio = Integer.parseInt(txtAnio.getText());
+
+            // Crear una instancia de LocalDate si la fecha es válida
             LocalDate fechaArmada = LocalDate.of(anio, mes, dia);
-            
+
             // Formatear la fecha en el formato deseado
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                    String fechaFormateada = fechaArmada.format(formatter);
-                    
-            
-            
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            String fechaFormateada = fechaArmada.format(formatter);
+
             Chunk chunkFechas = new Chunk("Fecha: " + fechaFormateada, fontFecha);
             tituloFechaParagraph.add(chunkFechas);
             tituloFechaParagraph.setAlignment(Element.ALIGN_CENTER);
@@ -1636,83 +1622,43 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                     table.addCell(obsCell);
 
                 }
-            }   
-            
-            document.add(table);
-            
-            //CREACION DE TABLA CON FILA VACIA PARA ESPACIO CON LINEAS VERTICALES
-             // Crear la tabla vacía con una celda para las líneas verticales
-        PdfPTable emptyTable = new PdfPTable(tablaMovimientos.getColumnCount() - 7 + 1);
-        emptyTable.setSpacingBefore(0f); // Espacio antes de la tabla (en puntos)
-        emptyTable.setSpacingAfter(0f);
-         float[] columnWidthss = {1.6f, 1.6f, 0.85f, 0.8f, 1f, 0.85f, 1f, 0.85f, 0.8f, 0.6f, 1.5f}; // Añadir un ancho para la nueva columna "observaciones"
-        emptyTable.setWidths(columnWidthss);
-        emptyTable.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
-
-
-                    // Calcular la altura de la fila vacía en función del número de filas seleccionadas
-            float emptyRowHeight = 0f;
-            if (filasSeleccionadas.length == 1) {
-                emptyRowHeight = 580f; // Altura para una fila seleccionada
-            } else if (filasSeleccionadas.length == 2) {
-                emptyRowHeight = 560f; // Altura para dos filas seleccionadas
-            }else if (filasSeleccionadas.length == 3) {
-                emptyRowHeight = 540f; // Altura para dos filas seleccionadas
-            } else if (filasSeleccionadas.length == 4) {
-                emptyRowHeight = 520f; // Altura para dos filas seleccionadas
-            }else if (filasSeleccionadas.length == 5) {
-                emptyRowHeight = 500f; // Altura para dos filas seleccionadas
-            }else if (filasSeleccionadas.length == 6) {
-                emptyRowHeight = 460f; // Altura para dos filas seleccionadas
-            }else if (filasSeleccionadas.length == 7) {
-                emptyRowHeight = 440f; // Altura para dos filas seleccionadas
-            }else if (filasSeleccionadas.length == 8) {
-                emptyRowHeight = 420f; // Altura para dos filas seleccionadas
-            }else if (filasSeleccionadas.length == 9) {
-                emptyRowHeight = 400f; // Altura para dos filas seleccionadas
-            }else if (filasSeleccionadas.length == 10) {
-                emptyRowHeight = 380f; // Altura para dos filas seleccionadas
-            }else if (filasSeleccionadas.length == 11) {
-                emptyRowHeight = 360f; // Altura para dos filas seleccionadas
-            }else if (filasSeleccionadas.length == 12) {
-                emptyRowHeight = 340f; // Altura para dos filas seleccionadas
-            }else if (filasSeleccionadas.length == 13) {
-                emptyRowHeight = 300f; // Altura para dos filas seleccionadas
-            }else if (filasSeleccionadas.length == 14) {
-                emptyRowHeight = 280f; // Altura para dos filas seleccionadas
-            }else if (filasSeleccionadas.length == 15) {
-                emptyRowHeight = 260f; // Altura para dos filas seleccionadas
-            }else if (filasSeleccionadas.length == 16) {
-                emptyRowHeight = 240f; // Altura para dos filas seleccionadas
-            }else if (filasSeleccionadas.length == 17) {
-                emptyRowHeight = 220f; // Altura para dos filas seleccionadas
-            }else if (filasSeleccionadas.length == 18) {
-                emptyRowHeight = 180f; // Altura para dos filas seleccionadas
-            }else if (filasSeleccionadas.length == 19) {
-                emptyRowHeight = 160f; // Altura para dos filas seleccionadas
-            }else if (filasSeleccionadas.length == 20) {
-                emptyRowHeight = 140f; // Altura para dos filas seleccionadas
-            }else if (filasSeleccionadas.length == 21) {
-                emptyRowHeight = 120f; // Altura para dos filas seleccionadas
-            }else if (filasSeleccionadas.length == 22) {
-                emptyRowHeight = 100f; // Altura para dos filas seleccionadas
-            }else if (filasSeleccionadas.length == 23) {
-                emptyRowHeight = 80f; // Altura para dos filas seleccionadas
-            }else if (filasSeleccionadas.length == 24) {
-                emptyRowHeight = 60f; // Altura para dos filas seleccionadas
             }
+
+             document.add(table);
+
+            //CREACION DE TABLA CON FILA VACIA PARA ESPACIO CON LINEAS VERTICALES
+// Crear la tabla vacía con una celda para las líneas verticales
+            PdfPTable emptyTable = new PdfPTable(tablaMovimientos.getColumnCount() - 7 + 1);
+            emptyTable.setSpacingBefore(0f); // Espacio antes de la tabla (en puntos)
+            emptyTable.setSpacingAfter(0f);
+            float[] columnWidthss = {1.6f, 1.6f, 0.85f, 0.8f, 1f, 0.85f, 1f, 0.85f, 0.8f, 0.6f, 1.5f}; // Añadir un ancho para la nueva columna "observaciones"
+            emptyTable.setWidths(columnWidthss);
+            emptyTable.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
+
+            // Calcular la altura de la fila vacía en función del número de filas seleccionadas
+            float emptyRowHeight = 0f;
+
+            if (filasSeleccionadas.length == 0) {
+                emptyRowHeight = 460f; // Altura predeterminada cuando no se selecciona ninguna fila
+            } else if (filasSeleccionadas.length >= 1 && filasSeleccionadas.length <= 34) {
+                // Alturas para diferentes cantidades de filas seleccionadas
+                float[] alturas = {460f, 440f, 420f, 400f, 380f, 360f, 340f, 320f, 300f, 280f, 260f, 240f, 220f, 200f, 180f, 160f, 140f, 120f, 120f, 120f, 120f, 120f, 120f, 80f, 60f, 40f, 20f, 60f, 60f, 60f, 60f, 60f, 60f, 60f};
+
+                // Asegurarse de que el índice esté dentro del rango
+                int index = Math.min(filasSeleccionadas.length, alturas.length) - 1;
+                emptyRowHeight = alturas[index];
+            }
+
+            // Crear una fila vacía en la tabla vacía
+            for (int col = 0; col < tablaMovimientos.getColumnCount() - 7 + 1; col++) {
+                PdfPCell emptyTableCell = new PdfPCell();
+                emptyTableCell.setFixedHeight(emptyRowHeight);
+                emptyTableCell.setBorder(Rectangle.BOX);
+                emptyTable.addCell(emptyTableCell);
+            }
+
+            document.add(emptyTable);
            
-
-        // Crear una fila vacía en la tabla vacía
-        for (int col = 0; col < tablaMovimientos.getColumnCount() - 7 + 1; col++) {
-            PdfPCell emptyTableCell = new PdfPCell();
-            emptyTableCell.setFixedHeight(emptyRowHeight);
-            emptyTableCell.setBorder(Rectangle.BOX);
-            emptyTable.addCell(emptyTableCell);
-        }
-
-        document.add(emptyTable);
-
             document.close();
             writer.close();
 

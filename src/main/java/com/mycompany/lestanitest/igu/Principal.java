@@ -1971,6 +1971,9 @@ public class Principal extends javax.swing.JFrame {
         String tFleteR = "";
         String cC = "";
         String remito;
+        String s = txtSeguro.getText();
+        String r = txtRedespacho.getText();
+        String cc = txtContrarembolso.getText();
         //FECHA
         Date fecha = getFecha();
         //HORA
@@ -3521,11 +3524,11 @@ public class Principal extends javax.swing.JFrame {
 
             double monto = Double.parseDouble(txtMonto.getText());
             double fletee = Double.parseDouble(txtFlete.getText());
-            //double seguroo = Double.parseDouble(txtSeguro.getText());
-            //double comContra = Double.parseDouble(txtContrarembolso.getText());
-            //double redespa = Double.parseDouble(txtRedespacho.getText());
+            double seguroo = Double.parseDouble(txtSeguro.getText());
+            double comContra = Double.parseDouble(txtContrarembolso.getText());
+            double redespa = Double.parseDouble(txtRedespacho.getText());
             //double valDecla = Double.parseDouble(txtValDeclarado.getText());
-            double total = monto + fletee;
+            double total = monto + fletee + seguroo + comContra + redespa;
             Paragraph totalMonto = new Paragraph("TOTAL: $" + total, fontR);
             totalMonto.setAlignment(Element.ALIGN_RIGHT);
             PdfPCell celdaTotal = new PdfPCell(totalMonto);

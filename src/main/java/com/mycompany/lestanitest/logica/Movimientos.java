@@ -60,6 +60,10 @@ public class Movimientos implements Serializable {
     private String cuentaCorriente;
     @Column(name = "OBSERVACIONES", nullable = false)
     private String observaciones;
+    
+    
+    //NUEVAS CARGAS
+    
 
     public Movimientos() {
     }
