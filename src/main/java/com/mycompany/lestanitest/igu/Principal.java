@@ -224,7 +224,7 @@ public class Principal extends javax.swing.JFrame {
             String fechaFormateada = fechaArmada.format(formatter);
 
             // Realizar otras operaciones con fechaArmada aquí
-            System.out.println("Fecha  válida: " + fechaFormateada);
+            System.out.println("Fecha  válida: " + fechaFormateada); 
 
         } catch (DateTimeException e) {
             // Manejar el caso en que la fecha no sea válida
@@ -395,21 +395,18 @@ public class Principal extends javax.swing.JFrame {
 
                 // Verificar si el carácter no es un número o un punto
                 if (!Character.isDigit(c) && c != '.') {
-                    // Mostrar una alerta solo si la cadena no contiene solo números y puntos
+                    // Mostrar una alerta solo si la cadena no contiene solo números y puntos decimales
 
-                    if (!textField.getText().matches("[\\d.]*")) {
+                    if (!textField.getText().matches("[\\d]*(\\.[\\d]*)?") || c == ',') {
                         JOptionPane.showMessageDialog(null, "Solo se permiten números y puntos decimales.", "Error", JOptionPane.ERROR_MESSAGE);
+                        e.consume();
                     }
-
-                    // Consumir el evento para evitar que el carácter se ingrese en el JTextField
-                    e.consume();
                 }
             }
         };
 
         txtMonto.addKeyListener(keyListener);
         txtFlete.addKeyListener(keyListener);
-
         // Obtén la fecha y hora actual
         LocalDateTime now = LocalDateTime.now();
 
@@ -466,13 +463,23 @@ public class Principal extends javax.swing.JFrame {
     }
 
     private static void ComboBoxStyle(JComboBox<String> comboBox) {
-        comboBox.addItemListener(new ItemListener() {
+        comboBox.getEditor().getEditorComponent().addFocusListener(new FocusAdapter() {
             @Override
-            public void itemStateChanged(ItemEvent e) {
-                if (e.getStateChange() == ItemEvent.SELECTED) {
+            public void focusGained(FocusEvent e) {
+                SwingUtilities.invokeLater(() -> {
+                    JTextField editor = (JTextField) comboBox.getEditor().getEditorComponent();
+                    editor.selectAll();
+                });
+            }
+        });
 
-                    comboBox.getEditor().selectAll();
-                }
+        comboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SwingUtilities.invokeLater(() -> {
+                    JTextField editor = (JTextField) comboBox.getEditor().getEditorComponent();
+                    editor.selectAll();
+                });
             }
         });
     }
@@ -584,7 +591,7 @@ public class Principal extends javax.swing.JFrame {
                     String textoBusqueda = cbDestinos.getEditor().getItem().toString();
 
                     // Normaliza el texto de búsqueda a mayúsculas y elimina caracteres no deseados excepto espacios en blanco
-                    textoBusqueda = textoBusqueda.toUpperCase().replaceAll("[^A-Z\\s]", "");
+                    textoBusqueda = textoBusqueda.toUpperCase().replaceAll("[^A-Z.\\s]", "");
 
                     mostrarResultadosBusqueda(cbDestinos, textoBusqueda);
 

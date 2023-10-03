@@ -26,8 +26,11 @@ import com.mycompany.lestanitest.logica.Cliente;
 import com.mycompany.lestanitest.logica.ModeloCliente;
 import com.mycompany.lestanitest.logica.ModeloRepresentante;
 import com.mycompany.lestanitest.logica.Representantes;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
@@ -87,9 +90,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import javax.imageio.ImageIO;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.SwingUtilities;
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileSystemView;
@@ -139,11 +146,41 @@ public class Consultas extends javax.swing.JFrame {
         
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         
+        //Borde al seleccionar TEXFIELD
+        SwingUtilities.invokeLater(() -> {
+            // Define el borde de enfoque
+            Border normalBorder = txtDiaD.getBorder();
+            Border focusBorder = new LineBorder(Color.BLUE, 3);
+
+            FocusAdapter focusAdapter = new FocusAdapter() {
+                @Override
+                public void focusGained(FocusEvent e) {
+                    ((JComponent) e.getComponent()).setBorder(focusBorder);
+                    if (e.getComponent() instanceof JTextField) {
+                        ((JTextField) e.getComponent()).selectAll();
+                    }
+                }
+
+                @Override
+                public void focusLost(FocusEvent e) {
+                    ((JComponent) e.getComponent()).setBorder(normalBorder);
+                }
+            };
+            txtDiaD.addFocusListener(focusAdapter);
+            txtMesD.addFocusListener(focusAdapter);
+            txtAnioD.addFocusListener(focusAdapter);
+            txtDiaH.addFocusListener(focusAdapter);
+            txtMesH.addFocusListener(focusAdapter);
+            txtAnioH.addFocusListener(focusAdapter);
+        });
+        
+        
+        
         //Combobox Seleccion
         ComboBoxStyle(cbClientes);
         ComboBoxStyle(cbRepresentantes);
         ComboBoxStyle(cbOrigen);
-        ComboBoxStyle(cbDestino);
+        ComboBoxStyle(cbDestinos);
         
         
         txtTotalMonto.setEditable(false);
@@ -309,43 +346,32 @@ public class Consultas extends javax.swing.JFrame {
          ModeloCliente modClientes = new ModeloCliente();
         ArrayList<Cliente> listaClientes = modClientes.getClientes();
 
-        cbDestino.setEditable(true);
+        cbDestinos.setEditable(true);
 
-        // Ordenar la lista de clientes alfabéticamente por el nombre
+         // Ordenar la lista de clientes alfabéticamente por el nombre
         listaClientes.sort((cliente1, cliente2) -> cliente1.getNombre().compareToIgnoreCase(cliente2.getNombre()));
 
         // Agregar los clientes al combobox
         for (Cliente cliente : listaClientes) {
-            cbDestino.addItem(cliente.getNombre());
+            cbDestinos.addItem(cliente.getNombre());
         }
 
         // Eliminar la opción en blanco después de configurar el decorador
-        cbDestino.removeItem("");
+        cbDestinos.removeItem("");
 
         // Establecer el índice seleccionado a -1 para no mostrar ninguna selección
-        cbDestino.setSelectedIndex(-1);
+        cbDestinos.setSelectedIndex(-1);
 
-        cbDestino.getEditor().getEditorComponent().addKeyListener(new KeyAdapter() {
+        cbDestinos.getEditor().getEditorComponent().addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_TAB) {
-                    String textoBusqueda = cbDestino.getEditor().getItem().toString();
+                    String textoBusqueda = cbDestinos.getEditor().getItem().toString();
 
                     // Normaliza el texto de búsqueda a mayúsculas y elimina caracteres no deseados excepto espacios en blanco
-                    textoBusqueda = textoBusqueda.toUpperCase().replaceAll("[^A-Z\\s]", "");
+                    textoBusqueda = textoBusqueda.toUpperCase().replaceAll("[^A-Z.\\s]", "");
 
-                    mostrarResultadosBusqueda(cbDestino, textoBusqueda);
-
-                    // Busca el cliente seleccionado en la lista de clientes
-                    
-
-                    for (Cliente cliente : listaClientes) {
-                        // Normaliza el nombre del cliente a mayúsculas y elimina caracteres no deseados excepto espacios en blanco
-                        String nombreCliente = cliente.getNombre().toUpperCase().replaceAll("[^A-Z\\s]", "");
-
-                            break; 
-                    }
-
+                    mostrarResultadosBusqueda(cbDestinos, textoBusqueda);                  
                 }
             }
         });
@@ -355,36 +381,28 @@ public class Consultas extends javax.swing.JFrame {
         cbOrigen.setEditable(true);
         // Ordenar la lista de clientes alfabéticamente por el nombre
         listaClientes.sort((cliente1, cliente2) -> cliente1.getNombre().compareToIgnoreCase(cliente2.getNombre()));
-        
+
         // Agregar los clientes al combobox
         for (Cliente cliente : listaClientes) {
             cbOrigen.addItem(cliente.getNombre());
         }
-        
-// Eliminar la opción en blanco después de configurar el decorador
+
+        // Eliminar la opción en blanco después de configurar el decorador
         cbOrigen.removeItem("");
 
         // Establecer el índice seleccionado a -1 para no mostrar ninguna selección
         cbOrigen.setSelectedIndex(-1);
 
-        // Agregar ActionListener para capturar el evento "Enter"
-        cbOrigen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                String textoBusqueda = cbOrigen.getEditor().getItem().toString();
-                mostrarResultadosBusqueda(cbOrigen, textoBusqueda);
-
-            }
-        });
-
-        // Agregar KeyListener para capturar el evento "Enter"
         cbOrigen.getEditor().getEditorComponent().addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_TAB) {
                     String textoBusqueda = cbOrigen.getEditor().getItem().toString();
-                    mostrarResultadosBusqueda(cbOrigen, textoBusqueda);
+
+                    // Normaliza el texto de búsqueda a mayúsculas y elimina caracteres no deseados excepto espacios en blanco
+                    textoBusqueda = textoBusqueda.toUpperCase().replaceAll("[^A-Z.\\s]", "");
+
+                    mostrarResultadosBusqueda(cbOrigen, textoBusqueda);                  
                 }
             }
         });
@@ -506,7 +524,7 @@ public class Consultas extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         cbOrigen = new javax.swing.JComboBox<>();
-        cbDestino = new javax.swing.JComboBox<>();
+        cbDestinos = new javax.swing.JComboBox<>();
         btnEliminar = new javax.swing.JButton();
         jPanel11 = new javax.swing.JPanel();
         jLabel21 = new javax.swing.JLabel();
@@ -1103,11 +1121,11 @@ public class Consultas extends javax.swing.JFrame {
         cbOrigen.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         cbOrigen.setForeground(new java.awt.Color(0, 0, 0));
 
-        cbDestino.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
-        cbDestino.setForeground(new java.awt.Color(0, 0, 0));
-        cbDestino.addActionListener(new java.awt.event.ActionListener() {
+        cbDestinos.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        cbDestinos.setForeground(new java.awt.Color(0, 0, 0));
+        cbDestinos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbDestinoActionPerformed(evt);
+                cbDestinosActionPerformed(evt);
             }
         });
 
@@ -1127,7 +1145,7 @@ public class Consultas extends javax.swing.JFrame {
                         .addGap(2, 2, 2)))
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(cbOrigen, 0, 214, Short.MAX_VALUE)
-                    .addComponent(cbDestino, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(cbDestinos, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(24, 24, 24))
         );
         jPanel10Layout.setVerticalGroup(
@@ -1139,7 +1157,7 @@ public class Consultas extends javax.swing.JFrame {
                     .addComponent(cbOrigen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cbDestino, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cbDestinos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel10))
                 .addGap(25, 25, 25))
         );
@@ -1366,7 +1384,7 @@ public class Consultas extends javax.swing.JFrame {
         String origenFiltrado = origenSeleccionado != null ? origenSeleccionado.toString() : "";
 
         // Obtener el cliente seleccionado en el ComboBox cbDestino
-        Object destinoSeleccionado = cbDestino.getSelectedItem();
+        Object destinoSeleccionado = cbDestinos.getSelectedItem();
         String destinoFiltrado = destinoSeleccionado != null ? destinoSeleccionado.toString() : "";
 
         // Filtrar por origen (solo si se ha seleccionado un cliente)
@@ -1428,11 +1446,34 @@ public class Consultas extends javax.swing.JFrame {
 
         final String finalRadioButtonSeleccionado = radioButtonSeleccionado; // Hacer que la variable sea final
 
-        // Filtrar por cuentas corrientes si no se selecciona "Todos"
-        if (!finalRadioButtonSeleccionado.equals("Todos")) {
+        if (!radioButtonSeleccionado.equals("Todos")) {
             movimientosFiltrados = movimientosFiltrados.stream()
-                    .filter(mov -> mov.getCuentaCorriente().equals(finalRadioButtonSeleccionado))
+                    .filter(mov -> mov.getCuentaCorriente().equalsIgnoreCase(finalRadioButtonSeleccionado))
                     .collect(Collectors.toList());
+
+            // Agregar filtro adicional por cliente si ccSi está seleccionado o ccNo está seleccionado
+            if (ccSi.isSelected() || ccNo.isSelected()) {
+                // Obtener el cliente seleccionado
+                Object clienteSelect = cbClientes.getSelectedItem();
+                String clienteFilt = clienteSelect != null ? clienteSelect.toString() : "";
+
+                // Filtrar solo si se ha seleccionado un cliente
+                if (!clienteFilt.isEmpty()) {
+                    movimientosFiltrados = movimientosFiltrados.stream()
+                            .filter(mov -> {
+                                // Verificar si ccSi está seleccionado y el cliente coincide
+                                if (ccSi.isSelected()) {
+                                    return mov.getCliente().equalsIgnoreCase(clienteFilt);
+                                } // Verificar si ccNo está seleccionado y el cliente coincide con cuenta corriente "No"
+                                else if (ccNo.isSelected()) {
+                                    return mov.getCliente().equalsIgnoreCase(clienteFilt)
+                                            && mov.getCuentaCorriente().equalsIgnoreCase("No");
+                                }
+                                return false; // Este retorno no debería ocurrir, pero es necesario para la estructura del filtro
+                            })
+                            .collect(Collectors.toList());
+                }
+            }
         }
 
          
@@ -1591,18 +1632,29 @@ public class Consultas extends javax.swing.JFrame {
         }
     }
     
-    private static void ComboBoxStyle(JComboBox<String> comboBox) {
-        
 
-        comboBox.addItemListener(new ItemListener() {
+        private static void ComboBoxStyle(JComboBox<String> comboBox) {
+        comboBox.getEditor().getEditorComponent().addFocusListener(new FocusAdapter() {
             @Override
-            public void itemStateChanged(ItemEvent e) {
-                if (e.getStateChange() == ItemEvent.SELECTED) {
-                    
-                    comboBox.getEditor().selectAll();
-                }
+            public void focusGained(FocusEvent e) {
+                SwingUtilities.invokeLater(() -> {
+                    JTextField editor = (JTextField) comboBox.getEditor().getEditorComponent();
+                    editor.selectAll();
+                });
             }
-        });}
+        });
+
+        comboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SwingUtilities.invokeLater(() -> {
+                    JTextField editor = (JTextField) comboBox.getEditor().getEditorComponent();
+                    editor.selectAll();
+                });
+            }
+        });
+    }
+    
 
     private void calcularTotalBultos(List<Movimientos> movimientosFiltrados, int[] selectedRows) {
 
@@ -1773,9 +1825,9 @@ public class Consultas extends javax.swing.JFrame {
         imprimirPDF();
     }//GEN-LAST:event_btnImprimirConsultaActionPerformed
 
-    private void cbDestinoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbDestinoActionPerformed
+    private void cbDestinosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbDestinosActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_cbDestinoActionPerformed
+    }//GEN-LAST:event_cbDestinosActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
         //Eliminar
@@ -1967,7 +2019,7 @@ public class Consultas extends javax.swing.JFrame {
     private javax.swing.JButton btnMRFletes;
     private javax.swing.JButton btnMostrar;
     private javax.swing.JComboBox<String> cbClientes;
-    private javax.swing.JComboBox<String> cbDestino;
+    private javax.swing.JComboBox<String> cbDestinos;
     private javax.swing.JRadioButton cbFleteNoPagado;
     private javax.swing.JRadioButton cbFletePagado;
     private javax.swing.JRadioButton cbNoPagados;

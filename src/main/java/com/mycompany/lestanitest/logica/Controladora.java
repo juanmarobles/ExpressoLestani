@@ -320,6 +320,7 @@ public class Controladora {
         mov.setFlete(flete);
         mov.setRemito(remito);
         mov.setFecha(fecha);
+        mov.setFleteDestinoOrigen(tFlete);
         mov.setTipoMontoP(tMontoP);
         mov.setTipoMontoR(tMontoR);
         mov.setTipoFleteP(tFleteP);
