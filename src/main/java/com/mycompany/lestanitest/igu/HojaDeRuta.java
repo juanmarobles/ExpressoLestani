@@ -1322,7 +1322,7 @@ public class HojaDeRuta extends javax.swing.JFrame {
                     table.setSpacingAfter(0f);
 
         // Ajustar espacio horizontal
-                float[] columnWidths = {1.7f, 1.7f, 0.8f, 0.8f, 1f, 0.8f, 1f, 0.8f, 1f, 1f};
+                float[] columnWidths = {2.3f, 2.3f, 1f, 1f, 1f, 1.1f, 1f, 1.1f, 1f, 1.5f};
                     table.setWidths(columnWidths);
                     table.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
 
@@ -1338,7 +1338,7 @@ public class HojaDeRuta extends javax.swing.JFrame {
                         col = "Flet a Cargo";
                     }
                     PdfPCell cell = new PdfPCell(new Phrase(col, font));
-                    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    cell.setHorizontalAlignment(Element.ALIGN_LEFT);
                     cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
                     table.addCell(cell);
                 }
@@ -1352,7 +1352,7 @@ public class HojaDeRuta extends javax.swing.JFrame {
                         Object value = tablaMovimientos.getValueAt(row, col);
                         if (value != null) {
                             PdfPCell cell = new PdfPCell(new Phrase(value.toString(), fontFilas));
-                            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                            cell.setHorizontalAlignment(Element.ALIGN_LEFT);
                             cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
                             // Verificar si la columna es "CLIENTE" o "DESTINO" y alinear a la izquierda
                             if (colName.equals("CLIENTE") || colName.equals("DESTINO")) {
@@ -1373,7 +1373,7 @@ public class HojaDeRuta extends javax.swing.JFrame {
         PdfPTable emptyTable = new PdfPTable(tablaMovimientos.getColumnCount() - 7);
         emptyTable.setSpacingBefore(0f); // Espacio antes de la tabla (en puntos)
         emptyTable.setSpacingAfter(0f);
-        float[] columnWidthss = {1.7f, 1.7f, 0.8f, 0.8f, 1f, 0.8f, 1f, 0.8f, 1f, 1f};
+        float[] columnWidthss = {2.3f, 2.3f, 1f, 1f, 1f, 1.1f, 1f, 1.1f, 1f, 1.5f};
         emptyTable.setWidths(columnWidthss);
         emptyTable.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
 

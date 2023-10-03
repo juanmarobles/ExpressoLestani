@@ -1553,7 +1553,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
             table.setSpacingAfter(0f);
 
             // Ajustar espacio horizontal
-            float[] columnWidths = {1.6f, 1.6f, 0.85f, 0.8f, 1f, 0.85f, 1f, 0.85f, 0.8f, 0.6f, 1.5f}; // Añadir un ancho para la nueva columna "observaciones"
+            float[] columnWidths = {2.3f, 2.3f, 1f, 1f, 1f, 1.1f, 1f, 1.1f, 0.8f, 0.7f, 1.5f}; // Añadir un ancho para la nueva columna "observaciones"
             table.setWidths(columnWidths);
             table.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
 
@@ -1568,14 +1568,14 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                         col = "Flet a Cargo"; // Cambiar el nombre de la columna a "F.P"
                     }
                     PdfPCell cell = new PdfPCell(new Phrase(col, font));
-                    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    cell.setHorizontalAlignment(Element.ALIGN_LEFT);
                     cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
                     table.addCell(cell);
                 }
             }
             // Agregar columna "Observaciones"
             PdfPCell obsHeaderCell = new PdfPCell(new Phrase("Obs", font));
-            obsHeaderCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            obsHeaderCell.setHorizontalAlignment(Element.ALIGN_LEFT);
             obsHeaderCell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
             table.addCell(obsHeaderCell);
             // Agregar filas a la tabla
@@ -1605,7 +1605,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                                     colName = "F.P"; // Cambiar el nombre de la columna a "F.P"
                                 }
                                 PdfPCell cell = new PdfPCell(new Phrase(value.toString(), fontFilas));
-                                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                                cell.setHorizontalAlignment(Element.ALIGN_LEFT);
                                 cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
                                 // Verificar si la columna es "CLIENTE" o "DESTINO" y alinear a la izquierda
                                 if (colName.equals("CLIENTE") || colName.equals("DESTINO")) {
@@ -1617,7 +1617,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                     }
                     // Agregar celda vacía para la columna "Observaciones"
                     PdfPCell obsCell = new PdfPCell(new Phrase("", fontFilas));
-                    obsCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    obsCell.setHorizontalAlignment(Element.ALIGN_LEFT);
                     obsCell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
                     table.addCell(obsCell);
 
@@ -1631,7 +1631,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
             PdfPTable emptyTable = new PdfPTable(tablaMovimientos.getColumnCount() - 7 + 1);
             emptyTable.setSpacingBefore(0f); // Espacio antes de la tabla (en puntos)
             emptyTable.setSpacingAfter(0f);
-            float[] columnWidthss = {1.6f, 1.6f, 0.85f, 0.8f, 1f, 0.85f, 1f, 0.85f, 0.8f, 0.6f, 1.5f}; // Añadir un ancho para la nueva columna "observaciones"
+            float[] columnWidthss = {2.3f, 2.3f, 1f, 1f, 1f, 1.1f, 1f, 1.1f, 0.8f, 0.7f, 1.5f}; // Añadir un ancho para la nueva columna "observaciones"
             emptyTable.setWidths(columnWidthss);
             emptyTable.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
 

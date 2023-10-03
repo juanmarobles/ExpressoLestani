@@ -2232,7 +2232,7 @@ public class Consultas extends javax.swing.JFrame {
                 Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 7, Font.BOLD);
                 Font fontTotales = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
                 Font fontFecha = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
-                Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 7);
+                Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 9, Font.BOLD);
 
                 // LOGO
                 InputStream logoStream = getClass().getClassLoader().getResourceAsStream("imagenes/logo.jpg");
@@ -2295,7 +2295,7 @@ public class Consultas extends javax.swing.JFrame {
                 table.setSpacingAfter(10f);
 
                 // Ajustar espacio horizontal
-                float[] columnWidths = {0.9f, 1f, 1f, 0.8f, 0.8f, 1f, 0.8f, 1f, 0.8f, 1.5f}; // Anchos de las columnas (proporciones)
+                float[] columnWidths = {1f, 1.9f, 1.9f, 0.8f, 0.8f, 1f, 0.8f, 1f, 0.8f, 1.5f}; // Anchos de las columnas (proporciones)
                 table.setWidths(columnWidths);
                 table.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
 
@@ -2307,7 +2307,7 @@ public class Consultas extends javax.swing.JFrame {
                     if (!col.equals("A_CARGO_DE") && !col.equals("CC") && !col.equals("OBS") && !col.equals("ID")
                             && !col.equals("RENDIDO") && !col.equals("RENDIDO") && !col.equals("HORA")) {
                         PdfPCell cell = new PdfPCell(new Phrase(col, font));
-                        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
                         cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
                         table.addCell(cell);
                     }
@@ -2320,8 +2320,11 @@ public class Consultas extends javax.swing.JFrame {
                             Object value = tablaConsultas.getValueAt(row, col);
                             if (value != null) {
                                 PdfPCell cell = new PdfPCell(new Phrase(value.toString(), fontFilas));
-                                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                                cell.setHorizontalAlignment(Element.ALIGN_LEFT);
                                 cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
+                                if (colName.equals("CLIENTE") || colName.equals("DESTINO") || colName.equals("FECHA")) {
+                                    cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+                                }
                                 table.addCell(cell);
                             }
                         }
@@ -2378,7 +2381,7 @@ public class Consultas extends javax.swing.JFrame {
             Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 7, Font.BOLD);
             Font fontTotales = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
             Font fontFecha = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
-            Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 7);
+            Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 9, Font.BOLD);
             // LOGO
             InputStream logoStream = getClass().getClassLoader().getResourceAsStream("imagenes/logo.jpg");
             Image logo = Image.getInstance(ImageIO.read(logoStream), null);
@@ -2440,7 +2443,7 @@ public class Consultas extends javax.swing.JFrame {
             table.setSpacingAfter(10f);
 
             // Ajustar espacio horizontal
-            float[] columnWidths = {0.9f, 1f, 1f, 0.8f, 0.8f, 1f, 0.8f, 1f, 0.8f, 1.5f}; // Anchos de las columnas (proporciones)
+            float[] columnWidths = {1f, 1.9f, 1.9f, 0.8f, 0.8f, 1f, 0.8f, 1f, 0.8f, 1.5f}; // Anchos de las columnas (proporciones)
             table.setWidths(columnWidths);
             table.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
 
@@ -2452,7 +2455,7 @@ public class Consultas extends javax.swing.JFrame {
                 if (!col.equals("A_CARGO_DE") && !col.equals("CC") && !col.equals("OBS") && !col.equals("ID")
                         && !col.equals("RENDIDO") && !col.equals("RENDIDO") && !col.equals("HORA")) {
                     PdfPCell cell = new PdfPCell(new Phrase(col, font));
-                    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    cell.setHorizontalAlignment(Element.ALIGN_LEFT);
                     cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
                     table.addCell(cell);
                 }
@@ -2465,7 +2468,7 @@ public class Consultas extends javax.swing.JFrame {
                         Object value = tablaConsultas.getValueAt(row, col);
                         if (value != null) {
                             PdfPCell cell = new PdfPCell(new Phrase(value.toString(), fontFilas));
-                            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                            cell.setHorizontalAlignment(Element.ALIGN_LEFT);
                             cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
                             table.addCell(cell);
                         }
