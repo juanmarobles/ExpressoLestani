@@ -1446,6 +1446,8 @@ public class Consultas extends javax.swing.JFrame {
 
         final String finalRadioButtonSeleccionado = radioButtonSeleccionado; // Hacer que la variable sea final
 
+        
+        
         // Filtrar por cuentas corrientes si no se selecciona "Todos"
         if (!finalRadioButtonSeleccionado.equals("Todos")) {
             movimientosFiltrados = movimientosFiltrados.stream()
