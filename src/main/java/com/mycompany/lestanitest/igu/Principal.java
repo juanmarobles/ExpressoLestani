@@ -2450,10 +2450,7 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_txtValDeclaradoActionPerformed
 
     private void btnRemitoTablaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemitoTablaActionPerformed
-      
-        
-        
-        
+
         SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/YYYY");
         Movimientos mov = new Movimientos();
         if (idSeleccionado != -1) {
@@ -3980,8 +3977,7 @@ public class Principal extends javax.swing.JFrame {
             double seguroo = Double.parseDouble(txtSeguro.getText());
             double comContra = Double.parseDouble(txtContrarembolso.getText());
             double redespa = Double.parseDouble(txtRedespacho.getText());
-            double valDecla = Double.parseDouble(txtValDeclarado.getText());
-            double total = monto + fletee + seguroo + comContra + redespa + valDecla;
+            double total = monto + fletee + seguroo + comContra + redespa;
             Paragraph totalMonto = new Paragraph("TOTAL: $" + total, fontR);
             totalMonto.setAlignment(Element.ALIGN_RIGHT);
             PdfPCell celdaTotal = new PdfPCell(totalMonto);
