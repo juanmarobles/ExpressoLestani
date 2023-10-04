@@ -591,7 +591,7 @@ public class Principal extends javax.swing.JFrame {
                     String textoBusqueda = cbDestinos.getEditor().getItem().toString();
 
                     // Normaliza el texto de búsqueda a mayúsculas y elimina caracteres no deseados excepto espacios en blanco
-                    textoBusqueda = textoBusqueda.toUpperCase().replaceAll("[^A-Z.\\s]", "");
+                    textoBusqueda = textoBusqueda.toUpperCase().replaceAll("[^A-ZÑñ.\\s]", "");
 
                     mostrarResultadosBusqueda(cbDestinos, textoBusqueda);
 
@@ -600,7 +600,7 @@ public class Principal extends javax.swing.JFrame {
 
                     for (Cliente cliente : listaClientes) {
                         // Normaliza el nombre del cliente a mayúsculas y elimina caracteres no deseados excepto espacios en blanco
-                        String nombreCliente = cliente.getNombre().toUpperCase().replaceAll("[^A-Z\\s]", "");
+                        String nombreCliente = cliente.getNombre().toUpperCase().replaceAll("[^A-ZÑñ.\\s]", "");
 
                         if (nombreCliente.contains(textoBusqueda)) {
                             destinatario = cliente;
