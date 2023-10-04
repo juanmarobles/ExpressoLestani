@@ -673,9 +673,9 @@ public class HDDRepresentantes extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(117, 117, 117)
+                        .addGap(121, 121, 121)
                         .addComponent(btnImprimirHRP, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(39, 39, 39)
+                        .addGap(35, 35, 35)
                         .addComponent(btnGenerarPdf, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(16, 16, 16)
@@ -725,11 +725,11 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 569, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnImprimirHRP, javax.swing.GroupLayout.DEFAULT_SIZE, 43, Short.MAX_VALUE)
-                    .addComponent(btnGenerarPdf, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 701, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnGenerarPdf, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnImprimirHRP, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -1009,7 +1009,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
 
         };
         //nombres de columnas
-        String titulos[] = {"ID", "HORA", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTOS", "MONTO", "PAGADO", "RENDIDO", "FLETE", "PAGADO", "RENDIDO", "A_CARGO_DE", "REPRESENTANTE", "CC", "OBS"};
+        String titulos[] = {"ID", "HORA", "FECHA", "CLIENTE", "DESTINO", "REMITO", "BULTO", "MONTO", "PAGADO", "RENDIDO", "FLETE", "PAGADO", "RENDIDO", "A_CARGO_DE", "REPRESENTANTE", "CC", "OBS"};
         tabla.setColumnIdentifiers(titulos);
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tabla);
         tablaMovimientos.setRowSorter(sorter);
@@ -1438,10 +1438,10 @@ public class HDDRepresentantes extends javax.swing.JFrame {
             document.open();
             //FUENTES
             Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 8, Font.BOLD);
-            Font fontDatos = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, NORMAL);
-            Font fontTotales = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
+            Font fontDatos = FontFactory.getFont(FontFactory.TIMES_ROMAN, 8, NORMAL);
+            Font fontTotales = FontFactory.getFont(FontFactory.TIMES_ROMAN, 9, Font.BOLD, BaseColor.BLACK);
             Font fontFecha = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
-            Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 9, Font.BOLD);
+            Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 8, Font.BOLD);
             // LOGO
             InputStream logoStream = getClass().getClassLoader().getResourceAsStream("imagenes/logosolo.jpg");
             Image logo = Image.getInstance(ImageIO.read(logoStream), null);
@@ -1552,7 +1552,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
             table.setSpacingAfter(0f);
 
             // Ajustar espacio horizontal
-            float[] columnWidths = {2.3f, 2.3f, 1f, 1f, 1f, 1.1f, 1f, 1.1f, 0.8f, 0.7f, 1.5f}; // Añadir un ancho para la nueva columna "observaciones"
+            float[] columnWidths = {2.3f, 2.3f, 1.2f, 1f, 1.5f, 1.1f, 1.5f, 1.1f, 1f, 0.65f, 1f}; // Añadir un ancho para la nueva columna "observaciones"
             table.setWidths(columnWidths);
             table.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
 
@@ -1567,14 +1567,14 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                         col = "Flet a Cargo"; // Cambiar el nombre de la columna a "F.P"
                     }
                     PdfPCell cell = new PdfPCell(new Phrase(col, font));
-                    cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+                    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                     cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
                     table.addCell(cell);
                 }
             }
             // Agregar columna "Observaciones"
             PdfPCell obsHeaderCell = new PdfPCell(new Phrase("Obs", font));
-            obsHeaderCell.setHorizontalAlignment(Element.ALIGN_LEFT);
+            obsHeaderCell.setHorizontalAlignment(Element.ALIGN_CENTER);
             obsHeaderCell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
             table.addCell(obsHeaderCell);
             // Agregar filas a la tabla
@@ -1610,6 +1610,9 @@ public class HDDRepresentantes extends javax.swing.JFrame {
                                 if (colName.equals("CLIENTE") || colName.equals("DESTINO")) {
                                     cell.setHorizontalAlignment(Element.ALIGN_LEFT);
                                 }
+                                if (colName.equals("REMITO") || colName.equals("BULTO") || colName.equals("PAGADO") || colName.equals("PAGADO")) {
+                                    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                                }
                                 table.addCell(cell);
                             }
                         }
@@ -1630,7 +1633,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
             PdfPTable emptyTable = new PdfPTable(tablaMovimientos.getColumnCount() - 7 + 1);
             emptyTable.setSpacingBefore(0f); // Espacio antes de la tabla (en puntos)
             emptyTable.setSpacingAfter(0f);
-            float[] columnWidthss = {2.3f, 2.3f, 1f, 1f, 1f, 1.1f, 1f, 1.1f, 0.8f, 0.7f, 1.5f}; // Añadir un ancho para la nueva columna "observaciones"
+            float[] columnWidthss = {2.3f, 2.3f, 1.2f, 1f, 1.5f, 1.1f, 1.5f, 1.1f, 1f, 0.65f, 1f}; // Añadir un ancho para la nueva columna "observaciones"
             emptyTable.setWidths(columnWidthss);
             emptyTable.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
 
