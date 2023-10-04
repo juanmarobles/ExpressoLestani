@@ -1434,47 +1434,64 @@ public class Consultas extends javax.swing.JFrame {
     
         
         
-        
-         // Filtrar por cuenta corriente
-        String radioButtonSeleccionado = "Todos"; // Inicialmente, se selecciona "Todos"
+                 // Obtener el representante seleccionado
+         Object representanteSeleccionado = cbRepresentantes.getSelectedItem();
+         String representanteFiltrado = representanteSeleccionado != null ? representanteSeleccionado.toString() : "";
 
-        if (ccSi.isSelected()) {
-            radioButtonSeleccionado = "Si"; // Esto no es permitido si radioButtonSeleccionado no es final o efectivamente final
-        } else if (ccNo.isSelected()) {
-            radioButtonSeleccionado = "No"; // Esto tampoco es permitido si radioButtonSeleccionado no es final o efectivamente final
-        }
+         // Obtener el estado de la cuenta corriente seleccionado
+         String radioButtonSeleccionado = "Todos"; // Inicialmente, se selecciona "Todos"
 
-        final String finalRadioButtonSeleccionado = radioButtonSeleccionado; // Hacer que la variable sea final
+         if (ccSi.isSelected()) {
+             radioButtonSeleccionado = "Si";
+         } else if (ccNo.isSelected()) {
+             radioButtonSeleccionado = "No";
+         }
 
-        if (!radioButtonSeleccionado.equals("Todos")) {
-            movimientosFiltrados = movimientosFiltrados.stream()
-                    .filter(mov -> mov.getCuentaCorriente().equalsIgnoreCase(finalRadioButtonSeleccionado))
-                    .collect(Collectors.toList());
+         final String finalRadioButtonSeleccionado = radioButtonSeleccionado; // Hacer que la variable sea final
 
-            // Agregar filtro adicional por cliente si ccSi está seleccionado o ccNo está seleccionado
-            if (ccSi.isSelected() || ccNo.isSelected()) {
-                // Obtener el cliente seleccionado
-                Object clienteSelect = cbClientes.getSelectedItem();
-                String clienteFilt = clienteSelect != null ? clienteSelect.toString() : "";
+         // Filtrar por representantes si se ha seleccionado un representante
+         if (!representanteFiltrado.isEmpty()) {
+             movimientosFiltrados = movimientosFiltrados.stream()
+                     .filter(mov -> {
+                         String cuentaCorriente = mov.getCuentaCorriente();
+                         String representante = mov.getRepresentante();
 
-                // Filtrar solo si se ha seleccionado un cliente
-                if (!clienteFilt.isEmpty()) {
-                    movimientosFiltrados = movimientosFiltrados.stream()
-                            .filter(mov -> {
-                                // Verificar si ccSi está seleccionado y el cliente coincide
-                                if (ccSi.isSelected()) {
-                                    return mov.getCliente().equalsIgnoreCase(clienteFilt);
-                                } // Verificar si ccNo está seleccionado y el cliente coincide con cuenta corriente "No"
-                                else if (ccNo.isSelected()) {
-                                    return mov.getCliente().equalsIgnoreCase(clienteFilt)
-                                            && mov.getCuentaCorriente().equalsIgnoreCase("No");
-                                }
-                                return false; // Este retorno no debería ocurrir, pero es necesario para la estructura del filtro
-                            })
-                            .collect(Collectors.toList());
-                }
-            }
-        }
+                         // Filtrar por cuenta corriente
+                         if (finalRadioButtonSeleccionado.equals("Todos")) {
+                             // Si es ccTodos, mostrar todos los representantes independientemente de su cuenta corriente
+                             return representante.equalsIgnoreCase(representanteFiltrado);
+                         } else {
+                             // Mostrar solo representantes que coincidan con la cuenta corriente seleccionada
+                             return representante.equalsIgnoreCase(representanteFiltrado) && cuentaCorriente.equals(finalRadioButtonSeleccionado);
+                         }
+                     })
+                     .collect(Collectors.toList());
+         } 
+         
+             // Filtrar por clientes y cuentas corrientes si no se selecciona un representante
+         if (!clienteFiltrado.isEmpty() && !finalRadioButtonSeleccionado.equals("Todos")) {
+             movimientosFiltrados = movimientosFiltrados.stream()
+                     .filter(mov -> {
+                         String cuentaCorriente = mov.getCuentaCorriente();
+                         String cliente = mov.getCliente();
+                         String destino = mov.getDestino();
+                         String fleteDestinoOrigen = mov.getFleteDestinoOrigen();
+
+                         boolean esClienteFiltrado = cliente.equalsIgnoreCase(clienteFiltrado);
+
+                         // Si el tipo de flete es "Origen", el cliente debe ser responsable
+                         boolean esFleteOrigen = fleteDestinoOrigen.equals("Origen") && esClienteFiltrado;
+
+                         // Si el tipo de flete es "Destino", el destino debe ser responsable
+                         boolean esFleteDestino = fleteDestinoOrigen.equals("Destino") && destino.equalsIgnoreCase(clienteFiltrado);
+
+                         // Mostrar solo registros que coincidan con el cliente y la cuenta corriente seleccionados
+                         return cuentaCorriente.equals(finalRadioButtonSeleccionado) && (esFleteOrigen || esFleteDestino);
+                     })
+                     .collect(Collectors.toList());
+         }
+
+
 
          
          
@@ -1508,16 +1525,7 @@ public class Consultas extends javax.swing.JFrame {
                 })
                 .collect(Collectors.toList());
 
-        // Obtener el representante seleccionado
-        Object representanteSeleccionado = cbRepresentantes.getSelectedItem();
-        String representanteFiltrado = representanteSeleccionado != null ? representanteSeleccionado.toString() : "";
-
-        // Filtrar por representante
-        if (!representanteFiltrado.isEmpty()) {
-            movimientosFiltrados = movimientosFiltrados.stream()
-                    .filter(mov -> mov.getRepresentante().equals(representanteFiltrado))
-                    .collect(Collectors.toList());
-        }
+        
 
         mostrarTablaMovimientos(movimientosFiltrados);
         //Total Monto
