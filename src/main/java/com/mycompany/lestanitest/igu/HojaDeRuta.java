@@ -102,6 +102,8 @@ public class HojaDeRuta extends javax.swing.JFrame {
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         llenarVehiculo();
         llenarChofer();
+        
+        
         //FECHA
         // Obtener la fecha actual
         LocalDate fechaActual = LocalDate.now();
@@ -126,6 +128,32 @@ public class HojaDeRuta extends javax.swing.JFrame {
                     calcularTotalBultos(movimientosFiltrados, selectedRows);
 
                 }
+            }
+        });
+        
+        ComboBoxStyle(cbChofer);
+        
+        
+    }
+    
+     private static void ComboBoxStyle(JComboBox<String> comboBox) {
+        comboBox.getEditor().getEditorComponent().addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                SwingUtilities.invokeLater(() -> {
+                    JTextField editor = (JTextField) comboBox.getEditor().getEditorComponent();
+                    editor.selectAll();
+                });
+            }
+        });
+
+        comboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SwingUtilities.invokeLater(() -> {
+                    JTextField editor = (JTextField) comboBox.getEditor().getEditorComponent();
+                    editor.selectAll();
+                });
             }
         });
     }
