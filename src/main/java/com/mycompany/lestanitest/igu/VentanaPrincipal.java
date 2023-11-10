@@ -1,9 +1,14 @@
 
 package com.mycompany.lestanitest.igu;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -306,17 +311,31 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         ventanaPrincipal.setVisible(true);
         ventanaPrincipal.toFront();
     }//GEN-LAST:event_CargaMovimientoActionPerformed
-    private Consultas ventanaConsultas;
+    
+    private List<Consultas> ventanasAbiertas = new ArrayList<>();
     private void menuConsultasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuConsultasActionPerformed
-        // Verificar si la ventana ya está abierta
-        if (ventanaConsultas == null || !ventanaConsultas.isVisible()) {
-            // Si la ventana no está abierta o está oculta, crea una nueva instancia
-            ventanaConsultas = new Consultas();
-        }
+          // Verificar el número de ventanas abiertas
+    if (ventanasAbiertas.size() < 2) {
+        // Puedes abrir una nueva ventana
+        Consultas nuevaVentana = new Consultas();
+        ventanasAbiertas.add(nuevaVentana);
 
-        // Mostrar la ventana y enfocarla (llevarla al frente)
-        ventanaConsultas.setVisible(true);
-        ventanaConsultas.toFront();
+        // Configurar un WindowListener para detectar el cierre de la ventana
+        nuevaVentana.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                // Remover la ventana cerrada de la lista
+                ventanasAbiertas.remove(nuevaVentana);
+            }
+        });
+
+        // Mostrar la nueva ventana y enfocarla
+        nuevaVentana.setVisible(true);
+        nuevaVentana.toFront();
+    } else {
+        // Ya se han abierto dos ventanas, mostrar mensaje con JOptionPane
+        JOptionPane.showMessageDialog(null, "No se pueden abrir más de dos ventanas simultáneamente.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+    }
     }//GEN-LAST:event_menuConsultasActionPerformed
     private Recibo ventanaRecibos;
     private void RecibosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RecibosActionPerformed
