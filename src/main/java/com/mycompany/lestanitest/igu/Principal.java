@@ -2755,7 +2755,16 @@ public class Principal extends javax.swing.JFrame {
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile));
 
             document.open();
+            
+            // Crear una tabla que simule el marco
+                PdfPTable tablaMarco = new PdfPTable(1);
+                tablaMarco.setWidthPercentage(100);
 
+                // Crea una celda para el contenido
+                PdfPCell cellContenido = new PdfPCell();
+                cellContenido.setBorder(Rectangle.BOX); // Establecer el borde de la celda
+                cellContenido.setPadding(10);
+            
             // Crear un PdfTemplate para agregar el contenido dentro del marco
             PdfContentByte canvas = writer.getDirectContent();
             PdfTemplate template = canvas.createTemplate(document.getPageSize().getWidth() - 40, document.getPageSize().getHeight() - 40);
@@ -2839,7 +2848,8 @@ public class Principal extends javax.swing.JFrame {
             cell2.setBorder(Rectangle.NO_BORDER); // Sin bordes
             table.addCell(cell2);
 
-            document.add(table);
+            //document.add(table);
+            cellContenido.addElement(table);
             // Crear una tabla contenedora con 2 columnas
             PdfPTable tablaContenedora = new PdfPTable(2);
             tablaContenedora.setWidthPercentage(100);
@@ -2950,12 +2960,12 @@ public class Principal extends javax.swing.JFrame {
             destinatarioCell.setHorizontalAlignment(Element.ALIGN_LEFT); // Alineación horizontal de la celda
             tablaContenedora.addCell(destinatarioCell);
 
-            document.add(tablaContenedora);
-
+            //document.add(tablaContenedora);
+            cellContenido.addElement(tablaContenedora);
             // Agregar espacio arriba de la tabla
             Paragraph espacio = new Paragraph(1f, " "); // tamaño del espacio
-            document.add(espacio);
-
+            //document.add(espacio);
+            cellContenido.addElement(espacio);
             // Crear la tabla con 6 columnas
             PdfPTable tablaa = new PdfPTable(6);
             tablaa.setWidthPercentage(100);
@@ -2991,10 +3001,12 @@ public class Principal extends javax.swing.JFrame {
             tablaa.addCell(createCell(observaciones, font, celdaConBorde));
 
             // Agregar la tabla al documento
-            document.add(tablaa);
+            //document.add(tablaa);
+            cellContenido.addElement(tablaa);
             Paragraph recibenB = new Paragraph("SE RECIBEN LOS BULTOS SIN ESPECIFICAR SU CONTENIDO", fontR);
             recibenB.setAlignment(Element.ALIGN_CENTER);
-            document.add(recibenB);
+            //document.add(recibenB);
+            cellContenido.addElement(recibenB);
             // Crear la tabla con 2 columnas
             PdfPTable tabla = new PdfPTable(2);
             tabla.setWidthPercentage(100);
@@ -3114,8 +3126,8 @@ public class Principal extends javax.swing.JFrame {
 
             // Ajustar el espacio entre las filas de la tabla
             tabla.setSpacingAfter(3);
-            document.add(tabla);
-
+            //document.add(tabla);
+            cellContenido.addElement(tabla);
             // Cerrar el template y añadirlo al contenido del documento
             template.closePathFillStroke();
             canvas.addTemplate(template, 20, 20);
@@ -3192,7 +3204,16 @@ public class Principal extends javax.swing.JFrame {
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile));
 
             document.open();
+            
+             // Crear una tabla que simule el marco
+                PdfPTable tablaMarco = new PdfPTable(1);
+                tablaMarco.setWidthPercentage(100);
 
+                // Crea una celda para el contenido
+                PdfPCell cellContenido = new PdfPCell();
+                cellContenido.setBorder(Rectangle.BOX); // Establecer el borde de la celda
+                cellContenido.setPadding(10);
+            
             // Crear un PdfTemplate para agregar el contenido dentro del marco
             PdfContentByte canvas = writer.getDirectContent();
             PdfTemplate template = canvas.createTemplate(document.getPageSize().getWidth() - 40, document.getPageSize().getHeight() - 40);
@@ -3288,7 +3309,7 @@ public class Principal extends javax.swing.JFrame {
             cell2.setBorder(Rectangle.NO_BORDER); // Sin bordes
             table.addCell(cell2);
 
-            document.add(table);
+            cellContenido.addElement(table);
             // Crear una tabla contenedora con 2 columnas
             PdfPTable tablaContenedora = new PdfPTable(2);
             tablaContenedora.setWidthPercentage(100);
@@ -3317,14 +3338,6 @@ public class Principal extends javax.swing.JFrame {
             String tel = cliente != null && cliente.getTelefono() != null
                     ? cliente.getTelefono().toUpperCase()
                     : "";
-            //Bandera 1
-            System.out.println("Bandera 1:");
-            System.out.println("");
-            System.out.println(nombreCliente);
-            System.out.println(direccion);
-            System.out.println(localidad);
-            System.out.println(tel);
-            System.out.println(cuit);
 
             Paragraph nombreParagraph = new Paragraph("REMITENTE: " + nombreCliente, fontR);
             nombreParagraph.setAlignment(Element.ALIGN_LEFT);
@@ -3360,8 +3373,6 @@ public class Principal extends javax.swing.JFrame {
             String cuitDestinatario = "";
             String telDestinatario = "";
 
-            System.out.println("Bandera Destinatario 2 en pdf: " + destinatario);
-
             if (destinatario != null && destinatario.getDireccion() != null && destinatario.getLocalidad() != null
                     && destinatario.getCuit() != null && destinatario.getNombre() != null && destinatario.getTelefono() != null) {
                 nombreDestinatario = destinatario.getNombre().toUpperCase();
@@ -3369,16 +3380,6 @@ public class Principal extends javax.swing.JFrame {
                 localidadDestinatario = destinatario.getLocalidad().toUpperCase();
                 cuitDestinatario = destinatario.getCuit().toUpperCase();
                 telDestinatario = destinatario.getTelefono().toUpperCase();
-                System.out.println("Bandera 3 Destinatario en pdf: " + destinatario);
-
-                //Bandera 2
-                System.out.println("Bandera 2 Destinatario:");
-                System.out.println("");
-                System.out.println(nombreDestinatario);
-                System.out.println(direccionDestinatario);
-                System.out.println(localidadDestinatario);
-                System.out.println(telDestinatario);
-                System.out.println(cuitDestinatario);
 
             } else {
                 nombreDestinatario = cbDestinos.getSelectedItem().toString().toUpperCase();
@@ -3411,11 +3412,14 @@ public class Principal extends javax.swing.JFrame {
             destinatarioCell.setHorizontalAlignment(Element.ALIGN_LEFT); // Alineación horizontal de la celda
             tablaContenedora.addCell(destinatarioCell);
 
-            document.add(tablaContenedora);
+            //document.add(tablaContenedora);
+            cellContenido.addElement(tablaContenedora);
 
             // Agregar espacio arriba de la tabla
             Paragraph espacio = new Paragraph(1f, " "); // tamaño del espacio
-            document.add(espacio);
+            //document.add(espacio);
+            cellContenido.addElement(espacio);
+            
 
             // Crear la tabla con 6 columnas
             PdfPTable tablaa = new PdfPTable(6);
@@ -3452,10 +3456,12 @@ public class Principal extends javax.swing.JFrame {
             tablaa.addCell(createCell(observaciones, font, celdaConBorde));
 
             // Agregar la tabla al documento
-            document.add(tablaa);
+            //document.add(tablaa);
+            cellContenido.addElement(tablaa);
             Paragraph recibenB = new Paragraph("SE RECIBEN LOS BULTOS SIN ESPECIFICAR SU CONTENIDO", fontR);
             recibenB.setAlignment(Element.ALIGN_CENTER);
-            document.add(recibenB);
+            //document.add(recibenB);
+            cellContenido.addElement(recibenB);
             // Crear la tabla con 2 columnas
             PdfPTable tabla = new PdfPTable(2);
             tabla.setWidthPercentage(100);
@@ -3575,7 +3581,9 @@ public class Principal extends javax.swing.JFrame {
 
             // Ajustar el espacio entre las filas de la tabla
             tabla.setSpacingAfter(3);
-            document.add(tabla);
+            //document.add(tabla);
+            cellContenido.addElement(tabla);
+            
 
             // Cerrar el template y añadirlo al contenido del documento
             template.closePathFillStroke();
@@ -3643,6 +3651,15 @@ public class Principal extends javax.swing.JFrame {
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile));
 
             document.open();
+            
+            // Crear una tabla que simule el marco
+                PdfPTable tablaMarco = new PdfPTable(1);
+                tablaMarco.setWidthPercentage(100);
+
+                // Crea una celda para el contenido
+                PdfPCell cellContenido = new PdfPCell();
+                cellContenido.setBorder(Rectangle.BOX); // Establecer el borde de la celda
+                cellContenido.setPadding(10);
 
             // Crear un PdfTemplate para agregar el contenido dentro del marco
             PdfContentByte canvas = writer.getDirectContent();
@@ -3725,7 +3742,8 @@ public class Principal extends javax.swing.JFrame {
             cell2.setBorder(Rectangle.NO_BORDER); // Sin bordes
             table.addCell(cell2);
 
-            document.add(table);
+            //document.add(table);
+            cellContenido.addElement(table);
             // Crear una tabla contenedora con 2 columnas
             PdfPTable tablaContenedora = new PdfPTable(2);
             tablaContenedora.setWidthPercentage(100);
@@ -3827,12 +3845,12 @@ public class Principal extends javax.swing.JFrame {
             destinatarioCell.setHorizontalAlignment(Element.ALIGN_LEFT); // Alineación horizontal de la celda
             tablaContenedora.addCell(destinatarioCell);
 
-            document.add(tablaContenedora);
-
+            //document.add(tablaContenedora);
+            cellContenido.addElement(tablaContenedora);
             // Agregar espacio arriba de la tabla
             Paragraph espacio = new Paragraph(1f, " "); // 20f es el tamaño del espacio
-            document.add(espacio);
-
+            //document.add(espacio);
+            cellContenido.addElement(espacio);
             // Crear la tabla con 6 columnas
             PdfPTable tablaa = new PdfPTable(6);
             tablaa.setWidthPercentage(100);
@@ -3868,10 +3886,12 @@ public class Principal extends javax.swing.JFrame {
             tablaa.addCell(createCell(observaciones, font, celdaConBorde));
 
             // Agregar la tabla al documento
-            document.add(tablaa);
+            //document.add(tablaa);
+            cellContenido.addElement(tablaa);
             Paragraph recibenB = new Paragraph("SE RECIBEN LOS BULTOS SIN ESPECIFICAR SU CONTENIDO", fontR);
             recibenB.setAlignment(Element.ALIGN_CENTER);
-            document.add(recibenB);
+            //document.add(recibenB);
+            cellContenido.addElement(recibenB);
             // Crear la tabla con 2 columnas
             PdfPTable tabla = new PdfPTable(2);
             tabla.setWidthPercentage(100);
@@ -3990,8 +4010,8 @@ public class Principal extends javax.swing.JFrame {
 
             // Ajustar el espacio entre las filas de la tabla
             tabla.setSpacingAfter(3);
-            document.add(tabla);
-
+            //document.add(tabla);
+            cellContenido.addElement(tabla);
             // Cerrar el template y añadirlo al contenido del documento
             template.closePathFillStroke();
             canvas.addTemplate(template, 20, 20);
