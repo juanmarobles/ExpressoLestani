@@ -703,7 +703,7 @@
                               </Group>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="txtDiaH" pref="31" max="32767" attributes="0"/>
+                                  <Component id="txtDiaH" max="32767" attributes="0"/>
                                   <Component id="txtDiaD" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -713,7 +713,7 @@
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                                  <Component id="txtMesH" pref="30" max="32767" attributes="0"/>
+                                  <Component id="txtMesH" max="32767" attributes="0"/>
                                   <Component id="txtMesD" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
