@@ -283,6 +283,7 @@ public class Principal extends javax.swing.JFrame {
                     ((JComponent) e.getComponent()).setBorder(normalBorder);
                 }
             };
+            
             txtDia.addFocusListener(focusAdapter);
             txtMes.addFocusListener(focusAdapter);
             txtAnio.addFocusListener(focusAdapter);
@@ -291,6 +292,11 @@ public class Principal extends javax.swing.JFrame {
             txtObservaciones.addFocusListener(focusAdapter);
             txtMonto.addFocusListener(focusAdapter);
             txtFlete.addFocusListener(focusAdapter);
+            txtContrarembolso.addFocusListener(focusAdapter);
+            txtSeguro.addFocusListener(focusAdapter);
+            txtRedespacho.addFocusListener(focusAdapter);
+            txtValDeclarado.addFocusListener(focusAdapter);
+           
         });
         //CHECKBOX
         SwingUtilities.invokeLater(() -> {
