@@ -130,6 +130,11 @@ public class Recibos extends javax.swing.JFrame {
         // cargarRecibosEliminados();
         // Cargar datos en la tabla (suponiendo que carga los datos en la listaFiltrada)
         cargarTablaMovimientos();
+        
+        
+        
+        
+        
         // Agregar el WindowListener para guardar los IDs eliminados antes de cerrar la ventana
         addWindowListener(new WindowAdapter() {
             @Override
@@ -141,70 +146,16 @@ public class Recibos extends javax.swing.JFrame {
         });
 
         //Por defecto
-        cbReciboCon.setSelected(true);
-        //REcibo con flete y sin flete
+
+        cbReciboSin.setSelected(true);
+        
+// Aplicar cambios según la opción seleccionada
+        aplicarCambiosSegunCheckBox();
+
+// Agregar ActionListener
         ActionListener listener = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-
-                if (cbReciboCon.isSelected()) {
-                    // Acciones para el radio button "Recibo con" seleccionado
-                    TableColumn pagadoColumn = tablaMovimientos.getColumnModel().getColumn(12);
-                    TableColumn rendidoColumn = tablaMovimientos.getColumnModel().getColumn(11);
-                    TableColumn fleteColumn = tablaMovimientos.getColumnModel().getColumn(10);
-                    // Mostrar las columnas "rendido" y "pagado"
-                    rendidoColumn.setMinWidth(75);  // Ajusta los tamaños de columna según tus necesidades
-                    rendidoColumn.setMaxWidth(100);
-                    rendidoColumn.setWidth(100);
-                    pagadoColumn.setMinWidth(75);
-                    pagadoColumn.setMaxWidth(100);
-                    pagadoColumn.setWidth(100);
-                    fleteColumn.setMinWidth(75);
-                    fleteColumn.setMaxWidth(100);
-                    fleteColumn.setWidth(100);
-
-                } else if (cbReciboSin.isSelected()) {
-
-                    TableColumn pagadoColumn = tablaMovimientos.getColumnModel().getColumn(12);
-                    TableColumn rendidoColumn = tablaMovimientos.getColumnModel().getColumn(11);
-                    TableColumn fleteColumn = tablaMovimientos.getColumnModel().getColumn(10);
-
-                    // Ocultar las columnas "flete" y "pagado"
-                    fleteColumn.setMinWidth(0);
-                    fleteColumn.setMaxWidth(0);
-                    fleteColumn.setWidth(0);
-                    pagadoColumn.setMinWidth(0);
-                    pagadoColumn.setMaxWidth(0);
-                    pagadoColumn.setWidth(0);
-                    rendidoColumn.setMinWidth(0);
-                    rendidoColumn.setMaxWidth(0);
-                    rendidoColumn.setWidth(0);
-                    // Mostrar nuevamente las columnas "flete" y "pagado"
-                    fleteColumn.setMinWidth(75);  // Ajusta los tamaños de columna según tus necesidades
-                    fleteColumn.setMaxWidth(100);
-                    fleteColumn.setWidth(100);
-                    pagadoColumn.setMinWidth(75);
-                    pagadoColumn.setMaxWidth(100);
-                    pagadoColumn.setWidth(100);
-                    rendidoColumn.setMinWidth(75);
-                    rendidoColumn.setMaxWidth(100);
-                    rendidoColumn.setWidth(100);
-
-                    // Actualizar el cálculo del flete total
-                    if (!cbReciboSin.isSelected()) {
-                        calcularTotales();
-                    } else {
-                        txtTotalFlete.setText("");
-                    }
-
-                    // Actualizar la tabla para reflejar los cambios
-                    tablaMovimientos.getTableHeader().resizeAndRepaint();
-                    tablaMovimientos.repaint();
-
-                }
-
-                // Actualizar la tabla para reflejar los cambios
-                tablaMovimientos.getTableHeader().resizeAndRepaint();
-                tablaMovimientos.repaint();
+                aplicarCambiosSegunCheckBox();
             }
         };
 
@@ -375,6 +326,66 @@ public class Recibos extends javax.swing.JFrame {
 
         actualizarTabla();
     }
+    // Método para aplicar los cambios según el estado de los checkboxes
+private void aplicarCambiosSegunCheckBox() {
+        if (cbReciboCon.isSelected()) {
+            // Acciones para el radio button "Recibo con" seleccionado
+            TableColumn pagadoColumn = tablaMovimientos.getColumnModel().getColumn(12);
+            TableColumn rendidoColumn = tablaMovimientos.getColumnModel().getColumn(11);
+            TableColumn fleteColumn = tablaMovimientos.getColumnModel().getColumn(10);
+
+            // Mostrar las columnas "rendido" y "pagado"
+            rendidoColumn.setMinWidth(75);
+            rendidoColumn.setMaxWidth(100);
+            rendidoColumn.setWidth(100);
+            pagadoColumn.setMinWidth(75);
+            pagadoColumn.setMaxWidth(100);
+            pagadoColumn.setWidth(100);
+            fleteColumn.setMinWidth(75);
+            fleteColumn.setMaxWidth(100);
+            fleteColumn.setWidth(100);
+        } else if (cbReciboSin.isSelected()) {
+            // Lógica para el radio button "Recibo sin" seleccionado
+            TableColumn pagadoColumn = tablaMovimientos.getColumnModel().getColumn(12);
+            TableColumn rendidoColumn = tablaMovimientos.getColumnModel().getColumn(11);
+            TableColumn fleteColumn = tablaMovimientos.getColumnModel().getColumn(10);
+
+            // Ocultar las columnas "flete" y "pagado"
+            fleteColumn.setMinWidth(0);
+            fleteColumn.setMaxWidth(0);
+            fleteColumn.setWidth(0);
+            pagadoColumn.setMinWidth(0);
+            pagadoColumn.setMaxWidth(0);
+            pagadoColumn.setWidth(0);
+            rendidoColumn.setMinWidth(0);
+            rendidoColumn.setMaxWidth(0);
+            rendidoColumn.setWidth(0);
+
+            // Mostrar nuevamente las columnas "flete" y "pagado"
+            fleteColumn.setMinWidth(75);
+            fleteColumn.setMaxWidth(100);
+            fleteColumn.setWidth(100);
+            pagadoColumn.setMinWidth(75);
+            pagadoColumn.setMaxWidth(100);
+            pagadoColumn.setWidth(100);
+            rendidoColumn.setMinWidth(75);
+            rendidoColumn.setMaxWidth(100);
+            rendidoColumn.setWidth(100);
+
+            // Actualizar el cálculo del flete total
+            if (!cbReciboSin.isSelected()) {
+                calcularTotales();
+            } else {
+                txtTotalFlete.setText("");
+            }
+        }
+
+        // Actualizar la tabla para reflejar los cambios
+        tablaMovimientos.getTableHeader().resizeAndRepaint();
+        tablaMovimientos.repaint();
+    }
+
+    ;
 
     private List<Movimientos> filtrarMovimientos(List<Movimientos> movimientos) {
         List<Movimientos> resultados = new ArrayList<>();
@@ -573,6 +584,7 @@ public class Recibos extends javax.swing.JFrame {
         cbReciboSin.setBackground(new java.awt.Color(66, 66, 66));
         buttonGroup1.add(cbReciboSin);
         cbReciboSin.setForeground(new java.awt.Color(255, 255, 255));
+        cbReciboSin.setSelected(true);
         cbReciboSin.setText("Recibo Sin Flete");
         cbReciboSin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -908,7 +920,9 @@ public class Recibos extends javax.swing.JFrame {
 
         // Carga nuevamente la tabla usando la lista de movimientos filtrados (listaVisible)
         for (Movimientos mov : listaVisible) {
-            Object[] objeto = {mov.getId_movimientos(), mov.getHora(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
+            Object[] objeto = {mov.getId_movimientos(), mov.getHora(), mov.getFechaFormateada(), mov.getCliente(),
+                mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(),
+                mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
             model.addRow(objeto);
         }
 
