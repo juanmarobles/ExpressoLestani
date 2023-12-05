@@ -1551,7 +1551,6 @@ public class HDDRepresentantes extends javax.swing.JFrame {
             PdfPTable table = new PdfPTable(tablaMovimientos.getColumnCount() - 7 + 1); // Excluir columnas MOVIMIENTO,FECHA,REPRESENTANTE,Y OBS
             table.setSpacingBefore(10f); // Espacio antes de la tabla (en puntos)
             table.setSpacingAfter(0f);
-            
 
             // Ajustar espacio horizontal
             float[] columnWidths = {2.3f, 2.3f, 1f, 1f, 1f, 1.1f, 1f, 1.1f, 0.9f, 0.7f, 1.5f}; // Añadir un ancho para la nueva columna "observaciones"
@@ -1625,7 +1624,37 @@ public class HDDRepresentantes extends javax.swing.JFrame {
             }
 
             document.add(table);
+            //CREACION DE TABLA CON FILA VACIA PARA ESPACIO CON LINEAS VERTICALES
+            // Crear la tabla vacía con una celda para las líneas verticales
+            PdfPTable emptyTable = new PdfPTable(tablaMovimientos.getColumnCount() - 7 + 1);
+            emptyTable.setSpacingBefore(0f); // Espacio antes de la tabla (en puntos)
+            emptyTable.setSpacingAfter(0f);
+            float[] columnWidthss = {2.3f, 2.3f, 1f, 1f, 1f, 1.1f, 1f, 1.1f, 0.9f, 0.7f, 1.5f}; // Añadir un ancho para la nueva columna "observaciones"
+            emptyTable.setWidths(columnWidthss);
+            emptyTable.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
 
+            // Calcular la altura de la fila vacía en función del número de filas seleccionadas
+            float emptyRowHeight = 0f;
+            if (filasSeleccionadas.length == 0) {
+                emptyRowHeight = 460f; // Altura predeterminada cuando no se selecciona ninguna fila
+            } else if (filasSeleccionadas.length >= 1 && filasSeleccionadas.length <= 34) {
+                // Alturas para diferentes cantidades de filas seleccionadas
+                float[] alturas = {460f, 440f, 420f, 400f, 380f, 360f, 340f, 320f, 300f, 280f, 260f, 240f, 220f, 200f, 180f, 160f, 140f, 120f, 120f, 120f, 120f, 120f, 120f, 80f, 60f, 40f, 20f, 60f, 60f, 60f, 60f, 60f, 60f, 60f};
+
+                // Asegurarse de que el índice esté dentro del rango
+                int index = Math.min(filasSeleccionadas.length, alturas.length) - 1;
+                emptyRowHeight = alturas[index];
+            }
+
+            // Crear una fila vacía en la tabla vacía
+            for (int col = 0; col < tablaMovimientos.getColumnCount() - 7 + 1; col++) {
+                PdfPCell emptyTableCell = new PdfPCell();
+                emptyTableCell.setFixedHeight(emptyRowHeight);
+                emptyTableCell.setBorder(Rectangle.BOX);
+                emptyTable.addCell(emptyTableCell);
+            }
+
+            document.add(emptyTable);
             document.close();
 
             writer.close();
