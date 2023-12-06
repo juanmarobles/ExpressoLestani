@@ -157,8 +157,36 @@ public class HDDRepresentantes extends javax.swing.JFrame {
             txtAnio.addFocusListener(focusAdapter);
 
         });
+        
+        ComboBoxStyle(cbChofer);
+        ComboBoxStyle(cbRepresentantes);
+
 
     }
+    //Stylo combobox
+    private static void ComboBoxStyle(JComboBox<String> comboBox) {
+        comboBox.getEditor().getEditorComponent().addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                SwingUtilities.invokeLater(() -> {
+                    JTextField editor = (JTextField) comboBox.getEditor().getEditorComponent();
+                    editor.selectAll();
+                });
+            }
+        });
+
+        comboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SwingUtilities.invokeLater(() -> {
+                    JTextField editor = (JTextField) comboBox.getEditor().getEditorComponent();
+                    editor.selectAll();
+                });
+            }
+        });
+    }
+    
+    
 //LLENAR TEXTFIELD REPRESENTANTES
 
     private static void mostrarResultadosBusqueda(JComboBox<String> combobox, String textoBusqueda) {

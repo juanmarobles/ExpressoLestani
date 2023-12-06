@@ -254,14 +254,19 @@ public class Principal extends javax.swing.JFrame {
         cbfleteRendido.setNextFocusableComponent(cbRepresentantes);
 
         JTextField textRepre = (JTextField) cbRepresentantes.getEditor().getEditorComponent();
-        textRepre.setNextFocusableComponent(txtObservaciones);
+        textRepre.setNextFocusableComponent(btnAgregar);
 
         cbCuentaCorriente.setNextFocusableComponent(txtMonto);
         txtObservaciones.setNextFocusableComponent(btnAgregar);
         btnAgregar.setNextFocusableComponent(btnEliminarMovimiento);
         btnEliminarMovimiento.setNextFocusableComponent(btnGenerarRemito);
         btnGenerarRemito.setNextFocusableComponent(btnGenerarRemitoDuplicado);
-        btnGenerarRemitoDuplicado.setNextFocusableComponent(txtDia);
+        btnGenerarRemitoDuplicado.setNextFocusableComponent(btnRemitoTabla);
+        btnRemitoTabla.setNextFocusableComponent(txtDia);
+        
+        //Text Area
+        txtObservaciones.setLineWrap(true);
+        txtObservaciones.setWrapStyleWord(true);
 
         //Borde al seleccionar TEXFIELD
         SwingUtilities.invokeLater(() -> {
@@ -367,6 +372,7 @@ public class Principal extends javax.swing.JFrame {
             btnEliminarMovimiento.addFocusListener(focusAdapter);
             btnGenerarRemito.addFocusListener(focusAdapter);
             btnGenerarRemitoDuplicado.addFocusListener(focusAdapter);
+            btnRemitoTabla.addFocusListener(focusAdapter);
         });
 
         tablaMovimientos.addMouseListener(new MouseAdapter() {
@@ -778,7 +784,6 @@ public class Principal extends javax.swing.JFrame {
         cbClientes = new javax.swing.JComboBox<>();
         cbDestinos = new javax.swing.JComboBox<>();
         cbServicios = new javax.swing.JComboBox<>();
-        txtObservaciones = new javax.swing.JTextField();
         jPanel5 = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
         txtDia = new javax.swing.JTextField();
@@ -812,6 +817,8 @@ public class Principal extends javax.swing.JFrame {
         cbRepresentantes = new javax.swing.JComboBox<>();
         jLabel8 = new javax.swing.JLabel();
         btnRemitoTabla = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txtObservaciones = new javax.swing.JTextArea();
         PanelBusquedas = new javax.swing.JPanel();
         txtFiltroCliente = new javax.swing.JTextField();
         txtFiltroRemito = new javax.swing.JTextField();
@@ -1342,6 +1349,10 @@ public class Principal extends javax.swing.JFrame {
             }
         });
 
+        txtObservaciones.setColumns(20);
+        txtObservaciones.setRows(5);
+        jScrollPane1.setViewportView(txtObservaciones);
+
         javax.swing.GroupLayout panelCargaMovimientosLayout = new javax.swing.GroupLayout(panelCargaMovimientos);
         panelCargaMovimientos.setLayout(panelCargaMovimientosLayout);
         panelCargaMovimientosLayout.setHorizontalGroup(
@@ -1368,20 +1379,20 @@ public class Principal extends javax.swing.JFrame {
                                 .addComponent(btnAgregarCliente)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
                         .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
-                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel14)
-                                    .addComponent(txtObservaciones, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
                                 .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(cbRepresentantes, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(30, 30, 30)
-                                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addGap(50, 50, 50)
+                                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
+                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel14)
+                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                .addGap(39, 39, 39)
                 .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -1404,11 +1415,11 @@ public class Principal extends javax.swing.JFrame {
                                 .addComponent(jLabel14)
                                 .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(txtObservaciones, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
                                         .addGap(53, 53, 53)
-                                        .addComponent(btnAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                        .addComponent(btnAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                             .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -2617,6 +2628,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JPanel panelCargaMovimientos;
     private javax.swing.JTable tablaMovimientos;
@@ -2629,7 +2641,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JTextField txtFlete;
     private javax.swing.JTextField txtMes;
     private javax.swing.JTextField txtMonto;
-    private javax.swing.JTextField txtObservaciones;
+    private javax.swing.JTextArea txtObservaciones;
     private javax.swing.JTextField txtRedespacho;
     private javax.swing.JTextField txtRemito;
     private javax.swing.JTextField txtSeguro;
