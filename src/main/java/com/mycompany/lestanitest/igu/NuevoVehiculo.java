@@ -35,10 +35,10 @@ public class NuevoVehiculo extends javax.swing.JFrame {
         initComponents();
         
         txtVehiculo.addActionListener(createActionListener(btnGuardar));
-        txtChofer.addActionListener(createActionListener(btnGuardar));
+        txtFechaSeguro.addActionListener(createActionListener(btnGuardar));
         txtFechaRuta.addActionListener(createActionListener(btnGuardar));
         txtFechaTecnica.addActionListener(createActionListener(btnGuardar));
-        txtPatente.addActionListener(createActionListener(btnGuardar));
+        txtFechaMatafuego.addActionListener(createActionListener(btnGuardar));
     
     }
       // Método para crear un ActionListener reutilizable
@@ -63,8 +63,8 @@ public class NuevoVehiculo extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         txtVehiculo = new javax.swing.JTextField();
-        txtPatente = new javax.swing.JTextField();
-        txtChofer = new javax.swing.JTextField();
+        txtFechaMatafuego = new javax.swing.JTextField();
+        txtFechaSeguro = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         btnGuardar = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
@@ -84,21 +84,21 @@ public class NuevoVehiculo extends javax.swing.JFrame {
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Vehiculo");
 
-        txtPatente.addActionListener(new java.awt.event.ActionListener() {
+        txtFechaMatafuego.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtPatenteActionPerformed(evt);
+                txtFechaMatafuegoActionPerformed(evt);
             }
         });
 
-        txtChofer.addActionListener(new java.awt.event.ActionListener() {
+        txtFechaSeguro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtChoferActionPerformed(evt);
+                txtFechaSeguroActionPerformed(evt);
             }
         });
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setText("Patente");
+        jLabel3.setText("Matafuego");
 
         btnGuardar.setBackground(new java.awt.Color(51, 51, 51));
         btnGuardar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -124,7 +124,7 @@ public class NuevoVehiculo extends javax.swing.JFrame {
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel6.setText("Chofer");
+        jLabel6.setText("Seguro");
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
@@ -192,8 +192,8 @@ public class NuevoVehiculo extends javax.swing.JFrame {
                             .addComponent(txtVehiculo, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtFechaTecnica, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtFechaRuta, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtPatente, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtChofer, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(txtFechaMatafuego, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtFechaSeguro, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(0, 35, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(104, 104, 104)
@@ -220,10 +220,10 @@ public class NuevoVehiculo extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(txtPatente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtFechaMatafuego, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(21, 21, 21)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtChofer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtFechaSeguro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6))
                 .addGap(39, 39, 39)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -246,30 +246,30 @@ public class NuevoVehiculo extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtChoferActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtChoferActionPerformed
+    private void txtFechaSeguroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFechaSeguroActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtChoferActionPerformed
+    }//GEN-LAST:event_txtFechaSeguroActionPerformed
 
-    private void txtPatenteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPatenteActionPerformed
+    private void txtFechaMatafuegoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFechaMatafuegoActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtPatenteActionPerformed
+    }//GEN-LAST:event_txtFechaMatafuegoActionPerformed
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         String vehiculo = txtVehiculo.getText();
-        String chofer = txtChofer.getText();
-        String patente = txtPatente.getText();
         List<Date> fechas = getFechas();
         Date fechaTecnica = fechas.get(0);
         Date fechaRuta = fechas.get(1);
+        Date fechaSeguro = fechas.get(2);
+        Date fechaMatafuego = fechas.get(3);
 
-        control.cargarVehiculo(vehiculo, chofer, patente, fechaTecnica, fechaRuta);
+        control.cargarVehiculo(vehiculo, fechaTecnica, fechaRuta, fechaSeguro,fechaMatafuego);
         //mostrarMensaje("Vehiculo agregado correctamente", "Info", "Agregado con exito!");
         
         txtVehiculo.setText("");
-        txtChofer.setText("");
+        txtFechaSeguro.setText("");
         txtFechaRuta.setText("");
         txtFechaTecnica.setText("");
-        txtPatente.setText("");
+        txtFechaMatafuego.setText("");
 
         VerDatosVehiculos verAnterior = new VerDatosVehiculos();
         verAnterior.setVisible(true);
@@ -353,10 +353,10 @@ public class NuevoVehiculo extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JTextField txtChofer;
+    private javax.swing.JTextField txtFechaMatafuego;
     private javax.swing.JFormattedTextField txtFechaRuta;
+    private javax.swing.JTextField txtFechaSeguro;
     private javax.swing.JFormattedTextField txtFechaTecnica;
-    private javax.swing.JTextField txtPatente;
     private javax.swing.JTextField txtVehiculo;
     // End of variables declaration//GEN-END:variables
 
@@ -365,6 +365,8 @@ public class NuevoVehiculo extends javax.swing.JFrame {
         List<Date> fechas = new ArrayList<>();
         try {
             Date fechaTecnica = dateFormat.parse(txtFechaTecnica.getText());
+            Date fechaSeguro = dateFormat.parse(txtFechaSeguro.getText());
+            Date fechaMatafuego = dateFormat.parse(txtFechaMatafuego.getText());
             Date fechaRuta = dateFormat.parse(txtFechaRuta.getText());
             fechas.add(fechaTecnica);
             fechas.add(fechaRuta);

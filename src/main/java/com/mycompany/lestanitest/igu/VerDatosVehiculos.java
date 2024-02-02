@@ -304,7 +304,7 @@ private void mostrarTablaVehiculos() {
             }
         };
         //nombres de columnas
-        String titulos[] = {"Id_Vehiculo", "Vehiculo", "Patente", "Rev. Tenica", "Fecha ruta", "Patente", "Chofer"};
+        String titulos[] = {"Id_Vehiculo", "Vehiculo", "Patente", "Rev. Tenica", "Fecha ruta", "Seguro", "Matafuego"};
         tabla.setColumnIdentifiers(titulos);
 
         //carga de los datos desde la bd
@@ -314,7 +314,7 @@ private void mostrarTablaVehiculos() {
         if (listaVehiculos != null) {
             for (Vehiculo v : listaVehiculos) {
                 // Cambia el orden de las fechas al agregarlas a la tabla
-                Object[] objeto = {v.getId_Vehiculo(), v.getVehiculo(), v.getPatente(), v.getFechaTecnicaFormateada(), v.getFechaRutaFormateada(), v.getChofer()};
+                Object[] objeto = {v.getId_Vehiculo(), v.getVehiculo(), v.getPatente(), v.getFechaTecnicaFormateada(), v.getFechaRutaFormateada(), v.getFechaSeguroFormateada(),v.getFechaMatafuegoFormateada()};
                 tabla.addRow(objeto);
 
             }

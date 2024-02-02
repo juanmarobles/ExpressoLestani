@@ -77,8 +77,8 @@
                               <Component id="txtVehiculo" min="-2" pref="192" max="-2" attributes="0"/>
                               <Component id="txtFechaTecnica" alignment="0" min="-2" pref="117" max="-2" attributes="0"/>
                               <Component id="txtFechaRuta" min="-2" pref="117" max="-2" attributes="0"/>
-                              <Component id="txtPatente" alignment="0" min="-2" pref="190" max="-2" attributes="0"/>
-                              <Component id="txtChofer" alignment="0" min="-2" pref="190" max="-2" attributes="0"/>
+                              <Component id="txtFechaMatafuego" alignment="0" min="-2" pref="190" max="-2" attributes="0"/>
+                              <Component id="txtFechaSeguro" alignment="0" min="-2" pref="190" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
@@ -114,11 +114,11 @@
                   <EmptySpace pref="18" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="txtPatente" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="txtFechaMatafuego" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="txtChofer" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="txtFechaSeguro" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel6" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" pref="39" max="-2" attributes="0"/>
@@ -145,14 +145,14 @@
         </Component>
         <Component class="javax.swing.JTextField" name="txtVehiculo">
         </Component>
-        <Component class="javax.swing.JTextField" name="txtPatente">
+        <Component class="javax.swing.JTextField" name="txtFechaMatafuego">
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtPatenteActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtFechaMatafuegoActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JTextField" name="txtChofer">
+        <Component class="javax.swing.JTextField" name="txtFechaSeguro">
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtChoferActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtFechaSeguroActionPerformed"/>
           </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel3">
@@ -163,7 +163,7 @@
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="ff" green="ff" red="ff" type="rgb"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Patente"/>
+            <Property name="text" type="java.lang.String" value="Matafuego"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="btnGuardar">
@@ -214,7 +214,7 @@
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="ff" green="ff" red="ff" type="rgb"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Chofer"/>
+            <Property name="text" type="java.lang.String" value="Seguro"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel2">

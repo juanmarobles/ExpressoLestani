@@ -94,13 +94,13 @@ public class Controladora {
     /**
      * ----------------------------------------------GUARDAR-----------------------------------------------------------------
      */
-    public void cargarVehiculo(String vehiculo, String chofer, String patente, Date fechaTecnica, Date fechaRuta) {
+    public void cargarVehiculo(String vehiculo, Date fechaTecnica, Date fechaRuta, Date fechaSeguro, Date fechaMatafuego) {
         Vehiculo v = new Vehiculo();
-        v.setChofer(chofer);
         v.setVehiculo(vehiculo);
-        v.setPatente(patente);
         v.setFechaTecnica(fechaTecnica);
         v.setFechaRuta(fechaRuta);
+        v.setFechaSeguro(fechaSeguro);
+        v.setFechaMatafuego(fechaMatafuego);
         ctrl.guardarVehiculo(v);
     }
 
@@ -119,12 +119,12 @@ public class Controladora {
 
     }
 
-    public void editarVehiculo(Vehiculo vehiculo, String v, String chofer, String patente, Date fechaTecnica, Date fechaRuta) {
+    public void editarVehiculo(Vehiculo vehiculo, String v, Date fechaTecnica, Date fechaRuta, Date fechaMatafuego, Date fechaSeguro) {
         vehiculo.setVehiculo(v);
-        vehiculo.setPatente(patente);
-        vehiculo.setChofer(chofer);
         vehiculo.setFechaTecnica(fechaTecnica);
         vehiculo.setFechaRuta(fechaRuta);
+        vehiculo.setFechaMatafuego(fechaMatafuego);
+        vehiculo.setFechaSeguro(fechaSeguro);
         ctrl.modificarVehiculo(vehiculo);
     }
 

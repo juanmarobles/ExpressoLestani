@@ -33,7 +33,7 @@ public class EditarVehiculo extends javax.swing.JFrame {
         initComponents();
         cargarDatosVehiculo(idVehiculo);
         txtVehiculo.addActionListener(createActionListener(btnEditar));
-        txtChofer.addActionListener(createActionListener(btnEditar));
+        txtFechaMatafuego.addActionListener(createActionListener(btnEditar));
         txtFechaRuta.addActionListener(createActionListener(btnEditar));
         txtFechaTecnica.addActionListener(createActionListener(btnEditar));
         txtPatente.addActionListener(createActionListener(btnEditar));
@@ -76,7 +76,7 @@ public class EditarVehiculo extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         txtVehiculo = new javax.swing.JTextField();
         txtPatente = new javax.swing.JTextField();
-        txtChofer = new javax.swing.JTextField();
+        txtFechaMatafuego = new javax.swing.JTextField();
         jLabel28 = new javax.swing.JLabel();
         jLabel27 = new javax.swing.JLabel();
         jLabel26 = new javax.swing.JLabel();
@@ -84,6 +84,8 @@ public class EditarVehiculo extends javax.swing.JFrame {
         txtFechaRuta = new javax.swing.JFormattedTextField();
         jLabel35 = new javax.swing.JLabel();
         jLabel36 = new javax.swing.JLabel();
+        jLabel29 = new javax.swing.JLabel();
+        txtFechaSeguro = new javax.swing.JTextField();
         btnCancelar4 = new javax.swing.JButton();
         btnEditar = new javax.swing.JButton();
 
@@ -114,7 +116,7 @@ public class EditarVehiculo extends javax.swing.JFrame {
 
         jLabel26.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel26.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel26.setText("Chofer");
+        jLabel26.setText("Matafuego");
 
         try {
             txtFechaTecnica.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("##/##/####")));
@@ -138,6 +140,10 @@ public class EditarVehiculo extends javax.swing.JFrame {
         jLabel36.setForeground(new java.awt.Color(255, 255, 255));
         jLabel36.setText("Fecha ruta");
 
+        jLabel29.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel29.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel29.setText("Seguro");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -157,8 +163,12 @@ public class EditarVehiculo extends javax.swing.JFrame {
                                     .addComponent(jLabel26))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtChofer)
-                                    .addComponent(txtPatente))))
+                                    .addComponent(txtFechaMatafuego)
+                                    .addComponent(txtPatente)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel29)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(txtFechaSeguro)))
                         .addGap(24, 24, 24))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -188,7 +198,7 @@ public class EditarVehiculo extends javax.swing.JFrame {
                     .addComponent(jLabel35)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(1, 1, 1)
-                        .addComponent(txtFechaTecnica, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE)))
+                        .addComponent(txtFechaTecnica, javax.swing.GroupLayout.PREFERRED_SIZE, 26, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel36)
@@ -198,8 +208,12 @@ public class EditarVehiculo extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel26)
-                    .addComponent(txtChofer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(42, 42, 42))
+                    .addComponent(txtFechaMatafuego, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel29)
+                    .addComponent(txtFechaSeguro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(9, 9, 9))
         );
 
         btnCancelar4.setBackground(new java.awt.Color(51, 51, 51));
@@ -282,13 +296,14 @@ public class EditarVehiculo extends javax.swing.JFrame {
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
         try{
         String v = txtVehiculo.getText();
-        String chofer = txtChofer.getText();
-        String patente = txtPatente.getText();
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-
+        
         Date fechaTecnica = dateFormat.parse(txtFechaTecnica.getText());
         Date fechaRuta = dateFormat.parse(txtFechaRuta.getText());
-        control.editarVehiculo(vehiculo, v, chofer, patente, fechaTecnica, fechaRuta);
+        Date fechaMatafuego = dateFormat.parse(txtFechaTecnica.getText());
+        Date fechaSeguro= dateFormat.parse(txtFechaTecnica.getText());
+
+        control.editarVehiculo(vehiculo, v, fechaTecnica, fechaRuta,fechaMatafuego,fechaSeguro);
         }catch (ParseException ex){
         }
         mostrarMensaje("Vehiculo modificado correctamente", "Info", "Edicion exitosa!");
@@ -315,12 +330,14 @@ public class EditarVehiculo extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel26;
     private javax.swing.JLabel jLabel27;
     private javax.swing.JLabel jLabel28;
+    private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel35;
     private javax.swing.JLabel jLabel36;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JTextField txtChofer;
+    private javax.swing.JTextField txtFechaMatafuego;
     private javax.swing.JFormattedTextField txtFechaRuta;
+    private javax.swing.JTextField txtFechaSeguro;
     private javax.swing.JFormattedTextField txtFechaTecnica;
     private javax.swing.JTextField txtPatente;
     private javax.swing.JTextField txtVehiculo;
@@ -330,10 +347,11 @@ public class EditarVehiculo extends javax.swing.JFrame {
         vehiculo = control.traerVehiculo(idVehiculo);
         //seteo los valores de ese id
         //txtCuit.setText(cliente.getCuit());
-        txtChofer.setText(vehiculo.getChofer());
+        txtFechaMatafuego.setText(vehiculo.getFechaMatafuegoFormateada());
         txtFechaRuta.setText(vehiculo.getFechaRutaFormateada());
         txtFechaTecnica.setText(vehiculo.getFechaTecnicaFormateada());
         txtPatente.setText(vehiculo.getPatente());
+        txtFechaSeguro.setText(vehiculo.getFechaSeguroFormateada());
         txtVehiculo.setText(vehiculo.getVehiculo());
     }
 

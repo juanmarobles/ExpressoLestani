@@ -34,19 +34,38 @@ public class Vehiculo implements Serializable {
     private String vehiculo;
     @Column(name = "PATENTE", length = 50)
     private String patente;
-    @Column(name = "CHOFER", length = 50)
-    private String chofer;
-
+    @Column(name = "FECHA_SEGURO", length = 50)
+    private Date fechaSeguro;
+    @Column(name = "FECHA_MATAFUEGO", length = 50)
+    private Date fechaMatafuego;
+    
     public Vehiculo() {
     }
 
-    public Vehiculo(int id_Vehiculo, String vehiculo, String patente, String chofer, Date fechaTecnica, Date fechaRuta) {
+    public Vehiculo(int id_Vehiculo, Date fechaTecnica, Date fechaRuta, String vehiculo, String patente, Date fechaSeguro, Date fechaMatafuego) {
         this.id_Vehiculo = id_Vehiculo;
-        this.vehiculo = vehiculo;
-        this.patente = patente;
-        this.chofer = chofer;
         this.fechaTecnica = fechaTecnica;
         this.fechaRuta = fechaRuta;
+        this.vehiculo = vehiculo;
+        this.patente = patente;
+        this.fechaSeguro = fechaSeguro;
+        this.fechaMatafuego = fechaMatafuego;
+    }
+
+    public Date getFechaSeguro() {
+        return fechaSeguro;
+    }
+
+    public void setFechaSeguro(Date fechaSeguro) {
+        this.fechaSeguro = fechaSeguro;
+    }
+
+    public Date getFechaMatafuego() {
+        return fechaMatafuego;
+    }
+
+    public void setFechaMatafuego(Date fechaMatafuego) {
+        this.fechaMatafuego = fechaMatafuego;
     }
 
     public Date getFechaTecnica() {
@@ -89,14 +108,6 @@ public class Vehiculo implements Serializable {
         this.patente = patente;
     }
 
-    public String getChofer() {
-        return chofer;
-    }
-
-    public void setChofer(String chofer) {
-        this.chofer = chofer;
-    }
-
     private static final String FORMATO_FECHA_TABLA = "dd/MM/yyyy";
 
     public String getFechaTecnicaFormateada() {
@@ -108,9 +119,16 @@ public class Vehiculo implements Serializable {
         SimpleDateFormat formato = new SimpleDateFormat(FORMATO_FECHA_TABLA);
         return formato.format(fechaRuta);
     }
-
-   
-
+    
+    public String getFechaSeguroFormateada() {
+        SimpleDateFormat formato = new SimpleDateFormat(FORMATO_FECHA_TABLA);
+        return formato.format(fechaSeguro);
+    }
+    
+    public String getFechaMatafuegoFormateada() {
+        SimpleDateFormat formato = new SimpleDateFormat(FORMATO_FECHA_TABLA);
+        return formato.format(fechaMatafuego);
+    }
     @Override
     public String toString() {
         return vehiculo;
