@@ -112,6 +112,32 @@ public class HojaDeRuta extends javax.swing.JFrame {
         txtDia.setText(String.valueOf(fechaActual.getDayOfMonth()));
         txtMes.setText(String.valueOf(fechaActual.getMonthValue()));
         txtAnio.setText(String.valueOf(fechaActual.getYear()));
+        
+        //Borde al seleccionar TEXFIELD
+        SwingUtilities.invokeLater(() -> {
+            // Define el borde de enfoque
+            Border normalBorder = txtDia.getBorder();
+            Border focusBorder = new LineBorder(Color.BLUE, 3);
+
+            FocusAdapter focusAdapter = new FocusAdapter() {
+                @Override
+                public void focusGained(FocusEvent e) {
+                    ((JComponent) e.getComponent()).setBorder(focusBorder);
+                    if (e.getComponent() instanceof JTextField) {
+                        ((JTextField) e.getComponent()).selectAll();
+                    }
+                }
+
+                @Override
+                public void focusLost(FocusEvent e) {
+                    ((JComponent) e.getComponent()).setBorder(normalBorder);
+                }
+            };
+            txtDia.addFocusListener(focusAdapter);
+            txtMes.addFocusListener(focusAdapter);
+            txtAnio.addFocusListener(focusAdapter);
+
+        });
 
         // Agregar evento de selección a la tabla
         tablaMovimientos.getSelectionModel().addListSelectionListener(new ListSelectionListener() {

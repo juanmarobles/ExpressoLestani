@@ -15,6 +15,9 @@ import com.mycompany.lestanitest.persistencia.exceptions.NonexistentEntityExcept
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
 public class ControladoraPersistencia {
 
@@ -256,6 +259,23 @@ public class ControladoraPersistencia {
             Logger.getLogger(ControladoraPersistencia.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    
+    
+     public void ActualizarMovimientos(List<Movimientos> movimientos) {
+    
+
+    try {
+        for (Movimientos movimiento : movimientos) {
+            // Utiliza el controlador JPA para actualizar cada objeto Movimientos
+            movJpa.edit(movimiento);
+        }
+    } catch (Exception ex) {
+        ex.printStackTrace(); // Manejo adecuado de la excepción (log, mostrar mensaje, etc.)
+    }
+}
+    
+     
 
     /**
      * --------------------------------------CRUD PERSISTENCIA CLASE

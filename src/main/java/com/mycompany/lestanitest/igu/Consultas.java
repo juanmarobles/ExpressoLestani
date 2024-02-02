@@ -27,6 +27,8 @@ import com.mycompany.lestanitest.logica.ModeloCliente;
 import com.mycompany.lestanitest.logica.ModeloRepresentante;
 import com.mycompany.lestanitest.logica.Representantes;
 import java.awt.Color;
+import java.awt.Desktop;
+import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
@@ -117,9 +119,8 @@ public class Consultas extends javax.swing.JFrame {
     private String fleteTotalImpreso;
     //Nuevo
     // private List<Movimientos> listaFiltrada;
-    
+
     private boolean botonMostrarPresionado = false;
-   
 
     public Consultas() {
         initComponents();
@@ -128,24 +129,22 @@ public class Consultas extends javax.swing.JFrame {
         cargarOrigen();
         cargarDestino();
         cargarRepresentantes();
-        
-          //FECHA
-       // Obtener la fecha actual
+
+        //FECHA
+        // Obtener la fecha actual
         LocalDate fechaActual = LocalDate.now();
         // Mostrar la fecha actual en los campos de texto correspondientes
         txtDiaH.setText(String.valueOf(fechaActual.getDayOfMonth()));
         txtMesH.setText(String.valueOf(fechaActual.getMonthValue()));
         txtAnioH.setText(String.valueOf(fechaActual.getYear()));
-        
 
         // Mostrar la fecha actual en los campos de texto correspondientes
         txtDiaD.setText(String.valueOf(fechaActual.getDayOfMonth()));
         txtMesD.setText(String.valueOf(fechaActual.getMonthValue()));
         txtAnioD.setText(String.valueOf(fechaActual.getYear()));
-        
-        
+
         setExtendedState(JFrame.MAXIMIZED_BOTH);
-        
+
         //Borde al seleccionar TEXFIELD
         SwingUtilities.invokeLater(() -> {
             // Define el borde de enfoque
@@ -173,20 +172,17 @@ public class Consultas extends javax.swing.JFrame {
             txtMesH.addFocusListener(focusAdapter);
             txtAnioH.addFocusListener(focusAdapter);
         });
-        
-        
-        
+
         //Combobox Seleccion
         ComboBoxStyle(cbClientes);
         ComboBoxStyle(cbRepresentantes);
         ComboBoxStyle(cbOrigen);
         ComboBoxStyle(cbDestinos);
-        
-        
+
         txtTotalMonto.setEditable(false);
         txtTotalFlete.setEditable(false);
         txtCantBultos.setEditable(false);
-        
+
         // Listener al mause para editar con doble click el movimiento.
         tablaConsultas.addMouseListener(new MouseAdapter() {
             @Override
@@ -204,7 +200,7 @@ public class Consultas extends javax.swing.JFrame {
                 }
             }
         });
-        
+
         //Listener para evitar que pongan letras en Fletes
         KeyListener keyListener = new KeyAdapter() {
             @Override
@@ -251,46 +247,46 @@ public class Consultas extends javax.swing.JFrame {
     ModeloCliente modClientes = new ModeloCliente();
     ArrayList<Cliente> listaClientes = modClientes.getClientes();
 
-   private static void mostrarResultadosBusqueda(JComboBox<String> combobox, String textoBusqueda) {
-    // Limpiar selección previa
-    combobox.setSelectedIndex(-1);
+    private static void mostrarResultadosBusqueda(JComboBox<String> combobox, String textoBusqueda) {
+        // Limpiar selección previa
+        combobox.setSelectedIndex(-1);
 
-    // Buscar resultados de búsqueda exacta
-    boolean encontradoExacta = false;
+        // Buscar resultados de búsqueda exacta
+        boolean encontradoExacta = false;
 
-    for (int i = 0; i < combobox.getItemCount(); i++) {
-        String item = combobox.getItemAt(i).toString();
-        if (item.equalsIgnoreCase(textoBusqueda)) {
-            combobox.setSelectedItem(item);
-            combobox.getEditor().setItem(item);
-            encontradoExacta = true;
-            break; // Terminar la búsqueda cuando se encuentra una coincidencia exacta
-        }
-    }
-
-    // Si no se encontró una coincidencia exacta, buscar coincidencias parciales
-    if (!encontradoExacta) {
-        boolean encontradoParcial = false;
         for (int i = 0; i < combobox.getItemCount(); i++) {
             String item = combobox.getItemAt(i).toString();
-            if (item.toLowerCase().contains(textoBusqueda.toLowerCase())) {
-                combobox.setSelectedIndex(i);
+            if (item.equalsIgnoreCase(textoBusqueda)) {
+                combobox.setSelectedItem(item);
                 combobox.getEditor().setItem(item);
-                encontradoParcial = true;
-                break; // Terminar la búsqueda cuando se encuentra una coincidencia parcial
+                encontradoExacta = true;
+                break; // Terminar la búsqueda cuando se encuentra una coincidencia exacta
             }
         }
 
-        // Si no se encontró ninguna coincidencia parcial, mostrar el desplegable
-        if (!encontradoParcial) {
-            combobox.setPopupVisible(true);
-            combobox.getEditor().setItem(textoBusqueda); // Deja el ComboBox con el texto de búsqueda
+        // Si no se encontró una coincidencia exacta, buscar coincidencias parciales
+        if (!encontradoExacta) {
+            boolean encontradoParcial = false;
+            for (int i = 0; i < combobox.getItemCount(); i++) {
+                String item = combobox.getItemAt(i).toString();
+                if (item.toLowerCase().contains(textoBusqueda.toLowerCase())) {
+                    combobox.setSelectedIndex(i);
+                    combobox.getEditor().setItem(item);
+                    encontradoParcial = true;
+                    break; // Terminar la búsqueda cuando se encuentra una coincidencia parcial
+                }
+            }
+
+            // Si no se encontró ninguna coincidencia parcial, mostrar el desplegable
+            if (!encontradoParcial) {
+                combobox.setPopupVisible(true);
+                combobox.getEditor().setItem(textoBusqueda); // Deja el ComboBox con el texto de búsqueda
+            }
         }
     }
-}
 
     private void cargarClientes() {
-         ModeloCliente modClientes = new ModeloCliente();
+        ModeloCliente modClientes = new ModeloCliente();
         ArrayList<Cliente> listaClientes = modClientes.getClientes();
 
         cbClientes.setEditable(true);
@@ -343,12 +339,12 @@ public class Consultas extends javax.swing.JFrame {
     }
 
     private void cargarDestino() {
-         ModeloCliente modClientes = new ModeloCliente();
+        ModeloCliente modClientes = new ModeloCliente();
         ArrayList<Cliente> listaClientes = modClientes.getClientes();
 
         cbDestinos.setEditable(true);
 
-         // Ordenar la lista de clientes alfabéticamente por el nombre
+        // Ordenar la lista de clientes alfabéticamente por el nombre
         listaClientes.sort((cliente1, cliente2) -> cliente1.getNombre().compareToIgnoreCase(cliente2.getNombre()));
 
         // Agregar los clientes al combobox
@@ -371,7 +367,7 @@ public class Consultas extends javax.swing.JFrame {
                     // Normaliza el texto de búsqueda a mayúsculas y elimina caracteres no deseados excepto espacios en blanco
                     textoBusqueda = textoBusqueda.toUpperCase().replaceAll("[^A-ZÑñ.\\s]", "");
 
-                    mostrarResultadosBusqueda(cbDestinos, textoBusqueda);                  
+                    mostrarResultadosBusqueda(cbDestinos, textoBusqueda);
                 }
             }
         });
@@ -402,7 +398,7 @@ public class Consultas extends javax.swing.JFrame {
                     // Normaliza el texto de búsqueda a mayúsculas y elimina caracteres no deseados excepto espacios en blanco
                     textoBusqueda = textoBusqueda.toUpperCase().replaceAll("[^A-ZÑñ.\\s]", "");
 
-                    mostrarResultadosBusqueda(cbOrigen, textoBusqueda);                  
+                    mostrarResultadosBusqueda(cbOrigen, textoBusqueda);
                 }
             }
         });
@@ -411,18 +407,16 @@ public class Consultas extends javax.swing.JFrame {
     private void cargarRepresentantes() {
         ModeloRepresentante modRepre = new ModeloRepresentante();
         ArrayList<Representantes> listaRepresentantes = modRepre.getRepresentantes();
-        
+
         cbRepresentantes.setEditable(true);
-        
-         // Ordenar la lista de clientes alfabéticamente por el nombre
+
+        // Ordenar la lista de clientes alfabéticamente por el nombre
         listaRepresentantes.sort((representante1, representante2) -> representante1.getNombre().compareToIgnoreCase(representante2.getNombre()));
-        
-        
+
         // Agregar los clientes al combobox
         for (Representantes Repre : listaRepresentantes) {
             cbRepresentantes.addItem(Repre.getNombre());
         }
-        
 
 // Eliminar la opción en blanco después de configurar el decorador
         cbRepresentantes.removeItem("");
@@ -453,9 +447,7 @@ public class Consultas extends javax.swing.JFrame {
     }
 
     /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
+     * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this code. The content of this method is always regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -1364,12 +1356,11 @@ public class Consultas extends javax.swing.JFrame {
 
         botonMostrarPresionado = true;
         aplicarFiltros();
-        
 
 
     }//GEN-LAST:event_btnMostrarActionPerformed
 
-     private void aplicarFiltros() {
+    private void aplicarFiltros() {
         // Verificar si se ha presionado el botón "Mostrar"
         if (!botonMostrarPresionado) {
             return;
@@ -1420,8 +1411,7 @@ public class Consultas extends javax.swing.JFrame {
                     .filter(mov -> mov.getDestino().equals(destinoFiltrado))
                     .collect(Collectors.toList());
         }
-        
-        
+
         //Fecha
         // Obtener los valores de los campos de texto para la fecha desde
         int diaD = Integer.parseInt(txtDiaD.getText());
@@ -1451,96 +1441,88 @@ public class Consultas extends javax.swing.JFrame {
                     })
                     .collect(Collectors.toList());
         }
-    
-        
-        
-                 // Obtener el representante seleccionado
-         Object representanteSeleccionado = cbRepresentantes.getSelectedItem();
-         String representanteFiltrado = representanteSeleccionado != null ? representanteSeleccionado.toString() : "";
 
-         // Obtener el estado de la cuenta corriente seleccionado
-         String radioButtonSeleccionado = "Todos"; // Inicialmente, se selecciona "Todos"
+        // Obtener el representante seleccionado
+        Object representanteSeleccionado = cbRepresentantes.getSelectedItem();
+        String representanteFiltrado = representanteSeleccionado != null ? representanteSeleccionado.toString() : "";
 
-         if (ccSi.isSelected()) {
-             radioButtonSeleccionado = "Si";
-         } else if (ccNo.isSelected()) {
-             radioButtonSeleccionado = "No";
-         }
+        // Obtener el estado de la cuenta corriente seleccionado
+        String radioButtonSeleccionado = "Todos"; // Inicialmente, se selecciona "Todos"
 
-         final String finalRadioButtonSeleccionado = radioButtonSeleccionado; // Hacer que la variable sea final
-         
-         //filtro de Cuenta Corriente 
-         
-         // cuenta corriente
-          if (representanteFiltrado.isEmpty() && clienteFiltrado.isEmpty()) {
-         movimientosFiltrados = movimientosFiltrados.stream()
-                 .filter(mov -> {
-                     String cuentaCorriente = mov.getCuentaCorriente();
-                     // Filtrar por cuenta corriente
-                     if (finalRadioButtonSeleccionado.equals("Todos")) {
-                         // Si es ccTodos, mostrar todos los movimientos independientemente de su cuenta corriente
-                         return true;
-                     } else {
-                         // Mostrar solo movimientos que coincidan con la cuenta corriente seleccionada
-                         return cuentaCorriente.equals(finalRadioButtonSeleccionado);
-                     }
-                 })
-                 .collect(Collectors.toList());    
-          }
+        if (ccSi.isSelected()) {
+            radioButtonSeleccionado = "Si";
+        } else if (ccNo.isSelected()) {
+            radioButtonSeleccionado = "No";
+        }
 
+        final String finalRadioButtonSeleccionado = radioButtonSeleccionado; // Hacer que la variable sea final
 
-         // Filtrar por representantes si se ha seleccionado un representante
-         if (!representanteFiltrado.isEmpty()) {
-             movimientosFiltrados = movimientosFiltrados.stream()
-                     .filter(mov -> {
-                         String cuentaCorriente = mov.getCuentaCorriente();
-                         String representante = mov.getRepresentante();
+        //filtro de Cuenta Corriente 
+        // cuenta corriente
+        if (representanteFiltrado.isEmpty() && clienteFiltrado.isEmpty()) {
+            movimientosFiltrados = movimientosFiltrados.stream()
+                    .filter(mov -> {
+                        String cuentaCorriente = mov.getCuentaCorriente();
+                        // Filtrar por cuenta corriente
+                        if (finalRadioButtonSeleccionado.equals("Todos")) {
+                            // Si es ccTodos, mostrar todos los movimientos independientemente de su cuenta corriente
+                            return true;
+                        } else {
+                            // Mostrar solo movimientos que coincidan con la cuenta corriente seleccionada
+                            return cuentaCorriente.equals(finalRadioButtonSeleccionado);
+                        }
+                    })
+                    .collect(Collectors.toList());
+        }
 
-                         // Filtrar por cuenta corriente
-                         if (finalRadioButtonSeleccionado.equals("Todos")) {
-                             // Si es ccTodos, mostrar todos los representantes independientemente de su cuenta corriente
-                             return representante.equalsIgnoreCase(representanteFiltrado);
-                         } else {
-                             // Mostrar solo representantes que coincidan con la cuenta corriente seleccionada
-                             return representante.equalsIgnoreCase(representanteFiltrado) && cuentaCorriente.equals(finalRadioButtonSeleccionado);
-                         }
-                     })
-                     .collect(Collectors.toList());
-         } 
-         
-             // Filtrar por clientes y cuentas corrientes si no se selecciona un representante
-         if (!clienteFiltrado.isEmpty() && !finalRadioButtonSeleccionado.equals("Todos")) {
-             movimientosFiltrados = movimientosFiltrados.stream()
-                     .filter(mov -> {
-                         String cuentaCorriente = mov.getCuentaCorriente();
-                         String cliente = mov.getCliente();
-                         String destino = mov.getDestino();
-                         String fleteDestinoOrigen = mov.getFleteDestinoOrigen();
+        // Filtrar por representantes si se ha seleccionado un representante
+        if (!representanteFiltrado.isEmpty()) {
+            movimientosFiltrados = movimientosFiltrados.stream()
+                    .filter(mov -> {
+                        String cuentaCorriente = mov.getCuentaCorriente();
+                        String representante = mov.getRepresentante();
 
-                         boolean esClienteFiltrado = cliente.equalsIgnoreCase(clienteFiltrado);
+                        // Filtrar por cuenta corriente
+                        if (finalRadioButtonSeleccionado.equals("Todos")) {
+                            // Si es ccTodos, mostrar todos los representantes independientemente de su cuenta corriente
+                            return representante.equalsIgnoreCase(representanteFiltrado);
+                        } else {
+                            // Mostrar solo representantes que coincidan con la cuenta corriente seleccionada
+                            return representante.equalsIgnoreCase(representanteFiltrado) && cuentaCorriente.equals(finalRadioButtonSeleccionado);
+                        }
+                    })
+                    .collect(Collectors.toList());
+        }
 
-                         // Si el tipo de flete es "Origen", el cliente debe ser responsable
-                         boolean esFleteOrigen = fleteDestinoOrigen.equals("Origen") && esClienteFiltrado;
+        // Filtrar por clientes y cuentas corrientes si no se selecciona un representante
+        if (!clienteFiltrado.isEmpty() && !finalRadioButtonSeleccionado.equals("Todos")) {
+            movimientosFiltrados = movimientosFiltrados.stream()
+                    .filter(mov -> {
+                        String cuentaCorriente = mov.getCuentaCorriente();
+                        String cliente = mov.getCliente();
+                        String destino = mov.getDestino();
+                        String fleteDestinoOrigen = mov.getFleteDestinoOrigen();
 
-                         // Si el tipo de flete es "Destino", el destino debe ser responsable
-                         boolean esFleteDestino = fleteDestinoOrigen.equals("Destino") && destino.equalsIgnoreCase(clienteFiltrado);
+                        boolean esClienteFiltrado = cliente.equalsIgnoreCase(clienteFiltrado);
 
-                         // Mostrar solo registros que coincidan con el cliente y la cuenta corriente seleccionados
-                         return cuentaCorriente.equals(finalRadioButtonSeleccionado) && (esFleteOrigen || esFleteDestino);
-                     })
-                     .collect(Collectors.toList());
-         }
+                        // Si el tipo de flete es "Origen", el cliente debe ser responsable
+                        boolean esFleteOrigen = fleteDestinoOrigen.equals("Origen") && esClienteFiltrado;
 
+                        // Si el tipo de flete es "Destino", el destino debe ser responsable
+                        boolean esFleteDestino = fleteDestinoOrigen.equals("Destino") && destino.equalsIgnoreCase(clienteFiltrado);
 
+                        // Mostrar solo registros que coincidan con el cliente y la cuenta corriente seleccionados
+                        return cuentaCorriente.equals(finalRadioButtonSeleccionado) && (esFleteOrigen || esFleteDestino);
+                    })
+                    .collect(Collectors.toList());
+        }
 
-         
-         
         //Chechbox
         boolean mostrarPagados = cbPagados.isSelected();
         boolean mostrarNoPagados = cbNoPagados.isSelected();
         boolean mostrarFPagados = cbFletePagado.isSelected();
         boolean mostrarFNoPagados = cbFleteNoPagado.isSelected();
-        
+
         //Filtrado de Fletes y Montos
         movimientosFiltrados = movimientosFiltrados.stream()
                 .filter(mov -> {
@@ -1564,8 +1546,6 @@ public class Consultas extends javax.swing.JFrame {
                     return estadoPagoCumple && fletesCumple;
                 })
                 .collect(Collectors.toList());
-
-        
 
         mostrarTablaMovimientos(movimientosFiltrados);
         //Total Monto
@@ -1679,9 +1659,8 @@ public class Consultas extends javax.swing.JFrame {
             txtTotalFlete.setText(totalFormateado);
         }
     }
-    
 
-        private static void ComboBoxStyle(JComboBox<String> comboBox) {
+    private static void ComboBoxStyle(JComboBox<String> comboBox) {
         comboBox.getEditor().getEditorComponent().addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
@@ -1702,7 +1681,6 @@ public class Consultas extends javax.swing.JFrame {
             }
         });
     }
-    
 
     private void calcularTotalBultos(List<Movimientos> movimientosFiltrados, int[] selectedRows) {
 
@@ -1732,7 +1710,6 @@ public class Consultas extends javax.swing.JFrame {
 
         }
     }
-
 
     private void mostrarTablaMovimientos(List<Movimientos> listaMovimientos) {
         //filas y columnas no editables
@@ -1784,7 +1761,8 @@ public class Consultas extends javax.swing.JFrame {
         tablaConsultas.setDefaultRenderer(Object.class, centerRenderer);
 
     }
-      public void mostrarMensaje(String mensaje, String tipo, String titulo) {
+
+    public void mostrarMensaje(String mensaje, String tipo, String titulo) {
         JOptionPane optionPane = new JOptionPane(mensaje);
         if (tipo.equals("Info")) {
             optionPane.setMessageType(JOptionPane.INFORMATION_MESSAGE);
@@ -1807,19 +1785,19 @@ public class Consultas extends javax.swing.JFrame {
      */
 
     private void cbPagadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbPagadosActionPerformed
-       
+
     }//GEN-LAST:event_cbPagadosActionPerformed
 
     private void cbNoPagadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbNoPagadosActionPerformed
-        
+
     }//GEN-LAST:event_cbNoPagadosActionPerformed
 
     private void cbmTodosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbmTodosActionPerformed
-        
+
     }//GEN-LAST:event_cbmTodosActionPerformed
 
     private void cbFletePagadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbFletePagadoActionPerformed
-        
+
     }//GEN-LAST:event_cbFletePagadoActionPerformed
 
     private void btnMPMontosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMPMontosActionPerformed
@@ -1827,11 +1805,11 @@ public class Consultas extends javax.swing.JFrame {
     }//GEN-LAST:event_btnMPMontosActionPerformed
 
     private void cbfTodosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbfTodosActionPerformed
-        
+
     }//GEN-LAST:event_cbfTodosActionPerformed
 
     private void cbFleteNoPagadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbFleteNoPagadoActionPerformed
-        
+
     }//GEN-LAST:event_cbFleteNoPagadoActionPerformed
 
     private void btnMRFletesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMRFletesActionPerformed
@@ -1899,12 +1877,12 @@ public class Consultas extends javax.swing.JFrame {
         } else {
             mostrarMensaje("La tabla está vacía, no se puede eliminar", "Error", "Error al eliminar");
         }
-        
-        
+
+
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void txtBusquedaRemitoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBusquedaRemitoKeyTyped
-       txtBusquedaRemito.addKeyListener(new KeyAdapter() {
+        txtBusquedaRemito.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
                 trs.setRowFilter(RowFilter.regexFilter("(?i)" + txtBusquedaRemito.getText(), 5));
@@ -1961,7 +1939,7 @@ public class Consultas extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Se cambió el monto de todos los fletes con éxito", "Éxito", JOptionPane.INFORMATION_MESSAGE);
         }
     }
-    
+
     private void mostrarTablaMovimientos() {
         //filas y columnas no editables
         DefaultTableModel tabla = new DefaultTableModel() {
@@ -2268,167 +2246,187 @@ public class Consultas extends javax.swing.JFrame {
     private void generarPDF() {
         Document document = new Document();
         try {
-            // Crear un diálogo de selección de archivo
-            JFileChooser fileChooser = new JFileChooser();
-            fileChooser.setDialogTitle("Guardar PDF");
-            fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-            // Mostrar el diálogo de selección de archivo
-            int userSelection = fileChooser.showSaveDialog(null);
+            // Obtener el directorio seleccionado por el usuario
+            File selectedDirectory = seleccionarDirectorio();
 
-            if (userSelection == JFileChooser.APPROVE_OPTION) {
-                // Obtener el archivo seleccionado por el usuario
-                File selectedFile = fileChooser.getSelectedFile();
-                String outputPath = selectedFile.getAbsolutePath();
+            if (selectedDirectory != null) {
+                String fileName = JOptionPane.showInputDialog(null, "Ingrese el nombre del archivo (sin la extensión .pdf):");
 
-                // Agregar la extensión ".pdf" al nombre del archivo si no está presente
-                if (!outputPath.toLowerCase().endsWith(".pdf")) {
-                    outputPath += ".pdf";
-                }
+                if (fileName != null && !fileName.isEmpty()) {
+                    // Completar con la lógica para la creación del PDF usando el nombre del archivo
+                    String outputPath = selectedDirectory.getAbsolutePath() + File.separator + fileName + ".pdf";
+                    PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputPath));
+                    document.open();
 
-                // Crear el archivo de salida
-                File outputFile = new File(outputPath);
-                PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile));
-                document.open();
+                    //FUENTES
+                    Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 7, Font.BOLD);
+                    Font fontTotales = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
+                    Font fontFecha = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
+                    Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 9, Font.BOLD);
 
-                //FUENTES
-                Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 7, Font.BOLD);
-                Font fontTotales = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
-                Font fontFecha = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
-                Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 9, Font.BOLD);
+                    // LOGO
+                    InputStream logoStream = getClass().getClassLoader().getResourceAsStream("imagenes/logo.jpg");
+                    Image logo = Image.getInstance(ImageIO.read(logoStream), null);
+                    logo.scaleToFit(450, 800);
+                    logo.setAlignment(Element.ALIGN_CENTER);
+                    document.add(logo);
+                    // TITULO
+                    Paragraph titulo = new Paragraph("DETALLE DE MOVIMIENTOS", FontFactory.getFont(FontFactory.TIMES_ROMAN, 16, Font.BOLD, BaseColor.BLACK));
+                    titulo.setAlignment(Element.ALIGN_CENTER);
+                    titulo.setSpacingAfter(10f); // Espacio después del título (en puntos)
 
-                // LOGO
-                InputStream logoStream = getClass().getClassLoader().getResourceAsStream("imagenes/logo.jpg");
-                Image logo = Image.getInstance(ImageIO.read(logoStream), null);
-                logo.scaleToFit(450, 800);
-                logo.setAlignment(Element.ALIGN_CENTER);
-                document.add(logo);
-                // TITULO
-                Paragraph titulo = new Paragraph("DETALLE DE MOVIMIENTOS", FontFactory.getFont(FontFactory.TIMES_ROMAN, 16, Font.BOLD, BaseColor.BLACK));
-                titulo.setAlignment(Element.ALIGN_CENTER);
-                titulo.setSpacingAfter(10f); // Espacio después del título (en puntos)
+                    // FECHAS
+                    //Fecha
+                    // Obtener los valores de los campos de texto
+                    int diaD = Integer.parseInt(txtDiaD.getText());
+                    int mesD = Integer.parseInt(txtMesD.getText());
+                    int anioD = Integer.parseInt(txtAnioD.getText());
 
-                // FECHAS
-                 //Fecha
-        // Obtener los valores de los campos de texto
-        int diaD = Integer.parseInt(txtDiaD.getText());
-        int mesD = Integer.parseInt(txtMesD.getText());
-        int anioD = Integer.parseInt(txtAnioD.getText());
-        
-        // Crear una instancia de LocalDate si la fecha es válida
-            LocalDate fechaArmadaD = LocalDate.of(anioD, mesD, diaD);
-            
-            // Formatear la fecha en el formato deseado
+                    // Crear una instancia de LocalDate si la fecha es válida
+                    LocalDate fechaArmadaD = LocalDate.of(anioD, mesD, diaD);
+
+                    // Formatear la fecha en el formato deseado
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
                     String fechaDesde = fechaArmadaD.format(formatter);
-                    
+
                     // Obtener los valores de los campos de texto
-        int diaH = Integer.parseInt(txtDiaH.getText());
-        int mesH = Integer.parseInt(txtMesH.getText());
-        int anioH = Integer.parseInt(txtAnioH.getText());
-        
-        // Crear una instancia de LocalDate si la fecha es válida
-            LocalDate fechaArmadaH = LocalDate.of(anioH, mesH, diaH);
-            
-            // Formatear la fecha en el formato deseado
+                    int diaH = Integer.parseInt(txtDiaH.getText());
+                    int mesH = Integer.parseInt(txtMesH.getText());
+                    int anioH = Integer.parseInt(txtAnioH.getText());
+
+                    // Crear una instancia de LocalDate si la fecha es válida
+                    LocalDate fechaArmadaH = LocalDate.of(anioH, mesH, diaH);
+
+                    // Formatear la fecha en el formato deseado
                     DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("dd/MM/yyyy");
                     String fechaHasta = fechaArmadaH.format(formatter2);
 
-                // Agregar fechas desde y hasta al título
-                Chunk chunkFechas = new Chunk("Desde " + fechaDesde + " \nHasta " + fechaHasta, fontFecha);
-                Paragraph fechas = new Paragraph(chunkFechas);
-                fechas.setAlignment(Element.ALIGN_CENTER);
-                fechas.setSpacingAfter(5f); // Espacio después de las fechas (en puntos)
+                    // Agregar fechas desde y hasta al título
+                    Chunk chunkFechas = new Chunk("Desde " + fechaDesde + " \nHasta " + fechaHasta, fontFecha);
+                    Paragraph fechas = new Paragraph(chunkFechas);
+                    fechas.setAlignment(Element.ALIGN_CENTER);
+                    fechas.setSpacingAfter(5f); // Espacio después de las fechas (en puntos)
 
-                document.add(titulo);
-                document.add(fechas);
+                    document.add(titulo);
+                    document.add(fechas);
 
-                // Obtener las filas seleccionadas o todas las filas si no hay ninguna seleccionada
-                int[] filasSeleccionadas = tablaConsultas.getSelectedRows();
-                if (filasSeleccionadas.length == 0) {
-                    filasSeleccionadas = new int[tablaConsultas.getRowCount()];
-                    for (int i = 0; i < tablaConsultas.getRowCount(); i++) {
-                        filasSeleccionadas[i] = i;
+                    // Obtener las filas seleccionadas o todas las filas si no hay ninguna seleccionada
+                    int[] filasSeleccionadas = tablaConsultas.getSelectedRows();
+                    if (filasSeleccionadas.length == 0) {
+                        filasSeleccionadas = new int[tablaConsultas.getRowCount()];
+                        for (int i = 0; i < tablaConsultas.getRowCount(); i++) {
+                            filasSeleccionadas[i] = i;
+                        }
                     }
-                }
 
-                //creacion de la TABLA
-                PdfPTable table = new PdfPTable(tablaConsultas.getColumnCount() - 7); // Excluir las 6 columnas A_CARGO_DE, CC, OBS, MOVIMIENTO, RENDIDO_1 y RENDIDO_2
-                table.setSpacingBefore(10f); // Espacio antes de la tabla (en puntos)
-                table.setSpacingAfter(10f);
+                    //creacion de la TABLA
+                    PdfPTable table = new PdfPTable(tablaConsultas.getColumnCount() - 7); // Excluir las 6 columnas A_CARGO_DE, CC, OBS, MOVIMIENTO, RENDIDO_1 y RENDIDO_2
+                    table.setSpacingBefore(10f); // Espacio antes de la tabla (en puntos)
+                    table.setSpacingAfter(10f);
 
-                // Ajustar espacio horizontal
-                float[] columnWidths = {1f, 1.9f, 1.9f, 0.8f, 0.8f, 1f, 0.8f, 1f, 0.8f, 1.5f}; // Anchos de las columnas (proporciones)
-                table.setWidths(columnWidths);
-                table.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
+                    // Ajustar espacio horizontal
+                    float[] columnWidths = {1f, 1.9f, 1.9f, 0.8f, 0.8f, 1f, 0.8f, 1f, 0.8f, 1.5f}; // Anchos de las columnas (proporciones)
+                    table.setWidths(columnWidths);
+                    table.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
 
-                table.setWidths(columnWidths);
+                    table.setWidths(columnWidths);
 
-                // Agregar las celdas a la tabla
-                for (int i = 0; i < tablaConsultas.getColumnCount(); i++) {
-                    String col = tablaConsultas.getColumnName(i);
-                    if (!col.equals("A_CARGO_DE") && !col.equals("CC") && !col.equals("OBS") && !col.equals("ID")
-                            && !col.equals("RENDIDO") && !col.equals("RENDIDO") && !col.equals("HORA")) {
-                        PdfPCell cell = new PdfPCell(new Phrase(col, font));
-                        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-                        cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
-                        table.addCell(cell);
+                    // Agregar las celdas a la tabla
+                    for (int i = 0; i < tablaConsultas.getColumnCount(); i++) {
+                        String col = tablaConsultas.getColumnName(i);
+                        if (!col.equals("A_CARGO_DE") && !col.equals("CC") && !col.equals("OBS") && !col.equals("ID")
+                                && !col.equals("RENDIDO") && !col.equals("RENDIDO") && !col.equals("HORA")) {
+                            PdfPCell cell = new PdfPCell(new Phrase(col, font));
+                            cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+                            cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
+                            table.addCell(cell);
+                        }
                     }
-                }
-                for (int row : filasSeleccionadas) {
-                    for (int col = 0; col < tablaConsultas.getColumnCount(); col++) {
-                        String colName = tablaConsultas.getColumnName(col);
-                        if (!colName.equals("A_CARGO_DE") && !colName.equals("CC") && !colName.equals("OBS") && !colName.equals("ID")
-                                && !colName.equals("RENDIDO") && !colName.equals("RENDIDO") && !colName.equals("HORA")) {
-                            Object value = tablaConsultas.getValueAt(row, col);
-                            if (value != null) {
-                                PdfPCell cell = new PdfPCell(new Phrase(value.toString(), fontFilas));
-                                cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-                                cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
-                                if (colName.equals("CLIENTE") || colName.equals("DESTINO") || colName.equals("FECHA")) {
+                    for (int row : filasSeleccionadas) {
+                        for (int col = 0; col < tablaConsultas.getColumnCount(); col++) {
+                            String colName = tablaConsultas.getColumnName(col);
+                            if (!colName.equals("A_CARGO_DE") && !colName.equals("CC") && !colName.equals("OBS") && !colName.equals("ID")
+                                    && !colName.equals("RENDIDO") && !colName.equals("RENDIDO") && !colName.equals("HORA")) {
+                                Object value = tablaConsultas.getValueAt(row, col);
+                                if (value != null) {
+                                    PdfPCell cell = new PdfPCell(new Phrase(value.toString(), fontFilas));
                                     cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+                                    cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
+                                    if (colName.equals("CLIENTE") || colName.equals("DESTINO") || colName.equals("FECHA")) {
+                                        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+                                    }
+                                    table.addCell(cell);
                                 }
-                                table.addCell(cell);
                             }
                         }
                     }
+
+                    document.add(table);
+
+                    // Crear una tabla para los montos totales
+                    PdfPTable totalsTable = new PdfPTable(2);
+                    totalsTable.setWidthPercentage(100);
+
+                    // Monto total
+                    // Establecer la fuente deseada
+                    Phrase montoTotalPhrase = new Phrase("Monto total: $" + txtTotalMonto.getText(), fontTotales);
+                    PdfPCell montoTotalCell = new PdfPCell(montoTotalPhrase);
+                    montoTotalCell.setBorder(Rectangle.NO_BORDER);
+                    montoTotalCell.setHorizontalAlignment(Element.ALIGN_CENTER); // Alinear la celda al centro
+                    totalsTable.addCell(montoTotalCell);
+
+                    // Flete total
+                    Phrase fleteTotalPhrase = new Phrase("Flete total: $" + txtTotalFlete.getText(), fontTotales);
+                    PdfPCell fleteTotalCell = new PdfPCell(fleteTotalPhrase);
+                    fleteTotalCell.setBorder(Rectangle.NO_BORDER);
+                    fleteTotalCell.setHorizontalAlignment(Element.ALIGN_CENTER); // Alinear la celda al centro
+                    totalsTable.addCell(fleteTotalCell);
+
+                    totalsTable.setSpacingBefore(10f);
+                    document.add(totalsTable);
+                    document.close();
+                    writer.close();
+
+                    JOptionPane.showMessageDialog(null, "El archivo se generó correctamente.", "Información", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    // El usuario canceló o no ingresó un nombre
+                    System.out.println("Operación cancelada por el usuario.");
                 }
-
-                document.add(table);
-
-                // Crear una tabla para los montos totales
-                PdfPTable totalsTable = new PdfPTable(2);
-                totalsTable.setWidthPercentage(100);
-
-                // Monto total
-                // Establecer la fuente deseada
-                Phrase montoTotalPhrase = new Phrase("Monto total: $" + txtTotalMonto.getText(), fontTotales);
-                PdfPCell montoTotalCell = new PdfPCell(montoTotalPhrase);
-                montoTotalCell.setBorder(Rectangle.NO_BORDER);
-                montoTotalCell.setHorizontalAlignment(Element.ALIGN_CENTER); // Alinear la celda al centro
-                totalsTable.addCell(montoTotalCell);
-
-                // Flete total
-                Phrase fleteTotalPhrase = new Phrase("Flete total: $" + txtTotalFlete.getText(), fontTotales);
-                PdfPCell fleteTotalCell = new PdfPCell(fleteTotalPhrase);
-                fleteTotalCell.setBorder(Rectangle.NO_BORDER);
-                fleteTotalCell.setHorizontalAlignment(Element.ALIGN_CENTER); // Alinear la celda al centro
-                totalsTable.addCell(fleteTotalCell);
-
-                totalsTable.setSpacingBefore(10f);
-                document.add(totalsTable);
-                document.close();
-                writer.close();
-
-                JOptionPane.showMessageDialog(null, "El archivo se generó correctamente.", "Información", JOptionPane.INFORMATION_MESSAGE);
             }
         } catch (DocumentException | FileNotFoundException e) {
             JOptionPane.showMessageDialog(null, "Error al generar el archivo PDF.", "Error", JOptionPane.ERROR_MESSAGE);
-        } catch (IOException ex) {
-            Logger.getLogger(Consultas.class.getName()).log(Level.SEVERE, null, ex);
         }
+    
+    catch (IOException ex) {
+            Logger.getLogger(Consultas.class.getName()).log(Level.SEVERE, null, ex);
+    }
+}
 
+
+    private File seleccionarDirectorio() {
+    File selectedDirectory = null;
+
+    try {
+        if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.OPEN)) {
+            Desktop desktop = Desktop.getDesktop();
+            FileDialog fileDialog = new FileDialog(new JFrame(), "Seleccionar directorio", FileDialog.LOAD);
+            fileDialog.setDirectory(System.getProperty("user.home"));
+            fileDialog.setFile(".pdf");
+            fileDialog.setVisible(true);
+
+            String selectedFile = fileDialog.getFile();
+            String selectedDirectoryPath = fileDialog.getDirectory();
+
+            if (selectedFile != null && selectedDirectoryPath != null) {
+                selectedDirectory = new File(selectedDirectoryPath);
+            }
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
     }
 
+    return selectedDirectory;
+}
     private void imprimirPDF() {
         Document document = new Document();
         try {
@@ -2456,31 +2454,31 @@ public class Consultas extends javax.swing.JFrame {
             titulo.setSpacingAfter(10f); // Espacio después del título (en puntos)
 
             // FECHAS
-                 //Fecha
-        // Obtener los valores de los campos de texto
-        int diaD = Integer.parseInt(txtDiaD.getText());
-        int mesD = Integer.parseInt(txtMesD.getText());
-        int anioD = Integer.parseInt(txtAnioD.getText());
-        
-        // Crear una instancia de LocalDate si la fecha es válida
+            //Fecha
+            // Obtener los valores de los campos de texto
+            int diaD = Integer.parseInt(txtDiaD.getText());
+            int mesD = Integer.parseInt(txtMesD.getText());
+            int anioD = Integer.parseInt(txtAnioD.getText());
+
+            // Crear una instancia de LocalDate si la fecha es válida
             LocalDate fechaArmadaD = LocalDate.of(anioD, mesD, diaD);
-            
+
             // Formatear la fecha en el formato deseado
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                    String fechaDesde = fechaArmadaD.format(formatter);
-                    
-                    // Obtener los valores de los campos de texto
-        int diaH = Integer.parseInt(txtDiaH.getText());
-        int mesH = Integer.parseInt(txtMesH.getText());
-        int anioH = Integer.parseInt(txtAnioH.getText());
-        
-        // Crear una instancia de LocalDate si la fecha es válida
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            String fechaDesde = fechaArmadaD.format(formatter);
+
+            // Obtener los valores de los campos de texto
+            int diaH = Integer.parseInt(txtDiaH.getText());
+            int mesH = Integer.parseInt(txtMesH.getText());
+            int anioH = Integer.parseInt(txtAnioH.getText());
+
+            // Crear una instancia de LocalDate si la fecha es válida
             LocalDate fechaArmadaH = LocalDate.of(anioH, mesH, diaH);
-            
+
             // Formatear la fecha en el formato deseado
-                    DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                    String fechaHasta = fechaArmadaH.format(formatter2);
-                    
+            DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            String fechaHasta = fechaArmadaH.format(formatter2);
+
             // Agregar fechas desde y hasta al título
             Chunk chunkFechas = new Chunk("Desde " + fechaDesde + " \nHasta " + fechaHasta, fontFecha);
             Paragraph fechas = new Paragraph(chunkFechas);
@@ -2588,8 +2586,11 @@ public class Consultas extends javax.swing.JFrame {
 
         } catch (DocumentException | FileNotFoundException e) {
             JOptionPane.showMessageDialog(null, "Error al generar el archivo PDF.", "Error", JOptionPane.ERROR_MESSAGE);
-        } catch (IOException ex) {
-            Logger.getLogger(Consultas.class.getName()).log(Level.SEVERE, null, ex);
+
+} catch (IOException ex) {
+            Logger.getLogger(Consultas.class  
+
+.getName()).log(Level.SEVERE, null, ex);
         }
 
     }

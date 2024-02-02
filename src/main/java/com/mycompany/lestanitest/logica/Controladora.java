@@ -306,6 +306,37 @@ public class Controladora {
     /**
      * ----------------------------------------------EDITAR-----------------------------------------------------------------
      */
+    
+    public void actualizarMovimientosCliente(String nombreAnterior, String nombreNuevo) {
+        // Lógica para buscar los movimientos con el nombre anterior
+        List<Movimientos> movimientos = traerMovimientos();
+        List<Movimientos> movimientosConNombreAnterior = new ArrayList<>();
+
+        // Itera sobre los movimientos y encuentra los que tienen el nombre anterior
+        for (Movimientos movimiento : movimientos) {
+            if (movimiento.getCliente().equals(nombreAnterior) || movimiento.getDestino().equals(nombreAnterior)) {
+                movimientosConNombreAnterior.add(movimiento);
+            }
+        }
+
+        // Itera sobre la lista de movimientos con el nombre anterior y actualiza los nombres
+        for (Movimientos movimiento : movimientosConNombreAnterior) {
+            // Verifica si el nombre anterior aparece en la columna "cliente" y actualiza si es necesario
+            if (movimiento.getCliente().equals(nombreAnterior)) {
+                movimiento.setCliente(nombreNuevo);
+            }
+
+            // Verifica si el nombre anterior aparece en la columna "destino" y actualiza si es necesario
+            if (movimiento.getDestino().equals(nombreAnterior)) {
+                movimiento.setDestino(nombreNuevo);
+            }
+        }
+
+        // Luego, actualiza los movimientos en la base de datos
+        ctrl.ActualizarMovimientos(movimientos);
+    }
+  
+    
     public Movimientos traerMovimiento(int idMovimiento) {
         return ctrl.traerMovimiento(idMovimiento);
     }

@@ -1,9 +1,14 @@
 
 package com.mycompany.lestanitest.igu;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -296,27 +301,56 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem3ActionPerformed
     private Principal ventanaPrincipal;
     private void CargaMovimientoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CargaMovimientoActionPerformed
+        
+        try {
         // Verificar si la ventana ya está abierta
         if (ventanaPrincipal == null || !ventanaPrincipal.isVisible()) {
             // Si la ventana no está abierta o está oculta, crea una nueva instancia
             ventanaPrincipal = new Principal();
         }
 
-        // Mostrar la ventana y enfocarla (llevarla al frente)
-        ventanaPrincipal.setVisible(true);
-        ventanaPrincipal.toFront();
+        SwingUtilities.invokeLater(() -> {
+            try {
+                ventanaPrincipal.setVisible(true);
+                ventanaPrincipal.toFront();
+            } catch (Exception ex) {
+                // Mostrar un JOptionPane con el mensaje de error
+                mostrarError(ex.getMessage());
+            }
+        });
+    } catch (Exception ex) {
+        // Mostrar un JOptionPane con el mensaje de error
+        mostrarError(ex.getMessage());
+    }
     }//GEN-LAST:event_CargaMovimientoActionPerformed
-    private Consultas ventanaConsultas;
+    private void mostrarError(String mensaje) {
+    JOptionPane.showMessageDialog(this, "Error: " + mensaje, "Error", JOptionPane.ERROR_MESSAGE);
+}
+    
+    private List<Consultas> ventanasAbiertas = new ArrayList<>();
     private void menuConsultasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuConsultasActionPerformed
-        // Verificar si la ventana ya está abierta
-        if (ventanaConsultas == null || !ventanaConsultas.isVisible()) {
-            // Si la ventana no está abierta o está oculta, crea una nueva instancia
-            ventanaConsultas = new Consultas();
-        }
+          // Verificar el número de ventanas abiertas
+    if (ventanasAbiertas.size() < 2) {
+        // Puedes abrir una nueva ventana
+        Consultas nuevaVentana = new Consultas();
+        ventanasAbiertas.add(nuevaVentana);
 
-        // Mostrar la ventana y enfocarla (llevarla al frente)
-        ventanaConsultas.setVisible(true);
-        ventanaConsultas.toFront();
+        // Configurar un WindowListener para detectar el cierre de la ventana
+        nuevaVentana.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                // Remover la ventana cerrada de la lista
+                ventanasAbiertas.remove(nuevaVentana);
+            }
+        });
+
+        // Mostrar la nueva ventana y enfocarla
+        nuevaVentana.setVisible(true);
+        nuevaVentana.toFront();
+    } else {
+        // Ya se han abierto dos ventanas, mostrar mensaje con JOptionPane
+        JOptionPane.showMessageDialog(null, "No se pueden abrir más de dos ventanas simultáneamente.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+    }
     }//GEN-LAST:event_menuConsultasActionPerformed
     private Recibo ventanaRecibos;
     private void RecibosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RecibosActionPerformed

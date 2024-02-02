@@ -180,6 +180,7 @@ public class Principal extends javax.swing.JFrame {
     private Servicios servicioSeleccionado;
     int numeroRemito = 0;
     private int idSeleccionado = -1; // Inicializado con un valor negativo para indicar que no se ha seleccionado ningún movimiento.    
+
     public Principal() {
         initComponents();
         setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -224,7 +225,7 @@ public class Principal extends javax.swing.JFrame {
             String fechaFormateada = fechaArmada.format(formatter);
 
             // Realizar otras operaciones con fechaArmada aquí
-            System.out.println("Fecha  válida: " + fechaFormateada); 
+            System.out.println("Fecha  válida: " + fechaFormateada);
 
         } catch (DateTimeException e) {
             // Manejar el caso en que la fecha no sea válida
@@ -253,14 +254,19 @@ public class Principal extends javax.swing.JFrame {
         cbfleteRendido.setNextFocusableComponent(cbRepresentantes);
 
         JTextField textRepre = (JTextField) cbRepresentantes.getEditor().getEditorComponent();
-        textRepre.setNextFocusableComponent(txtObservaciones);
+        textRepre.setNextFocusableComponent(btnAgregar);
 
         cbCuentaCorriente.setNextFocusableComponent(txtMonto);
         txtObservaciones.setNextFocusableComponent(btnAgregar);
         btnAgregar.setNextFocusableComponent(btnEliminarMovimiento);
         btnEliminarMovimiento.setNextFocusableComponent(btnGenerarRemito);
         btnGenerarRemito.setNextFocusableComponent(btnGenerarRemitoDuplicado);
-        btnGenerarRemitoDuplicado.setNextFocusableComponent(txtDia);
+        btnGenerarRemitoDuplicado.setNextFocusableComponent(btnRemitoTabla);
+        btnRemitoTabla.setNextFocusableComponent(txtDia);
+        
+        //Text Area
+        txtObservaciones.setLineWrap(true);
+        txtObservaciones.setWrapStyleWord(true);
 
         //Borde al seleccionar TEXFIELD
         SwingUtilities.invokeLater(() -> {
@@ -282,6 +288,7 @@ public class Principal extends javax.swing.JFrame {
                     ((JComponent) e.getComponent()).setBorder(normalBorder);
                 }
             };
+            
             txtDia.addFocusListener(focusAdapter);
             txtMes.addFocusListener(focusAdapter);
             txtAnio.addFocusListener(focusAdapter);
@@ -290,6 +297,11 @@ public class Principal extends javax.swing.JFrame {
             txtObservaciones.addFocusListener(focusAdapter);
             txtMonto.addFocusListener(focusAdapter);
             txtFlete.addFocusListener(focusAdapter);
+            txtContrarembolso.addFocusListener(focusAdapter);
+            txtSeguro.addFocusListener(focusAdapter);
+            txtRedespacho.addFocusListener(focusAdapter);
+            txtValDeclarado.addFocusListener(focusAdapter);
+           
         });
         //CHECKBOX
         SwingUtilities.invokeLater(() -> {
@@ -356,14 +368,13 @@ public class Principal extends javax.swing.JFrame {
                 }
             };
 
-            btnAgregar.addFocusListener(focusAdapter); 
+            btnAgregar.addFocusListener(focusAdapter);
             btnEliminarMovimiento.addFocusListener(focusAdapter);
             btnGenerarRemito.addFocusListener(focusAdapter);
             btnGenerarRemitoDuplicado.addFocusListener(focusAdapter);
+            btnRemitoTabla.addFocusListener(focusAdapter);
         });
 
-        
-        
         tablaMovimientos.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -385,8 +396,7 @@ public class Principal extends javax.swing.JFrame {
                 }
             }
         });
-        
-        
+
         KeyListener keyListener = new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent e) {
@@ -621,15 +631,13 @@ public class Principal extends javax.swing.JFrame {
         ModeloServicio modServ = new ModeloServicio();
         ArrayList<Servicios> listaServ = modServ.getServicios();
         cbServicios.setEditable(true);
-         // Ordenar la lista de clientes alfabéticamente por el nombre
+        // Ordenar la lista de clientes alfabéticamente por el nombre
         listaServ.sort((servicio1, servicio2) -> servicio1.getServicio().compareToIgnoreCase(servicio2.getServicio()));
-        
+
         // Agregar los clientes al combobox
         for (Servicios Servicios : listaServ) {
             cbServicios.addItem(Servicios.getServicio());
         }
-
-       
 
         // Eliminar la opción en blanco después de configurar el decorador
         cbServicios.removeItem("");
@@ -664,7 +672,7 @@ public class Principal extends javax.swing.JFrame {
         cbRepresentantes.setEditable(true);
         // Ordenar la lista de clientes alfabéticamente por el nombre
         listaRepresentantes.sort((representante1, representante2) -> representante1.getNombre().compareToIgnoreCase(representante2.getNombre()));
-        
+
         // Agregar los clientes al combobox
         for (Representantes Repre : listaRepresentantes) {
             cbRepresentantes.addItem(Repre.getNombre());
@@ -672,8 +680,6 @@ public class Principal extends javax.swing.JFrame {
 
 // Eliminar la opción en blanco después de configurar el decorador
         cbRepresentantes.removeItem("");
-
-        
 
         // Establecer el índice seleccionado a -1 para no mostrar ninguna selección
         cbRepresentantes.setSelectedIndex(-1);
@@ -778,7 +784,6 @@ public class Principal extends javax.swing.JFrame {
         cbClientes = new javax.swing.JComboBox<>();
         cbDestinos = new javax.swing.JComboBox<>();
         cbServicios = new javax.swing.JComboBox<>();
-        txtObservaciones = new javax.swing.JTextField();
         jPanel5 = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
         txtDia = new javax.swing.JTextField();
@@ -812,6 +817,8 @@ public class Principal extends javax.swing.JFrame {
         cbRepresentantes = new javax.swing.JComboBox<>();
         jLabel8 = new javax.swing.JLabel();
         btnRemitoTabla = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txtObservaciones = new javax.swing.JTextArea();
         PanelBusquedas = new javax.swing.JPanel();
         txtFiltroCliente = new javax.swing.JTextField();
         txtFiltroRemito = new javax.swing.JTextField();
@@ -1342,6 +1349,10 @@ public class Principal extends javax.swing.JFrame {
             }
         });
 
+        txtObservaciones.setColumns(20);
+        txtObservaciones.setRows(5);
+        jScrollPane1.setViewportView(txtObservaciones);
+
         javax.swing.GroupLayout panelCargaMovimientosLayout = new javax.swing.GroupLayout(panelCargaMovimientos);
         panelCargaMovimientos.setLayout(panelCargaMovimientosLayout);
         panelCargaMovimientosLayout.setHorizontalGroup(
@@ -1368,20 +1379,20 @@ public class Principal extends javax.swing.JFrame {
                                 .addComponent(btnAgregarCliente)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
                         .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
-                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel14)
-                                    .addComponent(txtObservaciones, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
                                 .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(cbRepresentantes, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(30, 30, 30)
-                                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addGap(50, 50, 50)
+                                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
+                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel14)
+                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                .addGap(39, 39, 39)
                 .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -1404,11 +1415,11 @@ public class Principal extends javax.swing.JFrame {
                                 .addComponent(jLabel14)
                                 .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(txtObservaciones, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
                                         .addGap(53, 53, 53)
-                                        .addComponent(btnAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                        .addComponent(btnAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                             .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1603,7 +1614,7 @@ public class Principal extends javax.swing.JFrame {
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tabla);
         tablaMovimientos.setRowSorter(sorter);
         sorter.setSortKeys(java.util.Arrays.asList(new RowSorter.SortKey(1, SortOrder.DESCENDING)));
-        
+
         //carga de los datos desde la bd
         List<Movimientos> listaMovimientos = control.traerMovimientos();
         // Ordenar los datos por el ID en forma descendente
@@ -1647,22 +1658,22 @@ public class Principal extends javax.swing.JFrame {
             }
         }
     }
-        
+
 
     private void txtFiltroClienteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFiltroClienteKeyTyped
         trs = new TableRowSorter(tablaMovimientos.getModel());
         tablaMovimientos.setRowSorter(trs);
-        
-         txtFiltroCliente.addKeyListener(new KeyAdapter() {
-        @Override
-        public void keyReleased(KeyEvent e) {
-            String textoFiltro = txtFiltroCliente.getText();
-            // Crear un filtro que busque en las columnas "Clientes" (columna 3) y "Destinos" (columna 4)
-            trs.setRowFilter(RowFilter.regexFilter("(?i)" + textoFiltro, 3, 4));
-        }
-    });
-        
-        
+
+        txtFiltroCliente.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                String textoFiltro = txtFiltroCliente.getText();
+                // Crear un filtro que busque en las columnas "Clientes" (columna 3) y "Destinos" (columna 4)
+                trs.setRowFilter(RowFilter.regexFilter("(?i)" + textoFiltro, 3, 4));
+            }
+        });
+
+
     }//GEN-LAST:event_txtFiltroClienteKeyTyped
     public void mostrarMensaje(String mensaje, String tipo, String titulo) {
         JOptionPane optionPane = new JOptionPane(mensaje);
@@ -1733,18 +1744,18 @@ public class Principal extends javax.swing.JFrame {
         } else {
             monto = "0";
         }
-        
-            String fleteTexto = txtFlete.getText();
-            BigDecimal flete = new BigDecimal(fleteTexto);
-            String sTexto = txtSeguro.getText();
-            String rTexto = txtRedespacho.getText();
-            String ccTexto = txtContrarembolso.getText();
-            BigDecimal s = new BigDecimal(sTexto);
-            BigDecimal r = new BigDecimal(rTexto);
-            BigDecimal cc = new BigDecimal(ccTexto);
-            BigDecimal resultado = flete.add(s).add(r).add(cc);
-            String fletenuevo = resultado.toString();
-            
+
+        String fleteTexto = txtFlete.getText();
+        BigDecimal flete = new BigDecimal(fleteTexto);
+        String sTexto = txtSeguro.getText();
+        String rTexto = txtRedespacho.getText();
+        String ccTexto = txtContrarembolso.getText();
+        BigDecimal s = new BigDecimal(sTexto);
+        BigDecimal r = new BigDecimal(rTexto);
+        BigDecimal cc = new BigDecimal(ccTexto);
+        BigDecimal resultado = flete.add(s).add(r).add(cc);
+        String fletenuevo = resultado.toString();
+
         String obs = txtObservaciones.getText();
         //verif flete origen/destino
         if (cbfDestino.isSelected()) {
@@ -1988,7 +1999,7 @@ public class Principal extends javax.swing.JFrame {
         String tFleteP = "";
         String tFleteR = "";
         String cC = "";
-        String remito;  
+        String remito;
         //FECHA
         Date fecha = getFecha();
         //HORA
@@ -2011,19 +2022,17 @@ public class Principal extends javax.swing.JFrame {
         String monto;
         // Obtener el valor del campo de texto txtRemito
         String textoRemito = txtRemito.getText();
-        
+
         if (!textoRemito.equals("0")) {
             // Asignar el valor de txtRemito a remito si no es igual a "0"
             remito = textoRemito;
         } else {
-           
-            
+
             // Usando String.valueOf()
             remito = String.valueOf(numeroRemito + 1);
-            
+
             // JOptionPane.showMessageDialog(null, "El valor de remito no puede ser 0", "Error", JOptionPane.ERROR_MESSAGE);
         }
-
 
         // Si hay campos faltantes, mostrar el mensaje de alerta
         if (!txtMontoValor.isEmpty()) {
@@ -2031,19 +2040,17 @@ public class Principal extends javax.swing.JFrame {
         } else {
             monto = "0";
         }
-          String fleteTexto = txtFlete.getText();
-            BigDecimal flete = new BigDecimal(fleteTexto);
-            String sTexto = txtSeguro.getText();
-            String rTexto = txtRedespacho.getText();
-            String ccTexto = txtContrarembolso.getText();
-            BigDecimal s = new BigDecimal(sTexto);
-            BigDecimal r = new BigDecimal(rTexto);
-            BigDecimal cc = new BigDecimal(ccTexto);
-            BigDecimal resultado = flete.add(s).add(r).add(cc);
-            String fletenuevo = resultado.toString();
-            
-           
-            
+        String fleteTexto = txtFlete.getText();
+        BigDecimal flete = new BigDecimal(fleteTexto);
+        String sTexto = txtSeguro.getText();
+        String rTexto = txtRedespacho.getText();
+        String ccTexto = txtContrarembolso.getText();
+        BigDecimal s = new BigDecimal(sTexto);
+        BigDecimal r = new BigDecimal(rTexto);
+        BigDecimal cc = new BigDecimal(ccTexto);
+        BigDecimal resultado = flete.add(s).add(r).add(cc);
+        String fletenuevo = resultado.toString();
+
         String obs = txtObservaciones.getText();
         //verif flete origen/destino
         if (cbfDestino.isSelected()) {
@@ -2131,7 +2138,7 @@ public class Principal extends javax.swing.JFrame {
 
         control.cargarMovimiento(cliente, destino, servicio, representante, bulto, monto, fletenuevo, tFlete, remito, tMontoP, tMontoR, tFleteP, tFleteR, fecha, cC, obs, horaSQL);
         //mostrarMensaje("Movimiento agregado correctamente", "Info", "Agregado con exito!");
-        
+
         //Llama la funcion generar  
         generarPdf();
 
@@ -2244,7 +2251,7 @@ public class Principal extends javax.swing.JFrame {
         //remito
         // Obtener el valor del campo de texto txtRemito
         String textoRemito = txtRemito.getText();
-        
+
         if (!textoRemito.equals("0")) {
             // Asignar el valor de txtRemito a remito si no es igual a "0"
             remito = textoRemito;
@@ -2252,10 +2259,9 @@ public class Principal extends javax.swing.JFrame {
 
             // Usando String.valueOf()
             remito = String.valueOf(numeroRemito + 1);
-            
+
             // JOptionPane.showMessageDialog(null, "El valor de remito no puede ser 0", "Error", JOptionPane.ERROR_MESSAGE);
         }
-
 
         // Si hay campos faltantes, mostrar el mensaje de alerta
         if (!txtMontoValor.isEmpty()) {
@@ -2264,16 +2270,16 @@ public class Principal extends javax.swing.JFrame {
             monto = "0";
         }
         String fleteTexto = txtFlete.getText();
-            BigDecimal flete = new BigDecimal(fleteTexto);
-            String sTexto = txtSeguro.getText();
-            String rTexto = txtRedespacho.getText();
-            String ccTexto = txtContrarembolso.getText();
-            BigDecimal s = new BigDecimal(sTexto);
-            BigDecimal r = new BigDecimal(rTexto);
-            BigDecimal cc = new BigDecimal(ccTexto);
-            BigDecimal resultado = flete.add(s).add(r).add(cc);
-            String fletenuevo = resultado.toString();
-            
+        BigDecimal flete = new BigDecimal(fleteTexto);
+        String sTexto = txtSeguro.getText();
+        String rTexto = txtRedespacho.getText();
+        String ccTexto = txtContrarembolso.getText();
+        BigDecimal s = new BigDecimal(sTexto);
+        BigDecimal r = new BigDecimal(rTexto);
+        BigDecimal cc = new BigDecimal(ccTexto);
+        BigDecimal resultado = flete.add(s).add(r).add(cc);
+        String fletenuevo = resultado.toString();
+
         String obs = txtObservaciones.getText();
         //verif flete origen/destino
         if (cbfDestino.isSelected()) {
@@ -2455,22 +2461,17 @@ public class Principal extends javax.swing.JFrame {
         Movimientos mov = new Movimientos();
         if (idSeleccionado != -1) {
             // Busco id en la bd
-             mov = control.traerMovimiento(idSeleccionado);
-             
+            mov = control.traerMovimiento(idSeleccionado);
+
             // Debes implementar el código para acceder a tu base de datos y obtener los datos del cliente y destino
             String cliente = mov.getCliente();
-            String destino  = mov.getDestino();
+            String destino = mov.getDestino();
             String fecha = formatoFecha.format(mov.getFecha());
             String servicio = mov.getServicio();
             String bulto = Integer.toString(mov.getBultos());
             String representante = mov.getRepresentante();
             String remito = mov.getRemito();
-            
-         
-            
-            
-            
-                    
+
             // Eliminar el símbolo "$" y el formato de los campos monto y flete
             String montoSinSimbolo = mov.getMonto().replaceAll("[$]", "");
             String fleteSinSimbolo = mov.getFlete().replaceAll("[$]", "");
@@ -2484,35 +2485,32 @@ public class Principal extends javax.swing.JFrame {
             BigDecimal fleteBigDecimal = new BigDecimal(fleteFormateado);
 
             // Asignar los valores de los BigDecimal a los campos de texto
-           String monto = montoBigDecimal.toString();
-           String flete = fleteBigDecimal.toString();
-           
-           
-            String obs = mov.getObservaciones();        
+            String monto = montoBigDecimal.toString();
+            String flete = fleteBigDecimal.toString();
+
+            String obs = mov.getObservaciones();
             String origenDestino = mov.getFleteDestinoOrigen();
             String cc = mov.getCuentaCorriente();
-            
+
             boolean cuentaCorriente;
-            
-             
-        if (remito.equals("0")) {
-            // Usando String.valueOf()
-            remito = String.valueOf(numeroRemito + 1);
-            // Actualizar la tabla en la base de datos
+
             if (remito.equals("0")) {
-                // Incrementar el número de remito
-                int nuevoNumeroRemito = numeroRemito + 1;
-                remito = String.valueOf(nuevoNumeroRemito);    
+                // Usando String.valueOf()
+                remito = String.valueOf(numeroRemito + 1);
+                // Actualizar la tabla en la base de datos
+                if (remito.equals("0")) {
+                    // Incrementar el número de remito
+                    int nuevoNumeroRemito = numeroRemito + 1;
+                    remito = String.valueOf(nuevoNumeroRemito);
+                }
+
+            } else {
+
+                // Asignar el valor de txtRemito a remito si no es igual a "0"
+                remito = remito;
+                System.out.println("remito else " + remito);
+                // JOptionPane.showMessageDialog(null, "El valor de remito no puede ser 0", "Error", JOptionPane.ERROR_MESSAGE);
             }
-          
-        } else {
-  
-             // Asignar el valor de txtRemito a remito si no es igual a "0"
-            remito = remito;
-            System.out.println("remito else "+ remito);
-            // JOptionPane.showMessageDialog(null, "El valor de remito no puede ser 0", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-        
 
             if ("Si".equalsIgnoreCase(cc)) {
                 cuentaCorriente = true;
@@ -2524,27 +2522,24 @@ public class Principal extends javax.swing.JFrame {
             }
             System.out.println("cuenta corriente:");
             System.out.println(cuentaCorriente);
-            
+
             String montoPagado = mov.getTipoMontoP();
             String montoRendido = mov.getTipoMontoR();
             String fletePagado = mov.getTipoFleteP();
             String fleteRendido = mov.getTipoFleteR();
-            
-            
-                    
-            System.out.println("Datos de id: "+fecha+" "+ cliente +" "+ destino+" "+ bulto +" "+ remito +" "+ monto +" "+ montoPagado +" "+ montoRendido +" "+ flete+" "+fletePagado+" "+ fleteRendido+" "+origenDestino+" "+cc+" "+representante+" "+obs);
-            System.out.println("numero remito"+remito);
-            control.editarMovimiento(mov, remito);
-            generarRemito(fecha, cliente, destino, servicio,remito, bulto, representante, monto, montoPagado, montoRendido, flete, fletePagado, fleteRendido, origenDestino, cuentaCorriente, obs);
 
-        }else{
+            System.out.println("Datos de id: " + fecha + " " + cliente + " " + destino + " " + bulto + " " + remito + " " + monto + " " + montoPagado + " " + montoRendido + " " + flete + " " + fletePagado + " " + fleteRendido + " " + origenDestino + " " + cc + " " + representante + " " + obs);
+            System.out.println("numero remito" + remito);
+            control.editarMovimiento(mov, remito);
+            generarRemito(fecha, cliente, destino, servicio, remito, bulto, representante, monto, montoPagado, montoRendido, flete, fletePagado, fleteRendido, origenDestino, cuentaCorriente, obs);
+
+        } else {
             // No hay ningún ID seleccionado en la tabla, muestra un JOptionPane
-        JOptionPane.showMessageDialog(this, "Selecciona algún movimiento en la tabla", "Mensaje de Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Selecciona algún movimiento en la tabla", "Mensaje de Error", JOptionPane.ERROR_MESSAGE);
         }
 
 
     }//GEN-LAST:event_btnRemitoTablaActionPerformed
-
 
     /**
      * @param args the command line arguments
@@ -2633,6 +2628,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JPanel panelCargaMovimientos;
     private javax.swing.JTable tablaMovimientos;
@@ -2645,7 +2641,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JTextField txtFlete;
     private javax.swing.JTextField txtMes;
     private javax.swing.JTextField txtMonto;
-    private javax.swing.JTextField txtObservaciones;
+    private javax.swing.JTextArea txtObservaciones;
     private javax.swing.JTextField txtRedespacho;
     private javax.swing.JTextField txtRemito;
     private javax.swing.JTextField txtSeguro;
@@ -2669,27 +2665,19 @@ public class Principal extends javax.swing.JFrame {
         Date date = calendar.getTime();
 
         return date;
-    }       
-    
-    
-    
-    
-    
-    
-    private void generarRemito(String fecha,String clientee,String destinoo,String servicio,String remitoo, String bulto,String representantes, 
-             String monto, String montoPagado,String montoRendido, String flete,String fletePagado, String fleteRendido, String origenDestino, boolean cuentaCorriente, String obs ){
-        
-        
-     Document document = new Document();
-     
-     
-     
-     ModeloCliente modClientes = new ModeloCliente();
-     ArrayList<Cliente> listaClientes = modClientes.getClientes();
-        
-        String clienteSelect =  clientee;
-        String destinoSelect =  destinoo;
-        
+    }
+
+    private void generarRemito(String fecha, String clientee, String destinoo, String servicio, String remitoo, String bulto, String representantes,
+            String monto, String montoPagado, String montoRendido, String flete, String fletePagado, String fleteRendido, String origenDestino, boolean cuentaCorriente, String obs) {
+
+        Document document = new Document();
+
+        ModeloCliente modClientes = new ModeloCliente();
+        ArrayList<Cliente> listaClientes = modClientes.getClientes();
+
+        String clienteSelect = clientee;
+        String destinoSelect = destinoo;
+
         String nombreClienteImpresion = clienteSelect;
         // Buscar el cliente por nombre
         Cliente clienteEncontrado = null;
@@ -2710,35 +2698,28 @@ public class Principal extends javax.swing.JFrame {
             // El cliente no fue encontrado en la lista
             System.out.println("Cliente no encontrado: " + clienteSelect);
         }
-            
-        
-        
-            
-            Cliente destinoEncontrado = null;
-            String nombreDestinoImpresion = destinoSelect; // Variable auxiliar para almacenar el nombre
 
-            for (Cliente destino : listaClientes) {
-                if (destino.getNombre().equalsIgnoreCase(destinoSelect)) {
-                    destinoEncontrado = destino;
-                    nombreDestinoImpresion = destino.getNombre(); // Actualiza el nombre desde el objeto Cliente
-                    break; // Terminar el bucle una vez que se encuentra el cliente
-                }
-            }
+        Cliente destinoEncontrado = null;
+        String nombreDestinoImpresion = destinoSelect; // Variable auxiliar para almacenar el nombre
 
-            if (destinoEncontrado != null) {
-                // El cliente fue encontrado en la lista y destinoEncontrado contiene toda la información del cliente
-                // Realiza las acciones necesarias con el objeto cliente, por ejemplo:
-                System.out.println("Nombre del cliente: " + destinoEncontrado.getNombre());
-                System.out.println("Dirección: " + destinoEncontrado.getDireccion());
-                // Y así sucesivamente...
-            } else {
-                // El cliente no fue encontrado en la lista, pero aún tienes acceso al nombre almacenado en nombreDestinoImpresion
-                System.out.println("Cliente no encontrado: " + nombreDestinoImpresion);
+        for (Cliente destino : listaClientes) {
+            if (destino.getNombre().equalsIgnoreCase(destinoSelect)) {
+                destinoEncontrado = destino;
+                nombreDestinoImpresion = destino.getNombre(); // Actualiza el nombre desde el objeto Cliente
+                break; // Terminar el bucle una vez que se encuentra el cliente
             }
-     
-     
-     
-        
+        }
+
+        if (destinoEncontrado != null) {
+            // El cliente fue encontrado en la lista y destinoEncontrado contiene toda la información del cliente
+            // Realiza las acciones necesarias con el objeto cliente, por ejemplo:
+            System.out.println("Nombre del cliente: " + destinoEncontrado.getNombre());
+            System.out.println("Dirección: " + destinoEncontrado.getDireccion());
+            // Y así sucesivamente...
+        } else {
+            // El cliente no fue encontrado en la lista, pero aún tienes acceso al nombre almacenado en nombreDestinoImpresion
+            System.out.println("Cliente no encontrado: " + nombreDestinoImpresion);
+        }
 
         // Incrementar el contador de remito
         numeroRemito++;
@@ -2756,12 +2737,17 @@ public class Principal extends javax.swing.JFrame {
 
             document.open();
 
-            // Crear un PdfTemplate para agregar el contenido dentro del marco
-            PdfContentByte canvas = writer.getDirectContent();
-            PdfTemplate template = canvas.createTemplate(document.getPageSize().getWidth() - 40, document.getPageSize().getHeight() - 40);
+            // Crear una tabla que simule el marco
+            PdfPTable tablaMarco = new PdfPTable(1);
+            tablaMarco.setWidthPercentage(100);
+
+            // Crea una celda para el contenido
+            PdfPCell cellContenido = new PdfPCell();
+            cellContenido.setBorder(Rectangle.BOX); // Establecer el borde de la celda
+            cellContenido.setPadding(10);
 
             //FUENTES
-            Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.NORMAL);
+            Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 8, Font.BOLD);
             Font fontColumnas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD);
             Font fontTotales = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
             Font fontFecha = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD, BaseColor.BLACK);
@@ -2839,7 +2825,8 @@ public class Principal extends javax.swing.JFrame {
             cell2.setBorder(Rectangle.NO_BORDER); // Sin bordes
             table.addCell(cell2);
 
-            document.add(table);
+            //document.add(table);
+            cellContenido.addElement(table);
             // Crear una tabla contenedora con 2 columnas
             PdfPTable tablaContenedora = new PdfPTable(2);
             tablaContenedora.setWidthPercentage(100);
@@ -2850,8 +2837,7 @@ public class Principal extends javax.swing.JFrame {
             remitenteCell.setBorder(Rectangle.BOX);
 
             String nombreCliente = clienteEncontrado != null && clienteEncontrado.getNombre() != null
-                    ? clienteEncontrado.getNombre().toUpperCase():"";
-                    
+                    ? clienteEncontrado.getNombre().toUpperCase() : "";
 
             String direccion = clienteEncontrado != null && clienteEncontrado.getDireccion() != null
                     ? clienteEncontrado.getDireccion().toUpperCase()
@@ -2868,7 +2854,6 @@ public class Principal extends javax.swing.JFrame {
             String tel = clienteEncontrado != null && clienteEncontrado.getTelefono() != null
                     ? clienteEncontrado.getTelefono().toUpperCase()
                     : "";
-            
 
             Paragraph nombreParagraph = new Paragraph("REMITENTE: " + nombreCliente, fontR);
             nombreParagraph.setAlignment(Element.ALIGN_LEFT);
@@ -2896,16 +2881,12 @@ public class Principal extends javax.swing.JFrame {
             // Crear la celda del destinatario
             PdfPCell destinatarioCell = new PdfPCell();
             destinatarioCell.setBorder(Rectangle.BOX);
-            
-            
 
             String nombreDestinatario = nombreClienteImpresion;
             String direccionDestinatario = "";
             String localidadDestinatario = "";
             String cuitDestinatario = "";
             String telDestinatario = "";
-
-           
 
             if (destinoEncontrado != null && destinoEncontrado.getDireccion() != null && destinoEncontrado.getLocalidad() != null
                     && destinoEncontrado.getCuit() != null && destinoEncontrado.getNombre() != null && destinoEncontrado.getTelefono() != null) {
@@ -2914,10 +2895,6 @@ public class Principal extends javax.swing.JFrame {
                 localidadDestinatario = destinoEncontrado.getLocalidad().toUpperCase();
                 cuitDestinatario = destinoEncontrado.getCuit().toUpperCase();
                 telDestinatario = destinoEncontrado.getTelefono().toUpperCase();
-                
-              
-
-                
 
             } else {
                 nombreDestinatario = nombreDestinoImpresion;
@@ -2950,12 +2927,12 @@ public class Principal extends javax.swing.JFrame {
             destinatarioCell.setHorizontalAlignment(Element.ALIGN_LEFT); // Alineación horizontal de la celda
             tablaContenedora.addCell(destinatarioCell);
 
-            document.add(tablaContenedora);
-
+            //document.add(tablaContenedora);
+            cellContenido.addElement(tablaContenedora);
             // Agregar espacio arriba de la tabla
             Paragraph espacio = new Paragraph(1f, " "); // tamaño del espacio
-            document.add(espacio);
-
+            //document.add(espacio);
+            cellContenido.addElement(espacio);
             // Crear la tabla con 6 columnas
             PdfPTable tablaa = new PdfPTable(6);
             tablaa.setWidthPercentage(100);
@@ -2991,10 +2968,12 @@ public class Principal extends javax.swing.JFrame {
             tablaa.addCell(createCell(observaciones, font, celdaConBorde));
 
             // Agregar la tabla al documento
-            document.add(tablaa);
+            //document.add(tablaa);
+            cellContenido.addElement(tablaa);
             Paragraph recibenB = new Paragraph("SE RECIBEN LOS BULTOS SIN ESPECIFICAR SU CONTENIDO", fontR);
             recibenB.setAlignment(Element.ALIGN_CENTER);
-            document.add(recibenB);
+            //document.add(recibenB);
+            cellContenido.addElement(recibenB);
             // Crear la tabla con 2 columnas
             PdfPTable tabla = new PdfPTable(2);
             tabla.setWidthPercentage(100);
@@ -3012,10 +2991,10 @@ public class Principal extends javax.swing.JFrame {
 
             // Agregar el texto a la segunda celda
             String condicionFlete = cuentaCorriente ? "CUENTA CORRIENTE" : "CONTADO";
-            
+
             if (origenDestino == "origen") {
                 origenDestino = "origen";
-            } else if (origenDestino== "destino") {
+            } else if (origenDestino == "destino") {
                 origenDestino = "destino";
             }
 
@@ -3114,23 +3093,11 @@ public class Principal extends javax.swing.JFrame {
 
             // Ajustar el espacio entre las filas de la tabla
             tabla.setSpacingAfter(3);
-            document.add(tabla);
+            //document.add(tabla);
+            cellContenido.addElement(tabla);
 
-            // Cerrar el template y añadirlo al contenido del documento
-            template.closePathFillStroke();
-            canvas.addTemplate(template, 20, 20);
-
-            // Obtener el tamaño exacto del contenido
-            float contentWidth = template.getWidth();
-            float contentHeight = template.getHeight();
-
-            // Crear un rectángulo que servirá como marco alrededor del contenido
-            PdfContentByte canvasForBorders = writer.getDirectContentUnder();
-            Rectangle marco = new Rectangle(20, 440, 20 + contentWidth, 20 + contentHeight);
-            marco.setBorder(Rectangle.BOX); // Establecer el tipo de borde
-            marco.setBorderWidth(1); // Establecer el ancho del borde
-            marco.setBorderColor(BaseColor.BLACK); // Establecer el color del borde
-            canvasForBorders.rectangle(marco);
+            tablaMarco.addCell(cellContenido);
+            document.add(tablaMarco);
 
             document.close();
             writer.close();
@@ -3167,14 +3134,10 @@ public class Principal extends javax.swing.JFrame {
     }
     
     
-    
-    
-    
-    
-    
-    
-
     private void generarPdf() {
+        //bandera 1
+        System.out.println(cliente);
+        System.out.println(destinatario);
         Document document = new Document();
 
         // Incrementar el contador de remito
@@ -3193,17 +3156,23 @@ public class Principal extends javax.swing.JFrame {
 
             document.open();
 
-            // Crear un PdfTemplate para agregar el contenido dentro del marco
-            PdfContentByte canvas = writer.getDirectContent();
-            PdfTemplate template = canvas.createTemplate(document.getPageSize().getWidth() - 40, document.getPageSize().getHeight() - 40);
+            // Crear una tabla que simule el marco
+            PdfPTable tablaMarco = new PdfPTable(1);
+            tablaMarco.setWidthPercentage(100);
+
+            // Crea una celda para el contenido
+            PdfPCell cellContenido = new PdfPCell();
+            cellContenido.setBorder(Rectangle.BOX); // Establecer el borde de la celda
+            cellContenido.setPadding(10);
 
             //FUENTES
-            Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.NORMAL);
+            Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 8, Font.BOLD);
             Font fontColumnas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD);
             Font fontTotales = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
             Font fontFecha = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD, BaseColor.BLACK);
             Font fontFilas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 9, Font.NORMAL, BaseColor.BLACK);
             Font fontR = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD, BaseColor.BLACK);
+
             // Crear una tabla para organizar los elementos
             PdfPTable table = new PdfPTable(3); // 2 columnas
             table.setWidthPercentage(100); // Ancho de la tabla en porcentaje del ancho de página
@@ -3254,7 +3223,7 @@ public class Principal extends javax.swing.JFrame {
             Chunk chunkFechas = new Chunk("Fecha: " + fechaFormat, fontFecha);
             Paragraph fecha = new Paragraph(chunkFechas);
             fecha.setAlignment(Element.ALIGN_RIGHT);
-            
+
             //REMITO NRO
             Paragraph nroRemito = new Paragraph("REMITO N° " + String.format("%08d", numeroRemito), FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD));
             guardarNumeroRemito();
@@ -3288,7 +3257,7 @@ public class Principal extends javax.swing.JFrame {
             cell2.setBorder(Rectangle.NO_BORDER); // Sin bordes
             table.addCell(cell2);
 
-            document.add(table);
+            cellContenido.addElement(table);
             // Crear una tabla contenedora con 2 columnas
             PdfPTable tablaContenedora = new PdfPTable(2);
             tablaContenedora.setWidthPercentage(100);
@@ -3317,14 +3286,6 @@ public class Principal extends javax.swing.JFrame {
             String tel = cliente != null && cliente.getTelefono() != null
                     ? cliente.getTelefono().toUpperCase()
                     : "";
-            //Bandera 1
-            System.out.println("Bandera 1:");
-            System.out.println("");
-            System.out.println(nombreCliente);
-            System.out.println(direccion);
-            System.out.println(localidad);
-            System.out.println(tel);
-            System.out.println(cuit);
 
             Paragraph nombreParagraph = new Paragraph("REMITENTE: " + nombreCliente, fontR);
             nombreParagraph.setAlignment(Element.ALIGN_LEFT);
@@ -3359,8 +3320,7 @@ public class Principal extends javax.swing.JFrame {
             String localidadDestinatario = "";
             String cuitDestinatario = "";
             String telDestinatario = "";
-
-            System.out.println("Bandera Destinatario 2 en pdf: " + destinatario);
+            
 
             if (destinatario != null && destinatario.getDireccion() != null && destinatario.getLocalidad() != null
                     && destinatario.getCuit() != null && destinatario.getNombre() != null && destinatario.getTelefono() != null) {
@@ -3369,16 +3329,6 @@ public class Principal extends javax.swing.JFrame {
                 localidadDestinatario = destinatario.getLocalidad().toUpperCase();
                 cuitDestinatario = destinatario.getCuit().toUpperCase();
                 telDestinatario = destinatario.getTelefono().toUpperCase();
-                System.out.println("Bandera 3 Destinatario en pdf: " + destinatario);
-
-                //Bandera 2
-                System.out.println("Bandera 2 Destinatario:");
-                System.out.println("");
-                System.out.println(nombreDestinatario);
-                System.out.println(direccionDestinatario);
-                System.out.println(localidadDestinatario);
-                System.out.println(telDestinatario);
-                System.out.println(cuitDestinatario);
 
             } else {
                 nombreDestinatario = cbDestinos.getSelectedItem().toString().toUpperCase();
@@ -3411,11 +3361,13 @@ public class Principal extends javax.swing.JFrame {
             destinatarioCell.setHorizontalAlignment(Element.ALIGN_LEFT); // Alineación horizontal de la celda
             tablaContenedora.addCell(destinatarioCell);
 
-            document.add(tablaContenedora);
+            //document.add(tablaContenedora);
+            cellContenido.addElement(tablaContenedora);
 
             // Agregar espacio arriba de la tabla
             Paragraph espacio = new Paragraph(1f, " "); // tamaño del espacio
-            document.add(espacio);
+            //document.add(espacio);
+            cellContenido.addElement(espacio);
 
             // Crear la tabla con 6 columnas
             PdfPTable tablaa = new PdfPTable(6);
@@ -3452,10 +3404,12 @@ public class Principal extends javax.swing.JFrame {
             tablaa.addCell(createCell(observaciones, font, celdaConBorde));
 
             // Agregar la tabla al documento
-            document.add(tablaa);
+            //document.add(tablaa);
+            cellContenido.addElement(tablaa);
             Paragraph recibenB = new Paragraph("SE RECIBEN LOS BULTOS SIN ESPECIFICAR SU CONTENIDO", fontR);
             recibenB.setAlignment(Element.ALIGN_CENTER);
-            document.add(recibenB);
+            //document.add(recibenB);
+            cellContenido.addElement(recibenB);
             // Crear la tabla con 2 columnas
             PdfPTable tabla = new PdfPTable(2);
             tabla.setWidthPercentage(100);
@@ -3575,23 +3529,11 @@ public class Principal extends javax.swing.JFrame {
 
             // Ajustar el espacio entre las filas de la tabla
             tabla.setSpacingAfter(3);
-            document.add(tabla);
+            //document.add(tabla);
+            cellContenido.addElement(tabla);
 
-            // Cerrar el template y añadirlo al contenido del documento
-            template.closePathFillStroke();
-            canvas.addTemplate(template, 20, 20);
-
-            // Obtener el tamaño exacto del contenido
-            float contentWidth = template.getWidth();
-            float contentHeight = template.getHeight();
-
-            // Crear un rectángulo que servirá como marco alrededor del contenido
-            PdfContentByte canvasForBorders = writer.getDirectContentUnder();
-            Rectangle marco = new Rectangle(20, 440, 20 + contentWidth, 20 + contentHeight);
-            marco.setBorder(Rectangle.BOX); // Establecer el tipo de borde
-            marco.setBorderWidth(1); // Establecer el ancho del borde
-            marco.setBorderColor(BaseColor.BLACK); // Establecer el color del borde
-            canvasForBorders.rectangle(marco);
+            tablaMarco.addCell(cellContenido);
+            document.add(tablaMarco);
 
             document.close();
             writer.close();
@@ -3644,12 +3586,17 @@ public class Principal extends javax.swing.JFrame {
 
             document.open();
 
-            // Crear un PdfTemplate para agregar el contenido dentro del marco
-            PdfContentByte canvas = writer.getDirectContent();
-            PdfTemplate template = canvas.createTemplate(document.getPageSize().getWidth() - 40, document.getPageSize().getHeight() - 40);
+            // Crear una tabla que simule el marco
+            PdfPTable tablaMarco = new PdfPTable(1);
+            tablaMarco.setWidthPercentage(100);
+
+            // Crea una celda para el contenido
+            PdfPCell cellContenido = new PdfPCell();
+            cellContenido.setBorder(Rectangle.BOX); // Establecer el borde de la celda
+            cellContenido.setPadding(10);
 
             //FUENTES
-            Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.NORMAL);
+            Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 8, Font.BOLD);
             Font fontColumnas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD);
             Font fontTotales = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
             Font fontFecha = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD, BaseColor.BLACK);
@@ -3725,7 +3672,8 @@ public class Principal extends javax.swing.JFrame {
             cell2.setBorder(Rectangle.NO_BORDER); // Sin bordes
             table.addCell(cell2);
 
-            document.add(table);
+            //document.add(table);
+            cellContenido.addElement(table);
             // Crear una tabla contenedora con 2 columnas
             PdfPTable tablaContenedora = new PdfPTable(2);
             tablaContenedora.setWidthPercentage(100);
@@ -3827,12 +3775,12 @@ public class Principal extends javax.swing.JFrame {
             destinatarioCell.setHorizontalAlignment(Element.ALIGN_LEFT); // Alineación horizontal de la celda
             tablaContenedora.addCell(destinatarioCell);
 
-            document.add(tablaContenedora);
-
+            //document.add(tablaContenedora);
+            cellContenido.addElement(tablaContenedora);
             // Agregar espacio arriba de la tabla
             Paragraph espacio = new Paragraph(1f, " "); // 20f es el tamaño del espacio
-            document.add(espacio);
-
+            //document.add(espacio);
+            cellContenido.addElement(espacio);
             // Crear la tabla con 6 columnas
             PdfPTable tablaa = new PdfPTable(6);
             tablaa.setWidthPercentage(100);
@@ -3868,10 +3816,12 @@ public class Principal extends javax.swing.JFrame {
             tablaa.addCell(createCell(observaciones, font, celdaConBorde));
 
             // Agregar la tabla al documento
-            document.add(tablaa);
+            //document.add(tablaa);
+            cellContenido.addElement(tablaa);
             Paragraph recibenB = new Paragraph("SE RECIBEN LOS BULTOS SIN ESPECIFICAR SU CONTENIDO", fontR);
             recibenB.setAlignment(Element.ALIGN_CENTER);
-            document.add(recibenB);
+            //document.add(recibenB);
+            cellContenido.addElement(recibenB);
             // Crear la tabla con 2 columnas
             PdfPTable tabla = new PdfPTable(2);
             tabla.setWidthPercentage(100);
@@ -3990,23 +3940,11 @@ public class Principal extends javax.swing.JFrame {
 
             // Ajustar el espacio entre las filas de la tabla
             tabla.setSpacingAfter(3);
-            document.add(tabla);
+            //document.add(tabla);
+            cellContenido.addElement(tabla);
 
-            // Cerrar el template y añadirlo al contenido del documento
-            template.closePathFillStroke();
-            canvas.addTemplate(template, 20, 20);
-
-            // Obtener el tamaño exacto del contenido
-            float contentWidth = template.getWidth();
-            float contentHeight = template.getHeight();
-
-            // Crear un rectángulo que servirá como marco alrededor del contenido
-            PdfContentByte canvasForBorders = writer.getDirectContentUnder();
-            Rectangle marco = new Rectangle(20, 440, 20 + contentWidth, 20 + contentHeight);
-            marco.setBorder(Rectangle.BOX); // Establecer el tipo de borde
-            marco.setBorderWidth(1); // Establecer el ancho del borde
-            marco.setBorderColor(BaseColor.BLACK); // Establecer el color del borde
-            canvasForBorders.rectangle(marco);
+            tablaMarco.addCell(cellContenido);
+            document.add(tablaMarco);
 
             document.close();
             writer.close();

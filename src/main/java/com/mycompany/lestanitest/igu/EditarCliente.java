@@ -197,7 +197,7 @@ dialog.setVisible(true);
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addGap(21, 21, 21))
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -273,22 +273,29 @@ dialog.setVisible(true);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
-      //Traer todos los datos del id(podemos copiar atributos de la clase nuevo"".java)
-        String nombre = txtNombre.getText();
+        // Antes de editar, guarda el nombre actual del cliente
+        String nombreAnterior = cliente.getNombre();
+
+        // Traer todos los datos del id(podemos copiar atributos de la clase nuevo"".java)
+        String nombreNuevo = txtNombre.getText();
         String direccion = txtDireccion.getText();
         String cuit = txtCuit.getText();
         String email = txtEmail.getText();
         String localidad = txtLocalidad.getText();
         String telefono = txtTelefono.getText();
-      
-        control.editarCliente(cliente, nombre,direccion,cuit,email,localidad,telefono);
-        
-        mostrarMensaje("Cliente modificado correctamente", "Info","Edicion exitosa!");
-        
-        VerDatosCliente  verAnterior = new VerDatosCliente();
+
+        // Editar el cliente
+        control.editarCliente(cliente, nombreNuevo, direccion, cuit, email, localidad, telefono);
+
+        // Actualizar los movimientos con el nuevo nombre
+        control.actualizarMovimientosCliente(nombreAnterior, nombreNuevo);
+
+        mostrarMensaje("Cliente modificado correctamente", "Info", "Edicion exitosa!");
+
+        VerDatosCliente verAnterior = new VerDatosCliente();
         verAnterior.setVisible(true);
         verAnterior.setLocationRelativeTo(null);
-        
+
         this.dispose();
     }//GEN-LAST:event_btnEditarActionPerformed
 

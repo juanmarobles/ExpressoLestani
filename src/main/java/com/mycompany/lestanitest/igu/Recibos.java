@@ -127,84 +127,35 @@ public class Recibos extends javax.swing.JFrame {
         cargarNumeroRecibo();
         txtReciboNro.setText(String.format("%05d", numeroRecibo));
         // Cargar los IDs eliminados desde el archivo (si existe)
-       // cargarRecibosEliminados();
+        // cargarRecibosEliminados();
         // Cargar datos en la tabla (suponiendo que carga los datos en la listaFiltrada)
         cargarTablaMovimientos();
+        
+        
+        
+        
+        
         // Agregar el WindowListener para guardar los IDs eliminados antes de cerrar la ventana
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-             //   guardarRecibosEliminados();
+                //   guardarRecibosEliminados();
                 // Luego cierra la ventana
                 dispose();
             }
         });
-        
+
         //Por defecto
-        cbReciboCon.setSelected(true);
-        //REcibo con flete y sin flete
+
+        cbReciboSin.setSelected(true);
+        
+// Aplicar cambios según la opción seleccionada
+        aplicarCambiosSegunCheckBox();
+
+// Agregar ActionListener
         ActionListener listener = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-
-                if (cbReciboCon.isSelected()) {
-                    // Acciones para el radio button "Recibo con" seleccionado
-                    TableColumn pagadoColumn = tablaMovimientos.getColumnModel().getColumn(12);
-                    TableColumn rendidoColumn = tablaMovimientos.getColumnModel().getColumn(11);
-                    TableColumn fleteColumn = tablaMovimientos.getColumnModel().getColumn(10);
-                    // Mostrar las columnas "rendido" y "pagado"
-                    rendidoColumn.setMinWidth(75);  // Ajusta los tamaños de columna según tus necesidades
-                    rendidoColumn.setMaxWidth(100);
-                    rendidoColumn.setWidth(100);
-                    pagadoColumn.setMinWidth(75);
-                    pagadoColumn.setMaxWidth(100);
-                    pagadoColumn.setWidth(100);
-                    fleteColumn.setMinWidth(75);
-                    fleteColumn.setMaxWidth(100);
-                    fleteColumn.setWidth(100);
-
-                } else if (cbReciboSin.isSelected()) {
-
-                    TableColumn pagadoColumn = tablaMovimientos.getColumnModel().getColumn(12);
-                    TableColumn rendidoColumn = tablaMovimientos.getColumnModel().getColumn(11);
-                    TableColumn fleteColumn = tablaMovimientos.getColumnModel().getColumn(10);
-
-                    // Ocultar las columnas "flete" y "pagado"
-                    fleteColumn.setMinWidth(0);
-                    fleteColumn.setMaxWidth(0);
-                    fleteColumn.setWidth(0);
-                    pagadoColumn.setMinWidth(0);
-                    pagadoColumn.setMaxWidth(0);
-                    pagadoColumn.setWidth(0);
-                    rendidoColumn.setMinWidth(0);
-                    rendidoColumn.setMaxWidth(0);
-                    rendidoColumn.setWidth(0);
-                    // Mostrar nuevamente las columnas "flete" y "pagado"
-                    fleteColumn.setMinWidth(75);  // Ajusta los tamaños de columna según tus necesidades
-                    fleteColumn.setMaxWidth(100);
-                    fleteColumn.setWidth(100);
-                    pagadoColumn.setMinWidth(75);
-                    pagadoColumn.setMaxWidth(100);
-                    pagadoColumn.setWidth(100);
-                    rendidoColumn.setMinWidth(75);
-                    rendidoColumn.setMaxWidth(100);
-                    rendidoColumn.setWidth(100);
-
-                    // Actualizar el cálculo del flete total
-                    if (!cbReciboSin.isSelected()) {
-                        calcularTotales();
-                    } else {
-                        txtTotalFlete.setText("");
-                    }
-
-                    // Actualizar la tabla para reflejar los cambios
-                    tablaMovimientos.getTableHeader().resizeAndRepaint();
-                    tablaMovimientos.repaint();
-
-                }
-
-                // Actualizar la tabla para reflejar los cambios
-                tablaMovimientos.getTableHeader().resizeAndRepaint();
-                tablaMovimientos.repaint();
+                aplicarCambiosSegunCheckBox();
             }
         };
 
@@ -255,9 +206,8 @@ public class Recibos extends javax.swing.JFrame {
             }
         });
         // Ocultar las filas con ID presentes en recibosEliminados
-       // ocultarFilasEliminadas();
-       
-       
+        // ocultarFilasEliminadas();
+
         //BOTON IMPRIMIR
         btnImprimir.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -376,6 +326,66 @@ public class Recibos extends javax.swing.JFrame {
 
         actualizarTabla();
     }
+    // Método para aplicar los cambios según el estado de los checkboxes
+private void aplicarCambiosSegunCheckBox() {
+        if (cbReciboCon.isSelected()) {
+            // Acciones para el radio button "Recibo con" seleccionado
+            TableColumn pagadoColumn = tablaMovimientos.getColumnModel().getColumn(12);
+            TableColumn rendidoColumn = tablaMovimientos.getColumnModel().getColumn(11);
+            TableColumn fleteColumn = tablaMovimientos.getColumnModel().getColumn(10);
+
+            // Mostrar las columnas "rendido" y "pagado"
+            rendidoColumn.setMinWidth(75);
+            rendidoColumn.setMaxWidth(100);
+            rendidoColumn.setWidth(100);
+            pagadoColumn.setMinWidth(75);
+            pagadoColumn.setMaxWidth(100);
+            pagadoColumn.setWidth(100);
+            fleteColumn.setMinWidth(75);
+            fleteColumn.setMaxWidth(100);
+            fleteColumn.setWidth(100);
+        } else if (cbReciboSin.isSelected()) {
+            // Lógica para el radio button "Recibo sin" seleccionado
+            TableColumn pagadoColumn = tablaMovimientos.getColumnModel().getColumn(12);
+            TableColumn rendidoColumn = tablaMovimientos.getColumnModel().getColumn(11);
+            TableColumn fleteColumn = tablaMovimientos.getColumnModel().getColumn(10);
+
+            // Ocultar las columnas "flete" y "pagado"
+            fleteColumn.setMinWidth(0);
+            fleteColumn.setMaxWidth(0);
+            fleteColumn.setWidth(0);
+            pagadoColumn.setMinWidth(0);
+            pagadoColumn.setMaxWidth(0);
+            pagadoColumn.setWidth(0);
+            rendidoColumn.setMinWidth(0);
+            rendidoColumn.setMaxWidth(0);
+            rendidoColumn.setWidth(0);
+
+            // Mostrar nuevamente las columnas "flete" y "pagado"
+            fleteColumn.setMinWidth(75);
+            fleteColumn.setMaxWidth(100);
+            fleteColumn.setWidth(100);
+            pagadoColumn.setMinWidth(75);
+            pagadoColumn.setMaxWidth(100);
+            pagadoColumn.setWidth(100);
+            rendidoColumn.setMinWidth(75);
+            rendidoColumn.setMaxWidth(100);
+            rendidoColumn.setWidth(100);
+
+            // Actualizar el cálculo del flete total
+            if (!cbReciboSin.isSelected()) {
+                calcularTotales();
+            } else {
+                txtTotalFlete.setText("");
+            }
+        }
+
+        // Actualizar la tabla para reflejar los cambios
+        tablaMovimientos.getTableHeader().resizeAndRepaint();
+        tablaMovimientos.repaint();
+    }
+
+    ;
 
     private List<Movimientos> filtrarMovimientos(List<Movimientos> movimientos) {
         List<Movimientos> resultados = new ArrayList<>();
@@ -574,6 +584,7 @@ public class Recibos extends javax.swing.JFrame {
         cbReciboSin.setBackground(new java.awt.Color(66, 66, 66));
         buttonGroup1.add(cbReciboSin);
         cbReciboSin.setForeground(new java.awt.Color(255, 255, 255));
+        cbReciboSin.setSelected(true);
         cbReciboSin.setText("Recibo Sin Flete");
         cbReciboSin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -865,7 +876,8 @@ public class Recibos extends javax.swing.JFrame {
         // Asignar el TableRowSorter a la tabla para que se aplique el filtro
         tablaMovimientos.setRowSorter(sorter);
     }
-/*
+
+    /*
     private void guardarRecibosEliminados() {
         try {
             FileOutputStream fileOut = new FileOutputStream("recibosEliminados.ser");
@@ -892,7 +904,7 @@ public class Recibos extends javax.swing.JFrame {
             recibosEliminados = new HashSet<>();
         }
     }
-*/
+     */
     public void actualizarTabla() {
         // Limpia el modelo de tabla
         DefaultTableModel model = (DefaultTableModel) tablaMovimientos.getModel();
@@ -908,7 +920,9 @@ public class Recibos extends javax.swing.JFrame {
 
         // Carga nuevamente la tabla usando la lista de movimientos filtrados (listaVisible)
         for (Movimientos mov : listaVisible) {
-            Object[] objeto = {mov.getId_movimientos(), mov.getHora(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
+            Object[] objeto = {mov.getId_movimientos(), mov.getHora(), mov.getFechaFormateada(), mov.getCliente(),
+                mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(),
+                mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
             model.addRow(objeto);
         }
 
@@ -1601,7 +1615,7 @@ public class Recibos extends javax.swing.JFrame {
         }
     }
 
-     private void imprimirPdfSinFlete() {
+    private void imprimirPdfSinFlete() {
         Document document = new Document();
         // Incrementar el contador de recibo
         numeroRecibo++;
@@ -1616,15 +1630,15 @@ public class Recibos extends javax.swing.JFrame {
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile));
 
             document.open();
-             // Crear una tabla que simule el marco
-        PdfPTable tablaMarco = new PdfPTable(1);
-        tablaMarco.setWidthPercentage(100);
+            // Crear una tabla que simule el marco
+            PdfPTable tablaMarco = new PdfPTable(1);
+            tablaMarco.setWidthPercentage(100);
 
-        // Crea una celda para el contenido
-        PdfPCell cellContenido = new PdfPCell();
-        cellContenido.setBorder(Rectangle.BOX); // Establecer el borde de la celda
-        cellContenido.setPadding(10);
-            
+            // Crea una celda para el contenido
+            PdfPCell cellContenido = new PdfPCell();
+            cellContenido.setBorder(Rectangle.BOX); // Establecer el borde de la celda
+            cellContenido.setPadding(10);
+
             //FUENTES
             Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.NORMAL);
             Font fontColumnas = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD);
@@ -1704,10 +1718,10 @@ public class Recibos extends javax.swing.JFrame {
              */
             //document.add(titulo);
             // Agrega la tabla de títulos al contenido
-    cellContenido.addElement(tablaTitulos);
+            cellContenido.addElement(tablaTitulos);
             // Agregar la tabla al documento
             // Agrega la tabla de títulos al contenido
-    cellContenido.addElement(tablasegundop);
+            cellContenido.addElement(tablasegundop);
             //document.add(fecha);
             //document.add(nroRecibo);
             //document.add(subtitulo);
@@ -1777,7 +1791,7 @@ public class Recibos extends javax.swing.JFrame {
             textoConcepto.setLeading(0f, 0.8f); // Ajusta el segundo parámetro según el espacio deseado
 
             cellContenido.addElement(textoConcepto);
-            
+
             cellContenido.addElement(recibiconcepto);
 
             //TABLA
@@ -1821,7 +1835,6 @@ public class Recibos extends javax.swing.JFrame {
                     }
                 }
 
-                
                 cellContenido.addElement(table);
             } else {
                 // Si no se ha seleccionado ninguna fila, mostrar un mensaje de error o realizar alguna acción adecuada.
@@ -1855,23 +1868,16 @@ public class Recibos extends javax.swing.JFrame {
 
 // Agregar celda de firmasello a la segunda columna de totalFirmaTable
             totalFirmaTable.addCell(firmaSelloCell);
-            
-            
-            
+
 // Agregar la tabla totalFirmaTable al documento
-          
             cellContenido.addElement(totalFirmaTable);
-            
-    
+
 // Agrega la celda de contenido a la tabla de marco
-        tablaMarco.addCell(cellContenido);
+            tablaMarco.addCell(cellContenido);
 
-        // Agregar la tabla de marco al documento
-        document.add(tablaMarco);
+            // Agregar la tabla de marco al documento
+            document.add(tablaMarco);
 
-            
-           
-            
             document.close();
             txtReciboNro.setText(String.valueOf(numeroRecibo));
             guardarNumeroRecibo();
@@ -1890,7 +1896,7 @@ public class Recibos extends javax.swing.JFrame {
 
                 // Imprimir el documento
                 printerJob.print();
-                
+
                 // Cerrar el documento PDF después de imprimir
                 pdfDocument.close();
 
@@ -1923,16 +1929,15 @@ public class Recibos extends javax.swing.JFrame {
             File outputFile = new File(outputPath);
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile));
             document.open();
-            
+
             // Crear una tabla que simule el marco
-                PdfPTable tablaMarco = new PdfPTable(1);
-                tablaMarco.setWidthPercentage(100);
+            PdfPTable tablaMarco = new PdfPTable(1);
+            tablaMarco.setWidthPercentage(100);
 
-                // Crea una celda para el contenido
-                PdfPCell cellContenido = new PdfPCell();
-                cellContenido.setBorder(Rectangle.BOX); // Establecer el borde de la celda
-                cellContenido.setPadding(10);
-
+            // Crea una celda para el contenido
+            PdfPCell cellContenido = new PdfPCell();
+            cellContenido.setBorder(Rectangle.BOX); // Establecer el borde de la celda
+            cellContenido.setPadding(10);
 
             //FUENTES
             Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.NORMAL);
@@ -2084,7 +2089,7 @@ public class Recibos extends javax.swing.JFrame {
             textoConcepto.setLeading(0f, 0.8f); // Ajusta el segundo parámetro según el espacio deseado
 
             cellContenido.addElement(textoConcepto);
-            
+
             cellContenido.addElement(recibiconcepto);
 
             //TABLA
@@ -2191,11 +2196,11 @@ public class Recibos extends javax.swing.JFrame {
             cellContenido.addElement(totalFirmaTable);
 
             // Agrega la celda de contenido a la tabla de marco
-        tablaMarco.addCell(cellContenido);
+            tablaMarco.addCell(cellContenido);
 
-        // Agregar la tabla de marco al documento
-        document.add(tablaMarco);
-            
+            // Agregar la tabla de marco al documento
+            document.add(tablaMarco);
+
 // Cerrar el documento
             document.close();
 
