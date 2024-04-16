@@ -2815,7 +2815,7 @@ public class Principal extends javax.swing.JFrame {
             cell3.setBorder(Rectangle.NO_BORDER); // Sin bordes
             table.addCell(cell3);
 
-            // Celda 2: Hector Alejandro Espindola
+            // Celda 2: Remito
             PdfPCell cell2 = new PdfPCell(remito);
             cell2.addElement(dfecha);
             cell2.addElement(nroRemito);
@@ -2965,7 +2965,8 @@ public class Principal extends javax.swing.JFrame {
             tablaa.addCell(createCell("$" + comContrarembolso, font, celdaConBorde)); // Columna "Com. Contrarrembolso"
             tablaa.addCell(createCell("$" + redespacho, font, celdaConBorde)); // Columna "Redespacho"
             tablaa.addCell(createCell("$" + valDeclarado, font, celdaConBorde)); // Columna "Valor Declarado"
-            tablaa.addCell(createCell(observaciones, font, celdaConBorde));
+            //tablaa.addCell(createCell(observaciones, font, celdaConBorde)); //Columna "Observaciones"
+            tablaa.addCell(createCellWithMultipleLines(observaciones, font,celdaConBorde));
 
             // Agregar la tabla al documento
             //document.add(tablaa);
@@ -3401,8 +3402,8 @@ public class Principal extends javax.swing.JFrame {
             tablaa.addCell(createCell("$" + comContrarembolso, font, celdaConBorde)); // Columna "Com. Contrarrembolso"
             tablaa.addCell(createCell("$" + redespacho, font, celdaConBorde)); // Columna "Redespacho"
             tablaa.addCell(createCell("$" + valDeclarado, font, celdaConBorde)); // Columna "Valor Declarado"
-            tablaa.addCell(createCell(observaciones, font, celdaConBorde));
-
+            //tablaa.addCell(createCell(observaciones, font, celdaConBorde)); //Columna "Observaciones"
+            tablaa.addCell(createCellWithMultipleLines(observaciones, font,celdaConBorde));
             // Agregar la tabla al documento
             //document.add(tablaa);
             cellContenido.addElement(tablaa);
@@ -3813,8 +3814,8 @@ public class Principal extends javax.swing.JFrame {
             tablaa.addCell(createCell("$" + comContrarembolso, font, celdaConBorde)); // Columna "Com. Contrarrembolso"
             tablaa.addCell(createCell("$" + redespacho, font, celdaConBorde)); // Columna "Redespacho"
             tablaa.addCell(createCell("$" + valDeclarado, font, celdaConBorde)); // Columna "Valor Declarado"
-            tablaa.addCell(createCell(observaciones, font, celdaConBorde));
-
+            //tablaa.addCell(createCell(observaciones, font, celdaConBorde)); //Columna "Observaciones"
+            tablaa.addCell(createCellWithMultipleLines(observaciones, font,celdaConBorde));
             // Agregar la tabla al documento
             //document.add(tablaa);
             cellContenido.addElement(tablaa);
@@ -4002,9 +4003,28 @@ public class Principal extends javax.swing.JFrame {
         PdfPCell newCell = new PdfPCell(new Phrase(text, font));
         newCell.setHorizontalAlignment(Element.ALIGN_CENTER);
         newCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-        newCell.setBorder(cell.getBorder());
+        newCell.setBorder(cell.getBorder()); 
+        newCell.setNoWrap(false); // Permite que el texto se divida en varias líneas
         return newCell;
     }
+    // Método auxiliar para crear una celda con el contenido, fuente y borde especificados
+private PdfPCell createCellWithMultipleLines(String text, Font font, PdfPCell cell) {
+    PdfPCell newCell = new PdfPCell();
+    newCell.setBorder(cell.getBorder());
+    newCell.setPadding(5f);
+    newCell.setPaddingBottom(8f); // Ajusta el espacio entre líneas según lo necesites
+    newCell.setUseAscender(true);
+    newCell.setUseDescender(true);
+
+    // Divide el texto en líneas basadas en el ancho de la celda y la fuente
+    String[] lines = text.split("\\r?\\n");
+    for (String line : lines) {
+        Phrase phrase = new Phrase(line, font);
+        newCell.addElement(phrase);
+    }
+
+    return newCell;
+}
 
     //remito
     private void guardarNumeroRemito() {

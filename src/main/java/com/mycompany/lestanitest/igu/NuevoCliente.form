@@ -123,8 +123,8 @@
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace min="-2" pref="35" max="-2" attributes="0"/>
-                          <Component id="btnCancelar" min="-2" pref="125" max="-2" attributes="0"/>
-                          <EmptySpace pref="98" max="32767" attributes="0"/>
+                          <Component id="btnCancelar" min="-2" pref="135" max="-2" attributes="0"/>
+                          <EmptySpace pref="88" max="32767" attributes="0"/>
                           <Component id="btnCargar" min="-2" pref="130" max="-2" attributes="0"/>
                       </Group>
                   </Group>

@@ -29,6 +29,9 @@ public class DateAlertApp extends javax.swing.JFrame {
     // Conjunto para almacenar IDs de vehículos alertados
     private Set<Integer> vehiculosAlertadosRuta = new HashSet<>();
     private Set<Integer> vehiculosAlertadosTecnica = new HashSet<>();
+    private Set<Integer> vehiculosAlertadosSeguro = new HashSet<>();
+    private Set<Integer> vehiculosAlertadosMatafuego = new HashSet<>();
+
     Controladora control;
     private static DateAlertApp instance;
     
@@ -58,7 +61,7 @@ public class DateAlertApp extends javax.swing.JFrame {
             }
         };
         //nombres de columnas
-        String titulos[] = {"Id_Vehiculo", "Fecha Ruta", "Rev. Tecnica", "Vehiculo", "Patente", "Chofer"};
+        String titulos[] = {"Id_Vehiculo", "Vehiculo", "Patente", "Rev. Tenica", "Fecha ruta", "Seguro", "Matafuego"};
         tabla.setColumnIdentifiers(titulos);
 
         //carga de los datos desde la bd
@@ -81,6 +84,16 @@ public class DateAlertApp extends javax.swing.JFrame {
                     mostrarAlerta(mensaje);
                     // Agregar el ID del vehículo al conjunto de vehículos alertados por revisión técnica
                     vehiculosAlertadosTecnica.add(v.getId_Vehiculo());
+                }
+                 if (isDateNear(v.getFechaSeguroFormateada(), 31) && !vehiculosAlertadosSeguro.contains(v.getId_Vehiculo())) {
+                    String mensaje = "El vehículo: " + v.getVehiculo().toUpperCase() + " dominio: " + v.getPatente().toUpperCase() + " tiene un Seguro por vencer el: " + v.getFechaSeguroFormateada();
+                    mostrarAlerta(mensaje);
+                    vehiculosAlertadosSeguro.add(v.getId_Vehiculo());
+                }
+                  if (isDateNear(v.getFechaMatafuegoFormateada(), 31) && !vehiculosAlertadosMatafuego.contains(v.getId_Vehiculo())) {
+                    String mensaje = "El vehículo: " + v.getVehiculo().toUpperCase() + " dominio: " + v.getPatente().toUpperCase() + " tiene un Matafuego por vencer el: " + v.getFechaMatafuegoFormateada();
+                    mostrarAlerta(mensaje);
+                    vehiculosAlertadosMatafuego.add(v.getId_Vehiculo());
                 }
             }
         }

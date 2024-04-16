@@ -1322,6 +1322,7 @@ private void aplicarCambiosSegunCheckBox() {
                                     PdfPCell cell = new PdfPCell(new Phrase(value.toString(), fontFilas));
                                     cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                                     cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
+                                    cell.setNoWrap(false); // Permite que el texto no se corte
                                     table.addCell(cell);
                                 }
                             }
@@ -1332,6 +1333,8 @@ private void aplicarCambiosSegunCheckBox() {
                 } else {
                     // Si no se ha seleccionado ninguna fila, mostrar un mensaje de error o realizar alguna acción adecuada.
                 }
+                
+                
 
                 // Crear una tabla para los montos totales y firmasello
                 PdfPTable totalFirmaTable = new PdfPTable(2);

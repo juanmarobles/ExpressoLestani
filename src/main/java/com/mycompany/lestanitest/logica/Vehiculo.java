@@ -11,10 +11,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.util.Date;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
+@Table(name="vehiculo")
 public class Vehiculo implements Serializable {
 
     @Id
@@ -34,19 +36,41 @@ public class Vehiculo implements Serializable {
     private String vehiculo;
     @Column(name = "PATENTE", length = 50)
     private String patente;
-    @Column(name = "CHOFER", length = 50)
-    private String chofer;
+     @Column(name = "FECHA_SEGURO")
+    @Temporal(TemporalType.DATE)
+    private Date fechaSeguro;
 
+    @Column(name = "FECHA_MATAFUEGO")
+    @Temporal(TemporalType.DATE)
+    private Date fechaMatafuego;
+    
     public Vehiculo() {
     }
 
-    public Vehiculo(int id_Vehiculo, String vehiculo, String patente, String chofer, Date fechaTecnica, Date fechaRuta) {
+    public Vehiculo(int id_Vehiculo, Date fechaTecnica, Date fechaRuta, String vehiculo, String patente, Date fechaSeguro, Date fechaMatafuego) {
         this.id_Vehiculo = id_Vehiculo;
-        this.vehiculo = vehiculo;
-        this.patente = patente;
-        this.chofer = chofer;
         this.fechaTecnica = fechaTecnica;
         this.fechaRuta = fechaRuta;
+        this.vehiculo = vehiculo;
+        this.patente = patente;
+        this.fechaSeguro = fechaSeguro;
+        this.fechaMatafuego = fechaMatafuego;
+    }
+
+    public Date getFechaSeguro() {
+        return fechaSeguro;
+    }
+
+    public void setFechaSeguro(Date fechaSeguro) {
+        this.fechaSeguro = fechaSeguro;
+    }
+
+    public Date getFechaMatafuego() {
+        return fechaMatafuego;
+    }
+
+    public void setFechaMatafuego(Date fechaMatafuego) {
+        this.fechaMatafuego = fechaMatafuego;
     }
 
     public Date getFechaTecnica() {
@@ -89,28 +113,43 @@ public class Vehiculo implements Serializable {
         this.patente = patente;
     }
 
-    public String getChofer() {
-        return chofer;
-    }
-
-    public void setChofer(String chofer) {
-        this.chofer = chofer;
-    }
-
     private static final String FORMATO_FECHA_TABLA = "dd/MM/yyyy";
 
-    public String getFechaTecnicaFormateada() {
+public String getFechaTecnicaFormateada() {
+    if (fechaTecnica != null) {
         SimpleDateFormat formato = new SimpleDateFormat(FORMATO_FECHA_TABLA);
         return formato.format(fechaTecnica);
+    } else {
+        return ""; // Devuelve una cadena vacía si la fecha es nula
     }
+}
 
-    public String getFechaRutaFormateada() {
+public String getFechaRutaFormateada() {
+    if (fechaRuta != null) {
         SimpleDateFormat formato = new SimpleDateFormat(FORMATO_FECHA_TABLA);
         return formato.format(fechaRuta);
+    } else {
+        return ""; // Devuelve una cadena vacía si la fecha es nula
     }
+}
 
-   
+public String getFechaSeguroFormateada() {
+    if (fechaSeguro != null) {
+        SimpleDateFormat formato = new SimpleDateFormat(FORMATO_FECHA_TABLA);
+        return formato.format(fechaSeguro);
+    } else {
+        return ""; // Devuelve una cadena vacía si la fecha es nula
+    }
+}
 
+public String getFechaMatafuegoFormateada() {
+    if (fechaMatafuego != null) {
+        SimpleDateFormat formato = new SimpleDateFormat(FORMATO_FECHA_TABLA);
+        return formato.format(fechaMatafuego);
+    } else {
+        return ""; // Devuelve una cadena vacía si la fecha es nula
+    }
+}
     @Override
     public String toString() {
         return vehiculo;
