@@ -37,6 +37,8 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.awt.print.PrinterJob;
 import java.io.ByteArrayOutputStream;
@@ -102,6 +104,26 @@ public class HojaDeRuta extends javax.swing.JFrame {
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         llenarVehiculo();
         llenarChofer();
+        
+        
+        // Listener al mause para editar con doble click.
+        tablaMovimientos.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    // Acción a realizar cuando se haga doble clic en un elemento de la tabla
+                    int filaSeleccionada = tablaMovimientos.getSelectedRow();
+                    int id = (int) tablaMovimientos.getValueAt(filaSeleccionada, 0);
+                    // Realizar la acción deseada con el ID obtenido
+                    System.out.println("ID seleccionado: " + id);
+                    EditarMovimientos editar = new EditarMovimientos(id);
+                    editar.setVisible(true);
+                    editar.setLocationRelativeTo(null);
+                    
+
+                }
+            }
+        });
         
         
         //FECHA
@@ -372,12 +394,13 @@ public class HojaDeRuta extends javax.swing.JFrame {
         for (int i = 0; i < listaVehiculo.size(); i++) {
             cbVehiculo.addItem(listaVehiculo.get(i));
         }
+        
         // Agregar un listener al ComboBox para capturar la selección
         cbVehiculo.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 // Obtener el vehículo seleccionado
                 Vehiculo vehiculoSeleccionado = (Vehiculo) cbVehiculo.getSelectedItem();
-
+                
                 // Actualizar el valor del TextField con la patente del vehículo seleccionado
                 txtPatente.setText(vehiculoSeleccionado.getPatente());
             }
@@ -485,6 +508,7 @@ public class HojaDeRuta extends javax.swing.JFrame {
         jPanel12 = new javax.swing.JPanel();
         jLabel25 = new javax.swing.JLabel();
         txtCantBultos = new javax.swing.JTextField();
+        btnActualizar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Expreso Lestani SRL- Hoja de Ruta");
@@ -558,10 +582,21 @@ public class HojaDeRuta extends javax.swing.JFrame {
         jLabel3.setText("Patente:");
 
         txtPatente.setEditable(false);
+        txtPatente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtPatenteActionPerformed(evt);
+            }
+        });
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setText("Chofer:");
+
+        cbVehiculo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbVehiculoActionPerformed(evt);
+            }
+        });
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
@@ -802,6 +837,16 @@ public class HojaDeRuta extends javax.swing.JFrame {
                 .addContainerGap(10, Short.MAX_VALUE))
         );
 
+        btnActualizar.setBackground(new java.awt.Color(51, 51, 51));
+        btnActualizar.setForeground(new java.awt.Color(255, 255, 255));
+        btnActualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/actualizar.png"))); // NOI18N
+        btnActualizar.setText("Actualizar");
+        btnActualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnActualizarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -827,13 +872,14 @@ public class HojaDeRuta extends javax.swing.JFrame {
                                     .addComponent(btnMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(47, 47, 47)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel2Layout.createSequentialGroup()
-                                        .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(jPanel2Layout.createSequentialGroup()
                                         .addGap(26, 26, 26)
-                                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)))))))
+                                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btnActualizar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))))
                 .addContainerGap(16, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -853,8 +899,13 @@ public class HojaDeRuta extends javax.swing.JFrame {
                                 .addComponent(btnMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(28, 28, 28))))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(55, 55, 55)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(55, 55, 55)
+                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(27, 27, 27)
+                                .addComponent(btnActualizar)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -910,6 +961,20 @@ public class HojaDeRuta extends javax.swing.JFrame {
     private void txtTotalFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTotalFActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtTotalFActionPerformed
+
+    private void txtPatenteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPatenteActionPerformed
+        
+    }//GEN-LAST:event_txtPatenteActionPerformed
+
+    private void cbVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbVehiculoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbVehiculoActionPerformed
+
+    private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
+        HojaDeRuta pn = new HojaDeRuta();
+        pn.setVisible(true);
+        dispose();
+    }//GEN-LAST:event_btnActualizarActionPerformed
 
     public List<Movimientos> filtrarPorFecha(List<Movimientos> objetos, String fechaSeleccionada) {
         List<Movimientos> resultados = new ArrayList<>();
@@ -1572,6 +1637,7 @@ public class HojaDeRuta extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnActualizar;
     private javax.swing.JButton btnGenerarPdf;
     private javax.swing.JButton btnImprimirHr;
     private javax.swing.JButton btnMostrar;

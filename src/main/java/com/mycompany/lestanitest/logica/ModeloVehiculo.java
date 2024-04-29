@@ -31,9 +31,11 @@ public class ModeloVehiculo {
             while(rs.next()){
                 Vehiculo v = new Vehiculo();               
                 v.setId_Vehiculo(rs.getInt("ID_VEHICULO"));
-                v.setVehiculo(rs.getString("VEHICULO"));        
+                v.setVehiculo(rs.getString("VEHICULO"));
+                v.setPatente(rs.getString("PATENTE"));
                 v.setFechaSeguro(rs.getDate("FECHA_SEGURO")); 
                 v.setFechaMatafuego(rs.getDate("FECHA_MATAFUEGO"));
+                v.setFechaTecnica(rs.getDate("FECHA_TECNICA"));
                 listaVehiculo.add(v);
             }
         } catch (SQLException ex) {

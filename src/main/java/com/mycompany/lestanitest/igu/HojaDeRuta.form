@@ -76,15 +76,16 @@
                                   </Group>
                                   <EmptySpace min="-2" pref="47" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Group type="102" attributes="0">
-                                          <Component id="jPanel7" min="-2" max="-2" attributes="0"/>
-                                          <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="jPanel12" min="-2" max="-2" attributes="0"/>
-                                      </Group>
+                                      <Component id="jPanel7" alignment="0" min="-2" max="-2" attributes="0"/>
                                       <Group type="102" alignment="0" attributes="0">
                                           <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
                                           <Component id="jLabel1" min="-2" pref="180" max="-2" attributes="0"/>
                                       </Group>
+                                  </Group>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                      <Component id="jPanel12" max="32767" attributes="0"/>
+                                      <Component id="btnActualizar" max="32767" attributes="0"/>
                                   </Group>
                               </Group>
                           </Group>
@@ -115,8 +116,16 @@
                           </Group>
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
-                          <EmptySpace min="-2" pref="55" max="-2" attributes="0"/>
-                          <Component id="jLabel1" min="-2" pref="42" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" attributes="0">
+                                  <EmptySpace min="-2" pref="55" max="-2" attributes="0"/>
+                                  <Component id="jLabel1" min="-2" pref="42" max="-2" attributes="0"/>
+                              </Group>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
+                                  <Component id="btnActualizar" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
                           <EmptySpace max="32767" attributes="0"/>
                           <Group type="103" groupAlignment="1" attributes="0">
                               <Component id="jPanel7" min="-2" max="-2" attributes="0"/>
@@ -308,6 +317,9 @@
               <Properties>
                 <Property name="editable" type="boolean" value="false"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtPatenteActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel5">
               <Properties>
@@ -336,6 +348,9 @@
                   <StringArray count="0"/>
                 </Property>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cbVehiculoActionPerformed"/>
+              </Events>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;Vehiculo&gt;"/>
               </AuxValues>
@@ -732,6 +747,23 @@
             </Component>
           </SubComponents>
         </Container>
+        <Component class="javax.swing.JButton" name="btnActualizar">
+          <Properties>
+            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="33" green="33" red="33" type="rgb"/>
+            </Property>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="ff" green="ff" red="ff" type="rgb"/>
+            </Property>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/icon/actualizar.png"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="Actualizar"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnActualizarActionPerformed"/>
+          </Events>
+        </Component>
       </SubComponents>
     </Container>
   </SubComponents>

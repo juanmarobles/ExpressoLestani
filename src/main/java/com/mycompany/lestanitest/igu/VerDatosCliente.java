@@ -13,6 +13,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Collections;
 import java.util.List;
+import java.util.prefs.Preferences;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.RowFilter;
@@ -21,22 +22,38 @@ import javax.swing.SortOrder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
+
+
 /**
  *
- * @author Juanma
+ * @author Juanma and Marcos
  */
-public class VerDatosCliente extends javax.swing.JFrame {
 
+
+public class VerDatosCliente extends javax.swing.JFrame {
+    
+    
     Controladora control;
     TableRowSorter trs;
     DefaultTableModel dtm = new DefaultTableModel();
+    
 
     /**
      * Creates new form VerDatosCliente
      */
     public VerDatosCliente() {
+        // Inicializa las preferencias del usuario
+        prefs = Preferences.userNodeForPackage(getClass());
+        
+        
+        //Controladora
         control = new Controladora();
         initComponents();
+        
+       // Establecer el texto del campo de filtro con la última búsqueda cargada
+                txtFiltroCliente.setText(cargarUltimaBusqueda());
+        
+   
         TextPrompt FiltroBusqueda = new TextPrompt("Buscar Cliente", txtFiltroCliente);
         
         // Listener al mause para editar con doble click.
@@ -59,6 +76,32 @@ public class VerDatosCliente extends javax.swing.JFrame {
         });
         
     }
+    
+    //Recordar Busqueda****
+    private Preferences prefs;
+ 
+      
+    //Declaro la variable
+    
+    
+    // Método para guardar la última búsqueda
+    private void guardarUltimaBusqueda(String busqueda) {
+        
+        // Utiliza una clave única para guardar la última búsqueda
+        prefs.put("ultima_busqueda_cliente", busqueda);
+        System.out.println("guardada: "+busqueda);
+    }
+     // Método para cargar la última búsqueda
+    private String cargarUltimaBusqueda() {  
+        // Utiliza la misma clave para cargar la última búsqueda
+        return prefs.get("ultima_busqueda_cliente", "");
+    }
+    private void realizarBusqueda(String busqueda) {
+    // Realizar la búsqueda utilizando el término proporcionado
+    // Después de realizar la búsqueda exitosamente, guarda el término de búsqueda
+    guardarUltimaBusqueda(busqueda);
+}
+  
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -246,6 +289,7 @@ public class VerDatosCliente extends javax.swing.JFrame {
                 EditarCliente editar = new EditarCliente(idCliente);
                 editar.setVisible(true);
                 editar.setLocationRelativeTo(null);
+                
                 this.dispose();
             } else {
                 mostrarMensaje("No seleccinó un Registro para editar", "Error", "Error al editar");
@@ -273,13 +317,26 @@ public class VerDatosCliente extends javax.swing.JFrame {
         }    }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void txtFiltroClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFiltroClienteActionPerformed
-        // TODO add your handling code here:
+       /*  
+        String ultimaBusqueda = txtFiltroCliente.getText();
+         
+        System.out.println("ultima busqueda: "+ ultimaBusqueda);
+    
+    // Llamar al método para guardar la última búsqueda
+    guardarUltimaBusqueda(ultimaBusqueda);
+    
+    txtFiltroCliente.setText(cargarUltimaBusqueda());
+    */
+    
+    
+            
     }//GEN-LAST:event_txtFiltroClienteActionPerformed
 
     private void btnAgregarClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarClientesActionPerformed
         NuevoCliente agregar = new NuevoCliente();
         agregar.setVisible(true);
         agregar.setLocationRelativeTo(null);
+        
         this.dispose();
     }//GEN-LAST:event_btnAgregarClientesActionPerformed
 
@@ -292,6 +349,13 @@ public class VerDatosCliente extends javax.swing.JFrame {
             @Override
             public void keyReleased(KeyEvent e) {
                 trs.setRowFilter(RowFilter.regexFilter("(?i)" + txtFiltroCliente.getText(), 1));
+                
+                //Busqueda
+                String ultimaBusqueda = txtFiltroCliente.getText();
+                System.out.println("ultima busqueda: " + ultimaBusqueda);
+
+                guardarUltimaBusqueda(ultimaBusqueda);
+        
             }
 
         });

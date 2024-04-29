@@ -34,6 +34,7 @@ public class EditarVehiculo extends javax.swing.JFrame {
         cargarDatosVehiculo(idVehiculo);
         txtVehiculo.addActionListener(createActionListener(btnEditar));
         txtFechaMatafuego.addActionListener(createActionListener(btnEditar));
+        txtFechaSeguro.addActionListener(createActionListener(btnEditar));
         txtFechaRuta.addActionListener(createActionListener(btnEditar));
         txtFechaTecnica.addActionListener(createActionListener(btnEditar));
         txtPatente.addActionListener(createActionListener(btnEditar));
@@ -188,7 +189,7 @@ public class EditarVehiculo extends javax.swing.JFrame {
                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                             .addComponent(jLabel35)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(txtFechaTecnica, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(txtFechaTecnica, javax.swing.GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE))
                         .addGroup(jPanel1Layout.createSequentialGroup()
                             .addComponent(jLabel36)
                             .addGap(13, 13, 13)
@@ -264,8 +265,8 @@ public class EditarVehiculo extends javax.swing.JFrame {
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(btnCancelar4, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
+                                .addComponent(btnCancelar4, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
                                 .addComponent(btnEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addGap(27, 27, 27))
         );
@@ -276,7 +277,7 @@ public class EditarVehiculo extends javax.swing.JFrame {
                 .addComponent(jLabel25, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 70, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 74, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCancelar4, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -291,9 +292,7 @@ public class EditarVehiculo extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 4, Short.MAX_VALUE))
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -308,27 +307,56 @@ public class EditarVehiculo extends javax.swing.JFrame {
 
     }//GEN-LAST:event_btnCancelarActionPerformed
 
-    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
-        try{
-        String v = txtVehiculo.getText();
-        String patente = txtPatente.getText();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        private Date parseDate(String dateStr, SimpleDateFormat dateFormat) throws ParseException {
+    if (dateStr.isEmpty()) {
+        return null; // Si la cadena está vacía, se asigna null
+    } else {
+        return dateFormat.parse(dateStr); // Si la cadena no está vacía, se realiza el análisis de la fecha
+    }
+}
         
-        Date fechaTecnica = dateFormat.parse(txtFechaTecnica.getText());
-        Date fechaRuta = dateFormat.parse(txtFechaRuta.getText());
-        Date fechaMatafuego = dateFormat.parse(txtFechaTecnica.getText());
-        Date fechaSeguro= dateFormat.parse(txtFechaTecnica.getText());
-
-        control.editarVehiculo(vehiculo, v, fechaTecnica, fechaRuta,fechaMatafuego,fechaSeguro,patente);
-        }catch (ParseException ex){
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+     String v = txtVehiculo.getText();
+    String patente = txtPatente.getText();
+    
+    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+    
+    Date fechaTecnica = null;
+    Date fechaRuta = null;
+    Date fechaMatafuego = null;
+    Date fechaSeguro = null;
+    
+    // Verificar si las cadenas de fecha son válidas y no están vacías
+    try {
+        if (!txtFechaTecnica.getText().trim().isEmpty()) {
+            fechaTecnica = dateFormat.parse(txtFechaTecnica.getText());
         }
-        mostrarMensaje("Vehiculo modificado correctamente", "Info", "Edicion exitosa!");
-
-        VerDatosVehiculos verAnterior = new VerDatosVehiculos();
-        verAnterior.setVisible(true);
-        verAnterior.setLocationRelativeTo(null);
-
-        this.dispose();
+        if (!txtFechaRuta.getText().trim().isEmpty()) {
+            fechaRuta = dateFormat.parse(txtFechaRuta.getText());
+        }
+        if (!txtFechaMatafuego.getText().trim().isEmpty()) {
+            fechaMatafuego = dateFormat.parse(txtFechaMatafuego.getText());
+        }
+        if (!txtFechaSeguro.getText().trim().isEmpty()) {
+            fechaSeguro = dateFormat.parse(txtFechaSeguro.getText());
+        }
+    } catch (ParseException ex) {
+      
+    }
+    
+    // Llamar al método de edición de la controladora
+    control.editarVehiculo(vehiculo, v, fechaTecnica, fechaRuta, fechaMatafuego, fechaSeguro, patente);
+    
+    // Mostrar mensaje de éxito
+    mostrarMensaje("Vehículo modificado correctamente", "Info", "Edición exitosa!");
+    
+    // Abrir la ventana de ver datos de vehículos
+    VerDatosVehiculos verAnterior = new VerDatosVehiculos();
+    verAnterior.setVisible(true);
+    verAnterior.setLocationRelativeTo(null);
+    
+    // Cerrar la ventana actual
+    this.dispose();
     }//GEN-LAST:event_btnEditarActionPerformed
 
     private void txtVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtVehiculoActionPerformed

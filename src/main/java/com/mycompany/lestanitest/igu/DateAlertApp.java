@@ -101,6 +101,11 @@ public class DateAlertApp extends javax.swing.JFrame {
     }
 
     private boolean isDateNear(String fechaFormateada, int daysBeforeAlert) {
+        if (fechaFormateada.isEmpty()) {
+            // Si la fecha formateada está vacía, no podemos calcular la cercanía, así que devolvemos false.
+            return false;
+        }
+
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy"); // Ajustar el formato aquí
             Date fecha = dateFormat.parse(fechaFormateada);

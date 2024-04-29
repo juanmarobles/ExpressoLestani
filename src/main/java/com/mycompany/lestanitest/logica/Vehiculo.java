@@ -34,8 +34,10 @@ public class Vehiculo implements Serializable {
 
     @Column(name = "VEHICULO", length = 50)
     private String vehiculo;
+    
     @Column(name = "PATENTE", length = 50)
     private String patente;
+    
      @Column(name = "FECHA_SEGURO")
     @Temporal(TemporalType.DATE)
     private Date fechaSeguro;
