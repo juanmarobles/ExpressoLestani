@@ -33,6 +33,8 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.print.PrinterException;
@@ -67,6 +69,9 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import java.text.DecimalFormatSymbols;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
@@ -106,19 +111,22 @@ public class Recibos extends javax.swing.JFrame {
     private String cliente;
     private String fechaDesde;
     private String fechaHasta;
+   
     private List<Movimientos> listaFiltrada;
     private int numeroRecibo = 0;
     private Set<Integer> recibosEliminados = new HashSet<>();
     private List<Movimientos> listaVisible;
-
+    private int idSeleccionado = -1; // Inicializado con un valor negativo para indicar que no se ha seleccionado ningún movimiento.
     /**
      * Creates new form Recibos
      */
+    
     public Recibos(String cliente, List<Movimientos> listaFiltrada, String fechaDesde, String fechaHasta) {
         this.cliente = cliente;
         this.listaFiltrada = listaFiltrada;
         this.fechaDesde = fechaDesde;
         this.fechaHasta = fechaHasta;
+        
         initComponents();
         txtCliente.setText(cliente);
         cargarClientes();
@@ -126,14 +134,36 @@ public class Recibos extends javax.swing.JFrame {
         // Cargar el número de recibo desde el archivo (si existe)
         cargarNumeroRecibo();
         txtReciboNro.setText(String.format("%05d", numeroRecibo));
-        // Cargar los IDs eliminados desde el archivo (si existe)
-        // cargarRecibosEliminados();
+    
         // Cargar datos en la tabla (suponiendo que carga los datos en la listaFiltrada)
         cargarTablaMovimientos();
         
         
         
+        //Editar 2click 
+        tablaMovimientos.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int filaSeleccionada = tablaMovimientos.getSelectedRow();
+                if (filaSeleccionada != -1) {
+                    int id = (int) tablaMovimientos.getValueAt(filaSeleccionada, 0);
+
+                    // Realizar la acción deseada con el ID obtenido al dar un clic
+                    System.out.println("ID seleccionado al dar un clic: " + id);
+                    idSeleccionado = id;
+
+                    if (e.getClickCount() == 2) {
+                        // Acción a realizar cuando se haga doble clic en un elemento de la tabla
+                        System.out.println("ID seleccionado al dar doble clic: " + id);
+                        EditarMovimientos editar = new EditarMovimientos(id);
+                        editar.setVisible(true);
+                        editar.setLocationRelativeTo(null);
+                    }
+                }
+            }
+        });
         
+ 
         
         // Agregar el WindowListener para guardar los IDs eliminados antes de cerrar la ventana
         addWindowListener(new WindowAdapter() {
@@ -383,9 +413,46 @@ private void aplicarCambiosSegunCheckBox() {
         // Actualizar la tabla para reflejar los cambios
         tablaMovimientos.getTableHeader().resizeAndRepaint();
         tablaMovimientos.repaint();
-    }
+    };
 
-    ;
+    public List<Movimientos> filtrarPorFechasClienteBtn(List<Movimientos> objetos, String fechaDesdeStr, String fechaHastaStr, String cliente) {
+        List<Movimientos> resultados = new ArrayList<>();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate fechaDesde = LocalDate.parse(fechaDesdeStr, formatter);
+        LocalDate fechaHasta = LocalDate.parse(fechaHastaStr, formatter);
+
+        for (Movimientos objeto : objetos) {
+            LocalDate fecha = objeto.getFecha().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            String clienteMovimiento = objeto.getCliente();
+            String pagado = objeto.getTipoMontoP();
+            String rendido = objeto.getTipoMontoR();
+
+            if (fecha != null && clienteMovimiento != null && clienteMovimiento.equals(cliente)) {
+                if (fecha.compareTo(fechaDesde) >= 0 && fecha.compareTo(fechaHasta) <= 0 && "Si".equalsIgnoreCase(pagado) && !"Si".equalsIgnoreCase(rendido)) {
+                    resultados.add(objeto);
+                }
+            }
+        }
+
+        return resultados;
+    }
+    
+
+
+ public void actualizarTablaBtn() {
+     
+     // Obtener los movimientos filtrados por fechas y cliente
+        List<Movimientos> listaFiltrada = filtrarPorFechasClienteBtn(control.traerMovimientos(), fechaDesde, fechaHasta, cliente);
+
+        // Crear una instancia de la ventana de movimientos
+        Recibos rc = new Recibos(cliente, listaFiltrada, fechaDesde, fechaHasta);
+
+        // Mostrar la ventana de movimientos en recibos
+        rc.setVisible(true);
+
+        dispose();
+    }
 
     private List<Movimientos> filtrarMovimientos(List<Movimientos> movimientos) {
         List<Movimientos> resultados = new ArrayList<>();
@@ -473,7 +540,7 @@ private void aplicarCambiosSegunCheckBox() {
         }
 
         tablaMovimientos.setModel(tabla);
-        int[] anchos = {20, 80, 100, 100, 100, 70, 80, 100, 80, 80, 100, 80, 80, 120, 120, 40, 200}; // Anchos deseados para cada columna en píxeles
+        int[] anchos = {20, 80, 100, 180, 180, 70, 80, 100, 80, 80, 100, 80, 80, 120, 120, 40, 200}; // Anchos deseados para cada columna en píxeles
 
         if (anchos.length == tabla.getColumnCount()) {
             TableColumnModel columnModel = tablaMovimientos.getColumnModel();
@@ -555,6 +622,7 @@ private void aplicarCambiosSegunCheckBox() {
         btnQuitar = new javax.swing.JButton();
         btnGenerarPdf = new javax.swing.JButton();
         btnImprimir = new javax.swing.JButton();
+        btnActualizar = new javax.swing.JButton();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -710,6 +778,17 @@ private void aplicarCambiosSegunCheckBox() {
             }
         });
 
+        btnActualizar.setBackground(new java.awt.Color(51, 51, 51));
+        btnActualizar.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        btnActualizar.setForeground(new java.awt.Color(255, 255, 255));
+        btnActualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/actualizar.png"))); // NOI18N
+        btnActualizar.setText("Actualizar");
+        btnActualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnActualizarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -751,12 +830,14 @@ private void aplicarCambiosSegunCheckBox() {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(cbReciboSin)
                                 .addGap(34, 34, 34)
-                                .addComponent(cbReciboCon))
+                                .addComponent(cbReciboCon)
+                                .addGap(478, 478, 478)
+                                .addComponent(btnActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(txtDomicilio, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addContainerGap(816, Short.MAX_VALUE))))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -774,10 +855,11 @@ private void aplicarCambiosSegunCheckBox() {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(20, 20, 20)
+                .addGap(13, 13, 13)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cbReciboSin)
-                    .addComponent(cbReciboCon))
+                    .addComponent(cbReciboCon)
+                    .addComponent(btnActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -806,7 +888,7 @@ private void aplicarCambiosSegunCheckBox() {
                     .addComponent(txtTotalFlete, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 277, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -877,34 +959,7 @@ private void aplicarCambiosSegunCheckBox() {
         tablaMovimientos.setRowSorter(sorter);
     }
 
-    /*
-    private void guardarRecibosEliminados() {
-        try {
-            FileOutputStream fileOut = new FileOutputStream("recibosEliminados.ser");
-            ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            out.writeObject(recibosEliminados);
-            out.close();
-            fileOut.close();
-            System.out.println("Lista recibosEliminados guardada en recibosEliminados.ser");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void cargarRecibosEliminados() {
-        try {
-            FileInputStream fileIn = new FileInputStream("recibosEliminados.ser");
-            ObjectInputStream in = new ObjectInputStream(fileIn);
-            recibosEliminados = (Set<Integer>) in.readObject();
-            in.close();
-            fileIn.close();
-            System.out.println("Lista recibosEliminados cargada desde recibosEliminados.ser");
-        } catch (IOException | ClassNotFoundException e) {
-            // Si el archivo no existe o hay un error en la lectura, simplemente inicializamos recibosEliminados como un nuevo HashSet
-            recibosEliminados = new HashSet<>();
-        }
-    }
-     */
+   
     public void actualizarTabla() {
         // Limpia el modelo de tabla
         DefaultTableModel model = (DefaultTableModel) tablaMovimientos.getModel();
@@ -932,6 +987,11 @@ private void aplicarCambiosSegunCheckBox() {
         // Repinta la tabla para reflejar los cambios
         tablaMovimientos.repaint();
     }
+    
+   
+
+
+    
 
     private void imprimir() {
         Document document = new Document();
@@ -1139,6 +1199,18 @@ private void aplicarCambiosSegunCheckBox() {
     private void txtDomicilioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDomicilioActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtDomicilioActionPerformed
+
+    private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
+    
+        actualizarTablaBtn();
+       
+    }//GEN-LAST:event_btnActualizarActionPerformed
+  
+    
+    
+    
+    
+    
     private void generarPdfSinFlete() {
         Document document = new Document();
         // Incrementar el contador de recibo
@@ -2327,6 +2399,7 @@ private void aplicarCambiosSegunCheckBox() {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnActualizar;
     private javax.swing.JButton btnAgregar;
     private javax.swing.JButton btnGenerarPdf;
     private javax.swing.JButton btnImprimir;

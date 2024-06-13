@@ -145,6 +145,7 @@ import java.util.Comparator;
 import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -154,6 +155,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.LineBorder;
@@ -374,7 +376,8 @@ public class Principal extends javax.swing.JFrame {
             btnGenerarRemitoDuplicado.addFocusListener(focusAdapter);
             btnRemitoTabla.addFocusListener(focusAdapter);
         });
-
+        
+        //Editar 2click 
         tablaMovimientos.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -535,7 +538,13 @@ public class Principal extends javax.swing.JFrame {
 
     ModeloCliente modClientes = new ModeloCliente();
     ArrayList<Cliente> listaClientes = modClientes.getClientes();
-
+    
+ 
+    
+    
+    
+    
+/*CODIGO VIEJO (ANDA)
     private static void mostrarResultadosBusqueda(JComboBox<String> combobox, String textoBusqueda) {
         // Limpiar selección previa
         combobox.setSelectedIndex(-1);
@@ -573,60 +582,133 @@ public class Principal extends javax.swing.JFrame {
             }
         }
     }
-
+*/
     private void cargarDestinos() {
-        ModeloCliente modClientes = new ModeloCliente();
-        ArrayList<Cliente> listaClientes = modClientes.getClientes();
+         ModeloCliente modClientes = new ModeloCliente();
+        listaClientes = modClientes.getClientes();
 
         cbDestinos.setEditable(true);
 
         // Ordenar la lista de clientes alfabéticamente por el nombre
         listaClientes.sort((cliente1, cliente2) -> cliente1.getNombre().compareToIgnoreCase(cliente2.getNombre()));
 
-        // Agregar los clientes al combobox
+        // Limpiar el ComboBox
+        cbDestinos.removeAllItems();
+
+        // Agregar los nombres de los clientes al ComboBox de forma ordenada
         for (Cliente cliente : listaClientes) {
             cbDestinos.addItem(cliente.getNombre());
         }
 
-        // Eliminar la opción en blanco después de configurar el decorador
-        cbDestinos.removeItem("");
-
         // Establecer el índice seleccionado a -1 para no mostrar ninguna selección
         cbDestinos.setSelectedIndex(-1);
 
+        // Agregar KeyListener al editor del JComboBox
         cbDestinos.getEditor().getEditorComponent().addKeyListener(new KeyAdapter() {
             @Override
-            public void keyReleased(KeyEvent e) {
+            public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_TAB) {
-                    String textoBusqueda = cbDestinos.getEditor().getItem().toString();
+                    autoCompletarDestino(cbDestinos);  
+                    cbDestinos.setPopupVisible(false); // Cerrar el popup después de seleccionar el cliente
+                    
+                } else if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE || e.getKeyCode() == KeyEvent.VK_DELETE) {
+                    cbDestinos.setPopupVisible(false);
+                } else if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_UP) {
+                    cbDestinos.setPopupVisible(true);
+                    
+                }
+            }
 
-                    // Normaliza el texto de búsqueda a mayúsculas y elimina caracteres no deseados excepto espacios en blanco
-                    textoBusqueda = textoBusqueda.toUpperCase().replaceAll("[^A-ZÑñ.\\s]", "");
-
-                    mostrarResultadosBusqueda(cbDestinos, textoBusqueda);
-
-                    // Busca el cliente seleccionado en la lista de clientes
-                    destinatario = null; // Restablece el destinatario seleccionado
-
-                    for (Cliente cliente : listaClientes) {
-                        // Normaliza el nombre del cliente a mayúsculas y elimina caracteres no deseados excepto espacios en blanco
-                        String nombreCliente = cliente.getNombre().toUpperCase().replaceAll("[^A-ZÑñ.\\s]", "");
-
-                        if (nombreCliente.contains(textoBusqueda)) {
-                            destinatario = cliente;
-                            System.out.println("Destinatario seleccionado: " + destinatario);
-                            break;
-                        }
-                    }
-
-                    if (destinatario == null) {
-                        System.out.println("No se encontró DESTINATARIO.");
-                    }
+            @Override
+            public void keyReleased(KeyEvent e) {
+                // No realizar la búsqueda si se está usando las teclas de flecha
+                if (e.getKeyCode() != KeyEvent.VK_DOWN && e.getKeyCode() != KeyEvent.VK_UP) {
+                    // Realizar la búsqueda cada vez que se libera una tecla
+                    realizarBusquedaDestinos();
+                     if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_TAB) {
+                    autoCompletarDestino(cbDestinos);  
+                    cbDestinos.setPopupVisible(false); // Cerrar el popup después de seleccionar el cliente
+                    
+                }
+                    
                 }
             }
         });
+
+        // Agregar ActionListener para manejar la selección del ComboBox
+        cbDestinos.addActionListener(e -> {
+            if (cbDestinos.isPopupVisible()) {
+                seleccionarDestino(cbDestinos.getSelectedItem().toString());
+            }
+        });
+    }
+    
+    
+    // Método para realizar la búsqueda
+    private void realizarBusquedaDestinos() {
+        // Obtener el texto ingresado por el usuario
+        String textoBusqueda = cbDestinos.getEditor().getItem().toString().toUpperCase();
+
+        // Si el texto de búsqueda está vacío, establecer el ComboBox en blanco y salir del método
+        if (textoBusqueda.isEmpty()) {
+            cbDestinos.setPopupVisible(false);
+            return;
+        }
+
+        // Obtener el modelo del ComboBox
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+
+        // Buscar resultados de búsqueda exacta
+        boolean encontradoExacta = false;
+
+        for (Cliente cliente : listaClientes) {
+            String nombreCliente = cliente.getNombre().toUpperCase();
+            if (nombreCliente.equals(textoBusqueda)) {
+                model.addElement(cliente.getNombre());
+                encontradoExacta = true;
+                break; // Terminar la búsqueda cuando se encuentra una coincidencia exacta
+            }
+        }
+
+        // Si no se encontró una coincidencia exacta, buscar coincidencias parciales
+        if (!encontradoExacta) {
+            for (Cliente cliente : listaClientes) {
+                String nombreCliente = cliente.getNombre().toUpperCase();
+                if (nombreCliente.contains(textoBusqueda)) {
+                    model.addElement(cliente.getNombre());
+                }
+            }
+        }
+
+        // Actualizar el modelo del ComboBox
+        cbDestinos.setModel(model);
+        cbDestinos.getEditor().setItem(textoBusqueda);
+
+        // Mostrar el menú desplegable si hay resultados
+        cbDestinos.setPopupVisible(model.getSize() > 0);
     }
 
+    // Método para seleccionar el cliente en el ComboBox
+    private void seleccionarDestino(String nombreCliente) {
+        for (Cliente cliente : listaClientes) {
+            if (cliente.getNombre().equalsIgnoreCase(nombreCliente)) {
+                this.destinatario = cliente;
+                cbDestinos.setSelectedItem(cliente.getNombre());
+                System.out.println(this.destinatario);
+                break;
+            }
+        }
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     private void cargarServicios() {
         ModeloServicio modServ = new ModeloServicio();
         ArrayList<Servicios> listaServ = modServ.getServicios();
@@ -669,7 +751,10 @@ public class Principal extends javax.swing.JFrame {
     private void cargarRepresentantes() {
         ModeloRepresentante modRepre = new ModeloRepresentante();
         ArrayList<Representantes> listaRepresentantes = modRepre.getRepresentantes();
+        
         cbRepresentantes.setEditable(true);
+        
+        
         // Ordenar la lista de clientes alfabéticamente por el nombre
         listaRepresentantes.sort((representante1, representante2) -> representante1.getNombre().compareToIgnoreCase(representante2.getNombre()));
 
@@ -684,31 +769,96 @@ public class Principal extends javax.swing.JFrame {
         // Establecer el índice seleccionado a -1 para no mostrar ninguna selección
         cbRepresentantes.setSelectedIndex(-1);
 
-        // Agregar ActionListener para capturar el evento "Enter"
-        cbRepresentantes.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String textoBusqueda = cbRepresentantes.getEditor().getItem().toString();
-                mostrarResultadosBusqueda(cbRepresentantes, textoBusqueda);
-            }
-        });
-
-        // Agregar KeyListener para capturar el evento "Enter"
+         // Agregar KeyListener al editor del JComboBox
         cbRepresentantes.getEditor().getEditorComponent().addKeyListener(new KeyAdapter() {
             @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_TAB) {
+                    autoCompletarRepresentante(cbRepresentantes);  
+                    cbRepresentantes.setPopupVisible(false); // Cerrar el popup después de seleccionar el Representante
+                    
+                } else if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE || e.getKeyCode() == KeyEvent.VK_DELETE) {
+                    cbRepresentantes.setPopupVisible(false);
+                } else if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_UP) {
+                    cbRepresentantes.setPopupVisible(true);
+                    
+                }
+            }
+
+            @Override
             public void keyReleased(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    String textoBusqueda = cbRepresentantes.getEditor().getItem().toString();
-                    mostrarResultadosBusqueda(cbRepresentantes, textoBusqueda);
+                // No realizar la búsqueda si se está usando las teclas de flecha
+                if (e.getKeyCode() != KeyEvent.VK_DOWN && e.getKeyCode() != KeyEvent.VK_UP) {
+                    // Realizar la búsqueda cada vez que se libera una tecla
+                    realizarBusquedaRepresentantes();
+                     if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_TAB) {
+                    autoCompletarRepresentante(cbRepresentantes);  
+                    cbRepresentantes.setPopupVisible(false); // Cerrar el popup después de seleccionar el Representante
+                    
+                }
+                    
                 }
             }
         });
+ 
     }
+    
+    // Método para realizar la búsqueda
+    private void realizarBusquedaRepresentantes() {
+        ModeloRepresentante modRepre = new ModeloRepresentante();
+        ArrayList<Representantes> listaRepresentantes = modRepre.getRepresentantes();
+        // Obtener el texto ingresado por el usuario
+        String textoBusqueda = cbRepresentantes.getEditor().getItem().toString().toUpperCase();
 
+        // Si el texto de búsqueda está vacío, establecer el ComboBox en blanco y salir del método
+        if (textoBusqueda.isEmpty()) {
+            cbRepresentantes.setPopupVisible(false);
+            return;
+        }
+
+        // Obtener el modelo del ComboBox
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+
+        // Buscar resultados de búsqueda exacta
+        boolean encontradoExacta = false;
+
+        for (Representantes repre : listaRepresentantes) {
+            String nombreCliente = repre.getNombre().toUpperCase();
+            if (nombreCliente.equals(textoBusqueda)) {
+                model.addElement(repre.getNombre());
+                encontradoExacta = true;
+                break; // Terminar la búsqueda cuando se encuentra una coincidencia exacta
+            }
+        }
+
+        // Si no se encontró una coincidencia exacta, buscar coincidencias parciales
+        if (!encontradoExacta) {
+            for (Representantes repre : listaRepresentantes) {
+                String nombreRepre = repre.getNombre().toUpperCase();
+                if (nombreRepre.contains(textoBusqueda)) {
+                    model.addElement(repre.getNombre());
+                }
+            }
+        }
+
+        // Actualizar el modelo del ComboBox
+        cbRepresentantes.setModel(model);
+        cbRepresentantes.getEditor().setItem(textoBusqueda);
+
+        // Mostrar el menú desplegable si hay resultados
+        cbRepresentantes.setPopupVisible(model.getSize() > 0);
+    }
+    
+    
+    
+    
+    
+    
+   // Método para inicializar y cargar clientes en el ComboBox
     private void cargarClientes() {
 
         ModeloCliente modClientes = new ModeloCliente();
-        ArrayList<Cliente> listaClientes = modClientes.getClientes();
+        listaClientes = modClientes.getClientes();
 
         cbClientes.setEditable(true);
 
@@ -723,12 +873,192 @@ public class Principal extends javax.swing.JFrame {
             cbClientes.addItem(cliente.getNombre());
         }
 
-        // Eliminar la opción en blanco después de configurar el decorador
-        cbClientes.removeItem("");
-
         // Establecer el índice seleccionado a -1 para no mostrar ninguna selección
         cbClientes.setSelectedIndex(-1);
 
+        // Agregar KeyListener al editor del JComboBox
+        cbClientes.getEditor().getEditorComponent().addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_TAB) {
+                    autoCompletarCliente(cbClientes);  
+                    cbClientes.setPopupVisible(false); // Cerrar el popup después de seleccionar el cliente
+                    
+                } else if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE || e.getKeyCode() == KeyEvent.VK_DELETE) {
+                    cbClientes.setPopupVisible(false);
+                } else if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_UP) {
+                    cbClientes.setPopupVisible(true);
+                    
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                // No realizar la búsqueda si se está usando las teclas de flecha
+                if (e.getKeyCode() != KeyEvent.VK_DOWN && e.getKeyCode() != KeyEvent.VK_UP) {
+                    // Realizar la búsqueda cada vez que se libera una tecla
+                    realizarBusquedaClientes();
+                     if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_TAB) {
+                    autoCompletarCliente(cbClientes);  
+                    cbClientes.setPopupVisible(false); // Cerrar el popup después de seleccionar el cliente
+                    
+                }
+                    
+                }
+            }
+        });
+
+        // Agregar ActionListener para manejar la selección del ComboBox
+        cbClientes.addActionListener(e -> {
+            if (cbClientes.isPopupVisible()) {
+                seleccionarCliente(cbClientes.getSelectedItem().toString());
+            }
+        });
+    }
+
+    // Método para realizar la búsqueda
+    private void realizarBusquedaClientes() {
+        // Obtener el texto ingresado por el usuario
+        String textoBusqueda = cbClientes.getEditor().getItem().toString().toUpperCase();
+
+        // Si el texto de búsqueda está vacío, establecer el ComboBox en blanco y salir del método
+        if (textoBusqueda.isEmpty()) {
+            cbClientes.setPopupVisible(false);
+            return;
+        }
+
+        // Obtener el modelo del ComboBox
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+
+        // Buscar resultados de búsqueda exacta
+        boolean encontradoExacta = false;
+
+        for (Cliente cliente : listaClientes) {
+            String nombreCliente = cliente.getNombre().toUpperCase();
+            if (nombreCliente.equals(textoBusqueda)) {
+                model.addElement(cliente.getNombre());
+                encontradoExacta = true;
+                break; // Terminar la búsqueda cuando se encuentra una coincidencia exacta
+            }
+        }
+
+        // Si no se encontró una coincidencia exacta, buscar coincidencias parciales
+        if (!encontradoExacta) {
+            for (Cliente cliente : listaClientes) {
+                String nombreCliente = cliente.getNombre().toUpperCase();
+                if (nombreCliente.contains(textoBusqueda)) {
+                    model.addElement(cliente.getNombre());
+                }
+            }
+        }
+
+        // Actualizar el modelo del ComboBox
+        cbClientes.setModel(model);
+        cbClientes.getEditor().setItem(textoBusqueda);
+
+        // Mostrar el menú desplegable si hay resultados
+        cbClientes.setPopupVisible(model.getSize() > 0);
+    }
+
+    // Método para seleccionar el cliente en el ComboBox
+    private void seleccionarCliente(String nombreCliente) {
+        for (Cliente cliente : listaClientes) {
+            if (cliente.getNombre().equalsIgnoreCase(nombreCliente)) {
+                this.cliente = cliente;
+                cbClientes.setSelectedItem(cliente.getNombre());
+                System.out.println(this.cliente);
+                break;
+            }
+        }
+    }
+
+    // Método para auto-completar el cliente seleccionado en el ComboBox
+    private void autoCompletarCliente(JComboBox<String> combobox) {
+        String nombreCliente = (String) combobox.getSelectedItem();
+        combobox.getEditor().setItem(nombreCliente);
+        seleccionarCliente(nombreCliente); // Seleccionar el cliente en la variable
+    }
+    
+     // Método para auto-completar el cliente seleccionado en el ComboBox
+    private void autoCompletarDestino(JComboBox<String> combobox) {
+        String nombreDestino = (String) combobox.getSelectedItem();
+        combobox.getEditor().setItem(nombreDestino);
+        seleccionarDestino(nombreDestino); // Seleccionar el cliente en la variable
+    }
+    
+    // Método para auto-completar el cliente seleccionado en el ComboBox
+    private void autoCompletarRepresentante(JComboBox<String> combobox) {
+        String nombreRepresentante = (String) combobox.getSelectedItem();
+        combobox.getEditor().setItem(nombreRepresentante);
+        
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        // Método para mostrar los resultados de la búsqueda
+       private static void mostrarResultadosBusqueda(JComboBox<String> combobox, String textoBusqueda) {
+        // Limpiar selección previa
+        combobox.setSelectedIndex(-1);
+
+        // Buscar resultados de búsqueda exacta
+        boolean encontradoExacta = false;
+
+        for (int i = 0; i < combobox.getItemCount(); i++) {
+            String item = combobox.getItemAt(i).toString();
+            if (item.equalsIgnoreCase(textoBusqueda)) {
+                combobox.setSelectedItem(item);
+                combobox.getEditor().setItem(item);
+                encontradoExacta = true;
+                break; // Terminar la búsqueda cuando se encuentra una coincidencia exacta
+            }
+        }
+
+        // Si no se encontró una coincidencia exacta, buscar coincidencias parciales
+        if (!encontradoExacta) {
+            boolean encontradoParcial = false;
+            for (int i = 0; i < combobox.getItemCount(); i++) {
+                String item = combobox.getItemAt(i).toString();
+                if (item.toLowerCase().contains(textoBusqueda.toLowerCase())) {
+                    combobox.setSelectedIndex(i);
+                    combobox.getEditor().setItem(item);
+                    encontradoParcial = true;
+                    break; // Terminar la búsqueda cuando se encuentra una coincidencia parcial
+                }
+            }
+
+            // Si no se encontró ninguna coincidencia parcial, mantener el texto de búsqueda tal como lo ingresó el usuario
+            if (!encontradoParcial) {
+                combobox.getEditor().setItem(textoBusqueda);
+                combobox.setPopupVisible(true);
+            }
+        }
+    }
+
+
+
+
+
+        
+        
+       
+        
+
+        //Codigo viejo (anda)
+        /*
         // Agregar ActionListener para capturar el evento "Enter"
         cbClientes.addActionListener(new ActionListener() {
             @Override
@@ -750,8 +1080,11 @@ public class Principal extends javax.swing.JFrame {
                 }
             }
         });
-
-    }
+        
+        */
+        
+    
+   
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -1055,6 +1388,7 @@ public class Principal extends javax.swing.JFrame {
         });
 
         cbClientes.setForeground(new java.awt.Color(0, 0, 0));
+        cbClientes.setMaximumRowCount(6);
         cbClientes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbClientesActionPerformed(evt);
@@ -1062,6 +1396,7 @@ public class Principal extends javax.swing.JFrame {
         });
 
         cbDestinos.setForeground(new java.awt.Color(0, 0, 0));
+        cbDestinos.setMaximumRowCount(6);
 
         cbServicios.setForeground(new java.awt.Color(0, 0, 0));
         cbServicios.addActionListener(new java.awt.event.ActionListener() {
@@ -1335,6 +1670,8 @@ public class Principal extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        cbRepresentantes.setMaximumRowCount(6);
+
         jLabel8.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel8.setForeground(new java.awt.Color(236, 240, 241));
         jLabel8.setText("Representante");
@@ -1358,27 +1695,41 @@ public class Principal extends javax.swing.JFrame {
         panelCargaMovimientosLayout.setHorizontalGroup(
             panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
-                .addGap(11, 11, 11)
                 .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
-                        .addComponent(jLabel10)
-                        .addGap(291, 291, 291)
-                        .addComponent(cbCuentaCorriente, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(11, 11, 11)
+                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
                         .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(bulto)
-                            .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
-                                .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(cbClientes, javax.swing.GroupLayout.Alignment.LEADING, 0, 200, Short.MAX_VALUE)
-                                    .addComponent(cbDestinos, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(cbServicios, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelCargaMovimientosLayout.createSequentialGroup()
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(cbClientes, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btnAgregarCliente)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
+                                .addComponent(btnAgregarCliente)
+                                .addGap(66, 66, 66))
+                            .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
+                                .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
+                                        .addGap(11, 11, 11)
+                                        .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
+                                        .addContainerGap()
+                                        .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
+                                        .addGap(12, 12, 12)
+                                        .addComponent(cbDestinos, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
+                                        .addGap(12, 12, 12)
+                                        .addComponent(cbServicios, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
+                                        .addContainerGap()
+                                        .addComponent(jLabel10))
+                                    .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
+                                        .addContainerGap()
+                                        .addComponent(bulto)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                         .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cbCuentaCorriente, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(panelCargaMovimientosLayout.createSequentialGroup()
                                 .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1392,7 +1743,7 @@ public class Principal extends javax.swing.JFrame {
                                 .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel14)
                                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))))
-                .addGap(39, 39, 39)
+                .addGap(45, 45, 45)
                 .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -1446,20 +1797,20 @@ public class Principal extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel13)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(panelCargaMovimientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(cbClientes, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnAgregarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(18, 18, 18)
                         .addComponent(jLabel10)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cbDestinos, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(18, 18, 18)
                         .addComponent(bulto)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cbServicios, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(18, 18, 18)
                         .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(0, 10, Short.MAX_VALUE))
+                .addGap(0, 6, Short.MAX_VALUE))
         );
 
         PanelBusquedas.setBackground(new java.awt.Color(66, 66, 66));
@@ -1554,12 +1905,12 @@ public class Principal extends javax.swing.JFrame {
                 .addComponent(panelCargaMovimientos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(43, 43, 43)
-                        .addComponent(jButton2))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(PanelBusquedas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(688, Short.MAX_VALUE))
+                        .addComponent(PanelBusquedas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(43, 43, 43)
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(663, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1570,11 +1921,11 @@ public class Principal extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(39, 39, 39)
-                        .addComponent(jButton2)
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(PanelBusquedas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(37, 37, 37)))
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 685, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 660, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -1705,522 +2056,121 @@ public class Principal extends javax.swing.JFrame {
         tablaMovimientos.setRowSorter(trs);
     }//GEN-LAST:event_txtFiltroRemitoKeyTyped
 
-    private void txtRemitoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtRemitoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtRemitoActionPerformed
-
-    private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
-
-        String fPagado = "";
-        String fRendido = "";
-        String tFlete = "";
-        String tMontoP = "";
-        String tMontoR = "";
-        String tFleteP = "";
-        String tFleteR = "";
-        String cC = "";
-        String remito;
-        //FECHA
-        Date fecha = getFecha();
-        //HORA
-        LocalTime horaActual = LocalTime.now().withSecond(0);
-        Time horaSQL = Time.valueOf(horaActual);
-        //Verifica dato del Combobox
-        String cliente = (cbClientes.getSelectedItem() != null) ? cbClientes.getSelectedItem().toString() : "";
-        String destino = (cbDestinos.getSelectedItem() != null) ? cbDestinos.getSelectedItem().toString() : "";
-        String servicio = (cbServicios.getSelectedItem() != null) ? cbServicios.getSelectedItem().toString() : "";
-        String representante = (cbRepresentantes.getSelectedItem() != null) ? cbRepresentantes.getSelectedItem().toString() : "";
-
-        int bulto = Integer.parseInt(txtBulto.getText());
-        //txt monto
-        String txtMontoValor = txtMonto.getText();
-        String monto;
-        //remito
-        remito = txtRemito.getText();
-
-        // Si hay campos faltantes, mostrar el mensaje de alerta
-        if (!txtMontoValor.isEmpty()) {
-            monto = txtMontoValor;
-        } else {
-            monto = "0";
-        }
-
-        String fleteTexto = txtFlete.getText();
-        BigDecimal flete = new BigDecimal(fleteTexto);
-        String sTexto = txtSeguro.getText();
-        String rTexto = txtRedespacho.getText();
-        String ccTexto = txtContrarembolso.getText();
-        BigDecimal s = new BigDecimal(sTexto);
-        BigDecimal r = new BigDecimal(rTexto);
-        BigDecimal cc = new BigDecimal(ccTexto);
-        BigDecimal resultado = flete.add(s).add(r).add(cc);
-        String fletenuevo = resultado.toString();
-
-        String obs = txtObservaciones.getText();
-        //verif flete origen/destino
-        if (cbfDestino.isSelected()) {
-            tFlete = "Destino";
-            cbfOrigen.setSelected(false);
-
-        }
-        if (cbfOrigen.isSelected()) {
-            tFlete = "Origen";
-            cbfDestino.setSelected(false);
-        }
-
-        //verif Cuenta Corriente
-        if (cbCuentaCorriente.isSelected()) {
-            cC = "Si";
-        } else {
-            cC = "No";
-        }
-
-        //verif de monto pagado/rendido
-        if (cbmontoPagado.isSelected() && cbMontoRendido.isSelected()) {
-            tMontoP = "Si";
-            tMontoR = "Si";
-        } else if (cbmontoPagado.isSelected()) {
-            tMontoP = "Si";
-            tMontoR = "No";
-        } else if (cbMontoRendido.isSelected()) {
-            tMontoR = "Si";
-            tMontoP = "No";
-        } else {
-            tMontoR = "No";
-            tMontoP = "No";
-        }
-        //verif de flete pagado/rendido
-        if (cbfletePagado.isSelected() && cbfleteRendido.isSelected()) {
-            tFleteP = "Si";
-            tFleteR = "Si";
-        } else if (cbfleteRendido.isSelected()) {
-            tFleteR = "Si";
-            tFleteP = "No";
-        } else if (cbfletePagado.isSelected()) {
-            tFleteR = "No";
-            tFleteP = "Si";
-        } else {
-            tFleteR = "No";
-            tFleteP = "No";
-        }
-        // Verificar campos vacíos y almacenar los nombres de los campos vacíos en una lista
-        List<String> camposFaltantes = new ArrayList<>();
-        if (cbClientes.getSelectedItem() == null || cbClientes.getSelectedItem().toString().isEmpty()) {
-            camposFaltantes.add("Cliente");
-        }
-        if (cbDestinos.getSelectedItem() == null || cbDestinos.getSelectedItem().toString().isEmpty()) {
-            camposFaltantes.add("Destino");
-        }
-        if (cbServicios.getSelectedItem() == null || cbServicios.getSelectedItem().toString().isEmpty()) {
-            camposFaltantes.add("Servicio");
-        }
-        if (cbRepresentantes.getSelectedItem() == null || cbRepresentantes.getSelectedItem().toString().isEmpty()) {
-            camposFaltantes.add("Representante");
-        }
-        if (txtBulto.getText().isEmpty()) {
-            camposFaltantes.add("Bulto");
-        }
-        if (txtFlete.getText().isEmpty()) {
-            camposFaltantes.add("Flete");
-        }
-        if (remito.isEmpty()) {
-            camposFaltantes.add("Remito");
-        }
-
-        if (!camposFaltantes.isEmpty()) {
-            String mensaje = "Por favor, complete los siguientes campos obligatorios:\n";
-            for (String campo : camposFaltantes) {
-                mensaje += "- " + campo + "\n";
-            }
-
-            mostrarMensaje(mensaje, "Error", "Campos faltantes");
-            return; // Detener la ejecución para no agregar el movimiento
-        }
-
-        control.cargarMovimiento(cliente, destino, servicio, representante, bulto, monto, fletenuevo, tFlete, remito, tMontoP, tMontoR, tFleteP, tFleteR, fecha, cC, obs, horaSQL);
-        System.out.println("Movimiento agregado correctamente" + "Info" + "Agregado con exito!");
-
-        // Actualizar la tabla
-        DefaultTableModel modeloTabla = (DefaultTableModel) tablaMovimientos.getModel();
-        modeloTabla.setRowCount(0);
-        List<Movimientos> movimientos = control.traerMovimientos();
-        // Ordenar los datos por el ID en forma descendente
-        Collections.sort(movimientos, Comparator.comparingInt(Movimientos::getId_movimientos).reversed());
-        for (Movimientos mov : movimientos) {
-            Object[] objeto = {mov.getId_movimientos(), mov.getHora(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
-
-            modeloTabla.addRow(objeto);
-        }
-
-        //Limpiar Combobox
-        // Remover los ActionListeners y KeyListeners de cbRepresentantes
-        ActionListener[] repActionListeners = cbRepresentantes.getActionListeners();
-        KeyListener[] repKeyListeners = cbRepresentantes.getEditor().getEditorComponent().getKeyListeners();
-
-        for (ActionListener listener : repActionListeners) {
-            cbRepresentantes.removeActionListener(listener);
-        }
-
-        for (KeyListener listener : repKeyListeners) {
-            cbRepresentantes.getEditor().getEditorComponent().removeKeyListener(listener);
-        }
-
-        // Remover los ActionListeners y KeyListeners de cbDestinos
-        ActionListener[] destActionListeners = cbDestinos.getActionListeners();
-        KeyListener[] destKeyListeners = cbDestinos.getEditor().getEditorComponent().getKeyListeners();
-
-        for (ActionListener listener : destActionListeners) {
-            cbDestinos.removeActionListener(listener);
-        }
-
-        for (KeyListener listener : destKeyListeners) {
-            cbDestinos.getEditor().getEditorComponent().removeKeyListener(listener);
-        }
-
-        cbRepresentantes.setSelectedIndex(-1); // Deselecciona cualquier elemento en el combo box
-        cbDestinos.setSelectedIndex(-1); // Deselecciona cualquier elemento en cbDestinos
-
-        // Volver a agregar los ActionListeners y KeyListeners a cbRepresentantes
-        for (ActionListener listener : repActionListeners) {
-            cbRepresentantes.addActionListener(listener);
-        }
-
-        for (KeyListener listener : repKeyListeners) {
-            cbRepresentantes.getEditor().getEditorComponent().addKeyListener(listener);
-        }
-
-        // Volver a agregar los ActionListeners y KeyListeners a cbDestinos
-        for (ActionListener listener : destActionListeners) {
-            cbDestinos.addActionListener(listener);
-        }
-
-        for (KeyListener listener : destKeyListeners) {
-            cbDestinos.getEditor().getEditorComponent().addKeyListener(listener);
-        }
-
-        //Limpiar datos
-        txtRemito.setText("0");
-        txtBulto.setText("1");
-        cbCuentaCorriente.setSelected(false); // Desmarca la casilla de verificación
-        txtMonto.setText("0");
-        cbmontoPagado.setSelected(false);
-        cbMontoRendido.setSelected(false);
-        cbfletePagado.setSelected(false);
-        cbfleteRendido.setSelected(false);
-        txtObservaciones.setText("");
-        txtSeguro.setText("0");
-        txtContrarembolso.setText("0");
-        txtRedespacho.setText("0");
-        txtValDeclarado.setText("0");
-
-
-    }//GEN-LAST:event_btnAgregarActionPerformed
-
-    private void txtMontoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMontoActionPerformed
-
-    }//GEN-LAST:event_txtMontoActionPerformed
-
-    private void txtBultoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBultoActionPerformed
-
-    }//GEN-LAST:event_txtBultoActionPerformed
-
-    private void btnEliminarMovimientoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarMovimientoActionPerformed
-        // Control para verificar que la tabla no esté vacía
-        if (tablaMovimientos.getRowCount() > 0) {
-            // Validar que se hayan seleccionado registros
-            int[] selectedRows = tablaMovimientos.getSelectedRows();
-            if (selectedRows.length > 0) {
-                int confirmResult = JOptionPane.showConfirmDialog(this, "¿Estás seguro de que deseas borrar los registros seleccionados?", "Confirmar borrado", JOptionPane.YES_NO_OPTION);
-                if (confirmResult == JOptionPane.YES_OPTION) {
-                    for (int selectedRow : selectedRows) {
-                        int idMovimiento = Integer.parseInt(String.valueOf(tablaMovimientos.getValueAt(selectedRow, 0)));
-                        control.borrarMovimiento(idMovimiento);
-                    }
-                    mostrarMensaje("Movimientos borrados correctamente", "Info", "Borrados con éxito");
-                    mostrarTablaMovimientos();
-                }
-            } else {
-                mostrarMensaje("No seleccionaste registros para eliminar", "Error", "Error al eliminar");
-            }
-        } else {
-            mostrarMensaje("La tabla está vacía, no se puede eliminar", "Error", "Error al eliminar");
-        }
-    }//GEN-LAST:event_btnEliminarMovimientoActionPerformed
-
-    private void cbfDestinoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbfDestinoActionPerformed
-        String tFlete = "";
-        if (cbfDestino.isSelected()) {
-            cbfOrigen.setSelected(false);
-            tFlete = "Destino";
-        }
-
-
-    }//GEN-LAST:event_cbfDestinoActionPerformed
-
-    private void cbfOrigenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbfOrigenActionPerformed
-        String tFlete = "";
-        if (cbfOrigen.isSelected()) {
-            cbfDestino.setSelected(false);
-            tFlete = "Origen";
-        }
-    }//GEN-LAST:event_cbfOrigenActionPerformed
-
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         Principal pn = new Principal();
         pn.setVisible(true);
         dispose();
 
     }//GEN-LAST:event_jButton2ActionPerformed
-    private PNuevoCliente ventanaCliente;
-    private void btnAgregarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarClienteActionPerformed
-        // Verificar si la ventana ya está abierta
-        if (ventanaCliente == null || !ventanaCliente.isVisible()) {
-            // Si la ventana no está abierta o está oculta, crea una nueva instancia
-            ventanaCliente = new PNuevoCliente();
-        }
 
-        // Mostrar la ventana y enfocarla (llevarla al frente)
-        ventanaCliente.setVisible(true);
-        ventanaCliente.toFront();
+    private void btnRemitoTablaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemitoTablaActionPerformed
 
-    }//GEN-LAST:event_btnAgregarClienteActionPerformed
+        SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/YYYY");
+        Movimientos mov = new Movimientos();
+        if (idSeleccionado != -1) {
+            // Busco id en la bd
+            mov = control.traerMovimiento(idSeleccionado);
 
-    private void cbCuentaCorrienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbCuentaCorrienteActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cbCuentaCorrienteActionPerformed
+            // Debes implementar el código para acceder a tu base de datos y obtener los datos del cliente y destino
+            String cliente = mov.getCliente();
+            String destino = mov.getDestino();
+            String fecha = formatoFecha.format(mov.getFecha());
+            String servicio = mov.getServicio();
+            String bulto = Integer.toString(mov.getBultos());
+            String representante = mov.getRepresentante();
+            String remito = mov.getRemito();
 
-    private void btnGenerarRemitoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarRemitoActionPerformed
+            // Eliminar el símbolo "$" y el formato de los campos monto y flete
+            String montoSinSimbolo = mov.getMonto().replaceAll("[$]", "");
+            String fleteSinSimbolo = mov.getFlete().replaceAll("[$]", "");
 
-        String fPagado = "";
-        String fRendido = "";
-        String tFlete = "";
-        String tMontoP = "";
-        String tMontoR = "";
-        String tFleteP = "";
-        String tFleteR = "";
-        String cC = "";
-        String remito;
-        //FECHA
-        Date fecha = getFecha();
-        //HORA
-        LocalTime horaActual = LocalTime.now().withSecond(0);
-        Time horaSQL = Time.valueOf(horaActual);
+            // Aplicar el formateo para que los números tengan el formato correcto
+            String montoFormateado = montoSinSimbolo.replace(".", "").replace(",", ".");
+            String fleteFormateado = fleteSinSimbolo.replace(".", "").replace(",", ".");
 
-        String cliente = (cbClientes.getSelectedItem() != null) ? cbClientes.getSelectedItem().toString() : "";
-        String destino = (cbDestinos.getSelectedItem() != null) ? cbDestinos.getSelectedItem().toString() : "";
-        String servicio = (cbServicios.getSelectedItem() != null) ? cbServicios.getSelectedItem().toString() : "";
-        String representante = (cbRepresentantes.getSelectedItem() != null) ? cbRepresentantes.getSelectedItem().toString() : "";
+            // Crear objetos BigDecimal a partir de las cadenas formateadas
+            BigDecimal montoBigDecimal = new BigDecimal(montoFormateado);
+            BigDecimal fleteBigDecimal = new BigDecimal(fleteFormateado);
 
-        //bandera 1
-        System.out.println(cliente);
-        System.out.println(destino);
-        System.out.println(servicio);
+            // Asignar los valores de los BigDecimal a los campos de texto
+            String monto = montoBigDecimal.toString();
+            String flete = fleteBigDecimal.toString();
 
-        int bulto = Integer.parseInt(txtBulto.getText());
-        //txt monto
-        String txtMontoValor = txtMonto.getText();
-        String monto;
-        // Obtener el valor del campo de texto txtRemito
-        String textoRemito = txtRemito.getText();
+            String obs = mov.getObservaciones();
+            String origenDestino = mov.getFleteDestinoOrigen();
+            String cc = mov.getCuentaCorriente();
 
-        if (!textoRemito.equals("0")) {
-            // Asignar el valor de txtRemito a remito si no es igual a "0"
-            remito = textoRemito;
-        } else {
+            boolean cuentaCorriente;
 
-            // Usando String.valueOf()
-            remito = String.valueOf(numeroRemito + 1);
+            if (remito.equals("0")) {
+                // Usando String.valueOf()
+                remito = String.valueOf(numeroRemito + 1);
+                // Actualizar la tabla en la base de datos
+                if (remito.equals("0")) {
+                    // Incrementar el número de remito
+                    int nuevoNumeroRemito = numeroRemito + 1;
+                    remito = String.valueOf(nuevoNumeroRemito);
+                }
 
-            // JOptionPane.showMessageDialog(null, "El valor de remito no puede ser 0", "Error", JOptionPane.ERROR_MESSAGE);
-        }
+            } else {
 
-        // Si hay campos faltantes, mostrar el mensaje de alerta
-        if (!txtMontoValor.isEmpty()) {
-            monto = txtMontoValor;
-        } else {
-            monto = "0";
-        }
-        String fleteTexto = txtFlete.getText();
-        BigDecimal flete = new BigDecimal(fleteTexto);
-        String sTexto = txtSeguro.getText();
-        String rTexto = txtRedespacho.getText();
-        String ccTexto = txtContrarembolso.getText();
-        BigDecimal s = new BigDecimal(sTexto);
-        BigDecimal r = new BigDecimal(rTexto);
-        BigDecimal cc = new BigDecimal(ccTexto);
-        BigDecimal resultado = flete.add(s).add(r).add(cc);
-        String fletenuevo = resultado.toString();
-
-        String obs = txtObservaciones.getText();
-        //verif flete origen/destino
-        if (cbfDestino.isSelected()) {
-            tFlete = "Destino";
-            cbfOrigen.setSelected(false);
-
-        }
-        if (cbfOrigen.isSelected()) {
-            tFlete = "Origen";
-            cbfDestino.setSelected(false);
-        }
-
-        //verif Cuenta Corriente
-        if (cbCuentaCorriente.isSelected()) {
-            cC = "Si";
-        } else {
-            cC = "No";
-        }
-
-        //verif de monto pagado/rendido
-        if (cbmontoPagado.isSelected() && cbMontoRendido.isSelected()) {
-            tMontoP = "Si";
-            tMontoR = "Si";
-        } else if (cbmontoPagado.isSelected()) {
-            tMontoP = "Si";
-            tMontoR = "No";
-        } else if (cbMontoRendido.isSelected()) {
-            tMontoR = "Si";
-            tMontoP = "No";
-        } else {
-            tMontoR = "No";
-            tMontoP = "No";
-        }
-        //verif de flete pagado/rendido
-        if (cbfletePagado.isSelected() && cbfleteRendido.isSelected()) {
-            tFleteP = "Si";
-            tFleteR = "Si";
-        } else if (cbfleteRendido.isSelected()) {
-            tFleteR = "Si";
-            tFleteP = "No";
-        } else if (cbfletePagado.isSelected()) {
-            tFleteR = "No";
-            tFleteP = "Si";
-        } else {
-            tFleteR = "No";
-            tFleteP = "No";
-        }
-        // Verificar campos vacíos y almacenar los nombres de los campos vacíos en una lista
-        List<String> camposFaltantes = new ArrayList<>();
-        if (cbClientes.getSelectedItem() == null || cbClientes.getSelectedItem().toString().isEmpty()) {
-            camposFaltantes.add("Cliente");
-        }
-        if (cbDestinos.getSelectedItem() == null || cbDestinos.getSelectedItem().toString().isEmpty()) {
-            camposFaltantes.add("Destino");
-        }
-        if (cbServicios.getSelectedItem() == null || cbServicios.getSelectedItem().toString().isEmpty()) {
-            camposFaltantes.add("Servicio");
-        }
-        if (cbRepresentantes.getSelectedItem() == null || cbRepresentantes.getSelectedItem().toString().isEmpty()) {
-            camposFaltantes.add("Representante");
-        }
-        if (txtBulto.getText().isEmpty()) {
-            camposFaltantes.add("Bulto");
-        }
-        // Verificar el resto de campos obligatorios que desees
-        if (txtMonto.getText().isEmpty()) {
-            camposFaltantes.add("Monto");
-        }
-        if (txtFlete.getText().isEmpty()) {
-            camposFaltantes.add("Flete");
-        }
-        if (remito.isEmpty()) {
-            camposFaltantes.add("Remito");
-        }
-
-        if (!camposFaltantes.isEmpty()) {
-            String mensaje = "Por favor, complete los siguientes campos obligatorios:\n";
-            for (String campo : camposFaltantes) {
-                mensaje += "- " + campo + "\n";
+                // Asignar el valor de txtRemito a remito si no es igual a "0"
+                remito = remito;
+                System.out.println("remito else " + remito);
+                // JOptionPane.showMessageDialog(null, "El valor de remito no puede ser 0", "Error", JOptionPane.ERROR_MESSAGE);
             }
 
-            mostrarMensaje(mensaje, "Error", "Campos faltantes");
-            return; // Detener la ejecución para no agregar el movimiento
+            if ("Si".equalsIgnoreCase(cc)) {
+                cuentaCorriente = true;
+            } else if ("No".equalsIgnoreCase(cc)) {
+                cuentaCorriente = false;
+            } else {
+                // Manejar un caso no válido si es necesario
+                cuentaCorriente = false; // Puedes asignar un valor predeterminado
+            }
+            System.out.println("cuenta corriente:");
+            System.out.println(cuentaCorriente);
+
+            String montoPagado = mov.getTipoMontoP();
+            String montoRendido = mov.getTipoMontoR();
+            String fletePagado = mov.getTipoFleteP();
+            String fleteRendido = mov.getTipoFleteR();
+
+            System.out.println("Datos de id: " + fecha + " " + cliente + " " + destino + " " + bulto + " " + remito + " " + monto + " " + montoPagado + " " + montoRendido + " " + flete + " " + fletePagado + " " + fleteRendido + " " + origenDestino + " " + cc + " " + representante + " " + obs);
+            System.out.println("numero remito" + remito);
+            control.editarMovimiento(mov, remito);
+            generarRemito(fecha, cliente, destino, servicio, remito, bulto, representante, monto, montoPagado, montoRendido, flete, fletePagado, fleteRendido, origenDestino, cuentaCorriente, obs);
+
+        } else {
+            // No hay ningún ID seleccionado en la tabla, muestra un JOptionPane
+            JOptionPane.showMessageDialog(this, "Selecciona algún movimiento en la tabla", "Mensaje de Error", JOptionPane.ERROR_MESSAGE);
         }
 
-        control.cargarMovimiento(cliente, destino, servicio, representante, bulto, monto, fletenuevo, tFlete, remito, tMontoP, tMontoR, tFleteP, tFleteR, fecha, cC, obs, horaSQL);
-        //mostrarMensaje("Movimiento agregado correctamente", "Info", "Agregado con exito!");
+    }//GEN-LAST:event_btnRemitoTablaActionPerformed
 
-        //Llama la funcion generar  
-        generarPdf();
+    private void txtMontoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMontoActionPerformed
 
-        // Actualizar la tabla
-        DefaultTableModel modeloTabla = (DefaultTableModel) tablaMovimientos.getModel();
-        modeloTabla.setRowCount(0);
-        List<Movimientos> movimientos = control.traerMovimientos();
+    }//GEN-LAST:event_txtMontoActionPerformed
 
-        // Ordenar los datos por el ID en forma descendente
-        Collections.sort(movimientos, Comparator.comparingInt(Movimientos::getId_movimientos).reversed());
-        for (Movimientos mov : movimientos) {
-            Object[] objeto = {mov.getId_movimientos(), mov.getHora(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
-
-            modeloTabla.addRow(objeto);
-        }
-
-        //Limpiar Combobox
-        // Remover los ActionListeners y KeyListeners de cbRepresentantes
-        ActionListener[] repActionListeners = cbRepresentantes.getActionListeners();
-        KeyListener[] repKeyListeners = cbRepresentantes.getEditor().getEditorComponent().getKeyListeners();
-
-        for (ActionListener listener : repActionListeners) {
-            cbRepresentantes.removeActionListener(listener);
-        }
-
-        for (KeyListener listener : repKeyListeners) {
-            cbRepresentantes.getEditor().getEditorComponent().removeKeyListener(listener);
-        }
-
-        // Remover los ActionListeners y KeyListeners de cbDestinos
-        ActionListener[] destActionListeners = cbDestinos.getActionListeners();
-        KeyListener[] destKeyListeners = cbDestinos.getEditor().getEditorComponent().getKeyListeners();
-
-        for (ActionListener listener : destActionListeners) {
-            cbDestinos.removeActionListener(listener);
-        }
-
-        for (KeyListener listener : destKeyListeners) {
-            cbDestinos.getEditor().getEditorComponent().removeKeyListener(listener);
-        }
-
-        cbRepresentantes.setSelectedIndex(-1); // Deselecciona cualquier elemento en el combo box
-        cbDestinos.setSelectedIndex(-1); // Deselecciona cualquier elemento en cbDestinos
-
-        // Volver a agregar los ActionListeners y KeyListeners a cbRepresentantes
-        for (ActionListener listener : repActionListeners) {
-            cbRepresentantes.addActionListener(listener);
-        }
-
-        for (KeyListener listener : repKeyListeners) {
-            cbRepresentantes.getEditor().getEditorComponent().addKeyListener(listener);
-        }
-
-        // Volver a agregar los ActionListeners y KeyListeners a cbDestinos
-        for (ActionListener listener : destActionListeners) {
-            cbDestinos.addActionListener(listener);
-        }
-
-        for (KeyListener listener : destKeyListeners) {
-            cbDestinos.getEditor().getEditorComponent().addKeyListener(listener);
-        }
-
-        //Limpiar datos
-        txtRemito.setText("0");
-        txtBulto.setText("1");
-        cbCuentaCorriente.setSelected(false); // Desmarca la casilla de verificación
-        txtMonto.setText("0");
-        cbmontoPagado.setSelected(false);
-        cbMontoRendido.setSelected(false);
-        cbfletePagado.setSelected(false);
-        cbfleteRendido.setSelected(false);
-        txtObservaciones.setText("");
-        txtSeguro.setText("0");
-        txtContrarembolso.setText("0");
-        txtRedespacho.setText("0");
-        txtValDeclarado.setText("0");
-
-    }//GEN-LAST:event_btnGenerarRemitoActionPerformed
-
-    private void txtFleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFleteActionPerformed
+    private void txtValDeclaradoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtValDeclaradoActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtFleteActionPerformed
+    }//GEN-LAST:event_txtValDeclaradoActionPerformed
+
+    private void txtBultoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBultoActionPerformed
+
+    }//GEN-LAST:event_txtBultoActionPerformed
+
+    private void txtRemitoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtRemitoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtRemitoActionPerformed
+
+    private void cbServiciosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbServiciosActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbServiciosActionPerformed
+
+    private void cbClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbClientesActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbClientesActionPerformed
 
     private void btnGenerarRemitoDuplicadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarRemitoDuplicadoActionPerformed
 
@@ -2443,104 +2393,500 @@ public class Principal extends javax.swing.JFrame {
         txtValDeclarado.setText("0");
     }//GEN-LAST:event_btnGenerarRemitoDuplicadoActionPerformed
 
-    private void cbClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbClientesActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cbClientesActionPerformed
+    private void btnGenerarRemitoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarRemitoActionPerformed
 
-    private void cbServiciosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbServiciosActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cbServiciosActionPerformed
+        String fPagado = "";
+        String fRendido = "";
+        String tFlete = "";
+        String tMontoP = "";
+        String tMontoR = "";
+        String tFleteP = "";
+        String tFleteR = "";
+        String cC = "";
+        String remito;
+        //FECHA
+        Date fecha = getFecha();
+        //HORA
+        LocalTime horaActual = LocalTime.now().withSecond(0);
+        Time horaSQL = Time.valueOf(horaActual);
 
-    private void txtValDeclaradoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtValDeclaradoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtValDeclaradoActionPerformed
+        String cliente = (cbClientes.getSelectedItem() != null) ? cbClientes.getSelectedItem().toString() : "";
+        String destino = (cbDestinos.getSelectedItem() != null) ? cbDestinos.getSelectedItem().toString() : "";
+        String servicio = (cbServicios.getSelectedItem() != null) ? cbServicios.getSelectedItem().toString() : "";
+        String representante = (cbRepresentantes.getSelectedItem() != null) ? cbRepresentantes.getSelectedItem().toString() : "";
 
-    private void btnRemitoTablaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemitoTablaActionPerformed
+        //bandera 1
+        System.out.println(cliente);
+        System.out.println(destino);
+        System.out.println(servicio);
 
-        SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/YYYY");
-        Movimientos mov = new Movimientos();
-        if (idSeleccionado != -1) {
-            // Busco id en la bd
-            mov = control.traerMovimiento(idSeleccionado);
+        int bulto = Integer.parseInt(txtBulto.getText());
+        //txt monto
+        String txtMontoValor = txtMonto.getText();
+        String monto;
+        // Obtener el valor del campo de texto txtRemito
+        String textoRemito = txtRemito.getText();
 
-            // Debes implementar el código para acceder a tu base de datos y obtener los datos del cliente y destino
-            String cliente = mov.getCliente();
-            String destino = mov.getDestino();
-            String fecha = formatoFecha.format(mov.getFecha());
-            String servicio = mov.getServicio();
-            String bulto = Integer.toString(mov.getBultos());
-            String representante = mov.getRepresentante();
-            String remito = mov.getRemito();
-
-            // Eliminar el símbolo "$" y el formato de los campos monto y flete
-            String montoSinSimbolo = mov.getMonto().replaceAll("[$]", "");
-            String fleteSinSimbolo = mov.getFlete().replaceAll("[$]", "");
-
-            // Aplicar el formateo para que los números tengan el formato correcto
-            String montoFormateado = montoSinSimbolo.replace(".", "").replace(",", ".");
-            String fleteFormateado = fleteSinSimbolo.replace(".", "").replace(",", ".");
-
-            // Crear objetos BigDecimal a partir de las cadenas formateadas
-            BigDecimal montoBigDecimal = new BigDecimal(montoFormateado);
-            BigDecimal fleteBigDecimal = new BigDecimal(fleteFormateado);
-
-            // Asignar los valores de los BigDecimal a los campos de texto
-            String monto = montoBigDecimal.toString();
-            String flete = fleteBigDecimal.toString();
-
-            String obs = mov.getObservaciones();
-            String origenDestino = mov.getFleteDestinoOrigen();
-            String cc = mov.getCuentaCorriente();
-
-            boolean cuentaCorriente;
-
-            if (remito.equals("0")) {
-                // Usando String.valueOf()
-                remito = String.valueOf(numeroRemito + 1);
-                // Actualizar la tabla en la base de datos
-                if (remito.equals("0")) {
-                    // Incrementar el número de remito
-                    int nuevoNumeroRemito = numeroRemito + 1;
-                    remito = String.valueOf(nuevoNumeroRemito);
-                }
-
-            } else {
-
-                // Asignar el valor de txtRemito a remito si no es igual a "0"
-                remito = remito;
-                System.out.println("remito else " + remito);
-                // JOptionPane.showMessageDialog(null, "El valor de remito no puede ser 0", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-
-            if ("Si".equalsIgnoreCase(cc)) {
-                cuentaCorriente = true;
-            } else if ("No".equalsIgnoreCase(cc)) {
-                cuentaCorriente = false;
-            } else {
-                // Manejar un caso no válido si es necesario
-                cuentaCorriente = false; // Puedes asignar un valor predeterminado
-            }
-            System.out.println("cuenta corriente:");
-            System.out.println(cuentaCorriente);
-
-            String montoPagado = mov.getTipoMontoP();
-            String montoRendido = mov.getTipoMontoR();
-            String fletePagado = mov.getTipoFleteP();
-            String fleteRendido = mov.getTipoFleteR();
-
-            System.out.println("Datos de id: " + fecha + " " + cliente + " " + destino + " " + bulto + " " + remito + " " + monto + " " + montoPagado + " " + montoRendido + " " + flete + " " + fletePagado + " " + fleteRendido + " " + origenDestino + " " + cc + " " + representante + " " + obs);
-            System.out.println("numero remito" + remito);
-            control.editarMovimiento(mov, remito);
-            generarRemito(fecha, cliente, destino, servicio, remito, bulto, representante, monto, montoPagado, montoRendido, flete, fletePagado, fleteRendido, origenDestino, cuentaCorriente, obs);
-
+        if (!textoRemito.equals("0")) {
+            // Asignar el valor de txtRemito a remito si no es igual a "0"
+            remito = textoRemito;
         } else {
-            // No hay ningún ID seleccionado en la tabla, muestra un JOptionPane
-            JOptionPane.showMessageDialog(this, "Selecciona algún movimiento en la tabla", "Mensaje de Error", JOptionPane.ERROR_MESSAGE);
+
+            // Usando String.valueOf()
+            remito = String.valueOf(numeroRemito + 1);
+
+            // JOptionPane.showMessageDialog(null, "El valor de remito no puede ser 0", "Error", JOptionPane.ERROR_MESSAGE);
         }
 
+        // Si hay campos faltantes, mostrar el mensaje de alerta
+        if (!txtMontoValor.isEmpty()) {
+            monto = txtMontoValor;
+        } else {
+            monto = "0";
+        }
+        String fleteTexto = txtFlete.getText();
+        BigDecimal flete = new BigDecimal(fleteTexto);
+        String sTexto = txtSeguro.getText();
+        String rTexto = txtRedespacho.getText();
+        String ccTexto = txtContrarembolso.getText();
+        BigDecimal s = new BigDecimal(sTexto);
+        BigDecimal r = new BigDecimal(rTexto);
+        BigDecimal cc = new BigDecimal(ccTexto);
+        BigDecimal resultado = flete.add(s).add(r).add(cc);
+        String fletenuevo = resultado.toString();
 
-    }//GEN-LAST:event_btnRemitoTablaActionPerformed
+        String obs = txtObservaciones.getText();
+        //verif flete origen/destino
+        if (cbfDestino.isSelected()) {
+            tFlete = "Destino";
+            cbfOrigen.setSelected(false);
 
+        }
+        if (cbfOrigen.isSelected()) {
+            tFlete = "Origen";
+            cbfDestino.setSelected(false);
+        }
+
+        //verif Cuenta Corriente
+        if (cbCuentaCorriente.isSelected()) {
+            cC = "Si";
+        } else {
+            cC = "No";
+        }
+
+        //verif de monto pagado/rendido
+        if (cbmontoPagado.isSelected() && cbMontoRendido.isSelected()) {
+            tMontoP = "Si";
+            tMontoR = "Si";
+        } else if (cbmontoPagado.isSelected()) {
+            tMontoP = "Si";
+            tMontoR = "No";
+        } else if (cbMontoRendido.isSelected()) {
+            tMontoR = "Si";
+            tMontoP = "No";
+        } else {
+            tMontoR = "No";
+            tMontoP = "No";
+        }
+        //verif de flete pagado/rendido
+        if (cbfletePagado.isSelected() && cbfleteRendido.isSelected()) {
+            tFleteP = "Si";
+            tFleteR = "Si";
+        } else if (cbfleteRendido.isSelected()) {
+            tFleteR = "Si";
+            tFleteP = "No";
+        } else if (cbfletePagado.isSelected()) {
+            tFleteR = "No";
+            tFleteP = "Si";
+        } else {
+            tFleteR = "No";
+            tFleteP = "No";
+        }
+        // Verificar campos vacíos y almacenar los nombres de los campos vacíos en una lista
+        List<String> camposFaltantes = new ArrayList<>();
+        if (cbClientes.getSelectedItem() == null || cbClientes.getSelectedItem().toString().isEmpty()) {
+            camposFaltantes.add("Cliente");
+        }
+        if (cbDestinos.getSelectedItem() == null || cbDestinos.getSelectedItem().toString().isEmpty()) {
+            camposFaltantes.add("Destino");
+        }
+        if (cbServicios.getSelectedItem() == null || cbServicios.getSelectedItem().toString().isEmpty()) {
+            camposFaltantes.add("Servicio");
+        }
+        if (cbRepresentantes.getSelectedItem() == null || cbRepresentantes.getSelectedItem().toString().isEmpty()) {
+            camposFaltantes.add("Representante");
+        }
+        if (txtBulto.getText().isEmpty()) {
+            camposFaltantes.add("Bulto");
+        }
+        // Verificar el resto de campos obligatorios que desees
+        if (txtMonto.getText().isEmpty()) {
+            camposFaltantes.add("Monto");
+        }
+        if (txtFlete.getText().isEmpty()) {
+            camposFaltantes.add("Flete");
+        }
+        if (remito.isEmpty()) {
+            camposFaltantes.add("Remito");
+        }
+
+        if (!camposFaltantes.isEmpty()) {
+            String mensaje = "Por favor, complete los siguientes campos obligatorios:\n";
+            for (String campo : camposFaltantes) {
+                mensaje += "- " + campo + "\n";
+            }
+
+            mostrarMensaje(mensaje, "Error", "Campos faltantes");
+            return; // Detener la ejecución para no agregar el movimiento
+        }
+
+        control.cargarMovimiento(cliente, destino, servicio, representante, bulto, monto, fletenuevo, tFlete, remito, tMontoP, tMontoR, tFleteP, tFleteR, fecha, cC, obs, horaSQL);
+        //mostrarMensaje("Movimiento agregado correctamente", "Info", "Agregado con exito!");
+
+        //Llama la funcion generar
+        generarPdf();
+
+        // Actualizar la tabla
+        DefaultTableModel modeloTabla = (DefaultTableModel) tablaMovimientos.getModel();
+        modeloTabla.setRowCount(0);
+        List<Movimientos> movimientos = control.traerMovimientos();
+
+        // Ordenar los datos por el ID en forma descendente
+        Collections.sort(movimientos, Comparator.comparingInt(Movimientos::getId_movimientos).reversed());
+        for (Movimientos mov : movimientos) {
+            Object[] objeto = {mov.getId_movimientos(), mov.getHora(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
+
+            modeloTabla.addRow(objeto);
+        }
+
+        //Limpiar Combobox
+        // Remover los ActionListeners y KeyListeners de cbRepresentantes
+        ActionListener[] repActionListeners = cbRepresentantes.getActionListeners();
+        KeyListener[] repKeyListeners = cbRepresentantes.getEditor().getEditorComponent().getKeyListeners();
+
+        for (ActionListener listener : repActionListeners) {
+            cbRepresentantes.removeActionListener(listener);
+        }
+
+        for (KeyListener listener : repKeyListeners) {
+            cbRepresentantes.getEditor().getEditorComponent().removeKeyListener(listener);
+        }
+
+        // Remover los ActionListeners y KeyListeners de cbDestinos
+        ActionListener[] destActionListeners = cbDestinos.getActionListeners();
+        KeyListener[] destKeyListeners = cbDestinos.getEditor().getEditorComponent().getKeyListeners();
+
+        for (ActionListener listener : destActionListeners) {
+            cbDestinos.removeActionListener(listener);
+        }
+
+        for (KeyListener listener : destKeyListeners) {
+            cbDestinos.getEditor().getEditorComponent().removeKeyListener(listener);
+        }
+
+        cbRepresentantes.setSelectedIndex(-1); // Deselecciona cualquier elemento en el combo box
+        cbDestinos.setSelectedIndex(-1); // Deselecciona cualquier elemento en cbDestinos
+
+        // Volver a agregar los ActionListeners y KeyListeners a cbRepresentantes
+        for (ActionListener listener : repActionListeners) {
+            cbRepresentantes.addActionListener(listener);
+        }
+
+        for (KeyListener listener : repKeyListeners) {
+            cbRepresentantes.getEditor().getEditorComponent().addKeyListener(listener);
+        }
+
+        // Volver a agregar los ActionListeners y KeyListeners a cbDestinos
+        for (ActionListener listener : destActionListeners) {
+            cbDestinos.addActionListener(listener);
+        }
+
+        for (KeyListener listener : destKeyListeners) {
+            cbDestinos.getEditor().getEditorComponent().addKeyListener(listener);
+        }
+
+        //Limpiar datos
+        txtRemito.setText("0");
+        txtBulto.setText("1");
+        cbCuentaCorriente.setSelected(false); // Desmarca la casilla de verificación
+        txtMonto.setText("0");
+        cbmontoPagado.setSelected(false);
+        cbMontoRendido.setSelected(false);
+        cbfletePagado.setSelected(false);
+        cbfleteRendido.setSelected(false);
+        txtObservaciones.setText("");
+        txtSeguro.setText("0");
+        txtContrarembolso.setText("0");
+        txtRedespacho.setText("0");
+        txtValDeclarado.setText("0");
+    }//GEN-LAST:event_btnGenerarRemitoActionPerformed
+
+    private void txtFleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFleteActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtFleteActionPerformed
+
+    private void cbfOrigenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbfOrigenActionPerformed
+        String tFlete = "";
+        if (cbfOrigen.isSelected()) {
+            cbfDestino.setSelected(false);
+            tFlete = "Origen";
+        }
+    }//GEN-LAST:event_cbfOrigenActionPerformed
+
+    private void cbfDestinoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbfDestinoActionPerformed
+        String tFlete = "";
+        if (cbfDestino.isSelected()) {
+            cbfOrigen.setSelected(false);
+            tFlete = "Destino";
+        }
+
+    }//GEN-LAST:event_cbfDestinoActionPerformed
+
+    private void btnAgregarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarClienteActionPerformed
+        // Verificar si la ventana ya está abierta
+        if (ventanaCliente == null || !ventanaCliente.isVisible()) {
+            // Si la ventana no está abierta o está oculta, crea una nueva instancia
+            ventanaCliente = new PNuevoCliente();
+        }
+
+        // Mostrar la ventana y enfocarla (llevarla al frente)
+        ventanaCliente.setVisible(true);
+        ventanaCliente.toFront();
+    }//GEN-LAST:event_btnAgregarClienteActionPerformed
+
+    private void btnEliminarMovimientoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarMovimientoActionPerformed
+        // Control para verificar que la tabla no esté vacía
+        if (tablaMovimientos.getRowCount() > 0) {
+            // Validar que se hayan seleccionado registros
+            int[] selectedRows = tablaMovimientos.getSelectedRows();
+            if (selectedRows.length > 0) {
+                int confirmResult = JOptionPane.showConfirmDialog(this, "¿Estás seguro de que deseas borrar los registros seleccionados?", "Confirmar borrado", JOptionPane.YES_NO_OPTION);
+                if (confirmResult == JOptionPane.YES_OPTION) {
+                    for (int selectedRow : selectedRows) {
+                        int idMovimiento = Integer.parseInt(String.valueOf(tablaMovimientos.getValueAt(selectedRow, 0)));
+                        control.borrarMovimiento(idMovimiento);
+                    }
+                    mostrarMensaje("Movimientos borrados correctamente", "Info", "Borrados con éxito");
+                    mostrarTablaMovimientos();
+                }
+            } else {
+                mostrarMensaje("No seleccionaste registros para eliminar", "Error", "Error al eliminar");
+            }
+        } else {
+            mostrarMensaje("La tabla está vacía, no se puede eliminar", "Error", "Error al eliminar");
+        }
+    }//GEN-LAST:event_btnEliminarMovimientoActionPerformed
+
+    private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
+
+        String fPagado = "";
+        String fRendido = "";
+        String tFlete = "";
+        String tMontoP = "";
+        String tMontoR = "";
+        String tFleteP = "";
+        String tFleteR = "";
+        String cC = "";
+        String remito;
+        //FECHA
+        Date fecha = getFecha();
+        //HORA
+        LocalTime horaActual = LocalTime.now().withSecond(0);
+        Time horaSQL = Time.valueOf(horaActual);
+        //Verifica dato del Combobox
+        String cliente = (cbClientes.getSelectedItem() != null) ? cbClientes.getSelectedItem().toString() : "";
+        String destino = (cbDestinos.getSelectedItem() != null) ? cbDestinos.getSelectedItem().toString() : "";
+        String servicio = (cbServicios.getSelectedItem() != null) ? cbServicios.getSelectedItem().toString() : "";
+        String representante = (cbRepresentantes.getSelectedItem() != null) ? cbRepresentantes.getSelectedItem().toString() : "";
+
+        int bulto = Integer.parseInt(txtBulto.getText());
+        //txt monto
+        String txtMontoValor = txtMonto.getText();
+        String monto;
+        //remito
+        remito = txtRemito.getText();
+
+        // Si hay campos faltantes, mostrar el mensaje de alerta
+        if (!txtMontoValor.isEmpty()) {
+            monto = txtMontoValor;
+        } else {
+            monto = "0";
+        }
+
+        String fleteTexto = txtFlete.getText();
+        BigDecimal flete = new BigDecimal(fleteTexto);
+        String sTexto = txtSeguro.getText();
+        String rTexto = txtRedespacho.getText();
+        String ccTexto = txtContrarembolso.getText();
+        BigDecimal s = new BigDecimal(sTexto);
+        BigDecimal r = new BigDecimal(rTexto);
+        BigDecimal cc = new BigDecimal(ccTexto);
+        BigDecimal resultado = flete.add(s).add(r).add(cc);
+        String fletenuevo = resultado.toString();
+
+        String obs = txtObservaciones.getText();
+        //verif flete origen/destino
+        if (cbfDestino.isSelected()) {
+            tFlete = "Destino";
+            cbfOrigen.setSelected(false);
+
+        }
+        if (cbfOrigen.isSelected()) {
+            tFlete = "Origen";
+            cbfDestino.setSelected(false);
+        }
+
+        //verif Cuenta Corriente
+        if (cbCuentaCorriente.isSelected()) {
+            cC = "Si";
+        } else {
+            cC = "No";
+        }
+
+        //verif de monto pagado/rendido
+        if (cbmontoPagado.isSelected() && cbMontoRendido.isSelected()) {
+            tMontoP = "Si";
+            tMontoR = "Si";
+        } else if (cbmontoPagado.isSelected()) {
+            tMontoP = "Si";
+            tMontoR = "No";
+        } else if (cbMontoRendido.isSelected()) {
+            tMontoR = "Si";
+            tMontoP = "No";
+        } else {
+            tMontoR = "No";
+            tMontoP = "No";
+        }
+        //verif de flete pagado/rendido
+        if (cbfletePagado.isSelected() && cbfleteRendido.isSelected()) {
+            tFleteP = "Si";
+            tFleteR = "Si";
+        } else if (cbfleteRendido.isSelected()) {
+            tFleteR = "Si";
+            tFleteP = "No";
+        } else if (cbfletePagado.isSelected()) {
+            tFleteR = "No";
+            tFleteP = "Si";
+        } else {
+            tFleteR = "No";
+            tFleteP = "No";
+        }
+        // Verificar campos vacíos y almacenar los nombres de los campos vacíos en una lista
+        List<String> camposFaltantes = new ArrayList<>();
+        if (cbClientes.getSelectedItem() == null || cbClientes.getSelectedItem().toString().isEmpty()) {
+            camposFaltantes.add("Cliente");
+        }
+        if (cbDestinos.getSelectedItem() == null || cbDestinos.getSelectedItem().toString().isEmpty()) {
+            camposFaltantes.add("Destino");
+        }
+        if (cbServicios.getSelectedItem() == null || cbServicios.getSelectedItem().toString().isEmpty()) {
+            camposFaltantes.add("Servicio");
+        }
+        if (cbRepresentantes.getSelectedItem() == null || cbRepresentantes.getSelectedItem().toString().isEmpty()) {
+            camposFaltantes.add("Representante");
+        }
+        if (txtBulto.getText().isEmpty()) {
+            camposFaltantes.add("Bulto");
+        }
+        if (txtFlete.getText().isEmpty()) {
+            camposFaltantes.add("Flete");
+        }
+        if (remito.isEmpty()) {
+            camposFaltantes.add("Remito");
+        }
+
+        if (!camposFaltantes.isEmpty()) {
+            String mensaje = "Por favor, complete los siguientes campos obligatorios:\n";
+            for (String campo : camposFaltantes) {
+                mensaje += "- " + campo + "\n";
+            }
+
+            mostrarMensaje(mensaje, "Error", "Campos faltantes");
+            return; // Detener la ejecución para no agregar el movimiento
+        }
+
+        control.cargarMovimiento(cliente, destino, servicio, representante, bulto, monto, fletenuevo, tFlete, remito, tMontoP, tMontoR, tFleteP, tFleteR, fecha, cC, obs, horaSQL);
+        System.out.println("Movimiento agregado correctamente" + "Info" + "Agregado con exito!");
+
+        // Actualizar la tabla
+        DefaultTableModel modeloTabla = (DefaultTableModel) tablaMovimientos.getModel();
+        modeloTabla.setRowCount(0);
+        List<Movimientos> movimientos = control.traerMovimientos();
+        // Ordenar los datos por el ID en forma descendente
+        Collections.sort(movimientos, Comparator.comparingInt(Movimientos::getId_movimientos).reversed());
+        for (Movimientos mov : movimientos) {
+            Object[] objeto = {mov.getId_movimientos(), mov.getHora(), mov.getFechaFormateada(), mov.getCliente(), mov.getDestino(), mov.getRemito(), mov.getBultos(), mov.getMonto(), mov.getTipoMontoP(), mov.getTipoMontoR(), mov.getFlete(), mov.getTipoFleteP(), mov.getTipoFleteR(), mov.getFleteDestinoOrigen(), mov.getRepresentante(), mov.getCuentaCorriente(), mov.getObservaciones()};
+
+            modeloTabla.addRow(objeto);
+        }
+
+        //Limpiar Combobox
+        // Remover los ActionListeners y KeyListeners de cbRepresentantes
+        ActionListener[] repActionListeners = cbRepresentantes.getActionListeners();
+        KeyListener[] repKeyListeners = cbRepresentantes.getEditor().getEditorComponent().getKeyListeners();
+
+        for (ActionListener listener : repActionListeners) {
+            cbRepresentantes.removeActionListener(listener);
+        }
+
+        for (KeyListener listener : repKeyListeners) {
+            cbRepresentantes.getEditor().getEditorComponent().removeKeyListener(listener);
+        }
+
+        // Remover los ActionListeners y KeyListeners de cbDestinos
+        ActionListener[] destActionListeners = cbDestinos.getActionListeners();
+        KeyListener[] destKeyListeners = cbDestinos.getEditor().getEditorComponent().getKeyListeners();
+
+        for (ActionListener listener : destActionListeners) {
+            cbDestinos.removeActionListener(listener);
+        }
+
+        for (KeyListener listener : destKeyListeners) {
+            cbDestinos.getEditor().getEditorComponent().removeKeyListener(listener);
+        }
+
+        cbRepresentantes.setSelectedIndex(-1); // Deselecciona cualquier elemento en el combo box
+        cbDestinos.setSelectedIndex(-1); // Deselecciona cualquier elemento en cbDestinos
+
+        // Volver a agregar los ActionListeners y KeyListeners a cbRepresentantes
+        for (ActionListener listener : repActionListeners) {
+            cbRepresentantes.addActionListener(listener);
+        }
+
+        for (KeyListener listener : repKeyListeners) {
+            cbRepresentantes.getEditor().getEditorComponent().addKeyListener(listener);
+        }
+
+        // Volver a agregar los ActionListeners y KeyListeners a cbDestinos
+        for (ActionListener listener : destActionListeners) {
+            cbDestinos.addActionListener(listener);
+        }
+
+        for (KeyListener listener : destKeyListeners) {
+            cbDestinos.getEditor().getEditorComponent().addKeyListener(listener);
+        }
+
+        //Limpiar datos
+        txtRemito.setText("0");
+        txtBulto.setText("1");
+        cbCuentaCorriente.setSelected(false); // Desmarca la casilla de verificación
+        txtMonto.setText("0");
+        cbmontoPagado.setSelected(false);
+        cbMontoRendido.setSelected(false);
+        cbfletePagado.setSelected(false);
+        cbfleteRendido.setSelected(false);
+        txtObservaciones.setText("");
+        txtSeguro.setText("0");
+        txtContrarembolso.setText("0");
+        txtRedespacho.setText("0");
+        txtValDeclarado.setText("0");
+
+    }//GEN-LAST:event_btnAgregarActionPerformed
+
+    private void cbCuentaCorrienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbCuentaCorrienteActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbCuentaCorrienteActionPerformed
+    private PNuevoCliente ventanaCliente;
     /**
      * @param args the command line arguments
      */
@@ -2933,17 +3279,25 @@ public class Principal extends javax.swing.JFrame {
             Paragraph espacio = new Paragraph(1f, " "); // tamaño del espacio
             //document.add(espacio);
             cellContenido.addElement(espacio);
+            
             // Crear la tabla con 6 columnas
             PdfPTable tablaa = new PdfPTable(6);
             tablaa.setWidthPercentage(100);
 
-            // Establecer el borde de las celdas de las filas como NO_BORDER
+// Definir el ancho de las columnas
+            float[] anchosColumnas = new float[]{1.5f, 1.5f, 1.5f, 1.5f, 1.5f, 2.5f};
+            tablaa.setWidths(anchosColumnas);
+
+// Establecer el borde de las celdas de las filas como NO_BORDER
             PdfPCell bordeTop = new PdfPCell();
             bordeTop.setBorder(Rectangle.TOP | Rectangle.LEFT | Rectangle.RIGHT);
+            bordeTop.setPadding(6f); // Ajusta el padding según sea necesario
+
             PdfPCell celdaConBorde = new PdfPCell();
             celdaConBorde.setBorder(Rectangle.BOTTOM | Rectangle.LEFT | Rectangle.RIGHT);
+            celdaConBorde.setPadding(6f); // Ajusta el padding según sea necesario
 
-            // Agregar las celdas a la tabla
+// Agregar las celdas a la tabla
             tablaa.addCell(createCell("Descripción", font, bordeTop));
             tablaa.addCell(createCell("Seguro", font, bordeTop));
             tablaa.addCell(createCell("Comision contrarrembolso", font, bordeTop));
@@ -2951,7 +3305,7 @@ public class Principal extends javax.swing.JFrame {
             tablaa.addCell(createCell("Valor Declarado", font, bordeTop));
             tablaa.addCell(createCell("Observaciones", font, bordeTop));
 
-            // Obtener los valores de los campos de texto
+// Obtener los valores de los campos de texto
             String descripcion = bulto + " bultos";
             String observaciones = obs;
             String seguro = txtSeguro.getText();
@@ -2959,18 +3313,21 @@ public class Principal extends javax.swing.JFrame {
             String redespacho = txtRedespacho.getText();
             String valDeclarado = txtValDeclarado.getText();
 
-            // Agregar los valores a la tabla
+// Agregar los valores a la tabla
             tablaa.addCell(createCell(descripcion, font, celdaConBorde));
             tablaa.addCell(createCell("$" + seguro, font, celdaConBorde)); // Columna "Seguro"
             tablaa.addCell(createCell("$" + comContrarembolso, font, celdaConBorde)); // Columna "Com. Contrarrembolso"
             tablaa.addCell(createCell("$" + redespacho, font, celdaConBorde)); // Columna "Redespacho"
             tablaa.addCell(createCell("$" + valDeclarado, font, celdaConBorde)); // Columna "Valor Declarado"
-            //tablaa.addCell(createCell(observaciones, font, celdaConBorde)); //Columna "Observaciones"
-            tablaa.addCell(createCellWithMultipleLines(observaciones, font,celdaConBorde));
+//tablaa.addCell(createCell(observaciones, font, celdaConBorde)); //Columna "Observaciones"
+            tablaa.addCell(createCellWithMultipleLines(observaciones, font, celdaConBorde));
 
-            // Agregar la tabla al documento
-            //document.add(tablaa);
+// Agregar la tabla al documento
+//document.add(tablaa);
             cellContenido.addElement(tablaa);
+            
+            
+            //TEXTO
             Paragraph recibenB = new Paragraph("SE RECIBEN LOS BULTOS SIN ESPECIFICAR SU CONTENIDO", fontR);
             recibenB.setAlignment(Element.ALIGN_CENTER);
             //document.add(recibenB);
@@ -3370,15 +3727,22 @@ public class Principal extends javax.swing.JFrame {
             //document.add(espacio);
             cellContenido.addElement(espacio);
 
-            // Crear la tabla con 6 columnas
+               // Crear la tabla con 6 columnas
             PdfPTable tablaa = new PdfPTable(6);
             tablaa.setWidthPercentage(100);
 
-            // Establecer el borde de las celdas de las filas como NO_BORDER
+// Definir el ancho de las columnas
+            float[] anchosColumnas = new float[]{1.5f, 1.5f, 1.5f, 1.5f, 1.5f, 2.5f};
+            tablaa.setWidths(anchosColumnas);
+
+// Establecer el borde de las celdas de las filas como NO_BORDER
             PdfPCell bordeTop = new PdfPCell();
             bordeTop.setBorder(Rectangle.TOP | Rectangle.LEFT | Rectangle.RIGHT);
+            bordeTop.setPadding(6f); // Ajusta el padding según sea necesario
+
             PdfPCell celdaConBorde = new PdfPCell();
             celdaConBorde.setBorder(Rectangle.BOTTOM | Rectangle.LEFT | Rectangle.RIGHT);
+            celdaConBorde.setPadding(6f); // Ajusta el padding según sea necesario
 
             // Agregar las celdas a la tabla
             tablaa.addCell(createCell("Descripción", font, bordeTop));
@@ -3407,6 +3771,36 @@ public class Principal extends javax.swing.JFrame {
             // Agregar la tabla al documento
             //document.add(tablaa);
             cellContenido.addElement(tablaa);
+            
+            
+            
+        
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
             Paragraph recibenB = new Paragraph("SE RECIBEN LOS BULTOS SIN ESPECIFICAR SU CONTENIDO", fontR);
             recibenB.setAlignment(Element.ALIGN_CENTER);
             //document.add(recibenB);
@@ -3782,15 +4176,24 @@ public class Principal extends javax.swing.JFrame {
             Paragraph espacio = new Paragraph(1f, " "); // 20f es el tamaño del espacio
             //document.add(espacio);
             cellContenido.addElement(espacio);
+            
             // Crear la tabla con 6 columnas
             PdfPTable tablaa = new PdfPTable(6);
             tablaa.setWidthPercentage(100);
 
-            // Establecer el borde de las celdas de las filas como NO_BORDER
+// Definir el ancho de las columnas
+            float[] anchosColumnas = new float[]{1.5f, 1.5f, 1.5f, 1.5f, 1.5f, 2.5f};
+            tablaa.setWidths(anchosColumnas);
+
+// Establecer el borde de las celdas de las filas como NO_BORDER
             PdfPCell bordeTop = new PdfPCell();
             bordeTop.setBorder(Rectangle.TOP | Rectangle.LEFT | Rectangle.RIGHT);
+            bordeTop.setPadding(6f); // Ajusta el padding según sea necesario
+
             PdfPCell celdaConBorde = new PdfPCell();
             celdaConBorde.setBorder(Rectangle.BOTTOM | Rectangle.LEFT | Rectangle.RIGHT);
+            celdaConBorde.setPadding(6f); // Ajusta el padding según sea necesario
+
 
             // Agregar las celdas a la tabla
             tablaa.addCell(createCell("Descripción", font, bordeTop));
@@ -3998,33 +4401,40 @@ public class Principal extends javax.swing.JFrame {
         }
     }
 
-    // Método auxiliar para crear una celda con el contenido y fuente especificados
+    
     private PdfPCell createCell(String text, Font font, PdfPCell cell) {
         PdfPCell newCell = new PdfPCell(new Phrase(text, font));
         newCell.setHorizontalAlignment(Element.ALIGN_CENTER);
         newCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         newCell.setBorder(cell.getBorder()); 
-        newCell.setNoWrap(false); // Permite que el texto se divida en varias líneas
+        newCell.setNoWrap(false);
         return newCell;
     }
     // Método auxiliar para crear una celda con el contenido, fuente y borde especificados
-private PdfPCell createCellWithMultipleLines(String text, Font font, PdfPCell cell) {
-    PdfPCell newCell = new PdfPCell();
-    newCell.setBorder(cell.getBorder());
-    newCell.setPadding(5f);
-    newCell.setPaddingBottom(8f); // Ajusta el espacio entre líneas según lo necesites
-    newCell.setUseAscender(true);
-    newCell.setUseDescender(true);
 
-    // Divide el texto en líneas basadas en el ancho de la celda y la fuente
-    String[] lines = text.split("\\r?\\n");
-    for (String line : lines) {
-        Phrase phrase = new Phrase(line, font);
-        newCell.addElement(phrase);
+    private PdfPCell createCellWithMultipleLines(String text, Font font, PdfPCell cell) {
+        PdfPCell newCell = new PdfPCell();
+        newCell.setBorder(cell.getBorder());
+        newCell.setPadding(5f);
+        newCell.setPaddingBottom(8f); // Ajusta el espacio entre líneas según lo necesites
+        newCell.setUseAscender(true);
+        newCell.setUseDescender(true);
+        newCell.setNoWrap(false);
+
+        // Define el interlineado (leading) adicional
+        float leading = font.getSize() * 1.3f; // Ajusta este valor para el espacio entre líneas
+
+        // Crea un Paragraph con el texto y ajusta el interlineado
+        Paragraph paragraph = new Paragraph(text, font);
+        paragraph.setLeading(leading); // Ajusta el interlineado
+        
+       // Añade un espacio adicional debajo del párrafo
+        paragraph.setSpacingAfter(1f);
+        // Agrega el Paragraph a la celda
+        newCell.addElement(paragraph);
+
+        return newCell;
     }
-
-    return newCell;
-}
 
     //remito
     private void guardarNumeroRemito() {

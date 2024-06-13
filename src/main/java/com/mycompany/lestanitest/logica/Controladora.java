@@ -9,6 +9,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -120,16 +122,19 @@ public class Controladora {
 
     }
 
-    public void editarVehiculo(Vehiculo vehiculo, String v, Date fechaTecnica, Date fechaRuta, Date fechaMatafuego, Date fechaSeguro, String patente) {
-        vehiculo.setVehiculo(v);
-        vehiculo.setFechaTecnica(fechaTecnica);
-        vehiculo.setFechaRuta(fechaRuta);
-        vehiculo.setFechaMatafuego(fechaMatafuego);
-        vehiculo.setFechaSeguro(fechaSeguro);
-        vehiculo.setPatente(patente);
-        
-        ctrl.modificarVehiculo(vehiculo);
-    }
+    public void editarVehiculo(Vehiculo vehiculo, String v, Date fechaTecnica, Date fechaRuta, Date fechaMatafuego, Date fechaSeguro,String patente) {
+    vehiculo.setVehiculo(v);
+ 
+    // Establecer las fechas en el vehículo
+    vehiculo.setFechaTecnica(fechaTecnica);
+    vehiculo.setFechaRuta(fechaRuta);
+    vehiculo.setFechaMatafuego(fechaMatafuego);
+    vehiculo.setFechaSeguro(fechaSeguro);
+    vehiculo.setPatente(patente);
+    
+    // Llamar al método de modificación en el controlador
+    ctrl.modificarVehiculo(vehiculo);
+}
 
     /**
      * ----------------------------------------------BORRAR-----------------------------------------------------------------

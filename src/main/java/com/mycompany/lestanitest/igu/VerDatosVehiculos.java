@@ -310,19 +310,19 @@ private void mostrarTablaVehiculos() {
         //carga de los datos desde la bd
         List<Vehiculo> listaVehiculos = control.traerVehiculos();
 
-        //recorrer lista y mostrar elementos en la tabla
-        if (listaVehiculos != null) {
-            for (Vehiculo v : listaVehiculos) {
-                 // Cambia el orden de las fechas al agregarlas a la tabla
-        Object[] objeto = {v.getId_Vehiculo(), v.getVehiculo(), v.getPatente(),
-            (v.getFechaTecnica() != null) ? v.getFechaTecnicaFormateada() : "", 
-            (v.getFechaRuta() != null) ? v.getFechaRutaFormateada() : "", 
-            (v.getFechaSeguro() != null) ? v.getFechaSeguroFormateada() : "",
-            (v.getFechaMatafuego() != null) ? v.getFechaMatafuegoFormateada() : ""};
-        tabla.addRow(objeto);
+       //recorrer lista y mostrar elementos en la tabla
+    if (listaVehiculos != null) {
+        for (Vehiculo v : listaVehiculos) {
+            // Cambia el orden de las fechas al agregarlas a la tabla
+            Object[] objeto = {v.getId_Vehiculo(), v.getVehiculo(), v.getPatente(),
+                (v.getFechaTecnica() != null) ? v.getFechaTecnicaFormateada() : "",
+                (v.getFechaRuta() != null) ? v.getFechaRutaFormateada() : "",
+                (v.getFechaSeguro() != null) ? v.getFechaSeguroFormateada() : "",
+                (v.getFechaMatafuego() != null) ? v.getFechaMatafuegoFormateada() : ""};
+            tabla.addRow(objeto);
 
-            }
         }
+    }
         tablaVehiculo.setModel(tabla);
     }
 

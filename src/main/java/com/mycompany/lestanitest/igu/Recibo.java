@@ -39,6 +39,7 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
@@ -184,84 +185,116 @@ public class Recibo extends javax.swing.JFrame {
             }
         });     
     }
-
-    //LLENAR TEXTFIELD CLIENTES
-     private static void mostrarResultadosBusqueda(JComboBox<String> combobox, String textoBusqueda) {
-    // Limpiar selección previa
-    combobox.setSelectedIndex(-1);
-
-    // Buscar resultados de búsqueda exacta
-    boolean encontradoExacta = false;
-
-    for (int i = 0; i < combobox.getItemCount(); i++) {
-        String item = combobox.getItemAt(i).toString();
-        if (item.equalsIgnoreCase(textoBusqueda)) {
-            combobox.setSelectedItem(item);
-            combobox.getEditor().setItem(item);
-            encontradoExacta = true;
-            break; // Terminar la búsqueda cuando se encuentra una coincidencia exacta
-        }
-    }
-
-    // Si no se encontró una coincidencia exacta, buscar coincidencias parciales
-    if (!encontradoExacta) {
-        boolean encontradoParcial = false;
-        for (int i = 0; i < combobox.getItemCount(); i++) {
-            String item = combobox.getItemAt(i).toString();
-            if (item.toLowerCase().contains(textoBusqueda.toLowerCase())) {
-                combobox.setSelectedIndex(i);
-                combobox.getEditor().setItem(item);
-                encontradoParcial = true;
-                break; // Terminar la búsqueda cuando se encuentra una coincidencia parcial
-            }
-        }
-
-        // Si no se encontró ninguna coincidencia parcial, mostrar el desplegable
-        if (!encontradoParcial) {
-            combobox.setPopupVisible(true);
-            combobox.getEditor().setItem(textoBusqueda); // Deja el ComboBox con el texto de búsqueda
-        }
-    }
-}
+    
     ModeloCliente modClientes = new ModeloCliente();
     ArrayList<Cliente> listaClientes = modClientes.getClientes();
+    
 
+    /// Método para inicializar y cargar clientes en el ComboBox
     private void cargarClientes() {
+
         cbClientes.setEditable(true);
 
-        // Agregar los clientes al combobox
+        // Ordenar la lista de clientes alfabéticamente por el nombre
+        listaClientes.sort((cliente1, cliente2) -> cliente1.getNombre().compareToIgnoreCase(cliente2.getNombre()));
+
+        // Limpiar el ComboBox
+        cbClientes.removeAllItems();
+
+        // Agregar los nombres de los clientes al ComboBox de forma ordenada
         for (Cliente cliente : listaClientes) {
             cbClientes.addItem(cliente.getNombre());
         }
-        // Ordenar la lista de clientes alfabéticamente por el nombre
-        listaClientes.sort((cliente1, cliente2) -> cliente1.getNombre().compareToIgnoreCase(cliente2.getNombre()));
-// Eliminar la opción en blanco después de configurar el decorador
-        cbClientes.removeItem("");
 
         // Establecer el índice seleccionado a -1 para no mostrar ninguna selección
         cbClientes.setSelectedIndex(-1);
 
-        // Agregar ActionListener para capturar el evento "Enter"
-        cbClientes.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                String textoBusqueda = cbClientes.getEditor().getItem().toString();
-                mostrarResultadosBusqueda(cbClientes, textoBusqueda);
-
-            }
-        });
-
-        // Agregar KeyListener para capturar el evento "Enter"
+        // Agregar KeyListener al editor del JComboBox
         cbClientes.getEditor().getEditorComponent().addKeyListener(new KeyAdapter() {
             @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_TAB) {
+                    autoCompletarCliente(cbClientes);  
+                    cbClientes.setPopupVisible(false); // Cerrar el popup después de seleccionar el cliente
+                    
+                } else if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE || e.getKeyCode() == KeyEvent.VK_DELETE) {
+                    cbClientes.setPopupVisible(false);
+                } else if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_UP) {
+                    cbClientes.setPopupVisible(true);
+                    
+                }
+            }
+
+            @Override
             public void keyReleased(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    String textoBusqueda = cbClientes.getEditor().getItem().toString();
-                    mostrarResultadosBusqueda(cbClientes, textoBusqueda);
+                // No realizar la búsqueda si se está usando las teclas de flecha
+                if (e.getKeyCode() != KeyEvent.VK_DOWN && e.getKeyCode() != KeyEvent.VK_UP) {
+                    // Realizar la búsqueda cada vez que se libera una tecla
+                    realizarBusquedaClientes();
+                     if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_TAB) {
+                    autoCompletarCliente(cbClientes);  
+                    cbClientes.setPopupVisible(false); // Cerrar el popup después de seleccionar el cliente
+                    
+                }
+                    
                 }
             }
         });
+
+        
+    }
+
+    // Método para realizar la búsqueda
+    private void realizarBusquedaClientes() {
+        // Obtener el texto ingresado por el usuario
+        String textoBusqueda = cbClientes.getEditor().getItem().toString().toUpperCase();
+
+        // Si el texto de búsqueda está vacío, establecer el ComboBox en blanco y salir del método
+        if (textoBusqueda.isEmpty()) {
+            cbClientes.setPopupVisible(false);
+            return;
+        }
+
+        // Obtener el modelo del ComboBox
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+
+        // Buscar resultados de búsqueda exacta
+        boolean encontradoExacta = false;
+
+        for (Cliente cliente : listaClientes) {
+            String nombreCliente = cliente.getNombre().toUpperCase();
+            if (nombreCliente.equals(textoBusqueda)) {
+                model.addElement(cliente.getNombre());
+                encontradoExacta = true;
+                break; // Terminar la búsqueda cuando se encuentra una coincidencia exacta
+            }
+        }
+
+        // Si no se encontró una coincidencia exacta, buscar coincidencias parciales
+        if (!encontradoExacta) {
+            for (Cliente cliente : listaClientes) {
+                String nombreCliente = cliente.getNombre().toUpperCase();
+                if (nombreCliente.contains(textoBusqueda)) {
+                    model.addElement(cliente.getNombre());
+                }
+            }
+        }
+
+        // Actualizar el modelo del ComboBox
+        cbClientes.setModel(model);
+        cbClientes.getEditor().setItem(textoBusqueda);
+
+        // Mostrar el menú desplegable si hay resultados
+        cbClientes.setPopupVisible(model.getSize() > 0);
+    }
+
+    
+
+    // Método para auto-completar el cliente seleccionado en el ComboBox
+    private void autoCompletarCliente(JComboBox<String> combobox) {
+        String nombreCliente = (String) combobox.getSelectedItem();
+        combobox.getEditor().setItem(nombreCliente);
+        
     }
 
     

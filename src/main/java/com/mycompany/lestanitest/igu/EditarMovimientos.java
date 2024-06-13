@@ -32,6 +32,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -208,21 +209,157 @@ public class EditarMovimientos extends javax.swing.JFrame {
 
         // Establecer el índice seleccionado a -1 para no mostrar ninguna selección
         cbDestinos.setSelectedIndex(-1);
-
+        
+        // Agregar KeyListener al editor del JComboBox
         cbDestinos.getEditor().getEditorComponent().addKeyListener(new KeyAdapter() {
             @Override
-            public void keyReleased(KeyEvent e) {
+            public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_TAB) {
-                    String textoBusqueda = cbDestinos.getEditor().getItem().toString();
+                    autoCompletarDestino(cbDestinos);  
+                    cbDestinos.setPopupVisible(false); // Cerrar el popup después de seleccionar el cliente
+                    
+                } else if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE || e.getKeyCode() == KeyEvent.VK_DELETE) {
+                    cbDestinos.setPopupVisible(false);
+                } else if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_UP) {
+                    cbDestinos.setPopupVisible(true);
+                    
+                }
+            }
 
-                    // Normaliza el texto de búsqueda a mayúsculas y elimina caracteres no deseados excepto espacios en blanco
-                    textoBusqueda = textoBusqueda.toUpperCase().replaceAll("[^A-ZÑñ.\\s]", "");
-
-                    mostrarResultadosBusqueda(cbDestinos, textoBusqueda);
-
+            @Override
+            public void keyReleased(KeyEvent e) {
+                // No realizar la búsqueda si se está usando las teclas de flecha
+                if (e.getKeyCode() != KeyEvent.VK_DOWN && e.getKeyCode() != KeyEvent.VK_UP) {
+                    // Realizar la búsqueda cada vez que se libera una tecla
+                    realizarBusquedaDestinos();
+                     if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_TAB) {
+                    autoCompletarDestino(cbDestinos);  
+                    cbDestinos.setPopupVisible(false); // Cerrar el popup después de seleccionar el cliente
+                    
+                }
+                    
                 }
             }
         });
+
+        // Agregar ActionListener para manejar la selección del ComboBox
+        cbDestinos.addActionListener(e -> {
+            if (cbDestinos.isPopupVisible()) {
+                cbDestinos.getSelectedItem().toString();
+            }
+        });
+       
+    }
+    
+    // Método para realizar la búsqueda
+    private void realizarBusquedaDestinos() {
+        // Obtener el texto ingresado por el usuario
+        String textoBusqueda = cbDestinos.getEditor().getItem().toString().toUpperCase();
+
+        // Si el texto de búsqueda está vacío, establecer el ComboBox en blanco y salir del método
+        if (textoBusqueda.isEmpty()) {
+            cbDestinos.setPopupVisible(false);
+            return;
+        }
+
+        // Obtener el modelo del ComboBox
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+
+        // Buscar resultados de búsqueda exacta
+        boolean encontradoExacta = false;
+
+        for (Cliente cliente : listaClientes) {
+            String nombreCliente = cliente.getNombre().toUpperCase();
+            if (nombreCliente.equals(textoBusqueda)) {
+                model.addElement(cliente.getNombre());
+                encontradoExacta = true;
+                break; // Terminar la búsqueda cuando se encuentra una coincidencia exacta
+            }
+        }
+
+        // Si no se encontró una coincidencia exacta, buscar coincidencias parciales
+        if (!encontradoExacta) {
+            for (Cliente cliente : listaClientes) {
+                String nombreCliente = cliente.getNombre().toUpperCase();
+                if (nombreCliente.contains(textoBusqueda)) {
+                    model.addElement(cliente.getNombre());
+                }
+            }
+        }
+
+        // Actualizar el modelo del ComboBox
+        cbDestinos.setModel(model);
+        cbDestinos.getEditor().setItem(textoBusqueda);
+
+        // Mostrar el menú desplegable si hay resultados
+        cbDestinos.setPopupVisible(model.getSize() > 0);
+    }
+    
+    // Método para realizar la búsqueda
+    private void realizarBusquedaClientes() {
+        // Obtener el texto ingresado por el usuario
+        String textoBusqueda = cbClientes.getEditor().getItem().toString().toUpperCase();
+
+        // Si el texto de búsqueda está vacío, establecer el ComboBox en blanco y salir del método
+        if (textoBusqueda.isEmpty()) {
+            cbClientes.setPopupVisible(false);
+            return;
+        }
+
+        // Obtener el modelo del ComboBox
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+
+        // Buscar resultados de búsqueda exacta
+        boolean encontradoExacta = false;
+
+        for (Cliente cliente : listaClientes) {
+            String nombreCliente = cliente.getNombre().toUpperCase();
+            if (nombreCliente.equals(textoBusqueda)) {
+                model.addElement(cliente.getNombre());
+                encontradoExacta = true;
+                break; // Terminar la búsqueda cuando se encuentra una coincidencia exacta
+            }
+        }
+
+        // Si no se encontró una coincidencia exacta, buscar coincidencias parciales
+        if (!encontradoExacta) {
+            for (Cliente cliente : listaClientes) {
+                String nombreCliente = cliente.getNombre().toUpperCase();
+                if (nombreCliente.contains(textoBusqueda)) {
+                    model.addElement(cliente.getNombre());
+                }
+            }
+        }
+
+        // Actualizar el modelo del ComboBox
+        cbClientes.setModel(model);
+        cbClientes.getEditor().setItem(textoBusqueda);
+
+        // Mostrar el menú desplegable si hay resultados
+        cbClientes.setPopupVisible(model.getSize() > 0);
+    }
+
+   
+
+    // Método para auto-completar el cliente seleccionado en el ComboBox
+    private void autoCompletarCliente(JComboBox<String> combobox) {
+        String nombreCliente = (String) combobox.getSelectedItem();
+        combobox.getEditor().setItem(nombreCliente);
+        
+    }
+    
+      // Método para auto-completar el cliente seleccionado en el ComboBox
+    private void autoCompletarDestino(JComboBox<String> combobox) {
+        String nombreDestino = (String) combobox.getSelectedItem();
+        combobox.getEditor().setItem(nombreDestino);
+        
+    }
+    
+    // Método para auto-completar el cliente seleccionado en el ComboBox
+    private void autoCompletarRepresentante(JComboBox<String> combobox) {
+        String nombreRepresentante = (String) combobox.getSelectedItem();
+        combobox.getEditor().setItem(nombreRepresentante);
+        
     }
 
     private void cargarServicios() {
@@ -269,42 +406,106 @@ public class EditarMovimientos extends javax.swing.JFrame {
     private void cargarRepresentantes() {
         ModeloRepresentante modRepre = new ModeloRepresentante();
         ArrayList<Representantes> listaRepresentantes = modRepre.getRepresentantes();
+        
         cbRepresentantes.setEditable(true);
+        
+        
         // Ordenar la lista de clientes alfabéticamente por el nombre
         listaRepresentantes.sort((representante1, representante2) -> representante1.getNombre().compareToIgnoreCase(representante2.getNombre()));
-        
+
         // Agregar los clientes al combobox
         for (Representantes Repre : listaRepresentantes) {
             cbRepresentantes.addItem(Repre.getNombre());
         }
 
-// Eliminar la opción en blanco después de configurar el decorador
+        // Eliminar la opción en blanco después de configurar el decorador
         cbRepresentantes.removeItem("");
-
-        
 
         // Establecer el índice seleccionado a -1 para no mostrar ninguna selección
         cbRepresentantes.setSelectedIndex(-1);
 
-        // Agregar ActionListener para capturar el evento "Enter"
-        cbRepresentantes.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String textoBusqueda = cbRepresentantes.getEditor().getItem().toString();
-                mostrarResultadosBusqueda(cbRepresentantes, textoBusqueda);
-            }
-        });
-
-        // Agregar KeyListener para capturar el evento "Enter"
+         // Agregar KeyListener al editor del JComboBox
         cbRepresentantes.getEditor().getEditorComponent().addKeyListener(new KeyAdapter() {
             @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_TAB) {
+                    
+                    autoCompletarRepresentante(cbRepresentantes);    
+                    cbRepresentantes.setPopupVisible(false); // Cerrar el popup después de seleccionar el Representante
+                    
+                } else if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE || e.getKeyCode() == KeyEvent.VK_DELETE) {
+                    cbRepresentantes.setPopupVisible(false);
+                } else if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_UP) {
+                    cbRepresentantes.setPopupVisible(true);
+                    
+                }
+            }
+
+            @Override
             public void keyReleased(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    String textoBusqueda = cbRepresentantes.getEditor().getItem().toString();
-                    mostrarResultadosBusqueda(cbRepresentantes, textoBusqueda);
+                // No realizar la búsqueda si se está usando las teclas de flecha
+                if (e.getKeyCode() != KeyEvent.VK_DOWN && e.getKeyCode() != KeyEvent.VK_UP) {
+                    
+                    // Realizar la búsqueda cada vez que se libera una tecla
+                    realizarBusquedaRepresentantes();
+                    
+                     if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_TAB) {
+                    autoCompletarRepresentante(cbRepresentantes);  
+                    cbRepresentantes.setPopupVisible(false); // Cerrar el popup después de seleccionar el Representante
+                    
+                }
+                    
                 }
             }
         });
+
+       
+    }
+    
+    // Método para realizar la búsqueda
+    private void realizarBusquedaRepresentantes() {
+        ModeloRepresentante modRepre = new ModeloRepresentante();
+        ArrayList<Representantes> listaRepresentantes = modRepre.getRepresentantes();
+        // Obtener el texto ingresado por el usuario
+        String textoBusqueda = cbRepresentantes.getEditor().getItem().toString().toUpperCase();
+
+        // Si el texto de búsqueda está vacío, establecer el ComboBox en blanco y salir del método
+        if (textoBusqueda.isEmpty()) {
+            cbRepresentantes.setPopupVisible(false);
+            return;
+        }
+
+        // Obtener el modelo del ComboBox
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+
+        // Buscar resultados de búsqueda exacta
+        boolean encontradoExacta = false;
+
+        for (Representantes repre : listaRepresentantes) {
+            String nombreCliente = repre.getNombre().toUpperCase();
+            if (nombreCliente.equals(textoBusqueda)) {
+                model.addElement(repre.getNombre());
+                encontradoExacta = true;
+                break; // Terminar la búsqueda cuando se encuentra una coincidencia exacta
+            }
+        }
+
+        // Si no se encontró una coincidencia exacta, buscar coincidencias parciales
+        if (!encontradoExacta) {
+            for (Representantes repre : listaRepresentantes) {
+                String nombreRepre = repre.getNombre().toUpperCase();
+                if (nombreRepre.contains(textoBusqueda)) {
+                    model.addElement(repre.getNombre());
+                }
+            }
+        }
+
+        // Actualizar el modelo del ComboBox
+        cbRepresentantes.setModel(model);
+        cbRepresentantes.getEditor().setItem(textoBusqueda);
+
+        // Mostrar el menú desplegable si hay resultados
+        cbRepresentantes.setPopupVisible(model.getSize() > 0);
     }
 
     private void cargarClientes() {
@@ -331,25 +532,42 @@ public class EditarMovimientos extends javax.swing.JFrame {
         // Establecer el índice seleccionado a -1 para no mostrar ninguna selección
         cbClientes.setSelectedIndex(-1);
 
-        // Agregar ActionListener para capturar el evento "Enter"
-        cbClientes.addActionListener(new ActionListener() {
+         // Agregar KeyListener al editor del JComboBox
+        cbClientes.getEditor().getEditorComponent().addKeyListener(new KeyAdapter() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                String textoBusqueda = cbClientes.getEditor().getItem().toString();
-                mostrarResultadosBusqueda(cbClientes, textoBusqueda);
-                if (cbClientes.getSelectedIndex() != -1) {
-                    // Normaliza el texto de búsqueda a mayúsculas
-                    textoBusqueda = textoBusqueda.toUpperCase();
-
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_TAB) {
+                    autoCompletarCliente(cbClientes);  
+                    cbClientes.setPopupVisible(false); // Cerrar el popup después de seleccionar el cliente
                     
-                    for (Cliente cliente : listaClientes) {
-                        if (cliente.getNombre().toUpperCase().equals(textoBusqueda)) {
-                            cliente = cliente;
-
-                            break;
-                        }
-                    }
+                } else if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE || e.getKeyCode() == KeyEvent.VK_DELETE) {
+                    cbClientes.setPopupVisible(false);
+                } else if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_UP) {
+                    cbClientes.setPopupVisible(true);
+                    
                 }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                // No realizar la búsqueda si se está usando las teclas de flecha
+                if (e.getKeyCode() != KeyEvent.VK_DOWN && e.getKeyCode() != KeyEvent.VK_UP) {
+                    // Realizar la búsqueda cada vez que se libera una tecla
+                    realizarBusquedaClientes();
+                     if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_TAB) {
+                    autoCompletarCliente(cbClientes);  
+                    cbClientes.setPopupVisible(false); // Cerrar el popup después de seleccionar el cliente
+                    
+                }
+                    
+                }
+            }
+        });
+
+        // Agregar ActionListener para manejar la selección del ComboBox
+        cbClientes.addActionListener(e -> {
+            if (cbClientes.isPopupVisible()) {
+                cbClientes.getSelectedItem().toString();
             }
         });
     }
@@ -627,11 +845,19 @@ public class EditarMovimientos extends javax.swing.JFrame {
                 .addGap(19, 19, 19))
         );
 
+        cbClientes.setMaximumRowCount(6);
+
+        cbDestinos.setMaximumRowCount(6);
+
+        cbServicios.setMaximumRowCount(6);
+
         jLabel3.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         jLabel3.setText("/");
 
         jLabel11.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         jLabel11.setText("/");
+
+        cbRepresentantes.setMaximumRowCount(6);
 
         txtObservaciones.setColumns(20);
         txtObservaciones.setRows(5);

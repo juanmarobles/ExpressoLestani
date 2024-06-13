@@ -28,6 +28,7 @@ import com.mycompany.lestanitest.logica.ModeloRepresentante;
 import com.mycompany.lestanitest.logica.Representantes;
 import java.awt.Color;
 import java.awt.Desktop;
+import java.awt.Dimension;
 import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -91,6 +92,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Comparator;
 import javax.imageio.ImageIO;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -102,6 +104,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileSystemView;
+import javax.swing.plaf.basic.BasicComboPopup;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.printing.PDFPageable;
 
@@ -305,39 +308,97 @@ public class Consultas extends javax.swing.JFrame {
         // Establecer el índice seleccionado a -1 para no mostrar ninguna selección
         cbClientes.setSelectedIndex(-1);
 
+       // Agregar KeyListener al editor del JComboBox
         cbClientes.getEditor().getEditorComponent().addKeyListener(new KeyAdapter() {
             @Override
-            public void keyReleased(KeyEvent e) {
+            public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_TAB) {
-                    String textoBusqueda = cbClientes.getEditor().getItem().toString();
+                    autoCompletarCliente(cbClientes);  
+                    cbClientes.setPopupVisible(false); // Cerrar el popup después de seleccionar el cliente
+                    
+                } else if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE || e.getKeyCode() == KeyEvent.VK_DELETE) {
+                    cbClientes.setPopupVisible(false);
+                } else if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_UP) {
+                    cbClientes.setPopupVisible(true);
+                    
+                }
+            }
 
-                    // Normaliza el texto de búsqueda a mayúsculas y elimina caracteres no deseados excepto espacios en blanco
-                    textoBusqueda = textoBusqueda.toUpperCase().replaceAll("[^A-ZÑñ.\\s]", "");
-
-                    mostrarResultadosBusqueda(cbClientes, textoBusqueda);
-
-                    // Busca el cliente seleccionado en la lista de clientes
-                    cliente = null; // Restablece el destinatario seleccionado
-
-                    for (Cliente clientes : listaClientes) {
-                        // Normaliza el nombre del cliente a mayúsculas y elimina caracteres no deseados excepto espacios en blanco
-                        String nombreCliente = clientes.getNombre().toUpperCase().replaceAll("[^A-ZÑñ.\\s]", "");
-
-                        if (nombreCliente.contains(textoBusqueda)) {
-                            cliente = clientes;
-                            System.out.println("Destinatario seleccionado: " + cliente);
-                            break;
-                        }
-                    }
-
-                    if (cliente == null) {
-                        System.out.println("No se encontró Cliente.");
-                    }
+            @Override
+            public void keyReleased(KeyEvent e) {
+                // No realizar la búsqueda si se está usando las teclas de flecha
+                if (e.getKeyCode() != KeyEvent.VK_DOWN && e.getKeyCode() != KeyEvent.VK_UP) {
+                    // Realizar la búsqueda cada vez que se libera una tecla
+                    realizarBusquedaClientes(cbClientes);
+                     if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_TAB) {
+                    autoCompletarCliente(cbClientes);  
+                    cbClientes.setPopupVisible(false); // Cerrar el popup después de seleccionar el cliente
+                    
+                }
+                    
                 }
             }
         });
     }
+    
+     // Método para realizar la búsqueda
+    private void realizarBusquedaClientes(JComboBox<String> combobox) {
+        // Obtener el texto ingresado por el usuario
+        String textoBusqueda = combobox.getEditor().getItem().toString().toUpperCase();
 
+        // Si el texto de búsqueda está vacío, establecer el ComboBox en blanco y salir del método
+        if (textoBusqueda.isEmpty()) {
+            combobox.setPopupVisible(false);
+            return;
+        }
+
+        // Obtener el modelo del ComboBox
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+
+        // Buscar resultados de búsqueda exacta
+        boolean encontradoExacta = false;
+
+        for (Cliente cliente : listaClientes) {
+            String nombreCliente = cliente.getNombre().toUpperCase();
+            if (nombreCliente.equals(textoBusqueda)) {
+                model.addElement(cliente.getNombre());
+                encontradoExacta = true;
+                break; // Terminar la búsqueda cuando se encuentra una coincidencia exacta
+            }
+        }
+
+        // Si no se encontró una coincidencia exacta, buscar coincidencias parciales
+        if (!encontradoExacta) {
+            for (Cliente cliente : listaClientes) {
+                String nombreCliente = cliente.getNombre().toUpperCase();
+                if (nombreCliente.contains(textoBusqueda)) {
+                    model.addElement(cliente.getNombre());
+                }
+            }
+        }
+        
+
+        
+
+        // ... lógica de búsqueda para actualizar el modelo del ComboBox ...
+        // Actualizar el modelo del ComboBox
+        
+        combobox.setModel(model);
+        combobox.getEditor().setItem(textoBusqueda);
+
+
+        // Mostrar el menú desplegable si hay resultados
+        combobox.setPopupVisible(model.getSize() > 0);
+    }
+
+    
+
+    // Método para auto-completar el cliente seleccionado en el ComboBox
+    private void autoCompletarCliente(JComboBox<String> combobox) {
+        String nombreCliente = (String) combobox.getSelectedItem();
+        combobox.getEditor().setItem(nombreCliente);
+        
+    }
     private void cargarDestino() {
         ModeloCliente modClientes = new ModeloCliente();
         ArrayList<Cliente> listaClientes = modClientes.getClientes();
@@ -358,16 +419,38 @@ public class Consultas extends javax.swing.JFrame {
         // Establecer el índice seleccionado a -1 para no mostrar ninguna selección
         cbDestinos.setSelectedIndex(-1);
 
+        // Agregar KeyListener al editor del JComboBox
         cbDestinos.getEditor().getEditorComponent().addKeyListener(new KeyAdapter() {
             @Override
-            public void keyReleased(KeyEvent e) {
+            public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_TAB) {
-                    String textoBusqueda = cbDestinos.getEditor().getItem().toString();
+                    autoCompletarCliente(cbDestinos);  
+                    cbDestinos.setPopupVisible(false); // Cerrar el popup después de seleccionar el cliente
+                    
+                } else if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE || e.getKeyCode() == KeyEvent.VK_DELETE) {
+                    cbDestinos.setPopupVisible(false);
+                } else if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_UP) {
+                    cbDestinos.setPopupVisible(true);
+                    
+                }
+            }
 
-                    // Normaliza el texto de búsqueda a mayúsculas y elimina caracteres no deseados excepto espacios en blanco
-                    textoBusqueda = textoBusqueda.toUpperCase().replaceAll("[^A-ZÑñ.\\s]", "");
-
-                    mostrarResultadosBusqueda(cbDestinos, textoBusqueda);
+            @Override
+            public void keyReleased(KeyEvent e) {
+                // No realizar la búsqueda si se está usando las teclas de flecha
+                if (e.getKeyCode() != KeyEvent.VK_DOWN && e.getKeyCode() != KeyEvent.VK_UP) {
+                    
+                    // Realizar la búsqueda cada vez que se libera una tecla
+                    realizarBusquedaClientes(cbDestinos);
+                    
+                     if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_TAB) {
+                         
+                    autoCompletarCliente(cbDestinos);  
+                    
+                    cbDestinos.setPopupVisible(false); // Cerrar el popup después de seleccionar el cliente
+                    
+                }
+                    
                 }
             }
         });
@@ -389,27 +472,46 @@ public class Consultas extends javax.swing.JFrame {
         // Establecer el índice seleccionado a -1 para no mostrar ninguna selección
         cbOrigen.setSelectedIndex(-1);
 
+        // Agregar KeyListener al editor del JComboBox
         cbOrigen.getEditor().getEditorComponent().addKeyListener(new KeyAdapter() {
             @Override
-            public void keyReleased(KeyEvent e) {
+            public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_TAB) {
-                    String textoBusqueda = cbOrigen.getEditor().getItem().toString();
+                    autoCompletarCliente(cbOrigen);  
+                    cbOrigen.setPopupVisible(false); // Cerrar el popup después de seleccionar el cliente
+                    
+                } else if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE || e.getKeyCode() == KeyEvent.VK_DELETE) {
+                    cbOrigen.setPopupVisible(false);
+                } else if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_UP) {
+                    cbOrigen.setPopupVisible(true);
+                    
+                }
+            }
 
-                    // Normaliza el texto de búsqueda a mayúsculas y elimina caracteres no deseados excepto espacios en blanco
-                    textoBusqueda = textoBusqueda.toUpperCase().replaceAll("[^A-ZÑñ.\\s]", "");
-
-                    mostrarResultadosBusqueda(cbOrigen, textoBusqueda);
+            @Override
+            public void keyReleased(KeyEvent e) {
+                // No realizar la búsqueda si se está usando las teclas de flecha
+                if (e.getKeyCode() != KeyEvent.VK_DOWN && e.getKeyCode() != KeyEvent.VK_UP) {
+                    // Realizar la búsqueda cada vez que se libera una tecla
+                    realizarBusquedaClientes(cbOrigen);
+                     if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_TAB) {
+                    autoCompletarCliente(cbOrigen);  
+                    cbOrigen.setPopupVisible(false); // Cerrar el popup después de seleccionar el cliente
+                    
+                }
+                    
                 }
             }
         });
     }
 
     private void cargarRepresentantes() {
-        ModeloRepresentante modRepre = new ModeloRepresentante();
+       ModeloRepresentante modRepre = new ModeloRepresentante();
         ArrayList<Representantes> listaRepresentantes = modRepre.getRepresentantes();
-
+        
         cbRepresentantes.setEditable(true);
-
+        
+        
         // Ordenar la lista de clientes alfabéticamente por el nombre
         listaRepresentantes.sort((representante1, representante2) -> representante1.getNombre().compareToIgnoreCase(representante2.getNombre()));
 
@@ -424,26 +526,89 @@ public class Consultas extends javax.swing.JFrame {
         // Establecer el índice seleccionado a -1 para no mostrar ninguna selección
         cbRepresentantes.setSelectedIndex(-1);
 
-        // Agregar ActionListener para capturar el evento "Enter"
-        cbRepresentantes.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String textoBusqueda = cbRepresentantes.getEditor().getItem().toString();
-                mostrarResultadosBusqueda(cbRepresentantes, textoBusqueda);
-            }
-        });
-
-        // Agregar KeyListener para capturar el evento "Enter"
+         // Agregar KeyListener al editor del JComboBox
         cbRepresentantes.getEditor().getEditorComponent().addKeyListener(new KeyAdapter() {
             @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_TAB) {
+                    autoCompletarRepresentante(cbRepresentantes);  
+                    cbRepresentantes.setPopupVisible(false); // Cerrar el popup después de seleccionar el Representante
+                    
+                } else if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE || e.getKeyCode() == KeyEvent.VK_DELETE) {
+                    cbRepresentantes.setPopupVisible(false);
+                } else if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_UP) {
+                    cbRepresentantes.setPopupVisible(true);
+                    
+                }
+            }
+
+            @Override
             public void keyReleased(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    String textoBusqueda = cbRepresentantes.getEditor().getItem().toString();
-                    mostrarResultadosBusqueda(cbRepresentantes, textoBusqueda);
+                // No realizar la búsqueda si se está usando las teclas de flecha
+                if (e.getKeyCode() != KeyEvent.VK_DOWN && e.getKeyCode() != KeyEvent.VK_UP) {
+                    // Realizar la búsqueda cada vez que se libera una tecla
+                    realizarBusquedaRepresentantes();
+                     if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_TAB) {
+                    autoCompletarRepresentante(cbRepresentantes);  
+                    cbRepresentantes.setPopupVisible(false); // Cerrar el popup después de seleccionar el Representante
+                    
+                }
+                    
                 }
             }
         });
 
+    }
+     // Método para realizar la búsqueda
+    private void realizarBusquedaRepresentantes() {
+        ModeloRepresentante modRepre = new ModeloRepresentante();
+        ArrayList<Representantes> listaRepresentantes = modRepre.getRepresentantes();
+        // Obtener el texto ingresado por el usuario
+        String textoBusqueda = cbRepresentantes.getEditor().getItem().toString().toUpperCase();
+
+        // Si el texto de búsqueda está vacío, establecer el ComboBox en blanco y salir del método
+        if (textoBusqueda.isEmpty()) {
+            cbRepresentantes.setPopupVisible(false);
+            return;
+        }
+
+        // Obtener el modelo del ComboBox
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+
+        // Buscar resultados de búsqueda exacta
+        boolean encontradoExacta = false;
+
+        for (Representantes repre : listaRepresentantes) {
+            String nombreCliente = repre.getNombre().toUpperCase();
+            if (nombreCliente.equals(textoBusqueda)) {
+                model.addElement(repre.getNombre());
+                encontradoExacta = true;
+                break; // Terminar la búsqueda cuando se encuentra una coincidencia exacta
+            }
+        }
+
+        // Si no se encontró una coincidencia exacta, buscar coincidencias parciales
+        if (!encontradoExacta) {
+            for (Representantes repre : listaRepresentantes) {
+                String nombreRepre = repre.getNombre().toUpperCase();
+                if (nombreRepre.contains(textoBusqueda)) {
+                    model.addElement(repre.getNombre());
+                }
+            }
+        }
+
+        // Actualizar el modelo del ComboBox
+        cbRepresentantes.setModel(model);
+        cbRepresentantes.getEditor().setItem(textoBusqueda);
+
+        // Mostrar el menú desplegable si hay resultados
+        cbRepresentantes.setPopupVisible(model.getSize() > 0);
+    }
+     // Método para auto-completar el cliente seleccionado en el ComboBox
+    private void autoCompletarRepresentante(JComboBox<String> combobox) {
+        String nombreRepresentante = (String) combobox.getSelectedItem();
+        combobox.getEditor().setItem(nombreRepresentante);
+        
     }
 
     /**
@@ -794,20 +959,19 @@ public class Consultas extends javax.swing.JFrame {
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(11, 11, 11)
+                .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtCantBultos, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(22, Short.MAX_VALUE))
+                .addContainerGap(27, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(14, 14, 14)
                 .addComponent(jLabel13)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtCantBultos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(10, Short.MAX_VALUE))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
 
         jPanel6.setBackground(new java.awt.Color(66, 66, 66));
@@ -855,29 +1019,27 @@ public class Consultas extends javax.swing.JFrame {
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(18, 18, 18)
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtDiaH, javax.swing.GroupLayout.DEFAULT_SIZE, 31, Short.MAX_VALUE)
-                            .addComponent(txtDiaD))
+                            .addComponent(txtDiaD, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
+                            .addComponent(txtDiaH))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel17, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel19))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(txtMesH, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
-                            .addComponent(txtMesD))
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtMesD, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
+                            .addComponent(txtMesH))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel6Layout.createSequentialGroup()
-                                .addComponent(jLabel18)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtAnioD, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel6Layout.createSequentialGroup()
-                                .addComponent(jLabel20)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtAnioH, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 20, Short.MAX_VALUE))))
+                            .addComponent(jLabel20)
+                            .addComponent(jLabel18))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtAnioH, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtAnioD, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 57, Short.MAX_VALUE))))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1091,6 +1253,7 @@ public class Consultas extends javax.swing.JFrame {
 
         cbClientes.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         cbClientes.setForeground(new java.awt.Color(0, 0, 0));
+        cbClientes.setMaximumRowCount(6);
 
         cbRepresentantes.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         cbRepresentantes.setForeground(new java.awt.Color(0, 0, 0));
@@ -1112,9 +1275,11 @@ public class Consultas extends javax.swing.JFrame {
 
         cbOrigen.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         cbOrigen.setForeground(new java.awt.Color(0, 0, 0));
+        cbOrigen.setMaximumRowCount(5);
 
         cbDestinos.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         cbDestinos.setForeground(new java.awt.Color(0, 0, 0));
+        cbDestinos.setMaximumRowCount(5);
         cbDestinos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbDestinosActionPerformed(evt);
@@ -1130,15 +1295,15 @@ public class Consultas extends javax.swing.JFrame {
                     .addGroup(jPanel10Layout.createSequentialGroup()
                         .addGap(12, 12, 12)
                         .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE))
                     .addGroup(jPanel10Layout.createSequentialGroup()
                         .addGap(15, 15, 15)
                         .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(2, 2, 2)))
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(cbOrigen, 0, 214, Short.MAX_VALUE)
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(cbOrigen, 0, 310, Short.MAX_VALUE)
                     .addComponent(cbDestinos, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(24, 24, 24))
+                .addContainerGap(31, Short.MAX_VALUE))
         );
         jPanel10Layout.setVerticalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1147,11 +1312,11 @@ public class Consultas extends javax.swing.JFrame {
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(cbOrigen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+                .addGap(36, 36, 36)
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cbDestinos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel10))
-                .addGap(25, 25, 25))
+                .addGap(20, 20, 20))
         );
 
         btnEliminar.setBackground(new java.awt.Color(51, 51, 51));
@@ -1246,13 +1411,16 @@ public class Consultas extends javax.swing.JFrame {
                         .addGap(17, 17, 17)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(cbRepresentantes, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(cbClientes, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addGap(46, 46, 46)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(cbClientes, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(cbRepresentantes, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addGap(8, 8, 8)
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(jPanel6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(45, 45, 45)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(btnMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1286,44 +1454,44 @@ public class Consultas extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cbClientes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addComponent(cbClientes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cbRepresentantes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(1, 1, 1)))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addComponent(jLabel22)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtBusquedaRemito, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 4, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                        .addComponent(btnLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(btnMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(jPanel10, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(11, 11, 11))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(20, 20, 20)
-                                .addComponent(jLabel22)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(txtBusquedaRemito, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+                            .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(btnLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jPanel10, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jPanel6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(11, 11, 11))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(24, 24, 24)
+                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)))
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 609, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

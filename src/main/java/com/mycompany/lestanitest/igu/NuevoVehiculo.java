@@ -50,7 +50,14 @@ public class NuevoVehiculo extends javax.swing.JFrame {
             }
         };
     }
-
+    private void limpiarCampos() {
+        txtVehiculo.setText("");
+        txtPatente.setText("");
+        txtFechaTecnica.setText("");
+        txtFechaRuta.setText("");
+        txtFechaSeguro.setText("");
+        txtFechaMatafuego.setText("");
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -116,7 +123,7 @@ public class NuevoVehiculo extends javax.swing.JFrame {
         jLabel6.setForeground(new java.awt.Color(255, 255, 255));
         jLabel6.setText("Seguro");
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 22)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("Nuevo Vehiculo");
 
@@ -187,74 +194,72 @@ public class NuevoVehiculo extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(30, 30, 30)
+                        .addGap(45, 45, 45)
                         .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(49, 49, 49)
+                        .addGap(61, 61, 61)
                         .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(42, 42, 42)
-                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(57, 57, 57)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(jLabel1))
-                            .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtFechaSeguro, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtPatente, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
                             .addComponent(txtVehiculo)
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(txtFechaMatafuego, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(txtFechaMatafuego, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
+                                .addComponent(txtFechaSeguro, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(txtFechaRuta, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(txtFechaTecnica, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE)))))
-                .addGap(0, 54, Short.MAX_VALUE))
+                                .addComponent(txtFechaTecnica, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+                .addGap(0, 44, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(104, 104, 104)
+                .addGap(137, 137, 137)
                 .addComponent(jLabel2)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(27, 27, 27)
+                .addGap(26, 26, 26)
                 .addComponent(jLabel2)
-                .addGap(35, 35, 35)
+                .addGap(27, 27, 27)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtVehiculo, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(21, 21, 21)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel7)
                         .addGap(28, 28, 28))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(txtPatente, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
-                        .addGap(24, 24, 24)))
+                        .addGap(21, 21, 21)))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtFechaTecnica, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4))
-                .addGap(24, 24, 24)
+                .addGap(21, 21, 21)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtFechaRuta, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5))
                 .addGap(18, 18, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(txtFechaMatafuego, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(24, 24, 24)
+                    .addComponent(txtFechaSeguro, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6))
+                .addGap(21, 21, 21)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel6)
-                    .addComponent(txtFechaSeguro, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(44, 44, 44)
+                    .addComponent(txtFechaMatafuego, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3))
+                .addGap(43, 43, 43)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(25, 25, 25))
+                .addGap(34, 34, 34))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -272,58 +277,42 @@ public class NuevoVehiculo extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-       String vehiculo = txtVehiculo.getText();
-    String patente = txtPatente.getText();
-    
-    // Obtener las fechas del formulario y manejar el caso de fechas vacías
-    List<Date> fechas = getFechas();
-    if (fechas != null) {
-        Date fechaTecnica = fechas.get(0);
-        Date fechaRuta = fechas.get(1);
-        Date fechaSeguro = fechas.get(2);
-        Date fechaMatafuego = fechas.get(3);
+        String vehiculo = txtVehiculo.getText();
+        String patente = txtPatente.getText();
 
-        control.cargarVehiculo(vehiculo, fechaTecnica, fechaRuta, fechaSeguro,fechaMatafuego, patente);
-        //mostrarMensaje("Vehiculo agregado correctamente", "Info", "Agregado con exito!");
+        // Obtener las fechas del formulario y manejar el caso de fechas vacías
+        List<Date> fechas = getFechas();
+        if (fechas != null) {
+            Date fechaTecnica = fechas.get(0);
+            Date fechaRuta = fechas.get(1);
+            Date fechaSeguro = fechas.get(2);
+            Date fechaMatafuego = fechas.get(3);
 
-        txtVehiculo.setText("");
-        txtFechaSeguro.setText("");
-        txtFechaRuta.setText("");
-        txtFechaTecnica.setText("");
-        txtFechaMatafuego.setText("");
+            // Verificar si todas las fechas están presentes
+            if (fechas != null && !fechas.contains(null)) {
+                // Todas las fechas están presentes, guardar los datos
+                guardarVehiculo(vehiculo, fechas.get(0), fechas.get(1), fechas.get(2), fechas.get(3), patente);
+            } else {
+                // Al menos una fecha falta, mostrar mensaje de advertencia
+                mostrarMensaje("Vehiculo Cargado Correctamente", "Falta una fecha", "Se guardarán los datos ingresados");
 
-        VerDatosVehiculos verAnterior = new VerDatosVehiculos();
-        verAnterior.setVisible(true);
-        verAnterior.setLocationRelativeTo(null);
+                // Guardar los datos con fechas posiblemente nulas
+                guardarVehiculo(vehiculo, fechas.get(0), fechas.get(1), fechas.get(2), fechas.get(3), patente);
+            }
 
-        this.dispose();
-    } else {
-        // Si falta alguna fecha, cargar el resto de los datos y la fecha faltante como nula
-        mostrarMensaje("Atención", "Falta una fecha", "Se guardarán los datos ingresados, pero una fecha está vacía.");
-        Date fechaTecnica = fechas.get(0);
-        Date fechaRuta = fechas.get(1);
-        Date fechaSeguro = fechas.get(2);
-        Date fechaMatafuego = fechas.get(3);
-        
-        control.cargarVehiculo(vehiculo, fechaTecnica, fechaRuta, fechaSeguro,fechaMatafuego, patente);
-        //mostrarMensaje("Vehiculo agregado correctamente", "Info", "Agregado con exito!");
-
-        txtVehiculo.setText("");
-        txtFechaSeguro.setText("");
-        txtFechaRuta.setText("");
-        txtFechaTecnica.setText("");
-        txtFechaMatafuego.setText("");
+        // Limpiar los campos de texto
+        limpiarCampos();
 
         VerDatosVehiculos verAnterior = new VerDatosVehiculos();
         verAnterior.setVisible(true);
         verAnterior.setLocationRelativeTo(null);
-
-        this.dispose();
-    }       
-   
         
+        //Cerrar ventana actual
+        this.dispose();
+
+
     }//GEN-LAST:event_btnGuardarActionPerformed
-
+    }
    
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
         VerDatosVehiculos verAnterior = new VerDatosVehiculos();
@@ -444,6 +433,10 @@ public class NuevoVehiculo extends javax.swing.JFrame {
         return null;
     }
 }
+
+    private void guardarVehiculo(String vehiculo, Date fechaTecnica, Date fechaRuta, Date fechaSeguro, Date fechaMatafuego, String patente) {
+         control.cargarVehiculo(vehiculo, fechaTecnica, fechaRuta, fechaSeguro, fechaMatafuego, patente);
+    }
 
 
 
