@@ -29,9 +29,9 @@ public class Conexion {
     public PreparedStatement pstm;
     public static Connection getConexion() {
     Connection con = null;
-    String url = "jdbc:mysql://localhost:3306/lestani_bd";
-    String user = "root";
-    String password = "";
+    String url = "jdbc:mysql://srv1433.hstgr.io:3306/u261556491_lestani_bd?zeroDateTimeBehavior=CONVERT_TO_NULL";
+    String user = "u261556491_expresolestani";
+    String password = "Expresolestani2024_";
     
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");

@@ -17,6 +17,10 @@
       <property name="javax.persistence.schema-generation.database.action" value="create"/>
       <property name="eclipselink.logging.level" value="FINE"/>
       <property name="eclipselink.ddl-generation" value="create-or-extend-tables"/>
+      <!-- Agregar propiedades para manejar secuencias -->
+      <property name="eclipselink.target-database" value="org.eclipse.persistence.platform.database.MySQLPlatform"/>
+      <property name="eclipselink.sequence.table.default" value="SEQUENCE"/>
+      <property name="eclipselink.sequence.preallocation-size" value="1"/>
     </properties>
   </persistence-unit>
 </persistence>
