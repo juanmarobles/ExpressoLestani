@@ -34,7 +34,7 @@ public class DateAlertApp extends javax.swing.JFrame {
 
     Controladora control;
     private static DateAlertApp instance;
-    
+    boolean listaterminada = false;
     
     public DateAlertApp() {
         control = new Controladora();
@@ -46,6 +46,7 @@ public class DateAlertApp extends javax.swing.JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 mostrarTablaVehiculos();
+                listaterminada=true;
             }
         });
         timer.start();
@@ -66,9 +67,10 @@ public class DateAlertApp extends javax.swing.JFrame {
 
         //carga de los datos desde la bd
         List<Vehiculo> listaVehiculos = control.traerVehiculos();
-
+        
         //recorrer lista y mostrar elementos en la tabla
         if (listaVehiculos != null) {
+            
             for (Vehiculo v : listaVehiculos) {
                 // Verificar si la fecha de Ruta está cerca (por ejemplo, dentro de 31 días)
                 if (isDateNear(v.getFechaRutaFormateada(), 31) && !vehiculosAlertadosRuta.contains(v.getId_Vehiculo())) {
@@ -96,6 +98,10 @@ public class DateAlertApp extends javax.swing.JFrame {
                     vehiculosAlertadosMatafuego.add(v.getId_Vehiculo());
                 }
             }
+             if (!listaterminada) {
+            timer.stop();
+            listaterminada = true;
+        }
         }
 
     }
