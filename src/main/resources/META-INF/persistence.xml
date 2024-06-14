@@ -14,7 +14,7 @@
       <property name="javax.persistence.jdbc.user" value="u261556491_expresolestani"/>
       <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
       <property name="javax.persistence.jdbc.password" value="Expresolestani2024_"/>
-      <property name="javax.persistence.schema-generation.database.action" value="create"/>
+      <property name="javax.persistence.schema-generation.database.action" value="create-or-extend-tables"/>
       <property name="eclipselink.logging.level" value="FINE"/>
       <property name="eclipselink.ddl-generation" value="create-or-extend-tables"/>
       <!-- Agregar propiedades para manejar secuencias -->
