@@ -2,6 +2,8 @@
 package com.mycompany.lestanitest.persistencia;
 
 import com.mycompany.lestanitest.logica.Cliente;
+import com.mycompany.lestanitest.logica.Movimientos;
+
 import com.mycompany.lestanitest.persistencia.exceptions.NonexistentEntityException;
 import java.io.Serializable;
 import java.util.List;
@@ -10,6 +12,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
@@ -134,5 +137,32 @@ public class ClienteJpaController implements Serializable {
             em.close();
         }
     }
+
+    public List<Movimientos> getMovimientos(String texto) {
+      EntityManager em = getEntityManager();
+    try {
+        String jpql = "SELECT m FROM Movimientos m WHERE m.cliente LIKE :texto OR m.destino LIKE :texto OR m.remito LIKE :texto ORDER BY m.id_movimientos DESC";
+        TypedQuery<Movimientos> query = em.createQuery(jpql, Movimientos.class);
+        query.setParameter("texto", "%" + texto + "%"); 
+        return query.getResultList();
+    } finally {
+        em.close();
+    }
+}
+
+    List<Movimientos> getMovimientos() {
+        EntityManager em = getEntityManager(); // Aquí utilizamos tu EntityManager
+
+        try {
+            String jpql = "SELECT m FROM Movimientos m ORDER BY m.id_movimientos DESC";
+            TypedQuery<Movimientos> query = em.createQuery(jpql, Movimientos.class)
+                    .setMaxResults(500); 
+
+            return query.getResultList();
+        } finally {
+            em.close(); 
+        }    
+    }
+
     
 }

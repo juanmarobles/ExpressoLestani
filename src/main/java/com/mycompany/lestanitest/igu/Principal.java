@@ -180,6 +180,8 @@ public class Principal extends javax.swing.JFrame {
     private Cliente destinatario;
     private Movimientos movimientoSeleccionado;
     private Servicios servicioSeleccionado;
+    
+    
     int numeroRemito = 0;
     private int idSeleccionado = -1; // Inicializado con un valor negativo para indicar que no se ha seleccionado ningún movimiento.    
 
@@ -234,8 +236,7 @@ public class Principal extends javax.swing.JFrame {
             System.out.println("Fecha inválida.");
         }
 
-        TextPrompt filtroCl = new TextPrompt("Busqueda por Cliente y Destino", txtFiltroCliente);
-        TextPrompt filtroRe = new TextPrompt("Busqueda por Remito", txtFiltroRemito);
+        TextPrompt filtroCl = new TextPrompt("Busqueda por Cliente, Destino o Remito", txtFiltroCliente);
 
         // Tabulador cambiar Default
         // Establecer el siguiente componente enfocable para el campo de texto del JComboBox
@@ -1154,10 +1155,10 @@ public class Principal extends javax.swing.JFrame {
         txtObservaciones = new javax.swing.JTextArea();
         PanelBusquedas = new javax.swing.JPanel();
         txtFiltroCliente = new javax.swing.JTextField();
-        txtFiltroRemito = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jLabel19 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
+        btnBuscarClienteYDestino = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -1826,17 +1827,6 @@ public class Principal extends javax.swing.JFrame {
             }
         });
 
-        txtFiltroRemito.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtFiltroRemitoActionPerformed(evt);
-            }
-        });
-        txtFiltroRemito.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtFiltroRemitoKeyTyped(evt);
-            }
-        });
-
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/busqueda-de-lupa.png"))); // NOI18N
 
         jLabel19.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/busqueda-de-lupa.png"))); // NOI18N
@@ -1844,6 +1834,17 @@ public class Principal extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Busquedas");
+
+        btnBuscarClienteYDestino.setBackground(new java.awt.Color(51, 51, 51));
+        btnBuscarClienteYDestino.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        btnBuscarClienteYDestino.setForeground(new java.awt.Color(236, 240, 241));
+        btnBuscarClienteYDestino.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/actualizar.png"))); // NOI18N
+        btnBuscarClienteYDestino.setText("Actualizar");
+        btnBuscarClienteYDestino.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarClienteYDestinoActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout PanelBusquedasLayout = new javax.swing.GroupLayout(PanelBusquedas);
         PanelBusquedas.setLayout(PanelBusquedasLayout);
@@ -1853,19 +1854,18 @@ public class Principal extends javax.swing.JFrame {
                 .addGroup(PanelBusquedasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(PanelBusquedasLayout.createSequentialGroup()
                         .addGap(35, 35, 35)
-                        .addGroup(PanelBusquedasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, PanelBusquedasLayout.createSequentialGroup()
-                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtFiltroRemito))
+                        .addGroup(PanelBusquedasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, PanelBusquedasLayout.createSequentialGroup()
                                 .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtFiltroCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 309, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(txtFiltroCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 309, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnBuscarClienteYDestino, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(PanelBusquedasLayout.createSequentialGroup()
                         .addGap(122, 122, 122)
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(33, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         PanelBusquedasLayout.setVerticalGroup(
             PanelBusquedasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1873,13 +1873,13 @@ public class Principal extends javax.swing.JFrame {
                 .addGap(13, 13, 13)
                 .addComponent(jLabel1)
                 .addGap(18, 18, 18)
-                .addGroup(PanelBusquedasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtFiltroCliente, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
-                    .addComponent(jLabel19, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(44, 44, 44)
                 .addGroup(PanelBusquedasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtFiltroRemito, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(PanelBusquedasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(txtFiltroCliente, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
+                        .addComponent(jLabel19, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnBuscarClienteYDestino, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(44, 44, 44)
+                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(35, Short.MAX_VALUE))
         );
 
@@ -1910,7 +1910,7 @@ public class Principal extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(43, 43, 43)
                         .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(663, Short.MAX_VALUE))
+                .addContainerGap(544, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1925,7 +1925,7 @@ public class Principal extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(PanelBusquedas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(37, 37, 37)))
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 660, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 662, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -2012,6 +2012,8 @@ public class Principal extends javax.swing.JFrame {
 
 
     private void txtFiltroClienteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFiltroClienteKeyTyped
+       /* String cliente = txtFiltroCliente.getText();
+        List<Movimientos> clientes = control.getClientes(cliente);
         trs = new TableRowSorter(tablaMovimientos.getModel());
         tablaMovimientos.setRowSorter(trs);
 
@@ -2023,7 +2025,7 @@ public class Principal extends javax.swing.JFrame {
                 trs.setRowFilter(RowFilter.regexFilter("(?i)" + textoFiltro, 3, 4));
             }
         });
-
+*/
 
     }//GEN-LAST:event_txtFiltroClienteKeyTyped
     public void mostrarMensaje(String mensaje, String tipo, String titulo) {
@@ -2040,28 +2042,55 @@ public class Principal extends javax.swing.JFrame {
     }
 
 
-    private void txtFiltroRemitoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFiltroRemitoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtFiltroRemitoActionPerformed
-
-    private void txtFiltroRemitoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFiltroRemitoKeyTyped
-        txtFiltroRemito.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyReleased(KeyEvent e) {
-                trs.setRowFilter(RowFilter.regexFilter("(?i)" + txtFiltroRemito.getText(), 5));
-            }
-
-        });
-        trs = new TableRowSorter(tablaMovimientos.getModel());
-        tablaMovimientos.setRowSorter(trs);
-    }//GEN-LAST:event_txtFiltroRemitoKeyTyped
-
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        Principal pn = new Principal();
-        pn.setVisible(true);
-        dispose();
+       List<Movimientos> movimientosFiltrados = control.getMovimientos();
+        
+    actualizarTablaMovimientos(movimientosFiltrados);
+      
 
     }//GEN-LAST:event_jButton2ActionPerformed
+private DefaultTableModel tablaModelo; // Declarar como campo de clase para reutilización
+
+private void actualizarTablaMovimientos(List<Movimientos> movimientos) {
+    DefaultTableModel tablaModelo = (DefaultTableModel) tablaMovimientos.getModel();
+    tablaModelo.setRowCount(0); // Limpiar filas existentes
+
+    if (movimientos != null && !movimientos.isEmpty()) {
+        // Ordenar los datos por el ID en forma descendente
+        Collections.sort(movimientos, Comparator.comparingInt(Movimientos::getId_movimientos).reversed());
+
+        // Agregar datos a la tabla
+        for (Movimientos mov : movimientos) {
+            Object[] objeto = {
+                mov.getId_movimientos(), 
+                mov.getHora(), 
+                mov.getFechaFormateada(), 
+                mov.getCliente(), 
+                mov.getDestino(), 
+                mov.getRemito(), 
+                mov.getBultos(), 
+                mov.getMonto(), 
+                mov.getTipoMontoP(), 
+                mov.getTipoMontoR(), 
+                mov.getFlete(), 
+                mov.getTipoFleteP(), 
+                mov.getTipoFleteR(), 
+                mov.getFleteDestinoOrigen(), 
+                mov.getRepresentante(), 
+                mov.getCuentaCorriente(), 
+                mov.getObservaciones()
+            };
+            tablaModelo.addRow(objeto);
+        }
+    } else {
+        // Manejo caso donde no hay datos para mostrar
+        System.out.println("No hay datos para mostrar en la tabla.");
+    }
+}
+
+
+
+
 
     private void btnRemitoTablaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemitoTablaActionPerformed
 
@@ -2886,6 +2915,13 @@ public class Principal extends javax.swing.JFrame {
     private void cbCuentaCorrienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbCuentaCorrienteActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_cbCuentaCorrienteActionPerformed
+
+    private void btnBuscarClienteYDestinoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarClienteYDestinoActionPerformed
+         String texto = txtFiltroCliente.getText();
+       List<Movimientos> movimientosFiltrados = control.getMovimientos(texto);
+        
+    actualizarTablaMovimientos(movimientosFiltrados);
+    }//GEN-LAST:event_btnBuscarClienteYDestinoActionPerformed
     private PNuevoCliente ventanaCliente;
     /**
      * @param args the command line arguments
@@ -2926,6 +2962,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JPanel PanelBusquedas;
     private javax.swing.JButton btnAgregar;
     private javax.swing.JButton btnAgregarCliente;
+    private javax.swing.JButton btnBuscarClienteYDestino;
     private javax.swing.JButton btnEliminarMovimiento;
     private javax.swing.JButton btnGenerarRemito;
     private javax.swing.JButton btnGenerarRemitoDuplicado;
@@ -2983,7 +3020,6 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JTextField txtContrarembolso;
     private javax.swing.JTextField txtDia;
     private javax.swing.JTextField txtFiltroCliente;
-    private javax.swing.JTextField txtFiltroRemito;
     private javax.swing.JTextField txtFlete;
     private javax.swing.JTextField txtMes;
     private javax.swing.JTextField txtMonto;

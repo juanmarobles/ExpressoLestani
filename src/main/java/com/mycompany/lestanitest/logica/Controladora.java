@@ -402,6 +402,15 @@ public class Controladora {
         ctrl.borrarDestino(idDestino);
     }
 
+    public List<Movimientos> getMovimientos(String texto) {
+       return ctrl.getMovimientos(texto);
+        
+    }
+
+    public List<Movimientos> getMovimientos() {
+    return ctrl.getMovimientos();   
+    }
+
 }
 
 //control fechas rev tecnica y ruta

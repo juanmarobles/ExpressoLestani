@@ -231,7 +231,7 @@ public class ControladoraPersistencia {
      * ----------------------------------------------MOSTRAR----------------------------------------------------------------
      */
     public List<Movimientos> traerMovimientos() {
-        return movJpa.findMovimientosEntities();
+        return movJpa.getMovimientos();
     }
 
     /**
@@ -311,6 +311,16 @@ public class ControladoraPersistencia {
             Logger.getLogger(ControladoraPersistencia.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+
+        public List<Movimientos> getMovimientos(String texto) {
+            return clienteJpa.getMovimientos(texto);
+        }
+
+    public List<Movimientos> getMovimientos() {
+     return clienteJpa.getMovimientos();   
+    }
+    }
     /**
      * ----------------------------------------------BORRAR-----------------------------------------------------------------
      * public void borrarCliente(int idCliente) { try {
@@ -327,4 +337,4 @@ public class ControladoraPersistencia {
      * null, ex); }
      */
 
-}
+

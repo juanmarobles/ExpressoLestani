@@ -13,6 +13,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
@@ -137,6 +138,20 @@ public class MovimientosJpaController implements Serializable {
             return ((Long) q.getSingleResult()).intValue();
         } finally {
             em.close();
+        }
+    }
+
+   public List<Movimientos> getMovimientos() {
+        EntityManager em = getEntityManager(); // Aquí utilizamos tu EntityManager
+
+        try {
+            String jpql = "SELECT m FROM Movimientos m ORDER BY m.id_movimientos DESC";
+            TypedQuery<Movimientos> query = em.createQuery(jpql, Movimientos.class)
+                    .setMaxResults(500); 
+
+            return query.getResultList();
+        } finally {
+            em.close(); 
         }
     }
 
