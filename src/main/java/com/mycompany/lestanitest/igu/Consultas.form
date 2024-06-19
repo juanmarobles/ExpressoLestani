@@ -118,8 +118,8 @@
                                           <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
                                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                               <Component id="jLabel22" pref="140" max="32767" attributes="0"/>
-                                              <Component id="btnBuscarRemito" alignment="0" min="-2" pref="95" max="-2" attributes="0"/>
                                               <Component id="txtBusquedaRemito" alignment="0" max="32767" attributes="0"/>
+                                              <Component id="btnBuscarRemito" alignment="0" min="-2" pref="111" max="-2" attributes="0"/>
                                           </Group>
                                       </Group>
                                   </Group>
@@ -183,11 +183,11 @@
                                   <Component id="jPanel4" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
                               </Group>
+                              <Group type="102" alignment="1" attributes="0">
+                                  <Component id="jPanel6" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                              </Group>
                           </Group>
-                      </Group>
-                      <Group type="102" alignment="1" attributes="0">
-                          <Component id="jPanel6" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <Component id="jScrollPane1" min="-2" pref="609" max="-2" attributes="0"/>
@@ -715,28 +715,28 @@
                               </Group>
                               <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="txtDiaD" pref="38" max="32767" attributes="0"/>
-                                  <Component id="txtDiaH" max="32767" attributes="0"/>
+                                  <Component id="txtDiaD" min="-2" pref="52" max="-2" attributes="0"/>
+                                  <Component id="txtDiaH" pref="0" max="32767" attributes="0"/>
                               </Group>
-                              <EmptySpace min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="jLabel17" alignment="1" min="-2" max="-2" attributes="0"/>
                                   <Component id="jLabel19" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="txtMesD" pref="30" max="32767" attributes="0"/>
-                                  <Component id="txtMesH" max="32767" attributes="0"/>
+                                  <Component id="txtMesD" min="-2" pref="52" max="-2" attributes="0"/>
+                                  <Component id="txtMesH" pref="0" max="32767" attributes="0"/>
                               </Group>
-                              <EmptySpace min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="jLabel20" min="-2" max="-2" attributes="0"/>
                                   <Component id="jLabel18" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace min="-2" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="txtAnioD" min="-2" pref="50" max="-2" attributes="0"/>
-                                  <Component id="txtAnioH" pref="0" max="32767" attributes="0"/>
+                                  <Component id="txtAnioH" pref="50" max="32767" attributes="0"/>
+                                  <Component id="txtAnioD" pref="0" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace min="0" pref="50" max="32767" attributes="0"/>
                           </Group>
