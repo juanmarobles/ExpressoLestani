@@ -228,7 +228,7 @@ public class HojaDeRuta extends javax.swing.JFrame {
         boolean mostrarContado = cbContado.isSelected();
         boolean mostrarTodos = cbTodos.isSelected();
 
-        List<Movimientos> listaMovimientos = control.traerMovimientos();
+        List<Movimientos> listaMovimientos = control.getMovimientos();
         List<Movimientos> listaFiltrada;
 
         if (mostrarTodos) {
@@ -386,8 +386,7 @@ public class HojaDeRuta extends javax.swing.JFrame {
 
     //llenar vehiculo
     private void llenarVehiculo() {
-        ModeloVehiculo modVehiculo = new ModeloVehiculo();
-        ArrayList<Vehiculo> listaVehiculo = modVehiculo.getVehiculos();
+        List<Vehiculo> listaVehiculo = control.getVehiculos();
         cbVehiculo.removeAllItems(); // Limpiar los elementos existentes en el ComboBox
 
         // Agregar los nuevos elementos del ArrayList al ComboBox
@@ -429,8 +428,8 @@ public class HojaDeRuta extends javax.swing.JFrame {
     //llenar chofer
 
     private void llenarChofer() {
-        ModeloRepresentante modRepre = new ModeloRepresentante();
-        ArrayList<Representantes> listaRepresentantes = modRepre.getRepresentantes();
+        List<Representantes> listaRepresentantes = control.getRepresentantes();
+
         cbChofer.setEditable(true);
 
         // Agregar los clientes al combobox
@@ -971,9 +970,9 @@ public class HojaDeRuta extends javax.swing.JFrame {
     }//GEN-LAST:event_cbVehiculoActionPerformed
 
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
-        HojaDeRuta pn = new HojaDeRuta();
-        pn.setVisible(true);
-        dispose();
+       List<Movimientos> movimientosFiltrados = control.getMovimientos();
+        
+        mostrarTablaMovimientos(movimientosFiltrados);
     }//GEN-LAST:event_btnActualizarActionPerformed
 
     public List<Movimientos> filtrarPorFecha(List<Movimientos> objetos, String fechaSeleccionada) {

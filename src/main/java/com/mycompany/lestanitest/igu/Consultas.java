@@ -1546,7 +1546,7 @@ public class Consultas extends javax.swing.JFrame {
         if (!botonMostrarPresionado) {
             return;
         }
-        List<Movimientos> movimientosFiltrados = control.traerMovimientosVistaConsultas();
+        List<Movimientos> movimientosFiltrados = control.getMovimientosVistaConsultas();
 
         // Obtener el cliente seleccionado
         Object clienteSeleccionado = cbClientes.getSelectedItem();
@@ -2182,7 +2182,7 @@ public class Consultas extends javax.swing.JFrame {
         tablaConsultas.setRowSorter(sorter);
         sorter.setSortKeys(java.util.Arrays.asList(new RowSorter.SortKey(1, SortOrder.DESCENDING)));
         //carga de los datos desde la bd
-        List<Movimientos> listaMovimientos = control.traerMovimientos();
+        List<Movimientos> listaMovimientos = control.getMovimientosVistaConsultas();
         // Ordenar los datos por el ID en forma descendente
         Collections.sort(listaMovimientos, Comparator.comparingInt(Movimientos::getId_movimientos).reversed());
 

@@ -334,6 +334,10 @@ public class ControladoraPersistencia {
         return movJpa.getMovimientosConsulta();
     }
 
+    public List<Vehiculo> getVehiculos() {
+        return vehiculoJpa.findVehiculoEntities();
+    }
+
    
     }
     /**

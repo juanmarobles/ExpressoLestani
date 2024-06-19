@@ -419,8 +419,12 @@ public class Controladora {
         return ctrl.getRepresentantes();
     }
 
-    public List<Movimientos> traerMovimientosVistaConsultas() {
+    public List<Movimientos> getMovimientosVistaConsultas() {
         return ctrl.getMovimientoConsulta();
+    }
+
+    public List<Vehiculo> getVehiculos() {
+        return ctrl.getVehiculos();
     }
 
 }
