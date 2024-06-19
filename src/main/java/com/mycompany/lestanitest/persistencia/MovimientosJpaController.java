@@ -170,6 +170,19 @@ public class MovimientosJpaController implements Serializable {
     } finally {
         em.close();
     }
+    
+    }
+     public List<Movimientos> getMovimientosConsulta(Date fecha) {
+           EntityManager em = getEntityManager();
+    
+    try {
+        String jpql = "SELECT m FROM Movimientos m WHERE m.fecha >= :fecha ORDER BY m.fecha DESC";
+        TypedQuery<Movimientos> query = em.createQuery(jpql, Movimientos.class);
+        query.setParameter("fecha", fecha);
+        return query.getResultList();
+    } finally {
+        em.close();
+    }
     }
    
 

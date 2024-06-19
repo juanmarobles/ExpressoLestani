@@ -335,6 +335,10 @@ public class ControladoraPersistencia {
     public List<Movimientos> getMovimientoConsulta(Date fechaDesde, Date fechaHasta) {
         return movJpa.getMovimientosConsulta(fechaDesde,fechaHasta);
     }
+    
+     public List<Movimientos> getMovimientoConsulta(Date fecha) {
+        return movJpa.getMovimientosConsulta(fecha);
+    }
 
     public List<Vehiculo> getVehiculos() {
         return vehiculoJpa.findVehiculoEntities();

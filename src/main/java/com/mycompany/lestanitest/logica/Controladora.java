@@ -423,6 +423,9 @@ public class Controladora {
     public List<Movimientos> getMovimientosVistaConsultas(Date fechaDesde, Date fechaHasta) {
         return ctrl.getMovimientoConsulta(fechaDesde,fechaHasta);
     }
+    public List<Movimientos> getMovimientosVistaConsultas(Date fecha) {
+        return ctrl.getMovimientoConsulta(fecha);
+    }
 
     public List<Vehiculo> getVehiculos() {
         return ctrl.getVehiculos();

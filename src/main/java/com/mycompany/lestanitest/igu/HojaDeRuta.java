@@ -49,6 +49,7 @@ import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -203,7 +204,7 @@ public class HojaDeRuta extends javax.swing.JFrame {
         });
     }
 
-    private void aplicarFiltros() {
+    private void aplicarFiltros(Date fecha) {
         // Verificar si se ha presionado el botón "Mostrar"
         if (!botonMostrarPresionado) {
             return;
@@ -225,7 +226,7 @@ public class HojaDeRuta extends javax.swing.JFrame {
         boolean mostrarContado = cbContado.isSelected();
         boolean mostrarTodos = cbTodos.isSelected();
 
-        List<Movimientos> listaMovimientos = control.getMovimientos();
+        List<Movimientos> listaMovimientos = control.getMovimientosVistaConsultas(fecha);
         List<Movimientos> listaFiltrada;
 
         if (mostrarTodos) {
@@ -946,7 +947,18 @@ public class HojaDeRuta extends javax.swing.JFrame {
     private void btnMostrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarActionPerformed
 
         botonMostrarPresionado = true;
-        aplicarFiltros();
+        
+        int diaD = Integer.parseInt(txtDia.getText());
+    int mesD = Integer.parseInt(txtMes.getText());
+    int anioD = Integer.parseInt(txtAnio.getText());
+
+    // Crear una instancia de LocalDate y convertir a Date con hora 00:00
+    LocalDate fecha = LocalDate.of(anioD, mesD, diaD);
+    Date fechaArmada = Date.from(fecha.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+    
+
+    aplicarFiltros(fechaArmada);
 
     }//GEN-LAST:event_btnMostrarActionPerformed
 
