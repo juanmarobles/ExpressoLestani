@@ -330,6 +330,10 @@ public class ControladoraPersistencia {
         return representanteJpa.findRepresentantesEntities();
     }
 
+    public List<Movimientos> getMovimientoConsulta() {
+        return movJpa.getMovimientosConsulta();
+    }
+
    
     }
     /**

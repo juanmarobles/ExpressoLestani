@@ -419,6 +419,10 @@ public class Controladora {
         return ctrl.getRepresentantes();
     }
 
+    public List<Movimientos> traerMovimientosVistaConsultas() {
+        return ctrl.getMovimientoConsulta();
+    }
+
 }
 
 //control fechas rev tecnica y ruta

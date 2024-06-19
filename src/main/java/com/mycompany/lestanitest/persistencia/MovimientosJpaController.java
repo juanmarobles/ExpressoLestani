@@ -142,12 +142,25 @@ public class MovimientosJpaController implements Serializable {
     }
 
    public List<Movimientos> getMovimientos() {
-        EntityManager em = getEntityManager(); // Aquí utilizamos tu EntityManager
+        EntityManager em = getEntityManager(); 
 
         try {
             String jpql = "SELECT m FROM Movimientos m ORDER BY m.id_movimientos DESC";
             TypedQuery<Movimientos> query = em.createQuery(jpql, Movimientos.class)
                     .setMaxResults(500); 
+
+            return query.getResultList();
+        } finally {
+            em.close(); 
+        }
+    }
+    public List<Movimientos> getMovimientosConsulta() {
+        EntityManager em = getEntityManager(); 
+
+        try {
+            String jpql = "SELECT m FROM Movimientos m ORDER BY m.id_movimientos DESC";
+            TypedQuery<Movimientos> query = em.createQuery(jpql, Movimientos.class)
+                    .setMaxResults(2000); 
 
             return query.getResultList();
         } finally {

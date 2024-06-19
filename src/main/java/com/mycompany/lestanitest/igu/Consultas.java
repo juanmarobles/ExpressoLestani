@@ -120,6 +120,7 @@ public class Consultas extends javax.swing.JFrame {
     private SimpleDateFormat sdf;
     private String montoTotalImpreso;
     private String fleteTotalImpreso;
+    List<Cliente> listaClientes = control.traerClientes();
     //Nuevo
     // private List<Movimientos> listaFiltrada;
 
@@ -247,8 +248,7 @@ public class Consultas extends javax.swing.JFrame {
 
     }
 
-    ModeloCliente modClientes = new ModeloCliente();
-    ArrayList<Cliente> listaClientes = modClientes.getClientes();
+   
 
     private static void mostrarResultadosBusqueda(JComboBox<String> combobox, String textoBusqueda) {
         // Limpiar selección previa
@@ -289,8 +289,7 @@ public class Consultas extends javax.swing.JFrame {
     }
 
     private void cargarClientes() {
-        ModeloCliente modClientes = new ModeloCliente();
-        ArrayList<Cliente> listaClientes = modClientes.getClientes();
+     
 
         cbClientes.setEditable(true);
 
@@ -400,8 +399,6 @@ public class Consultas extends javax.swing.JFrame {
         
     }
     private void cargarDestino() {
-        ModeloCliente modClientes = new ModeloCliente();
-        ArrayList<Cliente> listaClientes = modClientes.getClientes();
 
         cbDestinos.setEditable(true);
 
@@ -506,9 +503,8 @@ public class Consultas extends javax.swing.JFrame {
     }
 
     private void cargarRepresentantes() {
-       ModeloRepresentante modRepre = new ModeloRepresentante();
-        ArrayList<Representantes> listaRepresentantes = modRepre.getRepresentantes();
-        
+       List<Representantes> listaRepresentantes = control.getRepresentantes();
+
         cbRepresentantes.setEditable(true);
         
         
@@ -690,6 +686,7 @@ public class Consultas extends javax.swing.JFrame {
         ccTodos = new javax.swing.JRadioButton();
         jLabel22 = new javax.swing.JLabel();
         txtBusquedaRemito = new javax.swing.JTextField();
+        btnBuscarRemito = new javax.swing.JButton();
 
         jRadioButton1.setText("jRadioButton1");
 
@@ -1021,7 +1018,7 @@ public class Consultas extends javax.swing.JFrame {
                             .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtDiaD, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
+                            .addComponent(txtDiaD)
                             .addComponent(txtDiaH))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1029,7 +1026,7 @@ public class Consultas extends javax.swing.JFrame {
                             .addComponent(jLabel19))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtMesD, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
+                            .addComponent(txtMesD)
                             .addComponent(txtMesH))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1393,6 +1390,17 @@ public class Consultas extends javax.swing.JFrame {
             }
         });
 
+        btnBuscarRemito.setBackground(new java.awt.Color(51, 51, 51));
+        btnBuscarRemito.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        btnBuscarRemito.setForeground(new java.awt.Color(255, 255, 255));
+        btnBuscarRemito.setText("Buscar");
+        btnBuscarRemito.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnBuscarRemito.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarRemitoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -1446,8 +1454,11 @@ public class Consultas extends javax.swing.JFrame {
                                         .addGap(18, 18, 18)
                                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(txtBusquedaRemito, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jLabel22, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1585, Short.MAX_VALUE))))
+                                            .addComponent(jLabel22, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addGap(19, 19, 19)
+                                                .addComponent(btnBuscarRemito))))))
+                            .addComponent(jScrollPane1))))
                 .addGap(14, 14, 14))
         );
         jPanel1Layout.setVerticalGroup(
@@ -1476,9 +1487,11 @@ public class Consultas extends javax.swing.JFrame {
                         .addComponent(jLabel22)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(txtBusquedaRemito, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnBuscarRemito, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 4, Short.MAX_VALUE)
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
@@ -1489,7 +1502,7 @@ public class Consultas extends javax.swing.JFrame {
                             .addComponent(jPanel6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(11, 11, 11))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(24, 24, 24)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)))
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 609, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1533,7 +1546,7 @@ public class Consultas extends javax.swing.JFrame {
         if (!botonMostrarPresionado) {
             return;
         }
-        List<Movimientos> movimientosFiltrados = control.traerMovimientos();
+        List<Movimientos> movimientosFiltrados = control.traerMovimientosVistaConsultas();
 
         // Obtener el cliente seleccionado
         Object clienteSeleccionado = cbClientes.getSelectedItem();
@@ -1999,9 +2012,8 @@ public class Consultas extends javax.swing.JFrame {
         txtTotalMonto.setText("");
         txtTotalFlete.setText("");
         txtCantBultos.setText("");*/
-        dispose();
-        Consultas con = new Consultas();
-        con.setVisible(true);
+         List<Movimientos> movimientosFiltrados = control.getMovimientos();
+       actualizarTablaMovimientos(movimientosFiltrados);
 
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
@@ -2050,7 +2062,8 @@ public class Consultas extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void txtBusquedaRemitoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBusquedaRemitoKeyTyped
-        txtBusquedaRemito.addKeyListener(new KeyAdapter() {
+       
+        /*txtBusquedaRemito.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
                 trs.setRowFilter(RowFilter.regexFilter("(?i)" + txtBusquedaRemito.getText(), 5));
@@ -2059,7 +2072,52 @@ public class Consultas extends javax.swing.JFrame {
         });
         trs = new TableRowSorter(tablaConsultas.getModel());
         tablaConsultas.setRowSorter(trs);
+        */
     }//GEN-LAST:event_txtBusquedaRemitoKeyTyped
+
+    private void btnBuscarRemitoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarRemitoActionPerformed
+          String texto = txtBusquedaRemito.getText();
+       List<Movimientos> movimientosFiltrados = control.getMovimientos(texto);
+        
+    actualizarTablaMovimientos(movimientosFiltrados);
+    }//GEN-LAST:event_btnBuscarRemitoActionPerformed
+    private void actualizarTablaMovimientos(List<Movimientos> movimientos) {
+    DefaultTableModel tablaModelo = (DefaultTableModel) tablaConsultas.getModel();
+    tablaModelo.setRowCount(0); // Limpiar filas existentes
+
+    if (movimientos != null && !movimientos.isEmpty()) {
+        // Ordenar los datos por el ID en forma descendente
+        Collections.sort(movimientos, Comparator.comparingInt(Movimientos::getId_movimientos).reversed());
+
+        // Agregar datos a la tabla
+        for (Movimientos mov : movimientos) {
+            Object[] objeto = {
+                mov.getId_movimientos(), 
+                mov.getHora(), 
+                mov.getFechaFormateada(), 
+                mov.getCliente(), 
+                mov.getDestino(), 
+                mov.getRemito(), 
+                mov.getBultos(), 
+                mov.getMonto(), 
+                mov.getTipoMontoP(), 
+                mov.getTipoMontoR(), 
+                mov.getFlete(), 
+                mov.getTipoFleteP(), 
+                mov.getTipoFleteR(), 
+                mov.getFleteDestinoOrigen(), 
+                mov.getRepresentante(), 
+                mov.getCuentaCorriente(), 
+                mov.getObservaciones()
+            };
+            tablaModelo.addRow(objeto);
+        }
+    } else {
+        // Manejo caso donde no hay datos para mostrar
+        System.out.println("No hay datos para mostrar en la tabla.");
+    }
+}
+    
     private void cambiarValorFlete(double nuevoMontoFlete) {
         int[] filasSeleccionadas = tablaConsultas.getSelectedRows(); // Obtener índices de las filas seleccionadas
         String nuevoValorFleteTexto = txtFleteCambio.getText().trim(); // Obtener el nuevo valor del campo de texto
@@ -2215,6 +2273,7 @@ public class Consultas extends javax.swing.JFrame {
     private javax.swing.ButtonGroup Grupo1;
     private javax.swing.ButtonGroup Grupo2;
     private javax.swing.ButtonGroup Grupo3;
+    private javax.swing.JButton btnBuscarRemito;
     private javax.swing.JButton btnCambiar;
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnImprimir;
