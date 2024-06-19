@@ -111,7 +111,8 @@ public class Recibos extends javax.swing.JFrame {
     private String cliente;
     private String fechaDesde;
     private String fechaHasta;
-   
+       List<Cliente> listaClientes = control.traerClientes();
+
     private List<Movimientos> listaFiltrada;
     private int numeroRecibo = 0;
     private Set<Integer> recibosEliminados = new HashSet<>();
@@ -562,8 +563,7 @@ private void aplicarCambiosSegunCheckBox() {
 
     //LLENAR TEXTFIELD CLIENTES
     private void cargarClientes() {
-        ModeloCliente modClientes = new ModeloCliente();
-        ArrayList<Cliente> listaClientes = modClientes.getClientes();
+        
         AutoCompleteDecorator.decorate(txtCliente, listaClientes, false);
 
         // Agregar un listener al textfield del cliente
@@ -576,11 +576,10 @@ private void aplicarCambiosSegunCheckBox() {
     }
 
     private void actualizarLocalidad() {
-        // Carga de los datos desde la base de datos
-        List<Cliente> listaC = control.traerClientes();
+  
         // Buscar el cliente correspondiente en la lista
         String nombreCliente = txtCliente.getText().trim().toLowerCase();
-        for (Cliente cliente : listaC) {
+        for (Cliente cliente : listaClientes) {
             if (cliente.getNombre().toLowerCase().equals(nombreCliente)) {
                 clienteSeleccionado = cliente;
                 // Mostrar la localidad en el textfield correspondiente

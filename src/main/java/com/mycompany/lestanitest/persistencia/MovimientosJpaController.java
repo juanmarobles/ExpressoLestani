@@ -7,6 +7,8 @@ package com.mycompany.lestanitest.persistencia;
 import com.mycompany.lestanitest.logica.Movimientos;
 import com.mycompany.lestanitest.persistencia.exceptions.NonexistentEntityException;
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -154,18 +156,21 @@ public class MovimientosJpaController implements Serializable {
             em.close(); 
         }
     }
-    public List<Movimientos> getMovimientosConsulta() {
-        EntityManager em = getEntityManager(); 
-
-        try {
-            String jpql = "SELECT m FROM Movimientos m ORDER BY m.id_movimientos DESC";
-            TypedQuery<Movimientos> query = em.createQuery(jpql, Movimientos.class)
-                    .setMaxResults(2000); 
-
-            return query.getResultList();
-        } finally {
-            em.close(); 
-        }
+   
+    public List<Movimientos> getMovimientosConsulta(Date fechaDesde, Date fechaHasta) {
+           EntityManager em = getEntityManager();
+    
+    try {
+        String jpql = "SELECT m FROM Movimientos m WHERE m.fecha >= :fechaDesde AND m.fecha <= :fechaHasta ORDER BY m.fecha DESC";
+        TypedQuery<Movimientos> query = em.createQuery(jpql, Movimientos.class);
+        query.setParameter("fechaDesde", fechaDesde);
+        query.setParameter("fechaHasta", fechaHasta);
+        
+        return query.getResultList();
+    } finally {
+        em.close();
     }
+    }
+   
 
 }

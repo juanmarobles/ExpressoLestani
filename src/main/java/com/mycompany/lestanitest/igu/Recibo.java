@@ -54,6 +54,7 @@ import javax.swing.border.LineBorder;
 public class Recibo extends javax.swing.JFrame {
 
     Controladora control = new Controladora();
+    List<Cliente> listaClientes = control.traerClientes();
 
     /**
      * Creates new form Recibo
@@ -186,8 +187,7 @@ public class Recibo extends javax.swing.JFrame {
         });     
     }
     
-    ModeloCliente modClientes = new ModeloCliente();
-    ArrayList<Cliente> listaClientes = modClientes.getClientes();
+    
     
 
     /// Método para inicializar y cargar clientes en el ComboBox

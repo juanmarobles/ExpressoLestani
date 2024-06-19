@@ -255,8 +255,8 @@ public class HDDRepresentantes extends javax.swing.JFrame {
     }
 
     private void cargarRepresentantes() {
-        ModeloRepresentante modRepre = new ModeloRepresentante();
-        ArrayList<Representantes> listaRepresentantes = modRepre.getRepresentantes();
+          List<Representantes> listaRepresentantes = control.getRepresentantes();
+          
         cbRepresentantes.setEditable(true);
         // Ordenar la lista de clientes alfabéticamente por el nombre
         listaRepresentantes.sort((representante1, representante2) -> representante1.getNombre().compareToIgnoreCase(representante2.getNombre()));
@@ -312,8 +312,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
     
      // Método para realizar la búsqueda
     private void realizarBusquedaRepresentantes() {
-        ModeloRepresentante modRepre = new ModeloRepresentante();
-        ArrayList<Representantes> listaRepresentantes = modRepre.getRepresentantes();
+         List<Representantes> listaRepresentantes = control.getRepresentantes();
         // Obtener el texto ingresado por el usuario
         String textoBusqueda = cbRepresentantes.getEditor().getItem().toString().toUpperCase();
 
@@ -365,6 +364,8 @@ public class HDDRepresentantes extends javax.swing.JFrame {
 
     //llenar vehiculo
     private void llenarVehiculo() {
+         List<Vehiculo> listaVehiculo = control.getVehiculos();
+
         cbVehiculo.removeAllItems(); // Limpiar los elementos existentes en el ComboBox
 
         // Agregar los nuevos elementos del ArrayList al ComboBox

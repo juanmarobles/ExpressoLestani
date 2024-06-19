@@ -12,6 +12,8 @@ import com.mycompany.lestanitest.persistencia.RepresentantesJpaController;
 import com.mycompany.lestanitest.persistencia.ServiciosJpaController;
 import com.mycompany.lestanitest.persistencia.VehiculoJpaController;
 import com.mycompany.lestanitest.persistencia.exceptions.NonexistentEntityException;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -330,8 +332,8 @@ public class ControladoraPersistencia {
         return representanteJpa.findRepresentantesEntities();
     }
 
-    public List<Movimientos> getMovimientoConsulta() {
-        return movJpa.getMovimientosConsulta();
+    public List<Movimientos> getMovimientoConsulta(Date fechaDesde, Date fechaHasta) {
+        return movJpa.getMovimientosConsulta(fechaDesde,fechaHasta);
     }
 
     public List<Vehiculo> getVehiculos() {
