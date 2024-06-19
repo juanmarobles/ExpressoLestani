@@ -411,6 +411,14 @@ public class Controladora {
     return ctrl.getMovimientos();   
     }
 
+    public List<Servicios> getServicios() {
+       return ctrl.getServicios();
+    }
+
+    public List<Representantes> getRepresentantes() {
+        return ctrl.getRepresentantes();
+    }
+
 }
 
 //control fechas rev tecnica y ruta

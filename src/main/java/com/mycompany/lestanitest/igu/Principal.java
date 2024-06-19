@@ -180,7 +180,8 @@ public class Principal extends javax.swing.JFrame {
     private Cliente destinatario;
     private Movimientos movimientoSeleccionado;
     private Servicios servicioSeleccionado;
-    
+    List<Cliente> listaClientes = control.traerClientes();
+
     
     int numeroRemito = 0;
     private int idSeleccionado = -1; // Inicializado con un valor negativo para indicar que no se ha seleccionado ningún movimiento.    
@@ -537,8 +538,7 @@ public class Principal extends javax.swing.JFrame {
         }
     }
 
-    ModeloCliente modClientes = new ModeloCliente();
-    ArrayList<Cliente> listaClientes = modClientes.getClientes();
+ 
     
  
     
@@ -585,8 +585,7 @@ public class Principal extends javax.swing.JFrame {
     }
 */
     private void cargarDestinos() {
-         ModeloCliente modClientes = new ModeloCliente();
-        listaClientes = modClientes.getClientes();
+      
 
         cbDestinos.setEditable(true);
 
@@ -700,19 +699,9 @@ public class Principal extends javax.swing.JFrame {
             }
         }
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
     private void cargarServicios() {
-        ModeloServicio modServ = new ModeloServicio();
-        ArrayList<Servicios> listaServ = modServ.getServicios();
+        List<Servicios> listaServ = control.getServicios();
         cbServicios.setEditable(true);
         // Ordenar la lista de clientes alfabéticamente por el nombre
         listaServ.sort((servicio1, servicio2) -> servicio1.getServicio().compareToIgnoreCase(servicio2.getServicio()));
@@ -750,8 +739,7 @@ public class Principal extends javax.swing.JFrame {
     }
 
     private void cargarRepresentantes() {
-        ModeloRepresentante modRepre = new ModeloRepresentante();
-        ArrayList<Representantes> listaRepresentantes = modRepre.getRepresentantes();
+       List<Representantes> listaRepresentantes = control.getRepresentantes();
         
         cbRepresentantes.setEditable(true);
         
@@ -806,8 +794,7 @@ public class Principal extends javax.swing.JFrame {
     
     // Método para realizar la búsqueda
     private void realizarBusquedaRepresentantes() {
-        ModeloRepresentante modRepre = new ModeloRepresentante();
-        ArrayList<Representantes> listaRepresentantes = modRepre.getRepresentantes();
+       List<Representantes> listaRepresentantes = control.getRepresentantes();
         // Obtener el texto ingresado por el usuario
         String textoBusqueda = cbRepresentantes.getEditor().getItem().toString().toUpperCase();
 
@@ -857,10 +844,6 @@ public class Principal extends javax.swing.JFrame {
     
    // Método para inicializar y cargar clientes en el ComboBox
     private void cargarClientes() {
-
-        ModeloCliente modClientes = new ModeloCliente();
-        listaClientes = modClientes.getClientes();
-
         cbClientes.setEditable(true);
 
         // Ordenar la lista de clientes alfabéticamente por el nombre
@@ -3054,8 +3037,7 @@ private void actualizarTablaMovimientos(List<Movimientos> movimientos) {
 
         Document document = new Document();
 
-        ModeloCliente modClientes = new ModeloCliente();
-        ArrayList<Cliente> listaClientes = modClientes.getClientes();
+      
 
         String clienteSelect = clientee;
         String destinoSelect = destinoo;

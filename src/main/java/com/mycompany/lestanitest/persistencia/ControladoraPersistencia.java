@@ -320,6 +320,17 @@ public class ControladoraPersistencia {
     public List<Movimientos> getMovimientos() {
      return clienteJpa.getMovimientos();   
     }
+
+    public List<Servicios> getServicios() {
+        return servicioJpa.findServiciosEntities();
+    }
+
+
+    public List<Representantes> getRepresentantes() {
+        return representanteJpa.findRepresentantesEntities();
+    }
+
+   
     }
     /**
      * ----------------------------------------------BORRAR-----------------------------------------------------------------
