@@ -172,7 +172,7 @@ public class Login extends javax.swing.JFrame {
 
                 VentanaPrincipal pr = new VentanaPrincipal();
                 pr.setVisible(true);
-                pr.setLocationRelativeTo(null);
+                //pr.setLocationRelativeTo(null);
             
             } else {
                 JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos", "Error de inicio de sesión", JOptionPane.ERROR_MESSAGE);
