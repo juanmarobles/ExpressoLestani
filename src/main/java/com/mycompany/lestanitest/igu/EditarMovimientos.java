@@ -6,9 +6,6 @@ package com.mycompany.lestanitest.igu;
 
 import com.mycompany.lestanitest.logica.Cliente;
 import com.mycompany.lestanitest.logica.Controladora;
-import com.mycompany.lestanitest.logica.ModeloCliente;
-import com.mycompany.lestanitest.logica.ModeloRepresentante;
-import com.mycompany.lestanitest.logica.ModeloServicio;
 
 import com.mycompany.lestanitest.logica.Movimientos;
 import com.mycompany.lestanitest.logica.Representantes;
@@ -32,6 +29,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -50,12 +48,12 @@ import javax.swing.border.LineBorder;
  */
 public class EditarMovimientos extends javax.swing.JFrame {
 
-    Controladora control = null;
+    Controladora control = new Controladora();
     Movimientos mov = new Movimientos();
     SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/YYYY");
+    List<Cliente> listaClientes = control.traerClientes();
 
     public EditarMovimientos(int idMovimiento) {
-        control = new Controladora();
         initComponents();
         cargarClientes();
         cargarDestinos();
@@ -187,12 +185,10 @@ public class EditarMovimientos extends javax.swing.JFrame {
             }
         }
     }
-     ModeloCliente modClientes = new ModeloCliente();
-    ArrayList<Cliente> listaClientes = modClientes.getClientes();
+   
 
     private void cargarDestinos() {
-        ModeloCliente modClientes = new ModeloCliente();
-        ArrayList<Cliente> listaClientes = modClientes.getClientes();
+     
 
         cbDestinos.setEditable(true);
 
@@ -363,8 +359,7 @@ public class EditarMovimientos extends javax.swing.JFrame {
     }
 
     private void cargarServicios() {
-        ModeloServicio modServ = new ModeloServicio();
-        ArrayList<Servicios> listaServ = modServ.getServicios();
+        List<Servicios> listaServ = control.getServicios();
         cbServicios.setEditable(true);
          // Ordenar la lista de clientes alfabéticamente por el nombre
         listaServ.sort((servicio1, servicio2) -> servicio1.getServicio().compareToIgnoreCase(servicio2.getServicio()));
@@ -404,8 +399,8 @@ public class EditarMovimientos extends javax.swing.JFrame {
     }
 
     private void cargarRepresentantes() {
-        ModeloRepresentante modRepre = new ModeloRepresentante();
-        ArrayList<Representantes> listaRepresentantes = modRepre.getRepresentantes();
+               List<Representantes> listaRepresentantes = control.getRepresentantes();
+
         
         cbRepresentantes.setEditable(true);
         
@@ -464,8 +459,8 @@ public class EditarMovimientos extends javax.swing.JFrame {
     
     // Método para realizar la búsqueda
     private void realizarBusquedaRepresentantes() {
-        ModeloRepresentante modRepre = new ModeloRepresentante();
-        ArrayList<Representantes> listaRepresentantes = modRepre.getRepresentantes();
+      List<Representantes> listaRepresentantes = control.getRepresentantes();
+
         // Obtener el texto ingresado por el usuario
         String textoBusqueda = cbRepresentantes.getEditor().getItem().toString().toUpperCase();
 
@@ -509,9 +504,6 @@ public class EditarMovimientos extends javax.swing.JFrame {
     }
 
     private void cargarClientes() {
-
-        ModeloCliente modClientes = new ModeloCliente();
-        ArrayList<Cliente> listaClientes = modClientes.getClientes();
 
         cbClientes.setEditable(true);
 

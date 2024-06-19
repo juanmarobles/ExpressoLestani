@@ -4,7 +4,6 @@ import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
 import com.mycompany.lestanitest.logica.Controladora;
-import com.mycompany.lestanitest.logica.ModeloMovimientos;
 import com.mycompany.lestanitest.logica.Movimientos;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -23,8 +22,6 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.mycompany.lestanitest.logica.Cliente;
-import com.mycompany.lestanitest.logica.ModeloCliente;
-import com.mycompany.lestanitest.logica.ModeloRepresentante;
 import com.mycompany.lestanitest.logica.Representantes;
 import java.awt.Color;
 import java.awt.Desktop;
@@ -557,8 +554,8 @@ public class Consultas extends javax.swing.JFrame {
     }
      // Método para realizar la búsqueda
     private void realizarBusquedaRepresentantes() {
-        ModeloRepresentante modRepre = new ModeloRepresentante();
-        ArrayList<Representantes> listaRepresentantes = modRepre.getRepresentantes();
+         List<Representantes> listaRepresentantes = control.getRepresentantes();
+
         // Obtener el texto ingresado por el usuario
         String textoBusqueda = cbRepresentantes.getEditor().getItem().toString().toUpperCase();
 

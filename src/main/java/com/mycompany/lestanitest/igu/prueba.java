@@ -6,7 +6,6 @@ package com.mycompany.lestanitest.igu;
 
 import com.mycompany.lestanitest.logica.Cliente;
 import com.mycompany.lestanitest.logica.Controladora;
-import com.mycompany.lestanitest.logica.ModeloCliente;
 import com.mycompany.lestanitest.logica.Movimientos;
 import com.mycompany.lestanitest.logica.Servicios;
 import java.awt.BorderLayout;
@@ -16,6 +15,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -41,7 +41,8 @@ public class prueba extends javax.swing.JFrame {
     private Servicios servicioSeleccionado;
     int numeroRemito = 0;
     private int idSeleccionado = -1; // Inicializado con un valor negativo para indicar que no se ha seleccionado ningún movimiento.
-    
+        List<Cliente> listaClientes = control.traerClientes();
+
 
     /**
      * Creates new form prueba
@@ -124,8 +125,7 @@ public class prueba extends javax.swing.JFrame {
     }
     
    private void cargarClientes() {
-      ModeloCliente modClientes = new ModeloCliente();
-    ArrayList<Cliente> listaClientes = modClientes.getClientes();
+      
     
     cbClientes.setEditable(true);
 
@@ -183,7 +183,7 @@ public class prueba extends javax.swing.JFrame {
     });
 }
 
-private void mostrarResultadosBusqueda(JComboBox cb, ArrayList<Cliente> listaClientes, String textoBusqueda) {
+private void mostrarResultadosBusqueda(JComboBox cb, List<Cliente> listaClientes, String textoBusqueda) {
     DefaultComboBoxModel modelo = (DefaultComboBoxModel) cb.getModel();
     modelo.removeAllElements();
     for (Cliente cliente : listaClientes) {

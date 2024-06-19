@@ -7,7 +7,6 @@ package com.mycompany.lestanitest.igu;
 
 import com.mycompany.lestanitest.logica.Cliente;
 import com.mycompany.lestanitest.logica.Controladora;
-import com.mycompany.lestanitest.logica.ModeloCliente;
 import com.mycompany.lestanitest.logica.Movimientos;
 import java.awt.Color;
 import java.awt.event.ActionEvent;

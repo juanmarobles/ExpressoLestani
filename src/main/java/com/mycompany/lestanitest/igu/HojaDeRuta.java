@@ -22,10 +22,7 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfTemplate;
 import com.itextpdf.text.pdf.PdfWriter;
 import static com.mycompany.lestanitest.igu.HDDRepresentantes.fechaActual;
-
 import com.mycompany.lestanitest.logica.Controladora;
-import com.mycompany.lestanitest.logica.ModeloRepresentante;
-import com.mycompany.lestanitest.logica.ModeloVehiculo;
 import com.mycompany.lestanitest.logica.Movimientos;
 import com.mycompany.lestanitest.logica.Representantes;
 import com.mycompany.lestanitest.logica.Vehiculo;

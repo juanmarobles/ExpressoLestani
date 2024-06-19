@@ -23,9 +23,6 @@ import com.itextpdf.text.pdf.PdfWriter;
 
 import com.mycompany.lestanitest.logica.Cliente;
 import com.mycompany.lestanitest.logica.Controladora;
-import com.mycompany.lestanitest.logica.ModeloCliente;
-import com.mycompany.lestanitest.logica.ModeloRepresentante;
-import com.mycompany.lestanitest.logica.ModeloVehiculo;
 import com.mycompany.lestanitest.logica.Movimientos;
 import com.mycompany.lestanitest.logica.Representantes;
 import com.mycompany.lestanitest.logica.Vehiculo;

@@ -24,7 +24,6 @@ import com.itextpdf.text.pdf.PdfTemplate;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.mycompany.lestanitest.logica.Cliente;
 import com.mycompany.lestanitest.logica.Controladora;
-import com.mycompany.lestanitest.logica.ModeloCliente;
 import com.mycompany.lestanitest.logica.Movimientos;
 import java.awt.Desktop;
 import java.awt.event.ActionEvent;
