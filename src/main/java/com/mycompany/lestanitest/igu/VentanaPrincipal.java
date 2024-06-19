@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -34,6 +35,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         instancia = this;
         dateAlertAp = new DateAlertApp();
+        setIconImage(new ImageIcon(getClass().getResource("/imagenes/icono.png")).getImage());
+
     }
 
     public void mostrarAlertaFechaVencimiento(String mensaje) {

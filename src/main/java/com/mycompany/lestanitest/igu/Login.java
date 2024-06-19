@@ -8,6 +8,7 @@ import com.mycompany.lestanitest.logica.Controladora;
 import com.mycompany.lestanitest.logica.TextPrompt;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -32,6 +33,7 @@ public class Login extends javax.swing.JFrame {
         
         txtUsuario.addActionListener(createActionListener(btnIngresar));
         txtPassword.addActionListener(createActionListener(btnIngresar));
+        setIconImage(new ImageIcon(getClass().getResource("/imagenes/icono.png")).getImage());
 
 
     
