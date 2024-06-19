@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -55,6 +56,7 @@ public class EditarMovimientos extends javax.swing.JFrame {
 
     public EditarMovimientos(int idMovimiento) {
         initComponents();
+        setIconImage(new ImageIcon(getClass().getResource("/imagenes/icono.png")).getImage());
         cargarClientes();
         cargarDestinos();
         cargarRepresentantes();

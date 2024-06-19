@@ -8,6 +8,7 @@ import com.mycompany.lestanitest.logica.Controladora;
 import com.mycompany.lestanitest.logica.Representantes;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -24,6 +25,7 @@ public class EditarRepresentante extends javax.swing.JFrame {
     public EditarRepresentante(int idRepresentante) {
         control = new Controladora();
         initComponents();
+        setIconImage(new ImageIcon(getClass().getResource("/imagenes/icono.png")).getImage());
         txtNombre.addActionListener(createActionListener(btnEditar));
         txtDireccion.addActionListener(createActionListener(btnEditar));
         txtTelefono.addActionListener(createActionListener(btnEditar));

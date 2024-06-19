@@ -61,6 +61,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
@@ -102,6 +103,7 @@ public class HDDRepresentantes extends javax.swing.JFrame {
      */
     public HDDRepresentantes() {
         initComponents();
+        setIconImage(new ImageIcon(getClass().getResource("/imagenes/icono.png")).getImage());
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         llenarVehiculo();
         llenarChofer();

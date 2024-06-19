@@ -7,6 +7,7 @@ package com.mycompany.lestanitest.igu;
 import com.mycompany.lestanitest.logica.Controladora;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -25,6 +26,7 @@ public class NuevoServicio extends javax.swing.JFrame {
      */
     public NuevoServicio() {
         initComponents();
+        setIconImage(new ImageIcon(getClass().getResource("/imagenes/icono.png")).getImage());
         txtServicio.addActionListener(createActionListener(btnCargar));
         txtPrecio.addActionListener(createActionListener(btnCargar));
         txtDescripcion.addActionListener(createActionListener(btnCargar));

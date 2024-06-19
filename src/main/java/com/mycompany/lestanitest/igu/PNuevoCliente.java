@@ -8,6 +8,7 @@ import com.mycompany.lestanitest.logica.Controladora;
 import static java.awt.SystemColor.control;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -25,7 +26,7 @@ public class PNuevoCliente extends javax.swing.JFrame {
      */
     public PNuevoCliente() {
         initComponents();
-        
+        setIconImage(new ImageIcon(getClass().getResource("/imagenes/icono.png")).getImage());
         txtNombre.addActionListener(createActionListener(btnCargar));
         txtDireccion.addActionListener(createActionListener(btnCargar));
         txtEmail.addActionListener(createActionListener(btnCargar));

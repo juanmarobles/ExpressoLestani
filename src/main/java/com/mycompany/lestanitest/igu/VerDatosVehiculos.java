@@ -12,6 +12,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Date;
 import java.util.List;
+import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -30,7 +31,7 @@ public class VerDatosVehiculos extends javax.swing.JFrame {
     public VerDatosVehiculos() {
         control = new Controladora();
         initComponents();
-        
+        setIconImage(new ImageIcon(getClass().getResource("/imagenes/icono.png")).getImage());
         // Listener al mause para editar con doble click.
         tablaVehiculo.addMouseListener(new MouseAdapter() {
             @Override
@@ -314,7 +315,9 @@ private void mostrarTablaVehiculos() {
     if (listaVehiculos != null) {
         for (Vehiculo v : listaVehiculos) {
             // Cambia el orden de las fechas al agregarlas a la tabla
-            Object[] objeto = {v.getId_Vehiculo(), v.getVehiculo(), v.getPatente(),
+            Object[] objeto = {v.getId_Vehiculo(), 
+                v.getVehiculo(),
+                v.getPatente(),
                 (v.getFechaTecnica() != null) ? v.getFechaTecnicaFormateada() : "",
                 (v.getFechaRuta() != null) ? v.getFechaRutaFormateada() : "",
                 (v.getFechaSeguro() != null) ? v.getFechaSeguroFormateada() : "",

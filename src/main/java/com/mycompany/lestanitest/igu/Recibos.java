@@ -86,6 +86,7 @@ import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.Copies;
 import javax.print.attribute.standard.MediaPrintableArea;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -128,6 +129,8 @@ public class Recibos extends javax.swing.JFrame {
         this.fechaHasta = fechaHasta;
         
         initComponents();
+        setIconImage(new ImageIcon(getClass().getResource("/imagenes/icono.png")).getImage());
+        
         txtCliente.setText(cliente);
         cargarClientes();
         actualizarLocalidad();

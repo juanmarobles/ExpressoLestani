@@ -32,10 +32,12 @@ public class VentanaPrincipal extends javax.swing.JFrame {
      */
     public VentanaPrincipal() {
         initComponents();
+        setIconImage(new ImageIcon(getClass().getResource("/imagenes/icono.png")).getImage());
+        
        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         instancia = this;
         dateAlertAp = new DateAlertApp();
-        setIconImage(new ImageIcon(getClass().getResource("/imagenes/icono.png")).getImage());
+        
 
     }
 

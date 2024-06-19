@@ -7,6 +7,7 @@ package com.mycompany.lestanitest.igu;
 import com.mycompany.lestanitest.logica.Controladora;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -24,7 +25,7 @@ public class NuevoRepresentante extends javax.swing.JFrame {
      */
     public NuevoRepresentante() {
         initComponents();
-        
+        setIconImage(new ImageIcon(getClass().getResource("/imagenes/icono.png")).getImage());
         txtNombre.addActionListener(createActionListener(btnCargar));
         txtLocalidad.addActionListener(createActionListener(btnCargar));
         txtTelefono.addActionListener(createActionListener(btnCargar));

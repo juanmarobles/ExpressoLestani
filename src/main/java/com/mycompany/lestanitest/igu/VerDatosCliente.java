@@ -14,6 +14,7 @@ import java.awt.event.MouseEvent;
 import java.util.Collections;
 import java.util.List;
 import java.util.prefs.Preferences;
+import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.RowFilter;
@@ -49,6 +50,7 @@ public class VerDatosCliente extends javax.swing.JFrame {
         //Controladora
         control = new Controladora();
         initComponents();
+        setIconImage(new ImageIcon(getClass().getResource("/imagenes/icono.png")).getImage());
         
        // Establecer el texto del campo de filtro con la última búsqueda cargada
                 txtFiltroCliente.setText(cargarUltimaBusqueda());

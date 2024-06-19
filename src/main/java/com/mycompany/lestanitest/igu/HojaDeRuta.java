@@ -61,6 +61,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
@@ -99,6 +100,8 @@ public class HojaDeRuta extends javax.swing.JFrame {
      */
     public HojaDeRuta() {
         initComponents();
+        setIconImage(new ImageIcon(getClass().getResource("/imagenes/icono.png")).getImage());
+        
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         llenarVehiculo();
         llenarChofer();

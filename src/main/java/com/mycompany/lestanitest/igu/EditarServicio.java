@@ -8,6 +8,7 @@ import com.mycompany.lestanitest.logica.Controladora;
 import com.mycompany.lestanitest.logica.Servicios;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -25,6 +26,7 @@ public class EditarServicio extends javax.swing.JFrame {
     public EditarServicio(int idServicio) {
         control = new Controladora();
         initComponents();
+        setIconImage(new ImageIcon(getClass().getResource("/imagenes/icono.png")).getImage());
         txtServicio.addActionListener(createActionListener(btnEditar));
         txtPrecio.addActionListener(createActionListener(btnEditar));
         txtDescripcion.addActionListener(createActionListener(btnEditar));

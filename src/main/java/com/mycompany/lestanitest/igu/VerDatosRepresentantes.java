@@ -9,6 +9,7 @@ import com.mycompany.lestanitest.logica.Representantes;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
+import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -27,7 +28,7 @@ public class VerDatosRepresentantes extends javax.swing.JFrame {
     public VerDatosRepresentantes() {
         control = new Controladora();
         initComponents();
-        
+        setIconImage(new ImageIcon(getClass().getResource("/imagenes/icono.png")).getImage());
        // Listener al mause para editar con doble click.
         tablaRepresentante.addMouseListener(new MouseAdapter() {
             @Override

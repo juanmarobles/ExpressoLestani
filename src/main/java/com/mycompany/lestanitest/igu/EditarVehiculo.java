@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -32,6 +33,7 @@ public class EditarVehiculo extends javax.swing.JFrame {
     public EditarVehiculo(int idVehiculo) {
         control = new Controladora();
         initComponents();
+        setIconImage(new ImageIcon(getClass().getResource("/imagenes/icono.png")).getImage());
         cargarDatosVehiculo(idVehiculo);
         txtVehiculo.addActionListener(createActionListener(btnEditar));
         txtFechaMatafuego.addActionListener(createActionListener(btnEditar));
