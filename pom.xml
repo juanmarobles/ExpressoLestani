@@ -40,11 +40,13 @@
             <artifactId>javax.persistence</artifactId>
             <version>2.2.1</version>
         </dependency>    
-       <dependency>
-    <groupId>mysql</groupId>
-    <artifactId>mysql-connector-java</artifactId>
-    <version>8.0.30</version>
+   <!-- https://mvnrepository.com/artifact/com.mysql/mysql-connector-j -->
+<dependency>
+    <groupId>com.mysql</groupId>
+    <artifactId>mysql-connector-j</artifactId>
+    <version>8.4.0</version>
 </dependency>
+
         <dependency>
             <groupId>org.swinglabs.swingx</groupId>
             <artifactId>swingx-autocomplete</artifactId>
@@ -61,11 +63,13 @@
             <artifactId>itextpdf</artifactId>
             <version>5.5.13.2</version> <!-- Actualiza la versión si es necesario -->
         </dependency>
-        <dependency>
+      <!-- https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client -->
+<dependency>
     <groupId>org.mariadb.jdbc</groupId>
     <artifactId>mariadb-java-client</artifactId>
-    <version>2.7.4</version> <!-- Asegúrate de utilizar la versión correcta -->
-    </dependency>
+    <version>3.4.0</version>
+</dependency>
+
 
         <dependency>
             <groupId>org.openjfx</groupId>
