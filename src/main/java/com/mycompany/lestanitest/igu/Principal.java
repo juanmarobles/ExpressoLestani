@@ -735,22 +735,20 @@ public class Principal extends javax.swing.JFrame {
         }
     }
 
-    private void cargarServicios() {
-        List<Servicios> listaServ = control.getServicios();
-  
+   private void cargarServicios() {
+       List<Servicios> listaServ = control.getServicios();
+
         cbServicios.setEditable(true);
         // Ordenar la lista de clientes alfabéticamente por el nombre
         listaServ.sort((servicio1, servicio2) -> servicio1.getServicio().compareToIgnoreCase(servicio2.getServicio()));
-        
 
         // Agregar los clientes al combobox
         for (Servicios Servicios : listaServ) {
             cbServicios.addItem(Servicios.getServicio());
         }
-        
-        cbServicios.removeItem("");
 
         // Eliminar la opción en blanco después de configurar el decorador
+        cbServicios.removeItem("");
 
         // Establecer el índice seleccionado a -1 para no mostrar ninguna selección
         cbServicios.setSelectedIndex(-1);
@@ -771,7 +769,6 @@ public class Principal extends javax.swing.JFrame {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                     String textoBusqueda = cbServicios.getEditor().getItem().toString();
                     mostrarResultadosBusqueda(cbServicios, textoBusqueda);
-                      
                 }
             }
         });
@@ -2085,16 +2082,8 @@ public class Principal extends javax.swing.JFrame {
         cargarClientes();
         cargarDestinos();
         cargarRepresentantes();
-    KeyListener[] keyListeners = cbServicios.getEditor().getEditorComponent().getKeyListeners();
-    for (KeyListener kl : keyListeners) {
-        cbServicios.getEditor().getEditorComponent().removeKeyListener(kl);
-    }
+        cargarServicios();
 
-    cargarServicios();
-
-    for (KeyListener kl : keyListeners) {
-        cbServicios.getEditor().getEditorComponent().addKeyListener(kl);
-    }
     //cbServicios.removeItem("");
     cbServicios.getEditor().setItem("");
     txtBulto.setText("1");
