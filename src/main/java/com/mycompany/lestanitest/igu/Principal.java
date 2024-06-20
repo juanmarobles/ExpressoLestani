@@ -2036,7 +2036,7 @@ public class Principal extends javax.swing.JFrame {
     }
 
 
-    private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
+    private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {                                              
        List<Movimientos> movimientosFiltrados = control.getMovimientos();
         
     actualizarTablaMovimientos(movimientosFiltrados);
@@ -2095,7 +2095,7 @@ public class Principal extends javax.swing.JFrame {
             cbfleteRendido.setSelected(false);
         }
 
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }                                        
 private DefaultTableModel tablaModelo; // Declarar como campo de clase para reutilización
 
 private void actualizarTablaMovimientos(List<Movimientos> movimientos) {
@@ -4517,47 +4517,16 @@ private void actualizarTablaMovimientos(List<Movimientos> movimientos) {
     }
 
     //remito
-    private void guardarNumeroRemito2() {
+    private void guardarNumeroRemito() {
         Integer secuenciaRemito = numeroRemito;
         control.actualizarSecuenciaRemito(secuenciaRemito);
 
     }
-private void guardarNumeroRemito() {
-        try {
-            // Crear un archivo de texto para almacenar el número de remito
-            File archivo = new File("numeroremito.txt");
 
-            // Escribir el valor del número de remito en el archivo
-            FileWriter escritor = new FileWriter(archivo);
-            escritor.write(Integer.toString(numeroRemito));
-            escritor.close();
-        } catch (IOException e) {
-            // Manejar el error de escritura del archivo
-            e.printStackTrace();
-        }
-
-    }
-    private void cargarNumeroRemito2() {
+    
+    private void cargarNumeroRemito() {
          Integer secuenciaRemito = control.getSecuenciaRemito();
          numeroRemito = secuenciaRemito;    
     }
- private void cargarNumeroRemito() {
-        try {
-            // Abrir el archivo de texto para cargar el número de remito (si existe)
-            File archivo = new File("numeroremito.txt");
-            if (archivo.exists()) {
-                // Leer el valor del número de recibo desde el archivo
-                FileReader lector = new FileReader(archivo);
-                BufferedReader buffer = new BufferedReader(lector);
-                String linea = buffer.readLine();
-                if (linea != null && !linea.isEmpty()) {
-                    numeroRemito = Integer.parseInt(linea);
-                }
-                buffer.close();
-            }
-        } catch (IOException e) {
-            // Manejar el error de lectura del archivo
-            e.printStackTrace();
-        }
-    }
 }
+
