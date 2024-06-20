@@ -229,11 +229,11 @@ public class Principal extends javax.swing.JFrame {
             String fechaFormateada = fechaArmada.format(formatter);
 
             // Realizar otras operaciones con fechaArmada aquí
-            System.out.println("Fecha  válida: " + fechaFormateada);
+            //System.out.println("Fecha  válida: " + fechaFormateada);
 
         } catch (DateTimeException e) {
             // Manejar el caso en que la fecha no sea válida
-            System.out.println("Fecha inválida.");
+            //System.out.println("Fecha inválida.");
         }
 
         TextPrompt filtroCl = new TextPrompt("Busqueda por Cliente, Destino o Remito", txtFiltroCliente);
@@ -457,7 +457,8 @@ public class Principal extends javax.swing.JFrame {
 
         txtMonto.addKeyListener(keyListener);
         txtFlete.addKeyListener(keyListener);
-        // Obtén la fecha y hora actual
+        
+          // Obtén la fecha y hora actual
         LocalDateTime now = LocalDateTime.now();
 
         // Comprueba si es después de las 17:00 horas
@@ -2043,10 +2044,63 @@ public class Principal extends javax.swing.JFrame {
 
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-       List<Movimientos> movimientosFiltrados = control.getMovimientos();
+    List<Movimientos> movimientosFiltrados = control.getMovimientos();
         
     actualizarTablaMovimientos(movimientosFiltrados);
-      
+        // Obtén la fecha y hora actual
+        LocalDateTime now = LocalDateTime.now();
+
+        // Comprueba si es después de las 17:00 horas
+        if (now.getHour() >= 17) {
+            // Añade un día a la fecha actual
+            LocalDate tomorrow = now.toLocalDate().plusDays(1);
+
+            // Formatea la fecha en el formato deseado (por ejemplo, "dd/MM/yyyy")
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            String formattedDate = tomorrow.format(formatter);
+
+            // Asigna los componentes de la fecha a los campos de texto
+            txtDia.setText(String.valueOf(tomorrow.getDayOfMonth()));
+            txtMes.setText(String.valueOf(tomorrow.getMonthValue()));
+            txtAnio.setText(String.valueOf(tomorrow.getYear()));
+
+            System.out.println("Fecha cambiada a: " + formattedDate);
+            
+        }
+        txtBulto.setText("1");
+        txtMonto.setText("0");
+        txtFlete.setText("0");
+        txtSeguro.setText("0");
+        txtContrarembolso.setText("0");
+        txtRedespacho.setText("0");
+        txtValDeclarado.setText("0");
+        txtObservaciones.setText("");
+        cbClientes.removeAllItems();
+        cbDestinos.removeAllItems();
+        cbServicios.removeAllItems();
+        cbRepresentantes.removeAllItems();
+          //verif flete origen/destino
+        if (cbfDestino.isSelected()) {
+            cbfDestino.setSelected(false);
+        }
+        if (cbfOrigen.isSelected()) {
+            cbfOrigen.setSelected(false);
+        }
+        if (cbCuentaCorriente.isSelected()) {
+            cbCuentaCorriente.setSelected(false);
+        }
+        if (cbmontoPagado.isSelected()) {
+            cbmontoPagado.setSelected(false);
+        }
+         if (cbMontoRendido.isSelected()) {
+            cbMontoRendido.setSelected(false);
+        }
+         if (cbfletePagado.isSelected()) {
+            cbfletePagado.setSelected(false);
+        }
+        if (cbfleteRendido.isSelected()) {
+            cbfleteRendido.setSelected(false);
+        }
 
     }//GEN-LAST:event_jButton2ActionPerformed
 private DefaultTableModel tablaModelo; // Declarar como campo de clase para reutilización
