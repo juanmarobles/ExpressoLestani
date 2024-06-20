@@ -2040,22 +2040,26 @@ public class Principal extends javax.swing.JFrame {
         LocalDateTime now = LocalDateTime.now();
 
         // Comprueba si es después de las 17:00 horas
-        if (now.getHour() >= 17) {
-            // Añade un día a la fecha actual
-            LocalDate tomorrow = now.toLocalDate().plusDays(1);
+    if (now.getHour() >= 17) {
+        // Añade un día a la fecha actual
+        LocalDate tomorrow = now.toLocalDate().plusDays(1);
 
-            // Formatea la fecha en el formato deseado (por ejemplo, "dd/MM/yyyy")
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            String formattedDate = tomorrow.format(formatter);
+        // Formatea la fecha en el formato deseado (por ejemplo, "dd/MM/yyyy")
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String formattedDate = tomorrow.format(formatter);
 
-            // Asigna los componentes de la fecha a los campos de texto
-            txtDia.setText(String.valueOf(tomorrow.getDayOfMonth()));
-            txtMes.setText(String.valueOf(tomorrow.getMonthValue()));
-            txtAnio.setText(String.valueOf(tomorrow.getYear()));
+        // Asigna los componentes de la fecha a los campos de texto
+        txtDia.setText(String.valueOf(tomorrow.getDayOfMonth()));
+        txtMes.setText(String.valueOf(tomorrow.getMonthValue()));
+        txtAnio.setText(String.valueOf(tomorrow.getYear()));
 
-            System.out.println("Fecha cambiada a: " + formattedDate);
-            
-        }
+        System.out.println("Fecha cambiada a: " + formattedDate);
+    } else {
+        // Si no es después de las 17:00 horas, simplemente asigna la fecha actual
+        txtDia.setText(String.valueOf(now.getDayOfMonth()));
+        txtMes.setText(String.valueOf(now.getMonthValue()));
+        txtAnio.setText(String.valueOf(now.getYear()));
+    }
        
 
         if (cbfDestino.isSelected()) {
