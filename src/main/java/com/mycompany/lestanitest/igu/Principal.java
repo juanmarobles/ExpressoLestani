@@ -643,14 +643,13 @@ public class Principal extends javax.swing.JFrame {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_TAB) {
-                    autoCompletarDestino(cbDestinos);  
+                    autoCompletarDestino(cbDestinos);
                     cbDestinos.setPopupVisible(false); // Cerrar el popup después de seleccionar el cliente
-                    
+                    e.consume(); // Consumir el evento para evitar que se procese nuevamente
                 } else if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE || e.getKeyCode() == KeyEvent.VK_DELETE) {
                     cbDestinos.setPopupVisible(false);
                 } else if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_UP) {
                     cbDestinos.setPopupVisible(true);
-                    
                 }
             }
 
@@ -1000,9 +999,17 @@ public class Principal extends javax.swing.JFrame {
     
      // Método para auto-completar el cliente seleccionado en el ComboBox
     private void autoCompletarDestino(JComboBox<String> combobox) {
-        String nombreDestino = (String) combobox.getSelectedItem();
+         String nombreDestino = (String) combobox.getSelectedItem();
+    
+    // Verificar si el cliente seleccionado está en la lista de clientes cargados
+    boolean clienteValido = listaClientes.stream()
+            .anyMatch(cliente -> cliente.getNombre().equalsIgnoreCase(nombreDestino));
+    
+    // Si el cliente es válido, proceder con la selección
+    if (clienteValido) {
         combobox.getEditor().setItem(nombreDestino);
         seleccionarDestino(nombreDestino); // Seleccionar el cliente en la variable
+    }
     }
     
     // Método para auto-completar el cliente seleccionado en el ComboBox
@@ -1012,21 +1019,7 @@ public class Principal extends javax.swing.JFrame {
         
     }
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+ 
     
         // Método para mostrar los resultados de la búsqueda
        private static void mostrarResultadosBusqueda(JComboBox<String> combobox, String textoBusqueda) {
@@ -1175,7 +1168,7 @@ public class Principal extends javax.swing.JFrame {
         txtFiltroCliente = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         btnBuscarClienteYDestino = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnActualizar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Expreso Lestani S.R.L - Cargar Movimientos");
@@ -1883,14 +1876,14 @@ public class Principal extends javax.swing.JFrame {
                 .addContainerGap(117, Short.MAX_VALUE))
         );
 
-        jButton2.setBackground(new java.awt.Color(51, 51, 51));
-        jButton2.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
-        jButton2.setForeground(new java.awt.Color(236, 240, 241));
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/actualizar.png"))); // NOI18N
-        jButton2.setText("Actualizar");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnActualizar.setBackground(new java.awt.Color(51, 51, 51));
+        btnActualizar.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        btnActualizar.setForeground(new java.awt.Color(236, 240, 241));
+        btnActualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/actualizar.png"))); // NOI18N
+        btnActualizar.setText("Actualizar");
+        btnActualizar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnActualizarActionPerformed(evt);
             }
         });
 
@@ -1906,7 +1899,7 @@ public class Principal extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(43, 43, 43)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btnActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(18, 18, 18)
                         .addComponent(PanelBusquedas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -1921,7 +1914,7 @@ public class Principal extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(39, 39, 39)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(PanelBusquedas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(42, 42, 42)))
@@ -2042,13 +2035,14 @@ public class Principal extends javax.swing.JFrame {
     }
 
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
        List<Movimientos> movimientosFiltrados = control.getMovimientos();
         
     actualizarTablaMovimientos(movimientosFiltrados);
       
-
-    }//GEN-LAST:event_jButton2ActionPerformed
+        
+      
+    }//GEN-LAST:event_btnActualizarActionPerformed
 private DefaultTableModel tablaModelo; // Declarar como campo de clase para reutilización
 
 private void actualizarTablaMovimientos(List<Movimientos> movimientos) {
@@ -2960,6 +2954,7 @@ private void actualizarTablaMovimientos(List<Movimientos> movimientos) {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel PanelBusquedas;
+    private javax.swing.JButton btnActualizar;
     private javax.swing.JButton btnAgregar;
     private javax.swing.JButton btnAgregarCliente;
     private javax.swing.JButton btnBuscarClienteYDestino;
@@ -2979,7 +2974,6 @@ private void actualizarTablaMovimientos(List<Movimientos> movimientos) {
     private javax.swing.JCheckBox cbfletePagado;
     private javax.swing.JCheckBox cbfleteRendido;
     private javax.swing.JCheckBox cbmontoPagado;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;

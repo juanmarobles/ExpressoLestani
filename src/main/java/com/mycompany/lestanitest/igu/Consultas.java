@@ -250,43 +250,7 @@ public class Consultas extends javax.swing.JFrame {
 
    
 
-    private static void mostrarResultadosBusqueda(JComboBox<String> combobox, String textoBusqueda) {
-        // Limpiar selección previa
-        combobox.setSelectedIndex(-1);
-
-        // Buscar resultados de búsqueda exacta
-        boolean encontradoExacta = false;
-
-        for (int i = 0; i < combobox.getItemCount(); i++) {
-            String item = combobox.getItemAt(i).toString();
-            if (item.equalsIgnoreCase(textoBusqueda)) {
-                combobox.setSelectedItem(item);
-                combobox.getEditor().setItem(item);
-                encontradoExacta = true;
-                break; // Terminar la búsqueda cuando se encuentra una coincidencia exacta
-            }
-        }
-
-        // Si no se encontró una coincidencia exacta, buscar coincidencias parciales
-        if (!encontradoExacta) {
-            boolean encontradoParcial = false;
-            for (int i = 0; i < combobox.getItemCount(); i++) {
-                String item = combobox.getItemAt(i).toString();
-                if (item.toLowerCase().contains(textoBusqueda.toLowerCase())) {
-                    combobox.setSelectedIndex(i);
-                    combobox.getEditor().setItem(item);
-                    encontradoParcial = true;
-                    break; // Terminar la búsqueda cuando se encuentra una coincidencia parcial
-                }
-            }
-
-            // Si no se encontró ninguna coincidencia parcial, mostrar el desplegable
-            if (!encontradoParcial) {
-                combobox.setPopupVisible(true);
-                combobox.getEditor().setItem(textoBusqueda); // Deja el ComboBox con el texto de búsqueda
-            }
-        }
-    }
+   
 
     private void cargarClientes() {
      
@@ -398,6 +362,21 @@ public class Consultas extends javax.swing.JFrame {
         combobox.getEditor().setItem(nombreCliente);
         
     }
+    // Método para auto-completar el cliente seleccionado en el ComboBox
+    private void autoCompletarDestino(JComboBox<String> combobox) {
+        String nombreDestino = (String) combobox.getSelectedItem();
+    
+    // Verificar si el cliente seleccionado está en la lista de clientes cargados
+    boolean clienteValido = listaClientes.stream()
+            .anyMatch(cliente -> cliente.getNombre().equalsIgnoreCase(nombreDestino));
+    
+    // Si el cliente es válido, proceder con la selección
+    if (clienteValido) {
+        combobox.getEditor().setItem(nombreDestino);
+        
+    }
+        
+    }
     private void cargarDestino() {
 
         cbDestinos.setEditable(true);
@@ -416,19 +395,18 @@ public class Consultas extends javax.swing.JFrame {
         // Establecer el índice seleccionado a -1 para no mostrar ninguna selección
         cbDestinos.setSelectedIndex(-1);
 
-        // Agregar KeyListener al editor del JComboBox
+         // Agregar KeyListener al editor del JComboBox
         cbDestinos.getEditor().getEditorComponent().addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_TAB) {
-                    autoCompletarCliente(cbDestinos);  
+                    autoCompletarDestino(cbDestinos);
                     cbDestinos.setPopupVisible(false); // Cerrar el popup después de seleccionar el cliente
-                    
+                    e.consume(); // Consumir el evento para evitar que se procese nuevamente
                 } else if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE || e.getKeyCode() == KeyEvent.VK_DELETE) {
                     cbDestinos.setPopupVisible(false);
                 } else if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_UP) {
                     cbDestinos.setPopupVisible(true);
-                    
                 }
             }
 
@@ -436,14 +414,10 @@ public class Consultas extends javax.swing.JFrame {
             public void keyReleased(KeyEvent e) {
                 // No realizar la búsqueda si se está usando las teclas de flecha
                 if (e.getKeyCode() != KeyEvent.VK_DOWN && e.getKeyCode() != KeyEvent.VK_UP) {
-                    
                     // Realizar la búsqueda cada vez que se libera una tecla
                     realizarBusquedaClientes(cbDestinos);
-                    
                      if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_TAB) {
-                         
-                    autoCompletarCliente(cbDestinos);  
-                    
+                    autoCompletarDestino(cbDestinos);  
                     cbDestinos.setPopupVisible(false); // Cerrar el popup después de seleccionar el cliente
                     
                 }
@@ -1455,8 +1429,8 @@ public class Consultas extends javax.swing.JFrame {
                                         .addGap(30, 30, 30)
                                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                             .addComponent(jLabel22, javax.swing.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE)
-                                            .addComponent(btnBuscarRemito, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(txtBusquedaRemito)))))
+                                            .addComponent(txtBusquedaRemito)
+                                            .addComponent(btnBuscarRemito, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1603, Short.MAX_VALUE))))
                 .addGap(14, 14, 14))
         );
@@ -1503,10 +1477,10 @@ public class Consultas extends javax.swing.JFrame {
                                 .addGap(11, 11, 11))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18))))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                                .addGap(18, 18, 18))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))))
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 609, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
