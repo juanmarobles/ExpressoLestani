@@ -431,6 +431,16 @@ public class Controladora {
         return ctrl.getVehiculos();
     }
 
+    public Integer getSecuenciaRemito() {
+        return ctrl.getSecuenciaRemito();
+    }
+
+    public void actualizarSecuenciaRemito(Integer secuenciaRemito) {
+        Movimientos m = new Movimientos();
+        m.setSecuenciaRemito(secuenciaRemito);
+        ctrl.guardarSecuenciaRemito(m);
+    }
+
 }
 
 //control fechas rev tecnica y ruta

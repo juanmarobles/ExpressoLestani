@@ -62,6 +62,8 @@ public class Movimientos implements Serializable {
     private String cuentaCorriente;
     @Column(name = "OBSERVACIONES", nullable = false)
     private String observaciones;
+    @Column(name = "SECUENCIA_REMITO", nullable = false)
+    private Integer secuenciaRemito;
     
     
     //NUEVAS CARGAS
@@ -90,8 +92,16 @@ public class Movimientos implements Serializable {
         this.observaciones = observaciones;
         this.hora = hora;
     }
-    
 
+    public Integer getSecuenciaRemito() {
+        return secuenciaRemito;
+    }
+
+    public void setSecuenciaRemito(Integer secuenciaRemito) {
+        this.secuenciaRemito = secuenciaRemito;
+    }
+    
+    
     public Time getHora() {
         return hora;
     }

@@ -344,6 +344,14 @@ public class ControladoraPersistencia {
         return vehiculoJpa.findVehiculoEntities();
     }
 
+    public Integer getSecuenciaRemito() {
+        return movJpa.getSecuenciaRemito();
+    }
+
+    public void guardarSecuenciaRemito(Movimientos m) {
+        movJpa.create(m);
+    }
+
    
     }
     /**

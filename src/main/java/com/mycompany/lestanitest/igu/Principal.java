@@ -4517,7 +4517,12 @@ private void actualizarTablaMovimientos(List<Movimientos> movimientos) {
     }
 
     //remito
-    private void guardarNumeroRemito() {
+    private void guardarNumeroRemito2() {
+        Integer secuenciaRemito = numeroRemito;
+        control.actualizarSecuenciaRemito(secuenciaRemito);
+
+    }
+private void guardarNumeroRemito() {
         try {
             // Crear un archivo de texto para almacenar el número de remito
             File archivo = new File("numeroremito.txt");
@@ -4532,8 +4537,11 @@ private void actualizarTablaMovimientos(List<Movimientos> movimientos) {
         }
 
     }
-
-    private void cargarNumeroRemito() {
+    private void cargarNumeroRemito2() {
+         Integer secuenciaRemito = control.getSecuenciaRemito();
+         numeroRemito = secuenciaRemito;    
+    }
+ private void cargarNumeroRemito() {
         try {
             // Abrir el archivo de texto para cargar el número de remito (si existe)
             File archivo = new File("numeroremito.txt");
@@ -4552,5 +4560,4 @@ private void actualizarTablaMovimientos(List<Movimientos> movimientos) {
             e.printStackTrace();
         }
     }
-
 }

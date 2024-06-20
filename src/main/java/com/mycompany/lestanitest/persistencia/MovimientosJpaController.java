@@ -184,6 +184,18 @@ public class MovimientosJpaController implements Serializable {
         em.close();
     }
     }
-   
 
+     public Integer getSecuenciaRemito() {
+        EntityManager em = getEntityManager();
+        try {
+            String jpql = "SELECT m.secuenciaRemito FROM Movimientos m ORDER BY m.secuenciaRemito DESC";
+            TypedQuery<Integer> query = em.createQuery(jpql, Integer.class);
+            query.setMaxResults(1); // Solo queremos el primer resultado
+            return query.getSingleResult();
+        } finally {
+            em.close();
+        }
+    }
 }
+
+
