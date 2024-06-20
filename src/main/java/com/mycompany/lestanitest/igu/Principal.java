@@ -2059,14 +2059,7 @@ public class Principal extends javax.swing.JFrame {
             System.out.println("Fecha cambiada a: " + formattedDate);
             
         }
-        txtBulto.setText("1");
-        txtMonto.setText("0");
-        txtFlete.setText("0");
-        txtSeguro.setText("0");
-        txtContrarembolso.setText("0");
-        txtRedespacho.setText("0");
-        txtValDeclarado.setText("0");
-        txtObservaciones.setText("");
+       
 
         if (cbfDestino.isSelected()) {
             cbfDestino.setSelected(false);
@@ -2092,8 +2085,26 @@ public class Principal extends javax.swing.JFrame {
         cargarClientes();
         cargarDestinos();
         cargarRepresentantes();
-        cargarServicios();
-        
+    KeyListener[] keyListeners = cbServicios.getEditor().getEditorComponent().getKeyListeners();
+    for (KeyListener kl : keyListeners) {
+        cbServicios.getEditor().getEditorComponent().removeKeyListener(kl);
+    }
+
+    cargarServicios();
+
+    for (KeyListener kl : keyListeners) {
+        cbServicios.getEditor().getEditorComponent().addKeyListener(kl);
+    }
+    //cbServicios.removeItem("");
+    cbServicios.getEditor().setItem("");
+    txtBulto.setText("1");
+        txtMonto.setText("0");
+        txtFlete.setText("0");
+        txtSeguro.setText("0");
+        txtContrarembolso.setText("0");
+        txtRedespacho.setText("0");
+        txtValDeclarado.setText("0");
+        txtObservaciones.setText("");
 
 
     }                                        
