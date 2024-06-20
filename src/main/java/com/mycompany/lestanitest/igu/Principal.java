@@ -737,17 +737,20 @@ public class Principal extends javax.swing.JFrame {
 
     private void cargarServicios() {
         List<Servicios> listaServ = control.getServicios();
+  
         cbServicios.setEditable(true);
         // Ordenar la lista de clientes alfabéticamente por el nombre
         listaServ.sort((servicio1, servicio2) -> servicio1.getServicio().compareToIgnoreCase(servicio2.getServicio()));
+        
 
         // Agregar los clientes al combobox
         for (Servicios Servicios : listaServ) {
             cbServicios.addItem(Servicios.getServicio());
         }
+        
+        cbServicios.removeItem("");
 
         // Eliminar la opción en blanco después de configurar el decorador
-        cbServicios.removeItem("");
 
         // Establecer el índice seleccionado a -1 para no mostrar ninguna selección
         cbServicios.setSelectedIndex(-1);
@@ -768,6 +771,7 @@ public class Principal extends javax.swing.JFrame {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                     String textoBusqueda = cbServicios.getEditor().getItem().toString();
                     mostrarResultadosBusqueda(cbServicios, textoBusqueda);
+                      
                 }
             }
         });
@@ -777,8 +781,7 @@ public class Principal extends javax.swing.JFrame {
        List<Representantes> listaRepresentantes = control.getRepresentantes();
         
         cbRepresentantes.setEditable(true);
-        
-        
+
         // Ordenar la lista de clientes alfabéticamente por el nombre
         listaRepresentantes.sort((representante1, representante2) -> representante1.getNombre().compareToIgnoreCase(representante2.getNombre()));
 
@@ -871,12 +874,7 @@ public class Principal extends javax.swing.JFrame {
         // Mostrar el menú desplegable si hay resultados
         cbRepresentantes.setPopupVisible(model.getSize() > 0);
     }
-    
-    
-    
-    
-    
-    
+
    // Método para inicializar y cargar clientes en el ComboBox
     private void cargarClientes() {
         cbClientes.setEditable(true);
@@ -1058,6 +1056,7 @@ public class Principal extends javax.swing.JFrame {
                 combobox.getEditor().setItem(textoBusqueda);
                 combobox.setPopupVisible(true);
             }
+            
         }
     }
 
@@ -2035,7 +2034,7 @@ public class Principal extends javax.swing.JFrame {
         dialog.setVisible(true);
     }
 
-
+               
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {                                              
        List<Movimientos> movimientosFiltrados = control.getMovimientos();
         
@@ -2068,11 +2067,7 @@ public class Principal extends javax.swing.JFrame {
         txtRedespacho.setText("0");
         txtValDeclarado.setText("0");
         txtObservaciones.setText("");
-        cbClientes.removeAllItems();
-        cbDestinos.removeAllItems();
-        cbServicios.removeAllItems();
-        cbRepresentantes.removeAllItems();
-          //verif flete origen/destino
+
         if (cbfDestino.isSelected()) {
             cbfDestino.setSelected(false);
         }
@@ -2094,6 +2089,12 @@ public class Principal extends javax.swing.JFrame {
         if (cbfleteRendido.isSelected()) {
             cbfleteRendido.setSelected(false);
         }
+        cargarClientes();
+        cargarDestinos();
+        cargarRepresentantes();
+        cargarServicios();
+        
+
 
     }                                        
 private DefaultTableModel tablaModelo; // Declarar como campo de clase para reutilización
@@ -4519,6 +4520,7 @@ private void actualizarTablaMovimientos(List<Movimientos> movimientos) {
     //remito
     private void guardarNumeroRemito() {
         Integer secuenciaRemito = numeroRemito;
+        secuenciaRemito ++;
         control.actualizarSecuenciaRemito(secuenciaRemito);
 
     }
