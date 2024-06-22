@@ -2191,6 +2191,7 @@ private void actualizarTablaMovimientos(List<Movimientos> movimientos) {
                     // Incrementar el número de remito
                     int nuevoNumeroRemito = numeroRemito + 1;
                     remito = String.valueOf(nuevoNumeroRemito);
+                    numeroRemito++;
                 }
 
             } else {
@@ -2217,8 +2218,6 @@ private void actualizarTablaMovimientos(List<Movimientos> movimientos) {
             String fletePagado = mov.getTipoFleteP();
             String fleteRendido = mov.getTipoFleteR();
 
-            System.out.println("Datos de id: " + fecha + " " + cliente + " " + destino + " " + bulto + " " + remito + " " + monto + " " + montoPagado + " " + montoRendido + " " + flete + " " + fletePagado + " " + fleteRendido + " " + origenDestino + " " + cc + " " + representante + " " + obs);
-            System.out.println("numero remito" + remito);
             control.editarMovimiento(mov, remito);
             generarRemito(fecha, cliente, destino, servicio, remito, bulto, representante, monto, montoPagado, montoRendido, flete, fletePagado, fleteRendido, origenDestino, cuentaCorriente, obs);
 
@@ -2290,7 +2289,7 @@ private void actualizarTablaMovimientos(List<Movimientos> movimientos) {
 
             // Usando String.valueOf()
             remito = String.valueOf(numeroRemito + 1);
-
+            numeroRemito++;
             // JOptionPane.showMessageDialog(null, "El valor de remito no puede ser 0", "Error", JOptionPane.ERROR_MESSAGE);
         }
 
@@ -2396,7 +2395,7 @@ private void actualizarTablaMovimientos(List<Movimientos> movimientos) {
             return; // Detener la ejecución para no agregar el movimiento
         }
 
-        control.cargarMovimiento(cliente, destino, servicio, representante, bulto, monto, fletenuevo, tFlete, remito, tMontoP, tMontoR, tFleteP, tFleteR, fecha, cC, obs, horaSQL);
+        control.cargarMovimiento(cliente, destino, servicio, representante, bulto, monto, fletenuevo, tFlete, remito, tMontoP, tMontoR, tFleteP, tFleteR, fecha, cC, obs, horaSQL, numeroRemito);
         //mostrarMensaje("Movimiento agregado correctamente", "Info", "Agregado con exito!");
         generarPdfDuplicado();
 
@@ -2515,7 +2514,7 @@ private void actualizarTablaMovimientos(List<Movimientos> movimientos) {
 
             // Usando String.valueOf()
             remito = String.valueOf(numeroRemito + 1);
-
+            numeroRemito++;
             // JOptionPane.showMessageDialog(null, "El valor de remito no puede ser 0", "Error", JOptionPane.ERROR_MESSAGE);
         }
 
@@ -2620,8 +2619,8 @@ private void actualizarTablaMovimientos(List<Movimientos> movimientos) {
             mostrarMensaje(mensaje, "Error", "Campos faltantes");
             return; // Detener la ejecución para no agregar el movimiento
         }
-
-        control.cargarMovimiento(cliente, destino, servicio, representante, bulto, monto, fletenuevo, tFlete, remito, tMontoP, tMontoR, tFleteP, tFleteR, fecha, cC, obs, horaSQL);
+        
+        control.cargarMovimiento(cliente, destino, servicio, representante, bulto, monto, fletenuevo, tFlete, remito, tMontoP, tMontoR, tFleteP, tFleteR, fecha, cC, obs, horaSQL,numeroRemito);
         //mostrarMensaje("Movimiento agregado correctamente", "Info", "Agregado con exito!");
 
         //Llama la funcion generar
@@ -2886,7 +2885,7 @@ private void actualizarTablaMovimientos(List<Movimientos> movimientos) {
             return; // Detener la ejecución para no agregar el movimiento
         }
 
-        control.cargarMovimiento(cliente, destino, servicio, representante, bulto, monto, fletenuevo, tFlete, remito, tMontoP, tMontoR, tFleteP, tFleteR, fecha, cC, obs, horaSQL);
+        control.cargarMovimiento(cliente, destino, servicio, representante, bulto, monto, fletenuevo, tFlete, remito, tMontoP, tMontoR, tFleteP, tFleteR, fecha, cC, obs, horaSQL, numeroRemito);
         System.out.println("Movimiento agregado correctamente" + "Info" + "Agregado con exito!");
 
         // Actualizar la tabla
@@ -3153,7 +3152,7 @@ private void actualizarTablaMovimientos(List<Movimientos> movimientos) {
         }
 
         // Incrementar el contador de remito
-        numeroRemito++;
+        //numeroRemito++;
         // Generar el número de remito en formato de 8 dígitos
         String numeroRemitoString = String.format("%08d", numeroRemito);
         try {
@@ -3225,7 +3224,7 @@ private void actualizarTablaMovimientos(List<Movimientos> movimientos) {
             dfecha.setAlignment(Element.ALIGN_RIGHT);
             //REMITO NRO
             Paragraph nroRemito = new Paragraph("REMITO N° " + String.format("%08d", numeroRemito), FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD));
-            guardarNumeroRemito();
+            //guardarNumeroRemito();
             nroRemito.setAlignment(Element.ALIGN_RIGHT);
 
             // Celda 1: Logo + Texto relacionado al logo + Fecha
@@ -3584,7 +3583,7 @@ private void actualizarTablaMovimientos(List<Movimientos> movimientos) {
         Document document = new Document();
 
         // Incrementar el contador de remito
-        numeroRemito++;
+        //numeroRemito++;
         // Generar el número de remito en formato de 8 dígitos
         String numeroRemitoString = String.format("%08d", numeroRemito);
         try {
@@ -3668,8 +3667,8 @@ private void actualizarTablaMovimientos(List<Movimientos> movimientos) {
             fecha.setAlignment(Element.ALIGN_RIGHT);
 
             //REMITO NRO
-            Paragraph nroRemito = new Paragraph("REMITO N° " + String.format("%08d", numeroRemito), FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD));
-            guardarNumeroRemito();
+            Paragraph nroRemito = new Paragraph("REMITO N° " + numeroRemitoString , FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD));
+           // guardarNumeroRemito();
             nroRemito.setAlignment(Element.ALIGN_RIGHT);
 
             // Celda 1: Logo + Texto relacionado al logo + Fecha
@@ -3856,36 +3855,7 @@ private void actualizarTablaMovimientos(List<Movimientos> movimientos) {
             // Agregar la tabla al documento
             //document.add(tablaa);
             cellContenido.addElement(tablaa);
-            
-            
-            
-        
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
+
             Paragraph recibenB = new Paragraph("SE RECIBEN LOS BULTOS SIN ESPECIFICAR SU CONTENIDO", fontR);
             recibenB.setAlignment(Element.ALIGN_CENTER);
             //document.add(recibenB);
@@ -4051,7 +4021,7 @@ private void actualizarTablaMovimientos(List<Movimientos> movimientos) {
     private void generarPdfDuplicado() {
         Document document = new Document();
         // Incrementar el contador de remito
-        numeroRemito++;
+        //numeroRemito++;
         // Generar el número de remito en formato de 8 dígitos
         String numeroRemitoString = String.format("%08d", numeroRemito);
         try {
@@ -4121,7 +4091,7 @@ private void actualizarTablaMovimientos(List<Movimientos> movimientos) {
             fecha.setAlignment(Element.ALIGN_RIGHT);
             //REMITO NRO
             Paragraph nroRemito = new Paragraph("REMITO N° " + String.format("%08d", numeroRemito), FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD));
-            guardarNumeroRemito();
+            //guardarNumeroRemito();
             nroRemito.setAlignment(Element.ALIGN_RIGHT);
 
             // Celda 1: Logo + Texto relacionado al logo + Fecha
@@ -4522,17 +4492,12 @@ private void actualizarTablaMovimientos(List<Movimientos> movimientos) {
     }
 
     //remito
-    private void guardarNumeroRemito() {
-        Integer secuenciaRemito = numeroRemito;
-        secuenciaRemito ++;
-        control.actualizarSecuenciaRemito(secuenciaRemito);
 
-    }
 
     
     private void cargarNumeroRemito() {
          Integer secuenciaRemito = control.getSecuenciaRemito();
-         numeroRemito = secuenciaRemito;    
+         numeroRemito = secuenciaRemito++;    
     }
 }
 

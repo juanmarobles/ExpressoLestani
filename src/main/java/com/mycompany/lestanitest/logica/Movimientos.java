@@ -181,10 +181,14 @@ public class Movimientos implements Serializable {
 
     private static final String FORMATO_FECHA_TABLA = "dd/MM/yyyy";
 
-    public String getFechaFormateada() {
-        SimpleDateFormat formato = new SimpleDateFormat(FORMATO_FECHA_TABLA);
-        return formato.format(fecha);
+   public String getFechaFormateada() {
+    if (this.fecha == null) {
+        return "";
     }
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    return sdf.format(this.fecha);
+}
+
 
     public String getDestino() {
         return destino;
@@ -210,16 +214,21 @@ public class Movimientos implements Serializable {
         this.bultos = bultos;
     }
 
-    public String getMonto() {
-        BigDecimal montoBigDecimal = new BigDecimal(monto);
-        DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
-        simbolos.setGroupingSeparator('.');
-        simbolos.setDecimalSeparator(',');
-        DecimalFormat formatoPersonalizado = new DecimalFormat("###,###.##", simbolos);
-        formatoPersonalizado.setParseBigDecimal(true);
-        String montoFormateado = formatoPersonalizado.format(montoBigDecimal);
-        return "$" + montoFormateado;
+   public String getMonto() {
+    if (monto == null) {
+        return ""; // Otra acción adecuada para manejar el valor nulo
     }
+
+    BigDecimal montoBigDecimal = new BigDecimal(monto);
+    DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
+    simbolos.setGroupingSeparator('.');
+    simbolos.setDecimalSeparator(',');
+    DecimalFormat formatoPersonalizado = new DecimalFormat("###,###.##", simbolos);
+    formatoPersonalizado.setParseBigDecimal(true);
+    String montoFormateado = formatoPersonalizado.format(montoBigDecimal);
+    return "$" + montoFormateado;
+}
+
 
     public void setMonto(String monto) {
         // Reemplazar cualquier coma existente por un punto
@@ -245,6 +254,10 @@ public class Movimientos implements Serializable {
     }
 
     public String getFlete() {
+          if (flete == null) {
+        return ""; // Otra acción adecuada para manejar el valor nulo
+    }
+
         BigDecimal fleteBigDecimal = new BigDecimal(flete);
         DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
         simbolos.setGroupingSeparator('.');

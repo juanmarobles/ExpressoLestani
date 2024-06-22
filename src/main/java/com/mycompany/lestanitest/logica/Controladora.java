@@ -241,7 +241,7 @@ public class Controladora {
     /**
      * ----------------------------------------------GUARDAR-----------------------------------------------------------------
      */
-    public void cargarMovimiento(String cliente, String destino, String servicio, String representante, int bulto, String monto, String fletenuevo, String tFlete, String remito, String tMontoP, String tMontoR, String tFleteP, String tFleteR, Date fecha, String cC, String obs, Time hora) {
+    public void cargarMovimiento(String cliente, String destino, String servicio, String representante, int bulto, String monto, String fletenuevo, String tFlete, String remito, String tMontoP, String tMontoR, String tFleteP, String tFleteR, Date fecha, String cC, String obs, Time hora, Integer numeroRemito) {
         Movimientos m = new Movimientos();
         m.setCliente(cliente);
         m.setDestino(destino);
@@ -260,6 +260,7 @@ public class Controladora {
         m.setCuentaCorriente(cC);
         m.setObservaciones(obs);
         m.setHora(hora);
+        m.setSecuenciaRemito(numeroRemito);
         ctrl.guardarMovimiento(m);
 
     }
