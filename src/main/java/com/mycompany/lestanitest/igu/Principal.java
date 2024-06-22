@@ -2033,7 +2033,8 @@ public class Principal extends javax.swing.JFrame {
 
                
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {                                              
-       List<Movimientos> movimientosFiltrados = control.getMovimientos();
+        cargarNumeroRemito();
+        List<Movimientos> movimientosFiltrados = control.getMovimientos();
         
     actualizarTablaMovimientos(movimientosFiltrados);
         // Obtén la fecha y hora actual
@@ -2145,7 +2146,7 @@ private void actualizarTablaMovimientos(List<Movimientos> movimientos) {
 
 
     private void btnRemitoTablaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemitoTablaActionPerformed
-
+        cargarNumeroRemito();
         SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/YYYY");
         Movimientos mov = new Movimientos();
         if (idSeleccionado != -1) {
@@ -2253,6 +2254,7 @@ private void actualizarTablaMovimientos(List<Movimientos> movimientos) {
     }//GEN-LAST:event_cbClientesActionPerformed
 
     private void btnGenerarRemitoDuplicadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarRemitoDuplicadoActionPerformed
+        cargarNumeroRemito();
 
         String fPagado = "";
         String fRendido = "";
@@ -2474,7 +2476,7 @@ private void actualizarTablaMovimientos(List<Movimientos> movimientos) {
     }//GEN-LAST:event_btnGenerarRemitoDuplicadoActionPerformed
 
     private void btnGenerarRemitoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarRemitoActionPerformed
-
+        cargarNumeroRemito();
         String fPagado = "";
         String fRendido = "";
         String tFlete = "";
