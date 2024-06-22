@@ -1575,9 +1575,10 @@ public class Consultas extends javax.swing.JFrame {
 
         // Filtrar por origen (solo si se ha seleccionado un cliente)
         if (!origenFiltrado.isEmpty()) {
-            movimientosFiltrados = movimientosFiltrados.stream()
-                    .filter(mov -> mov.getCliente().equals(origenFiltrado))
-                    .collect(Collectors.toList());
+           // movimientosFiltrados = movimientosFiltrados.stream()
+                    //.filter(mov -> mov.getCliente().equals(origenFiltrado))
+                    //.collect(Collectors.toList());
+            movimientosFiltrados = control.getMovimientosVistaOrigenFiltrado(fechaDesde,fechaHasta,origenFiltrado);
         }
 
         // Filtrar por destino (solo si se ha seleccionado un cliente)

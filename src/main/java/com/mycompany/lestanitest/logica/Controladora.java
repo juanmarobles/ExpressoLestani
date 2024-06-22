@@ -442,6 +442,10 @@ public class Controladora {
         ctrl.guardarSecuenciaRemito(m);
     }
 
+    public List<Movimientos> getMovimientosVistaOrigenFiltrado(Date fechaDesde, Date fechaHasta, String origenFiltrado) {
+           return ctrl.getMovimientosConsultaOrigenFiltrado(fechaDesde,fechaHasta,origenFiltrado);
+    }
+
 }
 
 //control fechas rev tecnica y ruta

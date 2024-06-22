@@ -2146,7 +2146,6 @@ private void actualizarTablaMovimientos(List<Movimientos> movimientos) {
 
 
     private void btnRemitoTablaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemitoTablaActionPerformed
-        cargarNumeroRemito();
         SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/YYYY");
         Movimientos mov = new Movimientos();
         if (idSeleccionado != -1) {
@@ -2192,7 +2191,7 @@ private void actualizarTablaMovimientos(List<Movimientos> movimientos) {
                     // Incrementar el número de remito
                     int nuevoNumeroRemito = numeroRemito + 1;
                     remito = String.valueOf(nuevoNumeroRemito);
-                    numeroRemito++;
+                    //numeroRemito++;
                 }
 
             } else {
@@ -2760,7 +2759,6 @@ private void actualizarTablaMovimientos(List<Movimientos> movimientos) {
     }//GEN-LAST:event_btnEliminarMovimientoActionPerformed
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
-
         String fPagado = "";
         String fRendido = "";
         String tFlete = "";
@@ -3155,8 +3153,8 @@ private void actualizarTablaMovimientos(List<Movimientos> movimientos) {
 
         // Incrementar el contador de remito
         //numeroRemito++;
-        // Generar el número de remito en formato de 8 dígitos
-        String numeroRemitoString = String.format("%08d", numeroRemito);
+        int remitoInt = Integer.parseInt(remitoo);
+        String numeroRemitoString = String.format("%08d", remitoInt);
         try {
             // Obtener la ruta del escritorio del usuario
             String userHome = FileSystemView.getFileSystemView().getHomeDirectory().getAbsolutePath();
@@ -3225,7 +3223,7 @@ private void actualizarTablaMovimientos(List<Movimientos> movimientos) {
             Paragraph dfecha = new Paragraph(chunkFechas);
             dfecha.setAlignment(Element.ALIGN_RIGHT);
             //REMITO NRO
-            Paragraph nroRemito = new Paragraph("REMITO N° " + String.format("%08d", numeroRemito), FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD));
+            Paragraph nroRemito = new Paragraph("REMITO N° " + String.format("%08d", remitoInt), FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD));
             //guardarNumeroRemito();
             nroRemito.setAlignment(Element.ALIGN_RIGHT);
 

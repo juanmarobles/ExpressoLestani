@@ -196,6 +196,28 @@ public class MovimientosJpaController implements Serializable {
             em.close();
         }
     }
+
+  List<Movimientos> getMovimientosConsultaOrigenFiltrado(Date fechaDesde, Date fechaHasta, String origenFiltrado) {
+    EntityManager em = getEntityManager();
+
+    try {
+        String jpql = "SELECT m FROM Movimientos m " +
+                      "WHERE m.fecha >= :fechaDesde " +
+                      "AND m.fecha <= :fechaHasta " +
+                      "AND m.cliente LIKE CONCAT('%', :origenFiltrado, '%') " + 
+                      "ORDER BY m.fecha DESC";
+
+        TypedQuery<Movimientos> query = em.createQuery(jpql, Movimientos.class);
+        query.setParameter("fechaDesde", fechaDesde);
+        query.setParameter("fechaHasta", fechaHasta);
+        query.setParameter("origenFiltrado", origenFiltrado);
+
+        return query.getResultList();
+    } finally {
+        em.close();
+    }
+}
+
 }
 
 
