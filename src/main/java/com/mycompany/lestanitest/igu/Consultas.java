@@ -1583,10 +1583,10 @@ public class Consultas extends javax.swing.JFrame {
 
         // Filtrar por destino (solo si se ha seleccionado un cliente)
         if (!destinoFiltrado.isEmpty()) {
-            movimientosFiltrados = movimientosFiltrados.stream()
-                    .filter(mov -> mov.getDestino().equals(destinoFiltrado))
-                    .collect(Collectors.toList());
-            //copiar por sql
+           // movimientosFiltrados = movimientosFiltrados.stream()
+                    //.filter(mov -> mov.getDestino().equals(destinoFiltrado))
+                   // .collect(Collectors.toList());
+            movimientosFiltrados = control.getMovimientosVistaDestinoFiltrado(fechaDesde,fechaHasta,destinoFiltrado);
         }
         /*
         //Fecha

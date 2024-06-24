@@ -454,6 +454,10 @@ public class Controladora {
            return ctrl.getMovimientoReciboFiltrado(fechaDesde,fechaHasta,cliente);
         }
 
+    public List<Movimientos> getMovimientosVistaDestinoFiltrado(Date fechaDesde, Date fechaHasta, String destinoFiltrado) {
+           return ctrl.getMovimientosVistaDestinoFiltrado(fechaDesde, fechaHasta, destinoFiltrado);
+    }
+
 
 }
 
