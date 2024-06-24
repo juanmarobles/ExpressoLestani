@@ -360,6 +360,10 @@ public class ControladoraPersistencia {
        return  movJpa.getMovimientosConsultaOrigenFiltrado(fechaDesde, fechaHasta,origenFiltrado);
     }
 
+    public List<Movimientos> getMovimientoReciboFiltrado(Date fechaDesde, Date fechaHasta, String cliente) {
+       return  movJpa.getMovimientoReciboFiltrado(fechaDesde, fechaHasta,cliente);
+    }
+
    
     }
     /**

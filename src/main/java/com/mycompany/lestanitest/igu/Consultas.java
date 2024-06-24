@@ -1586,6 +1586,7 @@ public class Consultas extends javax.swing.JFrame {
             movimientosFiltrados = movimientosFiltrados.stream()
                     .filter(mov -> mov.getDestino().equals(destinoFiltrado))
                     .collect(Collectors.toList());
+            //copiar por sql
         }
         /*
         //Fecha

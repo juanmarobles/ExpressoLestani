@@ -542,6 +542,23 @@ public class Recibo extends javax.swing.JFrame {
                 Integer.parseInt(txtDiaH.getText())
         );
         
+          // Convertir las fechas "Desde" y "Hasta" a LocalDate
+        LocalDate localDateDesde = LocalDate.of(
+        Integer.parseInt(txtAnioD.getText()),
+        Integer.parseInt(txtMesD.getText()),
+        Integer.parseInt(txtDiaD.getText())
+        );
+        
+        Date fechaDesdeDate = Date.from(localDateDesde.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+        // Convertir fechaHasta de LocalDate a Date
+        LocalDate localDateHasta = LocalDate.of(
+                Integer.parseInt(txtAnioH.getText()),
+                Integer.parseInt(txtMesH.getText()),
+                Integer.parseInt(txtDiaH.getText())
+        );
+        Date fechaHastaDate = Date.from(localDateHasta.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        
         // Formatear las fechas en el formato deseado
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         String fechaDesdeFormateada = fechaDesde.format(formatter);
@@ -557,7 +574,7 @@ public class Recibo extends javax.swing.JFrame {
         }
 
         // Obtener los movimientos filtrados por fechas y cliente
-        List<Movimientos> listaFiltrada = filtrarPorFechasCliente(control.traerMovimientosRecibo(), fechaDesde, fechaHasta, cliente);
+        List<Movimientos> listaFiltrada = control.getMovimientoReciboFiltrado(fechaDesdeDate,fechaHastaDate,cliente);
 
         // Crear una instancia de la ventana de movimientos
         Recibos rc = new Recibos(cliente, listaFiltrada, fechaDesdeFormateada, fechaHastaFormateada);
@@ -583,13 +600,13 @@ public class Recibo extends javax.swing.JFrame {
     private void txtMesDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMesDActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtMesDActionPerformed
-    public List<Movimientos> filtrarPorFechasCliente(List<Movimientos> objetos, LocalDate fechaDesde, LocalDate fechaHasta, String cliente) {
+   /* public List<Movimientos> filtrarPorFechasCliente(List<Movimientos> objetos, LocalDate fechaDesde, LocalDate fechaHasta, String cliente) {
         List<Movimientos> resultados = new ArrayList<>();
         /*
         System.out.println("Cliente seleccionado: " + cliente);
         System.out.println("Fecha desde: " + fechaDesde);
         System.out.println("Fecha hasta: " + fechaHasta);
-        */
+        
         for (Movimientos objeto : objetos) {
             LocalDate fecha = objeto.getFecha().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
             String clienteMovimiento = objeto.getCliente();
@@ -602,13 +619,13 @@ public class Recibo extends javax.swing.JFrame {
                     System.out.println(objeto);
                     System.out.println(fecha);
                     System.out.println("Agregado movimiento con ID: " + objeto.getId_movimientos());
-                    */
+                    
                 }
             }
         }
 
         return resultados;
-    }
+    }*/
 
     private void mostrarMensaje(String mensaje, String titulo, String tipoMensaje) {
         JOptionPane.showMessageDialog(this, mensaje, titulo, JOptionPane.ERROR_MESSAGE);
