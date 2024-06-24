@@ -119,6 +119,8 @@ public class Consultas extends javax.swing.JFrame {
     private String montoTotalImpreso;
     private String fleteTotalImpreso;
     List<Cliente> listaClientes = control.traerClientes();
+    List<Representantes> listaRepresentantes = control.getRepresentantes();
+
     //Nuevo
     // private List<Movimientos> listaFiltrada;
 
@@ -477,7 +479,6 @@ public class Consultas extends javax.swing.JFrame {
     }
 
     private void cargarRepresentantes() {
-       List<Representantes> listaRepresentantes = control.getRepresentantes();
 
         cbRepresentantes.setEditable(true);
         

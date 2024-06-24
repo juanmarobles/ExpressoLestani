@@ -179,6 +179,8 @@ public class Principal extends javax.swing.JFrame {
     private Movimientos movimientoSeleccionado;
     private Servicios servicioSeleccionado;
     List<Cliente> listaClientes = control.traerClientes();
+    List<Servicios> listaServ = control.getServicios();
+    List<Representantes> listaRepresentantes = control.getRepresentantes();
 
     
     int numeroRemito = 0;
@@ -485,7 +487,7 @@ public class Principal extends javax.swing.JFrame {
             actualizarFlete();
         });
 
-// Agregar un listener al campo txtServicio
+        // Agregar un listener al campo txtServicio
         cbServicios.getEditor().getEditorComponent().addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
@@ -736,7 +738,6 @@ public class Principal extends javax.swing.JFrame {
     }
 
    private void cargarServicios() {
-       List<Servicios> listaServ = control.getServicios();
 
         cbServicios.setEditable(true);
         // Ordenar la lista de clientes alfabéticamente por el nombre
@@ -775,7 +776,6 @@ public class Principal extends javax.swing.JFrame {
     }
 
     private void cargarRepresentantes() {
-       List<Representantes> listaRepresentantes = control.getRepresentantes();
         
         cbRepresentantes.setEditable(true);
 

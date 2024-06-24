@@ -96,7 +96,9 @@ public class HDDRepresentantes extends javax.swing.JFrame {
 
     Controladora control = new Controladora();
     TableRowSorter trs;
-        List<Vehiculo> listaVehiculo = control.getVehiculos();
+    List<Vehiculo> listaVehiculo = control.getVehiculos();
+    List<Representantes> listaRepresentantes = control.getRepresentantes();
+
 
     /**
      * Creates new form HDDRepresentantes
@@ -255,7 +257,6 @@ public class HDDRepresentantes extends javax.swing.JFrame {
     }
 
     private void cargarRepresentantes() {
-          List<Representantes> listaRepresentantes = control.getRepresentantes();
           
         cbRepresentantes.setEditable(true);
         // Ordenar la lista de clientes alfabéticamente por el nombre
@@ -364,7 +365,6 @@ public class HDDRepresentantes extends javax.swing.JFrame {
 
     //llenar vehiculo
     private void llenarVehiculo() {
-         List<Vehiculo> listaVehiculo = control.getVehiculos();
 
         cbVehiculo.removeAllItems(); // Limpiar los elementos existentes en el ComboBox
 
@@ -386,7 +386,6 @@ public class HDDRepresentantes extends javax.swing.JFrame {
 
     //llenar chofer
     private void llenarChofer() {
-        List<Representantes> listaRepresentantes = control.getRepresentantes();
         cbChofer.setEditable(true);
 
         // Agregar los clientes al combobox

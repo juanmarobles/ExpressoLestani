@@ -94,6 +94,8 @@ public class HojaDeRuta extends javax.swing.JFrame {
 
     Controladora control = new Controladora();
     TableRowSorter trs;
+     List<Vehiculo> listaVehiculo = control.getVehiculos();
+     List<Representantes> listaRepresentantes = control.getRepresentantes();
 
     /**
      * Creates new form HojaDeRuta
@@ -387,7 +389,6 @@ public class HojaDeRuta extends javax.swing.JFrame {
 
     //llenar vehiculo
     private void llenarVehiculo() {
-        List<Vehiculo> listaVehiculo = control.getVehiculos();
         cbVehiculo.removeAllItems(); // Limpiar los elementos existentes en el ComboBox
 
         // Agregar los nuevos elementos del ArrayList al ComboBox
@@ -429,7 +430,6 @@ public class HojaDeRuta extends javax.swing.JFrame {
     //llenar chofer
 
     private void llenarChofer() {
-        List<Representantes> listaRepresentantes = control.getRepresentantes();
 
         cbChofer.setEditable(true);
 
