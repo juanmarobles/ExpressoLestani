@@ -12,6 +12,7 @@ import com.mycompany.lestanitest.persistencia.RepresentantesJpaController;
 import com.mycompany.lestanitest.persistencia.ServiciosJpaController;
 import com.mycompany.lestanitest.persistencia.VehiculoJpaController;
 import com.mycompany.lestanitest.persistencia.exceptions.NonexistentEntityException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -234,6 +235,9 @@ public class ControladoraPersistencia {
      */
     public List<Movimientos> traerMovimientos() {
         return movJpa.getMovimientos();
+    }
+     public List<Movimientos> traerMovimientosRecibo() {
+        return movJpa.getMovimientosRecibo();
     }
 
     /**

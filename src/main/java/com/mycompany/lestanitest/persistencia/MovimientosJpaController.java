@@ -7,6 +7,7 @@ package com.mycompany.lestanitest.persistencia;
 import com.mycompany.lestanitest.logica.Movimientos;
 import com.mycompany.lestanitest.persistencia.exceptions.NonexistentEntityException;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -157,6 +158,19 @@ public class MovimientosJpaController implements Serializable {
         }
     }
    
+    public List<Movimientos> getMovimientosRecibo() {
+        EntityManager em = getEntityManager(); 
+
+        try {
+            String jpql = "SELECT m FROM Movimientos m ORDER BY m.id_movimientos DESC";
+            TypedQuery<Movimientos> query = em.createQuery(jpql, Movimientos.class); 
+
+            return query.getResultList();
+        } finally {
+            em.close(); 
+        }
+    }
+   
     public List<Movimientos> getMovimientosConsulta(Date fechaDesde, Date fechaHasta) {
            EntityManager em = getEntityManager();
     
@@ -217,6 +231,7 @@ public class MovimientosJpaController implements Serializable {
         em.close();
     }
 }
+
 
 }
 

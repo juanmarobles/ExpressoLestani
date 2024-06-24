@@ -185,7 +185,7 @@ public class Movimientos implements Serializable {
     if (this.fecha == null) {
         return "";
     }
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    SimpleDateFormat sdf = new SimpleDateFormat(FORMATO_FECHA_TABLA);
     return sdf.format(this.fecha);
 }
 

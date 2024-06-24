@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -307,6 +308,9 @@ public class Controladora {
     public List<Movimientos> traerMovimientos() {
         return ctrl.traerMovimientos();
     }
+    public List<Movimientos> traerMovimientosRecibo() {
+        return ctrl.traerMovimientosRecibo();
+    }
 
     //RECIBOS
     public List<Movimientos> traerMovimientos(String cliente, String fechaDesde, String fechaHasta) {
@@ -445,6 +449,7 @@ public class Controladora {
     public List<Movimientos> getMovimientosVistaOrigenFiltrado(Date fechaDesde, Date fechaHasta, String origenFiltrado) {
            return ctrl.getMovimientosConsultaOrigenFiltrado(fechaDesde,fechaHasta,origenFiltrado);
     }
+
 
 }
 
