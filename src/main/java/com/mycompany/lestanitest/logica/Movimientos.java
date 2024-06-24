@@ -213,7 +213,7 @@ public class Movimientos implements Serializable {
     public void setBultos(int bultos) {
         this.bultos = bultos;
     }
-
+    
    public String getMonto() {
     if (monto == null) {
         return ""; // Otra acción adecuada para manejar el valor nulo

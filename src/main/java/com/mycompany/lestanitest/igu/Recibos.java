@@ -417,44 +417,43 @@ private void aplicarCambiosSegunCheckBox() {
         tablaMovimientos.getTableHeader().resizeAndRepaint();
         tablaMovimientos.repaint();
     };
-
-    public List<Movimientos> filtrarPorFechasClienteBtn(List<Movimientos> objetos, String fechaDesdeStr, String fechaHastaStr, String cliente) {
+/*
+    public List<Movimientos> filtrarPorFechasClienteBtn(List<Movimientos> movimientos) {
         List<Movimientos> resultados = new ArrayList<>();
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         LocalDate fechaDesde = LocalDate.parse(fechaDesdeStr, formatter);
         LocalDate fechaHasta = LocalDate.parse(fechaHastaStr, formatter);
 
-        for (Movimientos objeto : objetos) {
-            LocalDate fecha = objeto.getFecha().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-            String clienteMovimiento = objeto.getCliente();
-            String pagado = objeto.getTipoMontoP();
-            String rendido = objeto.getTipoMontoR();
+        for (Movimientos mov : movimientos) {
+            LocalDate fecha = mov.getFecha().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            String clienteMovimiento = mov.getCliente();
+            String pagado = mov.getTipoMontoP();
+            String rendido = mov.getTipoMontoR();
 
-            if (fecha != null && clienteMovimiento != null && clienteMovimiento.equals(cliente)) {
+            if (fecha != null && clienteMovimiento != null && clienteMovimiento.equals(mov.getCliente())) {
                 if (fecha.compareTo(fechaDesde) >= 0 && fecha.compareTo(fechaHasta) <= 0 && "Si".equalsIgnoreCase(pagado) && !"Si".equalsIgnoreCase(rendido)) {
-                    resultados.add(objeto);
+                    resultados.add(mov);
                 }
             }
         }
 
         return resultados;
     }
-    
+    */
 
 
  public void actualizarTablaBtn() {
+         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate localDateDesde = LocalDate.parse(fechaDesde, formatter);
+        LocalDate localDateHasta = LocalDate.parse(fechaHasta, formatter);
+        // Convertir LocalDate a Date
+        Date dateDesde = Date.from(localDateDesde.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date dateHasta = Date.from(localDateHasta.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+        listaFiltrada = control.getMovimientoReciboFiltrado(dateDesde, dateHasta, cliente);
+
      
-     // Obtener los movimientos filtrados por fechas y cliente
-        List<Movimientos> listaFiltrada = filtrarPorFechasClienteBtn(control.traerMovimientos(), fechaDesde, fechaHasta, cliente);
-
-        // Crear una instancia de la ventana de movimientos
-        Recibos rc = new Recibos(cliente, listaFiltrada, fechaDesde, fechaHasta);
-
-        // Mostrar la ventana de movimientos en recibos
-        rc.setVisible(true);
-
-        dispose();
     }
 
     private List<Movimientos> filtrarMovimientos(List<Movimientos> movimientos) {
