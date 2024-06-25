@@ -29,9 +29,14 @@ public class Conexion {
     public PreparedStatement pstm;
     public static Connection getConexion() {
     Connection con = null;
+    //DATOS PRODUCCION
     String url = "jdbc:mysql://srv1433.hstgr.io:3306/u261556491_lestani_bd?zeroDateTimeBehavior=CONVERT_TO_NULL&noAccessToProcedureBodies=true";
     String user = "u261556491_expresolestani";
     String password = "Expresolestani2024_";
+    //DATOS PREPROD DEBUG
+    //String url = "jdbc:mysql://srv1433.hstgr.io:3306/u261556491_lestani_bd_pre?zeroDateTimeBehavior=CONVERT_TO_NULL&noAccessToProcedureBodies=true";
+    //String user = "u261556491_lestanibd_pre";
+    //String password = "Expresolestani2024_";
     
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
