@@ -368,6 +368,15 @@ public class ControladoraPersistencia {
         return  movJpa.getMovimientosConsultaDestinoFiltrado(fechaDesde, fechaHasta, destinoFiltrado);
     }
 
+    public void actualizarFletes(String ids, String nuevoValorFleteTexto) {
+        movJpa.actualizarFletes(ids, nuevoValorFleteTexto);
+    }
+
+
+    public List<Movimientos> getMovActualizados(String ids) {
+        return movJpa.getMovActualizados(ids);
+    }
+
    
     }
     /**

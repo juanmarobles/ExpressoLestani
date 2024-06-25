@@ -10,7 +10,7 @@
     <class>com.mycompany.lestanitest.logica.Usuario</class>
     <class>com.mycompany.lestanitest.logica.Destinos</class>
     <properties>
-<property name="javax.persistence.jdbc.url" value="jdbc:mysql://srv1433.hstgr.io:3306/u261556491_lestani_bd?useSSL=true&amp;requireSSL=true"/>
+<property name="javax.persistence.jdbc.url" value="jdbc:mysql://srv1433.hstgr.io:3306/u261556491_lestani_bd?useSSL=true&amp;requireSSL=true&amp;noAccessToProcedureBodies=true"/>
         <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
         <property name="javax.persistence.jdbc.user" value="u261556491_expresolestani"/>
         <property name="javax.persistence.jdbc.password" value="Expresolestani2024_"/>
@@ -21,6 +21,8 @@
       <property name="eclipselink.target-database" value="org.eclipse.persistence.platform.database.MySQLPlatform"/>
       <property name="eclipselink.sequence.table.default" value="SEQUENCE"/>
       <property name="eclipselink.sequence.preallocation-size" value="1"/>
+      <property name="eclipselink.jdbc.callable.statement.ignore.stored.procedure.bodies" value="true"/>
+
     </properties>
   </persistence-unit>
 </persistence>

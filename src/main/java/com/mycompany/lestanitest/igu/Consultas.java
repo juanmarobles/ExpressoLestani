@@ -2015,9 +2015,9 @@ public class Consultas extends javax.swing.JFrame {
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
     private void btnCambiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCambiarActionPerformed
-        String nuevoMontoFlete = txtFleteCambio.getText();
-        double montoDouble = Double.parseDouble(nuevoMontoFlete);// Obtener el nuevo monto de flete ingresado
-        cambiarValorFlete(montoDouble);
+      
+        cambiarValorFlete();
+        mostrarTablaMovimientos();
     }//GEN-LAST:event_btnCambiarActionPerformed
 
     private void txtTotalMontoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTotalMontoActionPerformed
@@ -2115,53 +2115,50 @@ public class Consultas extends javax.swing.JFrame {
     }
 }
     
-    private void cambiarValorFlete(double nuevoMontoFlete) {
-        int[] filasSeleccionadas = tablaConsultas.getSelectedRows(); // Obtener índices de las filas seleccionadas
-        String nuevoValorFleteTexto = txtFleteCambio.getText().trim(); // Obtener el nuevo valor del campo de texto
-        double nuevoValorFlete = Double.parseDouble(nuevoValorFleteTexto); // Convertir a tipo numérico
+    private void cambiarValorFlete() {
+    int[] filasSeleccionadas = tablaConsultas.getSelectedRows(); // Obtener índices de las filas seleccionadas
+    String nuevoValorFleteTexto = txtFleteCambio.getText().trim(); // Obtener el nuevo valor del campo de texto
+    StringBuilder idsBuilder = new StringBuilder();
 
-        DefaultTableModel modeloTabla = (DefaultTableModel) tablaConsultas.getModel();
-        int columnaFlete = 10; // Índice de la columna "Flete" en el modelo de tabla
-        int totalFilas = modeloTabla.getRowCount();
+    DefaultTableModel modeloTabla = (DefaultTableModel) tablaConsultas.getModel();
+    int columnaFlete = 10; // Índice de la columna "Flete" en el modelo de tabla
+    int totalFilas = modeloTabla.getRowCount();
 
-        if (filasSeleccionadas.length > 0) {
-            for (int filaSeleccionada : filasSeleccionadas) {
-                int fila = filaSeleccionada; // Declarar y asignar el valor de filaSeleccionada a fila
-                modeloTabla.setValueAt(nuevoMontoFlete, fila, columnaFlete);
-
-                int idMovimientos = (int) modeloTabla.getValueAt(fila, 0);
-                Movimientos movimiento = control.traerMovimiento(idMovimientos);
-
-                if (movimiento != null) {
-                    movimiento.setFlete(nuevoValorFleteTexto); // Guardar el valor sin el signo "$"
-                    control.actualizarPrecioFlete(movimiento, nuevoValorFleteTexto); // Utilizar el método actualizarPrecioFlete() de la controladora
-                    String nuevoValorFleteConSigno = "$" + nuevoValorFleteTexto; // Agregar el signo "$"
-                    modeloTabla.setValueAt(nuevoValorFleteConSigno, fila, columnaFlete); // Actualizar el valor en la columna "FLETE"
-                }
-            }
-
-            modeloTabla.fireTableDataChanged();
-            JOptionPane.showMessageDialog(null, "Se cambió el monto de los fletes seleccionados con éxito", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-        } else {
-            // Si no hay filas seleccionadas, recorrer todas las filas
-            for (int fila = 0; fila < totalFilas; fila++) {
-                modeloTabla.setValueAt(nuevoMontoFlete, fila, columnaFlete);
-
-                int idMovimientos = (int) modeloTabla.getValueAt(fila, 0);
-                Movimientos movimiento = control.traerMovimiento(idMovimientos);
-
-                if (movimiento != null) {
-                    movimiento.setFlete(nuevoValorFleteTexto); // Guardar el valor sin el signo "$"
-                    control.actualizarPrecioFlete(movimiento, nuevoValorFleteTexto); // Utilizar el método actualizarPrecioFlete() de la controladora
-                    String nuevoValorFleteConSigno = "$" + nuevoValorFleteTexto; // Agregar el signo "$"
-                    modeloTabla.setValueAt(nuevoValorFleteConSigno, fila, columnaFlete); // Actualizar el valor en la columna "FLETE"
-                }
-            }
-
-            modeloTabla.fireTableDataChanged();
-            JOptionPane.showMessageDialog(null, "Se cambió el monto de todos los fletes con éxito", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+    if (filasSeleccionadas.length > 0) {
+        for (int filaSeleccionada : filasSeleccionadas) {
+            int fila = filaSeleccionada;
+            int idMovimientos = (int) modeloTabla.getValueAt(fila, 0);
+            idsBuilder.append(idMovimientos).append(",");
+        }
+    } else {
+        for (int fila = 0; fila < totalFilas; fila++) {
+            int idMovimientos = (int) modeloTabla.getValueAt(fila, 0);
+            idsBuilder.append(idMovimientos).append(",");
         }
     }
+
+    if (idsBuilder.length() > 0) {
+        idsBuilder.setLength(idsBuilder.length() - 1); // Eliminar la última coma
+        String ids = idsBuilder.toString();
+        control.actualizarFletes(ids, nuevoValorFleteTexto); // Llamar al SP
+        
+        // Actualizar el valor en la tabla
+        if (filasSeleccionadas.length > 0) {
+            for (int filaSeleccionada : filasSeleccionadas) {
+                int fila = filaSeleccionada;
+                String nuevoValorFleteConSigno = "$" + nuevoValorFleteTexto;
+                modeloTabla.setValueAt(nuevoValorFleteConSigno, fila, columnaFlete);
+            }
+        } else {
+            for (int fila = 0; fila < totalFilas; fila++) {
+                String nuevoValorFleteConSigno = "$" + nuevoValorFleteTexto;
+                modeloTabla.setValueAt(nuevoValorFleteConSigno, fila, columnaFlete);
+            }
+        }
+        modeloTabla.fireTableDataChanged();
+        JOptionPane.showMessageDialog(null, "Se cambió el monto de los fletes con éxito", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+    }
+}
 
     private void mostrarTablaMovimientos() {
         //filas y columnas no editables

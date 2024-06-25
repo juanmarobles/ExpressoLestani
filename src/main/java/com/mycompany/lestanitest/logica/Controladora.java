@@ -458,6 +458,14 @@ public class Controladora {
            return ctrl.getMovimientosVistaDestinoFiltrado(fechaDesde, fechaHasta, destinoFiltrado);
     }
 
+    public void actualizarFletes(String ids, String nuevoValorFleteTexto) {
+        ctrl.actualizarFletes(ids, nuevoValorFleteTexto);
+    }
+
+    public List<Movimientos> getMovActualizados(String ids) {
+        return ctrl.getMovActualizados(ids);    
+    }
+
 
 }
 

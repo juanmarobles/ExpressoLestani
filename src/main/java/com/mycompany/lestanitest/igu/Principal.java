@@ -543,15 +543,13 @@ public class Principal extends javax.swing.JFrame {
         if (!bultoText.isEmpty()) {
             int bulto = Integer.parseInt(bultoText);
 
-            // Cargar los datos desde la base de datos
-            List<Servicios> listaServicios = control.traerServicios();
 
             // Buscar el servicio correspondiente en la lista
             Object selectedItem = cbServicios.getSelectedItem();
             if (selectedItem != null) {
                 String nombreServicio = selectedItem.toString().trim().toLowerCase();
 
-                for (Servicios s : listaServicios) {
+                for (Servicios s : listaServ) {
                     if (s.getServicio().toLowerCase().equals(nombreServicio)) {
                         // Calcular el flete multiplicando el precio del servicio por la cantidad de bultos
                         Double precioDouble = s.getPrecio(); // Utiliza el Double directamente
@@ -829,7 +827,6 @@ public class Principal extends javax.swing.JFrame {
     
     // Método para realizar la búsqueda
     private void realizarBusquedaRepresentantes() {
-       List<Representantes> listaRepresentantes = control.getRepresentantes();
         // Obtener el texto ingresado por el usuario
         String textoBusqueda = cbRepresentantes.getEditor().getItem().toString().toUpperCase();
 
@@ -870,6 +867,7 @@ public class Principal extends javax.swing.JFrame {
 
         // Mostrar el menú desplegable si hay resultados
         cbRepresentantes.setPopupVisible(model.getSize() > 0);
+        
     }
 
    // Método para inicializar y cargar clientes en el ComboBox
@@ -2099,6 +2097,10 @@ public class Principal extends javax.swing.JFrame {
         txtRedespacho.setText("0");
         txtValDeclarado.setText("0");
         txtObservaciones.setText("");
+        
+    listaClientes = control.traerClientes();
+    listaServ = control.getServicios();
+    listaRepresentantes = control.getRepresentantes();
 
 
     }                                        
