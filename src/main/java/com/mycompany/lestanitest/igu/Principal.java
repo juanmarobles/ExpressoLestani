@@ -139,6 +139,7 @@ import java.time.DateTimeException;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Locale;
 import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -3450,9 +3451,18 @@ private void actualizarTablaMovimientos(List<Movimientos> movimientos) {
 
             // Crea una instancia personalizada de Font con tus preferencias
             Font fontPersonalizado = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
+            
+             
+             // Crear un objeto NumberFormat para Argentina
+            NumberFormat nf = NumberFormat.getNumberInstance(new Locale("es", "AR"));
+            nf.setMinimumFractionDigits(2); // Asegurar que siempre haya 2 dígitos decimales
+            nf.setMaximumFractionDigits(2); // Limitar a 2 dígitos decimales
+
+            double montoo = Double.parseDouble(monto);
+            String montoFormateado = nf.format(montoo);
 
             // Crea el párrafo con el texto y la fuente personalizada
-            Paragraph c = new Paragraph("CONTRAREEMBOLSO: $" + monto, fontPersonalizado);
+            Paragraph c = new Paragraph("CONTRAREEMBOLSO: $" + montoFormateado, fontPersonalizado);
 
             // Resto del código
             c.setAlignment(Element.ALIGN_LEFT);
@@ -3461,8 +3471,11 @@ private void actualizarTablaMovimientos(List<Movimientos> movimientos) {
             celdaC.setPadding(3f);
             celdaC.setPaddingBottom(4f);
             tablaTexto.addCell(celdaC);
+            
+            double fletee = Double.parseDouble(flete);
+            String fleteFormateado = nf.format(fletee);
 
-            Paragraph b = new Paragraph("FLETE: $" + flete, fontR);
+            Paragraph b = new Paragraph("FLETE: $" + fleteFormateado, fontR);
             b.setAlignment(Element.ALIGN_LEFT);
             PdfPCell celdaB = new PdfPCell(b);
             celdaB.setBorder(Rectangle.LEFT | Rectangle.RIGHT | Rectangle.BOTTOM); // Agregar borde alrededor de la celda "b"
@@ -3518,14 +3531,17 @@ private void actualizarTablaMovimientos(List<Movimientos> movimientos) {
             celdafacturaremito.setPaddingBottom(2); // Ajustar el espacio inferior de la celda "f"
             tablaTexto.addCell(celdafacturaremito);
 
-            double dmonto = Double.parseDouble(monto);
-            double fletee = Double.parseDouble(flete);
+            
             //double seguroo = Double.parseDouble(txtSeguro.getText());
             //double comContra = Double.parseDouble(txtContrarembolso.getText());
             //double redespa = Double.parseDouble(txtRedespacho.getText());
             //double valDecla = Double.parseDouble(txtValDeclarado.getText());
-            double total = dmonto + fletee;
-            Paragraph totalMonto = new Paragraph("TOTAL: $" + total, fontR);
+            double total = montoo + fletee;
+ 
+            // Formatear el monto
+            String totalFormateadoo = nf.format(total);
+            
+            Paragraph totalMonto = new Paragraph("TOTAL: $" + totalFormateadoo, fontR);
             totalMonto.setAlignment(Element.ALIGN_RIGHT);
             PdfPCell celdaTotal = new PdfPCell(totalMonto);
             celdaTotal.setBorder(Rectangle.NO_BORDER); // Sin borde para la celda "total"
@@ -3894,9 +3910,17 @@ private void actualizarTablaMovimientos(List<Movimientos> movimientos) {
 
             // Crea una instancia personalizada de Font con tus preferencias
             Font fontPersonalizado = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
-
+            
+            // Crear un objeto NumberFormat para Argentina
+            NumberFormat nf = NumberFormat.getNumberInstance(new Locale("es", "AR"));
+            nf.setMinimumFractionDigits(2); // Asegurar que siempre haya 2 dígitos decimales
+            nf.setMaximumFractionDigits(2); // Limitar a 2 dígitos decimales
+            
+            double monto = Double.parseDouble(txtMonto.getText());
+            String montoFormateado = nf.format(monto);
+            
             // Crea el párrafo con el texto y la fuente personalizada
-            Paragraph c = new Paragraph("CONTRAREEMBOLSO: $" + txtMonto.getText(), fontPersonalizado);
+            Paragraph c = new Paragraph("CONTRAREEMBOLSO: $" + montoFormateado, fontPersonalizado);
 
             // Resto del código
             c.setAlignment(Element.ALIGN_LEFT);
@@ -3905,8 +3929,11 @@ private void actualizarTablaMovimientos(List<Movimientos> movimientos) {
             celdaC.setPadding(3f);
             celdaC.setPaddingBottom(4f);
             tablaTexto.addCell(celdaC);
-
-            Paragraph b = new Paragraph("FLETE: $" + txtFlete.getText(), fontR);
+            
+            Double fletee = Double.parseDouble(txtFlete.getText());
+            String fleteeFormateado = nf.format(fletee);
+            
+            Paragraph b = new Paragraph("FLETE: $" + fleteeFormateado, fontR);
             b.setAlignment(Element.ALIGN_LEFT);
             PdfPCell celdaB = new PdfPCell(b);
             celdaB.setBorder(Rectangle.LEFT | Rectangle.RIGHT | Rectangle.BOTTOM); // Agregar borde alrededor de la celda "b"
@@ -3962,14 +3989,17 @@ private void actualizarTablaMovimientos(List<Movimientos> movimientos) {
             celdafacturaremito.setPaddingBottom(2); // Ajustar el espacio inferior de la celda "f"
             tablaTexto.addCell(celdafacturaremito);
 
-            double monto = Double.parseDouble(txtMonto.getText());
-            double fletee = Double.parseDouble(txtFlete.getText());
+            
+            
             double seguroo = Double.parseDouble(txtSeguro.getText());
             double comContra = Double.parseDouble(txtContrarembolso.getText());
             double redespa = Double.parseDouble(txtRedespacho.getText());
             //double valDecla = Double.parseDouble(txtValDeclarado.getText());
+            
             double total = monto + fletee + seguroo + comContra + redespa;
-            Paragraph totalMonto = new Paragraph("TOTAL: $" + total, fontR);
+            String totalFormateado = nf.format(total);
+            
+            Paragraph totalMonto = new Paragraph("TOTAL: $" + totalFormateado, fontR);
             totalMonto.setAlignment(Element.ALIGN_RIGHT);
             PdfPCell celdaTotal = new PdfPCell(totalMonto);
             celdaTotal.setBorder(Rectangle.NO_BORDER); // Sin borde para la celda "total"
@@ -4306,7 +4336,7 @@ private void actualizarTablaMovimientos(List<Movimientos> movimientos) {
             } else if (cbfDestino.isSelected()) {
                 flete = "destino";
             }
-
+            
             PdfPCell textoCell = new PdfPCell();
             textoCell.setBorder(Rectangle.NO_BORDER);
             // Crear una tabla interna para el texto
@@ -4315,9 +4345,17 @@ private void actualizarTablaMovimientos(List<Movimientos> movimientos) {
 
             // Crea una instancia personalizada de Font con tus preferencias
             Font fontPersonalizado = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
+            
+             // Crear un objeto NumberFormat para Argentina
+            NumberFormat nf = NumberFormat.getNumberInstance(new Locale("es", "AR"));
+            nf.setMinimumFractionDigits(2); // Asegurar que siempre haya 2 dígitos decimales
+            nf.setMaximumFractionDigits(2); // Limitar a 2 dígitos decimales
 
+            double monto = Double.parseDouble(txtMonto.getText());
+            String montoFormateado = nf.format(monto);
+            
             // Crea el párrafo con el texto y la fuente personalizada
-            Paragraph c = new Paragraph("CONTRAREEMBOLSO: $" + txtMonto.getText() + ".0", fontPersonalizado);
+            Paragraph c = new Paragraph("CONTRAREEMBOLSO: $" + montoFormateado, fontPersonalizado);
 
             // Resto del código
             c.setAlignment(Element.ALIGN_LEFT);
@@ -4326,8 +4364,11 @@ private void actualizarTablaMovimientos(List<Movimientos> movimientos) {
             celdaC.setPadding(3f);
             celdaC.setPaddingBottom(4f);
             tablaTexto.addCell(celdaC);
-
-            Paragraph b = new Paragraph("FLETE: $" + txtFlete.getText(), fontR);
+            
+            double fletee = Double.parseDouble(txtFlete.getText());
+            String fleteFormateado = nf.format(fletee);
+            
+            Paragraph b = new Paragraph("FLETE: $" + fleteFormateado, fontR);
             b.setAlignment(Element.ALIGN_LEFT);
             PdfPCell celdaB = new PdfPCell(b);
             celdaB.setBorder(Rectangle.LEFT | Rectangle.RIGHT | Rectangle.BOTTOM); // Agregar borde alrededor de la celda "b"
@@ -4383,13 +4424,19 @@ private void actualizarTablaMovimientos(List<Movimientos> movimientos) {
             celdafacturaremito.setPaddingBottom(2); // Ajustar el espacio inferior de la celda "f"
             tablaTexto.addCell(celdafacturaremito);
 
-            double monto = Double.parseDouble(txtMonto.getText());
-            double fletee = Double.parseDouble(txtFlete.getText());
+            
+            
             double seguroo = Double.parseDouble(txtSeguro.getText());
             double comContra = Double.parseDouble(txtContrarembolso.getText());
             double redespa = Double.parseDouble(txtRedespacho.getText());
             double total = monto + fletee + seguroo + comContra + redespa;
-            Paragraph totalMonto = new Paragraph("TOTAL: $" + total, fontR);
+            
+           
+
+            // Formatear el total a una cadena con separadores de miles y decimales
+            String totalFormateado = nf.format(total);
+            
+            Paragraph totalMonto = new Paragraph("TOTAL: $" + totalFormateado, fontR);
             totalMonto.setAlignment(Element.ALIGN_RIGHT);
             PdfPCell celdaTotal = new PdfPCell(totalMonto);
             celdaTotal.setBorder(Rectangle.NO_BORDER); // Sin borde para la celda "total"

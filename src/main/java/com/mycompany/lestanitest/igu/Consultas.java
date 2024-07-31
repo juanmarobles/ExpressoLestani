@@ -1009,7 +1009,7 @@ public class Consultas extends javax.swing.JFrame {
                             .addComponent(jLabel18))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtAnioH, javax.swing.GroupLayout.PREFERRED_SIZE, 50, Short.MAX_VALUE)
+                            .addComponent(txtAnioH, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
                             .addComponent(txtAnioD, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE))
                         .addGap(0, 50, Short.MAX_VALUE))))
         );
@@ -1204,7 +1204,7 @@ public class Consultas extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addGap(8, 8, 8)
-                .addComponent(jLabel16, javax.swing.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE)
+                .addComponent(jLabel16, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel9Layout.setVerticalGroup(
@@ -2462,6 +2462,8 @@ public class Consultas extends javax.swing.JFrame {
 
         modeloTabla.fireTableDataChanged();
     }
+    
+ 
 
     //IMPRIMIR CONSULTAS
     private void generarPDF() {
@@ -2541,12 +2543,12 @@ public class Consultas extends javax.swing.JFrame {
                     }
 
                     //creacion de la TABLA
-                    PdfPTable table = new PdfPTable(tablaConsultas.getColumnCount() - 7); // Excluir las 6 columnas A_CARGO_DE, CC, OBS, MOVIMIENTO, RENDIDO_1 y RENDIDO_2
+                    PdfPTable table = new PdfPTable(tablaConsultas.getColumnCount() - 8); // Excluir las 6 columnas A_CARGO_DE, CC, OBS, MOVIMIENTO, RENDIDO_1 , RENDIDO_2 Y REPRESENTANTE
                     table.setSpacingBefore(10f); // Espacio antes de la tabla (en puntos)
-                    table.setSpacingAfter(10f);
+                    table.setSpacingAfter(0f);
 
                     // Ajustar espacio horizontal
-                    float[] columnWidths = {1f, 1.9f, 1.9f, 0.8f, 0.8f, 1f, 0.8f, 1f, 0.8f, 1.5f}; // Anchos de las columnas (proporciones)
+                    float[] columnWidths = {1.1f, 2f, 2f, 1.5f, 0.8f, 1.5f, 0.8f, 1.5f, 0.8f}; // Anchos de las columnas (proporciones)
                     table.setWidths(columnWidths);
                     table.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
 
@@ -2556,9 +2558,9 @@ public class Consultas extends javax.swing.JFrame {
                     for (int i = 0; i < tablaConsultas.getColumnCount(); i++) {
                         String col = tablaConsultas.getColumnName(i);
                         if (!col.equals("A_CARGO_DE") && !col.equals("CC") && !col.equals("OBS") && !col.equals("ID")
-                                && !col.equals("RENDIDO") && !col.equals("RENDIDO") && !col.equals("HORA")) {
+                                && !col.equals("RENDIDO") && !col.equals("RENDIDO") && !col.equals("HORA") && !col.equals("REPRESENTANTE")) {
                             PdfPCell cell = new PdfPCell(new Phrase(col, font));
-                            cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+                            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                             cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
                             table.addCell(cell);
                         }
@@ -2567,14 +2569,14 @@ public class Consultas extends javax.swing.JFrame {
                         for (int col = 0; col < tablaConsultas.getColumnCount(); col++) {
                             String colName = tablaConsultas.getColumnName(col);
                             if (!colName.equals("A_CARGO_DE") && !colName.equals("CC") && !colName.equals("OBS") && !colName.equals("ID")
-                                    && !colName.equals("RENDIDO") && !colName.equals("RENDIDO") && !colName.equals("HORA")) {
+                                    && !colName.equals("RENDIDO") && !colName.equals("RENDIDO") && !colName.equals("HORA") && !colName.equals("REPRESENTANTE")) {
                                 Object value = tablaConsultas.getValueAt(row, col);
                                 if (value != null) {
                                     PdfPCell cell = new PdfPCell(new Phrase(value.toString(), fontFilas));
-                                    cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+                                    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                                     cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
                                     if (colName.equals("CLIENTE") || colName.equals("DESTINO") || colName.equals("FECHA")) {
-                                        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+                                        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                                     }
                                     table.addCell(cell);
                                 }
@@ -2648,6 +2650,9 @@ public class Consultas extends javax.swing.JFrame {
 
     return selectedDirectory;
 }
+    
+
+    
     private void imprimirPDF() {
         Document document = new Document();
         try {
@@ -2718,46 +2723,51 @@ public class Consultas extends javax.swing.JFrame {
                 }
             }
 
-            //creacion de la TABLA
-            PdfPTable table = new PdfPTable(tablaConsultas.getColumnCount() - 7); // Excluir las 6 columnas A_CARGO_DE, CC, OBS, MOVIMIENTO, RENDIDO_1 y RENDIDO_2
-            table.setSpacingBefore(10f); // Espacio antes de la tabla (en puntos)
-            table.setSpacingAfter(10f);
+           //creacion de la TABLA
+                    PdfPTable table = new PdfPTable(tablaConsultas.getColumnCount() - 8); // Excluir las 6 columnas A_CARGO_DE, CC, OBS, MOVIMIENTO, RENDIDO_1 , RENDIDO_2 Y REPRESENTANTE
+                    table.setSpacingBefore(10f); // Espacio antes de la tabla (en puntos)
+                    table.setSpacingAfter(10f);
 
-            // Ajustar espacio horizontal
-            float[] columnWidths = {1f, 1.9f, 1.9f, 0.8f, 0.8f, 1f, 0.8f, 1f, 0.8f, 1.5f}; // Anchos de las columnas (proporciones)
-            table.setWidths(columnWidths);
-            table.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
+                    // Ajustar espacio horizontal
+                    float[] columnWidths = {1.1f, 2f, 2f, 1.5f, 0.8f, 1.5f, 0.8f, 1.5f, 0.8f}; // Anchos de las columnas (proporciones)
+                    table.setWidths(columnWidths);
+                    table.setWidthPercentage(100); // Establecer ancho total de la tabla al 100%
 
-            table.setWidths(columnWidths);
+                    table.setWidths(columnWidths);
 
-            // Agregar las celdas a la tabla
-            for (int i = 0; i < tablaConsultas.getColumnCount(); i++) {
-                String col = tablaConsultas.getColumnName(i);
-                if (!col.equals("A_CARGO_DE") && !col.equals("CC") && !col.equals("OBS") && !col.equals("ID")
-                        && !col.equals("RENDIDO") && !col.equals("RENDIDO") && !col.equals("HORA")) {
-                    PdfPCell cell = new PdfPCell(new Phrase(col, font));
-                    cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-                    cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
-                    table.addCell(cell);
-                }
-            }
-            for (int row : filasSeleccionadas) {
-                for (int col = 0; col < tablaConsultas.getColumnCount(); col++) {
-                    String colName = tablaConsultas.getColumnName(col);
-                    if (!colName.equals("A_CARGO_DE") && !colName.equals("CC") && !colName.equals("OBS") && !colName.equals("ID")
-                            && !colName.equals("RENDIDO") && !colName.equals("RENDIDO") && !colName.equals("HORA")) {
-                        Object value = tablaConsultas.getValueAt(row, col);
-                        if (value != null) {
-                            PdfPCell cell = new PdfPCell(new Phrase(value.toString(), fontFilas));
-                            cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+                    // Agregar las celdas a la tabla
+                    for (int i = 0; i < tablaConsultas.getColumnCount(); i++) {
+                        String col = tablaConsultas.getColumnName(i);
+                        if (!col.equals("A_CARGO_DE") && !col.equals("CC") && !col.equals("OBS") && !col.equals("ID")
+                                && !col.equals("RENDIDO") && !col.equals("RENDIDO") && !col.equals("HORA") && !col.equals("REPRESENTANTE")) {
+                            PdfPCell cell = new PdfPCell(new Phrase(col, font));
+                            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                             cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
                             table.addCell(cell);
                         }
                     }
-                }
-            }
+                    for (int row : filasSeleccionadas) {
+                        for (int col = 0; col < tablaConsultas.getColumnCount(); col++) {
+                            String colName = tablaConsultas.getColumnName(col);
+                            if (!colName.equals("A_CARGO_DE") && !colName.equals("CC") && !colName.equals("OBS") && !colName.equals("ID")
+                                    && !colName.equals("RENDIDO") && !colName.equals("RENDIDO") && !colName.equals("HORA") && !colName.equals("REPRESENTANTE")) {
+                                Object value = tablaConsultas.getValueAt(row, col);
+                                if (value != null) {
+                                    PdfPCell cell = new PdfPCell(new Phrase(value.toString(), fontFilas));
+                                    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                                    cell.setPaddingBottom(3f); // Espacio inferior de la celda (en puntos)
+                                    if (colName.equals("CLIENTE") || colName.equals("DESTINO") || colName.equals("FECHA")) {
+                                        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                                    }
+                                    table.addCell(cell);
+                                }
+                            }
+                        }
+                    }
 
-            document.add(table);
+                    document.add(table);
+                    
+                    
             // Crear una tabla para los montos totales
             PdfPTable totalsTable = new PdfPTable(2);
             totalsTable.setWidthPercentage(100);
